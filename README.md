@@ -1,13 +1,14 @@
 # Ultron 🤖
 
 ## Version
-v0.2
+v0.3
 
 ## Description
 Ultron is my personal AI assistant project built using Python.
 
 ## Completed Features
-- ✅ Conversation Engine
+- Conversation Engine
+- Command System
 
 ## Current Status
 Working Successfully
