@@ -1,4 +1,5 @@
 from core.memory import get_memory
+from core.profile import get_profile
 
 
 def handle_conversation(user):
@@ -8,6 +9,15 @@ def handle_conversation(user):
 
     elif user == "how are you":
         print("Ultron: I am working perfectly!")
+        return True
+
+    elif user == "what is my name" or user == "who am i":
+        name = get_profile("name")
+
+        if name:
+            print(f"Ultron: Your name is {name}.")
+        else:
+            print("Ultron: I don't know your name yet.")
         return True
 
     elif user.startswith("do you remember"):
