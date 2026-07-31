@@ -43,3 +43,15 @@ def update_memory(index, new_text):
             file.write(memory + "\n")
 
     return True
+
+
+def search_memory(keyword):
+    memories = get_memory()
+
+    results = []
+
+    for memory in memories:
+        if keyword.lower() in memory.lower():
+            results.append(memory)
+
+    return results

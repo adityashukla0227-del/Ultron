@@ -1,6 +1,11 @@
 import os
 from core.config import APP_NAME, VERSION, DEVELOPER, STATUS
-from core.memory import get_memory, delete_memory, update_memory
+from core.memory import (
+    get_memory,
+    delete_memory,
+    update_memory,
+    search_memory
+)
 
 
 def handle_command(user):
@@ -13,6 +18,7 @@ def handle_command(user):
         print("show memories        - Show all saved memories")
         print("delete memory X      - Delete memory by number")
         print("update memory X TEXT - Update memory by number")
+        print("search KEYWORD       - Search saved memories")
         print("exit                 - Close Ultron")
         print("==============================\n")
         return True
@@ -36,6 +42,21 @@ def handle_command(user):
         else:
             print("\n===== SAVED MEMORIES =====")
             for index, memory in enumerate(memories, start=1):
+                print(f"{index}. {memory}")
+            print("==========================\n")
+
+        return True
+
+    elif user.startswith("search "):
+        keyword = user.replace("search ", "", 1).strip()
+
+        results = search_memory(keyword)
+
+        if not results:
+            print("\nUltron: No matching memories found.\n")
+        else:
+            print("\n===== SEARCH RESULTS =====")
+            for index, memory in enumerate(results, start=1):
                 print(f"{index}. {memory}")
             print("==========================\n")
 
