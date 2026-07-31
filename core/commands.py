@@ -40,6 +40,13 @@ from core.settings import (
     reset_settings
 )
 
+from core.profile_manager import (
+    show_profile,
+    set_profile,
+    delete_profile,
+    reset_profile
+)
+
 
 def handle_command(user):
 
@@ -58,6 +65,10 @@ def handle_command(user):
         print("show settings         - Show all settings")
         print("set KEY VALUE         - Update setting")
         print("reset settings        - Reset settings")
+        print("profile show          - Show user profile")
+        print("profile set KEY VALUE - Update profile data")
+        print("profile delete KEY    - Delete profile data")
+        print("profile reset         - Reset profile")
         print("backup                - Create backup")
         print("backup list           - Show all backups")
         print("backup latest         - Show latest backup")
@@ -76,7 +87,7 @@ def handle_command(user):
 
         return True
 
-
+    
     elif user == "about":
         print(f"\n{APP_NAME} AI Assistant")
         print(f"Developer : {DEVELOPER}")
@@ -127,6 +138,7 @@ def handle_command(user):
 
         return True
 
+
     elif user == "show settings":
 
         settings = show_settings()
@@ -164,6 +176,63 @@ def handle_command(user):
         reset_settings()
 
         print("\nUltron: Settings reset successfully.\n")
+
+        return True
+
+
+    elif user == "profile show":
+
+        profile = show_profile()
+
+        print("\n===== PROFILE DATA =====")
+
+        if not profile:
+            print("No profile data found.")
+
+        else:
+            for key, value in profile.items():
+                print(f"{key} : {value}")
+
+        print("========================\n")
+
+        return True
+
+
+    elif user.startswith("profile set "):
+
+        parts = user.split(" ", 3)
+
+        if len(parts) < 4:
+            print("\nUltron: Usage -> profile set KEY VALUE\n")
+            return True
+
+        key = parts[2]
+        value = parts[3]
+
+        set_profile(key, value)
+
+        print("\nUltron: Profile updated successfully.\n")
+
+        return True
+
+
+    elif user.startswith("profile delete "):
+
+        key = user.replace("profile delete ", "", 1).strip()
+
+        if delete_profile(key):
+            print("\nUltron: Profile data deleted successfully.\n")
+        else:
+            print("\nUltron: Profile key not found.\n")
+
+        return True
+
+
+    elif user == "profile reset":
+
+        reset_profile()
+
+        print("\nUltron: Profile reset successfully.\n")
 
         return True
 
@@ -232,6 +301,7 @@ def handle_command(user):
             print("\nUltron: Backup not found.\n")
 
         return True
+
 
     elif user.startswith("backup info "):
 
@@ -367,6 +437,7 @@ def handle_command(user):
             print("==========================\n")
 
         return True
+
 
     elif user.startswith("search "):
 

@@ -2,7 +2,7 @@
 
 ## Version
 
-v0.17
+v0.18
 
 
 ## Description
@@ -12,26 +12,49 @@ Ultron is my personal AI assistant project built using Python.
 
 ## Completed Features
 
-- ✅ Conversation Engine
-- ✅ Command System
-- ✅ Modular Architecture
-- ✅ Memory Save
-- ✅ Memory Recall
-- ✅ Smart User Profile Memory
-- ✅ Memory Viewer
-- ✅ Delete Memory
-- ✅ Update Memory
-- ✅ Search Memory
-- ✅ User Profile Viewer
-- ✅ Dynamic Profile Update
-- ✅ Command History
-- ✅ Backup System
-- ✅ Advanced Timestamp Backup System
-- ✅ Restore System
-- ✅ Backup Management System
-- ✅ Export System
-- ✅ Import System
-- ✅ Settings Management System
+✅ Conversation Engine
+
+✅ Command System
+
+✅ Modular Architecture
+
+✅ Memory Save
+
+✅ Memory Recall
+
+✅ Smart User Profile Memory
+
+✅ Memory Viewer
+
+✅ Delete Memory
+
+✅ Update Memory
+
+✅ Search Memory
+
+✅ User Profile Viewer
+
+✅ Dynamic Profile Update
+
+✅ Command History
+
+✅ Backup System
+
+✅ Advanced Timestamp Backup System
+
+✅ Restore System
+
+✅ Backup Management System
+
+✅ Export System
+
+✅ Import System
+
+✅ Settings Management System
+
+✅ Profile Management System
+
+✅ Enhanced Command Integration
 
 
 ## Current Status
@@ -41,36 +64,60 @@ Working Successfully
 
 ## Version History
 
-- v0.1 - Project Setup
-- v0.2 - Conversation Engine
-- v0.3 - Command System
-- v0.4 - Modular Architecture
-- v0.5 - Smart User Profile Memory
-- v0.6 - Memory Viewer
-- v0.7 - Delete Memory
-- v0.8 - Update Memory
-- v0.9 - Search Memory
-- v0.10 - User Profile Viewer
-- v0.11 - Dynamic Profile Update
-- v0.12 - Command History
-- v0.13 - Backup System
-- v0.13.1 - Advanced Timestamp Backup System
-- v0.14 - Restore System
-- v0.15 - Backup Management System
-- v0.16 - Import / Export System
-- v0.17 - Settings Management System
+v0.1 - Project Setup
+
+v0.2 - Conversation Engine
+
+v0.3 - Command System
+
+v0.4 - Modular Architecture
+
+v0.5 - Smart User Profile Memory
+
+v0.6 - Memory Viewer
+
+v0.7 - Delete Memory
+
+v0.8 - Update Memory
+
+v0.9 - Search Memory
+
+v0.10 - User Profile Viewer
+
+v0.11 - Dynamic Profile Update
+
+v0.12 - Command History
+
+v0.13 - Backup System
+
+v0.13.1 - Advanced Timestamp Backup System
+
+v0.14 - Restore System
+
+v0.15 - Backup Management System
+
+v0.16 - Import / Export System
+
+v0.17 - Settings Management System
+
+v0.18 - Profile Management System & Command Enhancement
 
 
 # Backup System
 
 ## Commands
 
-- "backup"
-- "backup list"
-- "backup latest"
-- "backup count"
-- "backup delete BACKUP_NAME"
-- "backup info BACKUP_NAME"
+"backup"
+
+"backup list"
+
+"backup latest"
+
+"backup count"
+
+"backup delete BACKUP_NAME"
+
+"backup info BACKUP_NAME"
 
 
 ## Functions
@@ -80,7 +127,7 @@ Working Successfully
 - Saves multiple backup versions
 - Prevents old backups from being overwritten
 - Lists all available backups
-- Shows the latest backup
+- Shows latest backup
 - Displays total backup count
 - Deletes selected backups
 - Displays backup information
@@ -88,18 +135,16 @@ Working Successfully
 
 ## Backup Files
 
-- "data/memory.txt"
-- "data/profile.txt"
+- data/memory.txt
+- data/profile.txt
 
 
 ## Backup Structure
 
-```text
 backup/
 └── YYYY-MM-DD_HH-MM-SS/
     ├── memory.txt
     └── profile.txt
-```
 
 
 # Restore System
@@ -118,17 +163,19 @@ backup/
 
 ## Restore Files
 
-- "data/memory.txt"
-- "data/profile.txt"
+- data/memory.txt
+- data/profile.txt
 
 
 # Export System
 
 ## Commands
 
-- "export memories"
-- "export profile"
-- "export all"
+"export memories"
+
+"export profile"
+
+"export all"
 
 
 ## Functions
@@ -136,22 +183,24 @@ backup/
 - Exports memory data
 - Exports profile data
 - Exports all available data
-- Creates the "exports/" folder automatically
+- Creates exports folder automatically
 
 
 ## Export Files
 
-- "exports/memory.txt"
-- "exports/profile.txt"
+- exports/memory.txt
+- exports/profile.txt
 
 
 # Import System
 
 ## Commands
 
-- "import memories"
-- "import profile"
-- "import all"
+"import memories"
+
+"import profile"
+
+"import all"
 
 
 ## Functions
@@ -159,22 +208,24 @@ backup/
 - Imports memory data
 - Imports profile data
 - Imports all exported data
-- Restores exported files back to the "data/" folder
+- Restores exported files back to data folder
 
 
 ## Import Files
 
-- "exports/memory.txt"
-- "exports/profile.txt"
+- exports/memory.txt
+- exports/profile.txt
 
 
 # Settings Management System
 
 ## Commands
 
-- "show settings"
-- "set KEY VALUE"
-- "reset settings"
+"show settings"
+
+"set KEY VALUE"
+
+"reset settings"
 
 
 ## Functions
@@ -187,17 +238,49 @@ backup/
 
 ## Settings File
 
-- "data/settings.txt"
+data/settings.txt
 
 
 ## Default Settings
 
-```text
 theme=dark
 username=User
 assistant=Ultron
 autosave=true
-```
+
+
+# Profile Management System
+
+## Commands
+
+"who am i"
+
+"my name is NAME"
+
+"set KEY VALUE"
+
+
+## Functions
+
+- Saves user profile information
+- Updates profile dynamically
+- Retrieves saved profile data
+- Stores user information permanently
+
+
+## Profile File
+
+data/profile.txt
+
+
+# Enhanced Command Integration
+
+## Functions
+
+- Improved command handling
+- Integrated profile and settings commands
+- Better modular command structure
+- Supports future Ultron modules
 
 
 # Developer
@@ -226,7 +309,6 @@ To evolve Ultron into a powerful AI assistant capable of understanding users, ma
 
 # Project Structure
 
-```text
 core/
 modules/
 data/
