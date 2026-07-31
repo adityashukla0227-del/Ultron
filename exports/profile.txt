@@ -1,6 +1,0 @@
-name=aditya
-age=18
-city=lucknow
-goal=build ultron
-hobby=coding
-username=aditya

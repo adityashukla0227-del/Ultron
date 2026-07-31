@@ -87,12 +87,18 @@ def handle_command(user):
 
         return True
 
-    
+
     elif user == "about":
         print(f"\n{APP_NAME} AI Assistant")
         print(f"Developer : {DEVELOPER}")
         print("Language  : Python")
         print(f"Status    : {STATUS}\n")
+
+        return True
+
+
+    elif user == "version":
+        print(f"\nCurrent Version : {VERSION}\n")
 
         return True
 
@@ -222,6 +228,7 @@ def handle_command(user):
 
         if delete_profile(key):
             print("\nUltron: Profile data deleted successfully.\n")
+
         else:
             print("\nUltron: Profile key not found.\n")
 
@@ -253,11 +260,9 @@ def handle_command(user):
         backups = list_backups()
 
         if not backups:
-
             print("\nUltron: No backups found.\n")
 
         else:
-
             print("\n===== AVAILABLE BACKUPS =====")
 
             for index, backup in enumerate(backups, start=1):
@@ -417,110 +422,3 @@ def handle_command(user):
             print("\nUltron: Import failed.\n")
 
         return True
-
-
-    elif user == "show memories":
-
-        memories = get_memory()
-
-        if not memories:
-
-            print("\nUltron: No memories found.\n")
-
-        else:
-
-            print("\n===== SAVED MEMORIES =====")
-
-            for index, memory in enumerate(memories, start=1):
-                print(f"{index}. {memory}")
-
-            print("==========================\n")
-
-        return True
-
-
-    elif user.startswith("search "):
-
-        keyword = user.replace("search ", "", 1).strip()
-
-        results = search_memory(keyword)
-
-        if not results:
-
-            print("\nUltron: No matching memories found.\n")
-
-        else:
-
-            print("\n===== SEARCH RESULTS =====")
-
-            for index, memory in enumerate(results, start=1):
-                print(f"{index}. {memory}")
-
-            print("==========================\n")
-
-        return True
-
-
-    elif user.startswith("delete memory "):
-
-        try:
-
-            index = int(user.replace("delete memory ", ""))
-
-            if delete_memory(index):
-
-                print("\nUltron: Memory deleted successfully.\n")
-
-            else:
-
-                print("\nUltron: Invalid memory number.\n")
-
-
-        except ValueError:
-
-            print("\nUltron: Please enter a valid memory number.\n")
-
-        return True
-
-
-    elif user.startswith("update memory "):
-
-        try:
-
-            parts = user.split(" ", 3)
-
-            if len(parts) < 4:
-
-                print("\nUltron: Usage -> update memory <number> <new text>\n")
-
-                return True
-
-
-            index = int(parts[2])
-            new_text = parts[3]
-
-
-            if update_memory(index, new_text):
-
-                print("\nUltron: Memory updated successfully.\n")
-
-            else:
-
-                print("\nUltron: Invalid memory number.\n")
-
-
-        except ValueError:
-
-            print("\nUltron: Please enter a valid memory number.\n")
-
-        return True
-
-
-    elif user == "clear":
-
-        os.system("cls")
-
-        return True
-
-
-    return False
