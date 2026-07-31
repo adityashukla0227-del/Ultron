@@ -8,7 +8,14 @@ from core.memory import (
 )
 from core.profile import get_all_profiles
 from core.history import get_history
-from core.backup import create_backup
+from core.backup import (
+    create_backup,
+    list_backups,
+    latest_backup,
+    backup_count,
+    delete_backup,
+    backup_info
+)
 from core.restore import restore_backup
 
 
@@ -26,6 +33,11 @@ def handle_command(user):
         print("who am i             - Show your saved profile")
         print("history              - Show command history")
         print("backup               - Create backup")
+        print("backup list          - Show all backups")
+        print("backup latest        - Show latest backup")
+        print("backup count         - Show total backups")
+        print("backup delete NAME   - Delete backup")
+        print("backup info NAME     - Show backup details")
         print("restore NAME         - Restore backup")
         print("exit                 - Close Ultron")
         print("==============================\n")
@@ -76,6 +88,59 @@ def handle_command(user):
 
         return True
 
+    elif user == "backup list":
+        backups = list_backups()
+
+        if not backups:
+            print("\nUltron: No backups found.\n")
+        else:
+            print("\n===== AVAILABLE BACKUPS =====")
+            for index, backup in enumerate(backups, start=1):
+                print(f"{index}. {backup}")
+            print("=============================\n")
+
+        return True
+
+    elif user == "backup latest":
+        backup = latest_backup()
+
+        if backup:
+            print(f"\nLatest Backup: {backup}\n")
+        else:
+            print("\nUltron: No backups found.\n")
+
+        return True
+
+    elif user == "backup count":
+        print(f"\nTotal Backups: {backup_count()}\n")
+        return True
+
+    elif user.startswith("backup delete "):
+        name = user.replace("backup delete ", "", 1).strip()
+
+        if delete_backup(name):
+            print("\nUltron: Backup deleted successfully.\n")
+        else:
+            print("\nUltron: Backup not found.\n")
+
+        return True
+
+    elif user.startswith("backup info "):
+        name = user.replace("backup info ", "", 1).strip()
+
+        files = backup_info(name)
+
+        if files is None:
+            print("\nUltron: Backup not found.\n")
+        else:
+            print(f"\nBackup Name: {name}")
+            print("Files:")
+            for file in files:
+                print(f"- {file}")
+            print()
+
+        return True
+
     elif user.startswith("restore "):
         backup_name = user.replace("restore ", "", 1).strip()
 
@@ -117,10 +182,12 @@ def handle_command(user):
     elif user.startswith("delete memory "):
         try:
             index = int(user.replace("delete memory ", ""))
+
             if delete_memory(index):
                 print("\nUltron: Memory deleted successfully.\n")
             else:
                 print("\nUltron: Invalid memory number.\n")
+
         except ValueError:
             print("\nUltron: Please enter a valid memory number.\n")
 
