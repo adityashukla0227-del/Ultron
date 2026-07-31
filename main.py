@@ -4,17 +4,14 @@ from core.conversation import handle_conversation
 from core.memory import save_memory
 from core.profile import save_profile
 from core.history import add_history
+from core.logger import log_info
 
 from core.monitor import (
     monitor_start,
     monitor_shutdown
 )
 
-
 monitor_start()
-
-print("MONITOR LOADED")
-
 
 print("=" * 40)
 print(f"🤖 {APP_NAME} {VERSION}")
@@ -29,7 +26,6 @@ print("Type 'remember <text>' to save a memory.")
 print("Type 'my name is <name>' to save your name.")
 print("Type 'set <key> <value>' to update settings.\n")
 
-
 while True:
 
     raw_user = input(f"{name}: ").strip()
@@ -39,6 +35,8 @@ while True:
     # Save every command to history
     add_history(user)
 
+    # Save every command to logs
+    log_info(f"User Command : {raw_user}")
 
     if user == "exit":
 
@@ -47,7 +45,6 @@ while True:
         monitor_shutdown()
 
         break
-
 
     elif user.startswith("my name is "):
 
@@ -59,7 +56,6 @@ while True:
             f"{APP_NAME}: Nice to meet you, {name_value}! I'll remember your name."
         )
 
-
     elif user.startswith("remember "):
 
         text = raw_user.replace("remember ", "", 1).strip()
@@ -67,7 +63,6 @@ while True:
         save_memory(text)
 
         print(f"{APP_NAME}: Okay! I'll remember that.")
-
 
     elif handle_command(raw_user):
 
@@ -80,5 +75,7 @@ while True:
 
 
     else:
+
+        log_info(f"Unknown Command : {raw_user}")
 
         print(f"{APP_NAME}: Sorry, I don't understand that yet.")

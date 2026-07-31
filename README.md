@@ -2,7 +2,7 @@ Ultron 🤖
 
 Version
 
-v0.20
+v0.21
 
 Description
 
@@ -60,6 +60,8 @@ Completed Features
 
 ✅ Logger + Monitor Integration
 
+✅ Command Activity Logging
+
 Current Status
 
 Working Successfully
@@ -108,18 +110,20 @@ v0.19 - Logging System Base Module
 
 v0.20 - System Monitor & Logger Integration
 
+v0.21 - Command Activity Logging
+
 Logging System
 
 Functions
 
-- Creates log file automatically
-- Saves logs with timestamp
+- Automatically creates log file
+- Saves timestamp for every log
 - INFO logging
 - WARNING logging
 - ERROR logging
 - DEBUG logging
-- Clears logs
-- Reads logs
+- Read logs
+- Clear logs
 
 Log File
 
@@ -129,36 +133,40 @@ Monitor System
 
 Functions
 
-- Displays system information
-- Shows startup time
-- Shows shutdown time
-- Checks module status
+- Displays startup information
+- Displays shutdown information
+- Shows operating system details
+- Shows processor information
 - Shows Python version
 - Shows runtime status
 
-Logger + Monitor Integration
+Command Activity Logging
 
 Functions
 
-- Automatically logs Ultron startup
-- Automatically logs Ultron shutdown
-- Integrates monitoring with logging
-- Automatically creates logs.txt if missing
+- Logs every user command
+- Logs unknown commands
+- Logs exit command
+- Integrates with monitor and logger
+- Maintains complete command history in logs
+
+Example Log
+
+[2026-08-01 00:05:10] [INFO] Ultron Started
+[2026-08-01 00:05:15] [INFO] User Command : help
+[2026-08-01 00:05:20] [INFO] User Command : backup
+[2026-08-01 00:05:25] [INFO] User Command : profile show
+[2026-08-01 00:05:30] [INFO] User Command : exit
+[2026-08-01 00:05:30] [INFO] Ultron Shutdown
 
 Project Structure
 
 core/
-
 modules/
-
 data/
-
 backup/
-
 exports/
-
 tests/
-
 assets/
 
 Developer
@@ -176,4 +184,4 @@ AI, Automation, Software Development
 
 Vision
 
-To evolve Ultron into a powerful AI assistant capable of understanding users, managing tasks, and providing intelligent support.
+To evolve Ultron into a powerful AI assistant capable of understanding users, managing tasks, logging activities, and providing intelligent support.
