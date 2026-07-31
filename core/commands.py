@@ -1,18 +1,19 @@
 import os
 from core.config import APP_NAME, VERSION, DEVELOPER, STATUS
-from core.memory import get_memory, delete_memory
+from core.memory import get_memory, delete_memory, update_memory
 
 
 def handle_command(user):
     if user == "help":
         print("\n========== COMMANDS ==========")
-        print("help             - Show all commands")
-        print("about            - About Ultron")
-        print("version          - Show current version")
-        print("clear            - Clear the screen")
-        print("show memories    - Show all saved memories")
-        print("delete memory X  - Delete memory by number")
-        print("exit             - Close Ultron")
+        print("help                 - Show all commands")
+        print("about                - About Ultron")
+        print("version              - Show current version")
+        print("clear                - Clear the screen")
+        print("show memories        - Show all saved memories")
+        print("delete memory X      - Delete memory by number")
+        print("update memory X TEXT - Update memory by number")
+        print("exit                 - Close Ultron")
         print("==============================\n")
         return True
 
@@ -47,6 +48,27 @@ def handle_command(user):
                 print("\nUltron: Memory deleted successfully.\n")
             else:
                 print("\nUltron: Invalid memory number.\n")
+        except ValueError:
+            print("\nUltron: Please enter a valid memory number.\n")
+
+        return True
+
+    elif user.startswith("update memory "):
+        try:
+            parts = user.split(" ", 3)
+
+            if len(parts) < 4:
+                print("\nUltron: Usage -> update memory <number> <new text>\n")
+                return True
+
+            index = int(parts[2])
+            new_text = parts[3]
+
+            if update_memory(index, new_text):
+                print("\nUltron: Memory updated successfully.\n")
+            else:
+                print("\nUltron: Invalid memory number.\n")
+
         except ValueError:
             print("\nUltron: Please enter a valid memory number.\n")
 

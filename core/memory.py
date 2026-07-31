@@ -28,3 +28,18 @@ def delete_memory(index):
             file.write(memory + "\n")
 
     return True
+
+
+def update_memory(index, new_text):
+    memories = get_memory()
+
+    if index < 1 or index > len(memories):
+        return False
+
+    memories[index - 1] = new_text
+
+    with open(MEMORY_FILE, "w") as file:
+        for memory in memories:
+            file.write(memory + "\n")
+
+    return True
