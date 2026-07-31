@@ -5,6 +5,16 @@ from core.memory import save_memory
 from core.profile import save_profile
 from core.history import add_history
 
+from core.monitor import (
+    monitor_start,
+    monitor_shutdown
+)
+
+
+monitor_start()
+
+print("MONITOR LOADED")
+
 
 print("=" * 40)
 print(f"🤖 {APP_NAME} {VERSION}")
@@ -33,6 +43,9 @@ while True:
     if user == "exit":
 
         print(f"\n{APP_NAME}: Goodbye {name}! See you soon.")
+
+        monitor_shutdown()
+
         break
 
 

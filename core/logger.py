@@ -13,13 +13,29 @@ def create_log_file():
             file.write("")
 
 
-def save_log(message):
+def save_log(level, message):
     create_log_file()
 
     time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     with open(LOG_FILE, "a") as file:
-        file.write(f"[{time}] {message}\n")
+        file.write(f"[{time}] [{level}] {message}\n")
+
+
+def log_info(message):
+    save_log("INFO", message)
+
+
+def log_warning(message):
+    save_log("WARNING", message)
+
+
+def log_error(message):
+    save_log("ERROR", message)
+
+
+def log_debug(message):
+    save_log("DEBUG", message)
 
 
 def get_logs():
