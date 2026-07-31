@@ -14,7 +14,8 @@ print(f"\nHello {name}!")
 print("Type 'help' to see available commands.")
 print("Type 'exit' anytime to close Ultron.")
 print("Type 'remember <text>' to save a memory.")
-print("Type 'my name is <name>' to save your name.\n")
+print("Type 'my name is <name>' to save your name.")
+print("Type 'set <key> <value>' to save profile information.\n")
 
 while True:
     user = input(f"{name}: ").strip().lower()
@@ -27,6 +28,17 @@ while True:
         name_value = user.replace("my name is ", "", 1).strip()
         save_profile("name", name_value)
         print(f"{APP_NAME}: Nice to meet you, {name_value}! I'll remember your name.")
+
+    elif user.startswith("set "):
+        parts = user.split(" ", 2)
+
+        if len(parts) < 3:
+            print(f"{APP_NAME}: Usage -> set <key> <value>")
+        else:
+            key = parts[1]
+            value = parts[2]
+            save_profile(key, value)
+            print(f"{APP_NAME}: Saved {key} successfully.")
 
     elif user.startswith("remember "):
         text = user.replace("remember ", "", 1)
