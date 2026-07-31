@@ -1,14 +1,16 @@
-Ultron 🤖
+# Ultron 🤖
 
-Version
+## Version
 
-v0.16
+v0.17
 
-Description
+
+## Description
 
 Ultron is my personal AI assistant project built using Python.
 
-Completed Features
+
+## Completed Features
 
 - ✅ Conversation Engine
 - ✅ Command System
@@ -29,12 +31,15 @@ Completed Features
 - ✅ Backup Management System
 - ✅ Export System
 - ✅ Import System
+- ✅ Settings Management System
 
-Current Status
+
+## Current Status
 
 Working Successfully
 
-Version History
+
+## Version History
 
 - v0.1 - Project Setup
 - v0.2 - Conversation Engine
@@ -49,14 +54,16 @@ Version History
 - v0.11 - Dynamic Profile Update
 - v0.12 - Command History
 - v0.13 - Backup System
-- v0.13.1 - Advanced Timestamp Backup System (Timestamp Backup)
+- v0.13.1 - Advanced Timestamp Backup System
 - v0.14 - Restore System
 - v0.15 - Backup Management System
 - v0.16 - Import / Export System
+- v0.17 - Settings Management System
 
-Backup System
 
-Commands
+# Backup System
+
+## Commands
 
 - "backup"
 - "backup list"
@@ -65,7 +72,8 @@ Commands
 - "backup delete BACKUP_NAME"
 - "backup info BACKUP_NAME"
 
-Functions
+
+## Functions
 
 - Creates backup automatically
 - Generates unique timestamp folders
@@ -77,97 +85,152 @@ Functions
 - Deletes selected backups
 - Displays backup information
 
-Backup Files
+
+## Backup Files
 
 - "data/memory.txt"
 - "data/profile.txt"
 
-Backup Structure
 
+## Backup Structure
+
+```text
 backup/
 └── YYYY-MM-DD_HH-MM-SS/
     ├── memory.txt
     └── profile.txt
+```
 
-Restore System
 
-Command
+# Restore System
+
+## Command
 
 "restore BACKUP_NAME"
 
-Functions
+
+## Functions
 
 - Restores previous backup data
 - Recovers memory and profile files
-- Loads data from the selected timestamp backup
+- Loads data from selected timestamp backup
 
-Restore Files
+
+## Restore Files
 
 - "data/memory.txt"
 - "data/profile.txt"
 
-Export System
 
-Commands
+# Export System
+
+## Commands
 
 - "export memories"
 - "export profile"
 - "export all"
 
-Functions
+
+## Functions
 
 - Exports memory data
 - Exports profile data
 - Exports all available data
 - Creates the "exports/" folder automatically
 
-Export Files
+
+## Export Files
 
 - "exports/memory.txt"
 - "exports/profile.txt"
 
-Import System
 
-Commands
+# Import System
+
+## Commands
 
 - "import memories"
 - "import profile"
 - "import all"
 
-Functions
+
+## Functions
 
 - Imports memory data
 - Imports profile data
 - Imports all exported data
 - Restores exported files back to the "data/" folder
 
-Import Files
+
+## Import Files
 
 - "exports/memory.txt"
 - "exports/profile.txt"
 
-Developer
+
+# Settings Management System
+
+## Commands
+
+- "show settings"
+- "set KEY VALUE"
+- "reset settings"
+
+
+## Functions
+
+- Shows all current Ultron settings
+- Updates settings dynamically
+- Saves settings permanently
+- Resets settings to default values
+
+
+## Settings File
+
+- "data/settings.txt"
+
+
+## Default Settings
+
+```text
+theme=dark
+username=User
+assistant=Ultron
+autosave=true
+```
+
+
+# Developer
 
 Name: Aditya
-Role: AI Developer & Creator
-Project: Ultron AI Assistant
-Language: Python
-Development: AI, Automation, Software Development
 
-About Developer
+Role: AI Developer & Creator
+
+Project: Ultron AI Assistant
+
+Language: Python
+
+Development:
+AI, Automation, Software Development
+
+
+# About Developer
 
 Aditya is building Ultron as a personal AI assistant project focused on intelligent conversations, memory management, automation, and future AI capabilities.
 
-Vision
+
+# Vision
 
 To evolve Ultron into a powerful AI assistant capable of understanding users, managing tasks, and providing intelligent support.
 
-Project Structure
 
-- core/
-- modules/
-- data/
-- backup/
-- exports/
-- tests/
-- assets/
+# Project Structure
+
+```text
+core/
+modules/
+data/
+backup/
+exports/
+tests/
+assets/
