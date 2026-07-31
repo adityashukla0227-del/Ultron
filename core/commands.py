@@ -6,6 +6,7 @@ from core.memory import (
     update_memory,
     search_memory
 )
+from core.profile import get_all_profiles
 
 
 def handle_command(user):
@@ -19,6 +20,7 @@ def handle_command(user):
         print("delete memory X      - Delete memory by number")
         print("update memory X TEXT - Update memory by number")
         print("search KEYWORD       - Search saved memories")
+        print("who am i             - Show your saved profile")
         print("exit                 - Close Ultron")
         print("==============================\n")
         return True
@@ -32,6 +34,19 @@ def handle_command(user):
 
     elif user == "version":
         print(f"\nCurrent Version : {VERSION}\n")
+        return True
+
+    elif user == "who am i":
+        profile = get_all_profiles()
+
+        if not profile:
+            print("\nUltron: No profile information found.\n")
+        else:
+            print("\n===== USER PROFILE =====")
+            for key, value in profile.items():
+                print(f"{key.capitalize()} : {value}")
+            print("========================\n")
+
         return True
 
     elif user == "show memories":

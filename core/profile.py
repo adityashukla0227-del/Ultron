@@ -32,3 +32,18 @@ def get_profile(key):
         pass
 
     return None
+
+
+def get_all_profiles():
+    profile = {}
+
+    try:
+        with open(PROFILE_FILE, "r") as file:
+            for line in file:
+                if "=" in line:
+                    k, v = line.strip().split("=", 1)
+                    profile[k] = v
+    except FileNotFoundError:
+        pass
+
+    return profile

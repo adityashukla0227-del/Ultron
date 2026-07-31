@@ -1,7 +1,7 @@
 # Ultron 🤖
 
 ## Version
-v0.9
+v0.10
 
 ## Description
 Ultron is my personal AI assistant project built using Python.
@@ -17,6 +17,7 @@ Ultron is my personal AI assistant project built using Python.
 - ✅ Delete Memory
 - ✅ Update Memory
 - ✅ Search Memory
+- ✅ User Profile Viewer
 
 ## Current Status
 Working Successfully
@@ -31,6 +32,7 @@ Working Successfully
 - v0.7 - Delete Memory
 - v0.8 - Update Memory
 - v0.9 - Search Memory
+- v0.10 - User Profile Viewer
 
 ## Project Structure
 - core/
