@@ -7,6 +7,7 @@ from core.memory import (
     search_memory
 )
 from core.profile import get_all_profiles
+from core.history import get_history
 
 
 def handle_command(user):
@@ -21,6 +22,7 @@ def handle_command(user):
         print("update memory X TEXT - Update memory by number")
         print("search KEYWORD       - Search saved memories")
         print("who am i             - Show your saved profile")
+        print("history              - Show command history")
         print("exit                 - Close Ultron")
         print("==============================\n")
         return True
@@ -46,6 +48,19 @@ def handle_command(user):
             for key, value in profile.items():
                 print(f"{key.capitalize()} : {value}")
             print("========================\n")
+
+        return True
+
+    elif user == "history":
+        history = get_history()
+
+        if not history:
+            print("\nUltron: No command history found.\n")
+        else:
+            print("\n===== COMMAND HISTORY =====")
+            for index, command in enumerate(history, start=1):
+                print(f"{index}. {command}")
+            print("===========================\n")
 
         return True
 

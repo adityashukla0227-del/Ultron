@@ -3,6 +3,7 @@ from core.commands import handle_command
 from core.conversation import handle_conversation
 from core.memory import save_memory
 from core.profile import save_profile
+from core.history import add_history
 
 print("=" * 40)
 print(f"🤖 {APP_NAME} {VERSION}")
@@ -19,6 +20,9 @@ print("Type 'set <key> <value>' to save profile information.\n")
 
 while True:
     user = input(f"{name}: ").strip().lower()
+
+    # Save every command to history
+    add_history(user)
 
     if user == "exit":
         print(f"\n{APP_NAME}: Goodbye {name}! See you soon.")
