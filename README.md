@@ -2,7 +2,7 @@ Ultron 🤖
 
 Version
 
-v0.15
+v0.16
 
 Description
 
@@ -27,6 +27,8 @@ Completed Features
 - ✅ Advanced Timestamp Backup System
 - ✅ Restore System
 - ✅ Backup Management System
+- ✅ Export System
+- ✅ Import System
 
 Current Status
 
@@ -50,6 +52,7 @@ Version History
 - v0.13.1 - Advanced Timestamp Backup System (Timestamp Backup)
 - v0.14 - Restore System
 - v0.15 - Backup Management System
+- v0.16 - Import / Export System
 
 Backup System
 
@@ -103,6 +106,46 @@ Restore Files
 - "data/memory.txt"
 - "data/profile.txt"
 
+Export System
+
+Commands
+
+- "export memories"
+- "export profile"
+- "export all"
+
+Functions
+
+- Exports memory data
+- Exports profile data
+- Exports all available data
+- Creates the "exports/" folder automatically
+
+Export Files
+
+- "exports/memory.txt"
+- "exports/profile.txt"
+
+Import System
+
+Commands
+
+- "import memories"
+- "import profile"
+- "import all"
+
+Functions
+
+- Imports memory data
+- Imports profile data
+- Imports all exported data
+- Restores exported files back to the "data/" folder
+
+Import Files
+
+- "exports/memory.txt"
+- "exports/profile.txt"
+
 Developer
 
 Name: Aditya
@@ -125,5 +168,6 @@ Project Structure
 - modules/
 - data/
 - backup/
+- exports/
 - tests/
 - assets/

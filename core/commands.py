@@ -17,29 +17,45 @@ from core.backup import (
     backup_info
 )
 from core.restore import restore_backup
+from core.export import (
+    export_memories,
+    export_profile,
+    export_all
+)
+from core.import_data import (
+    import_memories,
+    import_profile,
+    import_all
+)
 
 
 def handle_command(user):
     if user == "help":
         print("\n========== COMMANDS ==========")
-        print("help                 - Show all commands")
-        print("about                - About Ultron")
-        print("version              - Show current version")
-        print("clear                - Clear the screen")
-        print("show memories        - Show all saved memories")
-        print("delete memory X      - Delete memory by number")
-        print("update memory X TEXT - Update memory by number")
-        print("search KEYWORD       - Search saved memories")
-        print("who am i             - Show your saved profile")
-        print("history              - Show command history")
-        print("backup               - Create backup")
-        print("backup list          - Show all backups")
-        print("backup latest        - Show latest backup")
-        print("backup count         - Show total backups")
-        print("backup delete NAME   - Delete backup")
-        print("backup info NAME     - Show backup details")
-        print("restore NAME         - Restore backup")
-        print("exit                 - Close Ultron")
+        print("help                  - Show all commands")
+        print("about                 - About Ultron")
+        print("version               - Show current version")
+        print("clear                 - Clear the screen")
+        print("show memories         - Show all saved memories")
+        print("delete memory X       - Delete memory by number")
+        print("update memory X TEXT  - Update memory by number")
+        print("search KEYWORD        - Search saved memories")
+        print("who am i              - Show your saved profile")
+        print("history               - Show command history")
+        print("backup                - Create backup")
+        print("backup list           - Show all backups")
+        print("backup latest         - Show latest backup")
+        print("backup count          - Show total backups")
+        print("backup delete NAME    - Delete backup")
+        print("backup info NAME      - Show backup details")
+        print("restore NAME          - Restore backup")
+        print("export memories       - Export memories")
+        print("export profile        - Export profile")
+        print("export all            - Export all data")
+        print("import memories       - Import memories")
+        print("import profile        - Import profile")
+        print("import all            - Import all data")
+        print("exit                  - Close Ultron")
         print("==============================\n")
         return True
 
@@ -148,6 +164,54 @@ def handle_command(user):
             print("\nUltron: Backup restored successfully.\n")
         else:
             print("\nUltron: Backup not found.\n")
+
+        return True
+
+    elif user == "export memories":
+        if export_memories():
+            print("\nUltron: Memories exported successfully.\n")
+        else:
+            print("\nUltron: Export failed.\n")
+
+        return True
+
+    elif user == "export profile":
+        if export_profile():
+            print("\nUltron: Profile exported successfully.\n")
+        else:
+            print("\nUltron: Export failed.\n")
+
+        return True
+
+    elif user == "export all":
+        if export_all():
+            print("\nUltron: All data exported successfully.\n")
+        else:
+            print("\nUltron: Export failed.\n")
+
+        return True
+
+    elif user == "import memories":
+        if import_memories():
+            print("\nUltron: Memories imported successfully.\n")
+        else:
+            print("\nUltron: Import failed.\n")
+
+        return True
+
+    elif user == "import profile":
+        if import_profile():
+            print("\nUltron: Profile imported successfully.\n")
+        else:
+            print("\nUltron: Import failed.\n")
+
+        return True
+
+    elif user == "import all":
+        if import_all():
+            print("\nUltron: All data imported successfully.\n")
+        else:
+            print("\nUltron: Import failed.\n")
 
         return True
 
