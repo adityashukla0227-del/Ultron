@@ -47,6 +47,19 @@ def get_logs():
     return logs
 
 
+def search_logs(keyword):
+    create_log_file()
+
+    results = []
+
+    with open(LOG_FILE, "r") as file:
+        for line in file:
+            if keyword.lower() in line.lower():
+                results.append(line)
+
+    return results
+
+
 def clear_logs():
     create_log_file()
 

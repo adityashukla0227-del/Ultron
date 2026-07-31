@@ -2,11 +2,13 @@ Ultron 🤖
 
 Version
 
-v0.21
+v0.22
 
 Description
 
 Ultron is my personal AI assistant project built using Python.
+
+Ultron is designed with a modular architecture focused on intelligent conversations, memory management, user profile handling, automation systems, monitoring, and activity tracking.
 
 Completed Features
 
@@ -54,13 +56,17 @@ Completed Features
 
 ✅ Enhanced Command Integration
 
-✅ Logging System
+✅ System Monitor Module
 
-✅ System Monitor
+✅ Startup Monitoring
 
-✅ Logger + Monitor Integration
+✅ Shutdown Monitoring
+
+✅ Logger System
 
 ✅ Command Activity Logging
+
+✅ Log Management System
 
 Current Status
 
@@ -108,65 +114,137 @@ v0.18 - Profile Management System & Command Enhancement
 
 v0.19 - Logging System Base Module
 
-v0.20 - System Monitor & Logger Integration
+v0.20 - Logger and Monitor Integration
 
 v0.21 - Command Activity Logging
 
-Logging System
-
-Functions
-
-- Automatically creates log file
-- Saves timestamp for every log
-- INFO logging
-- WARNING logging
-- ERROR logging
-- DEBUG logging
-- Read logs
-- Clear logs
-
-Log File
-
-- data/logs.txt
+v0.22 - Log Management System
 
 Monitor System
 
 Functions
 
-- Displays startup information
-- Displays shutdown information
-- Shows operating system details
-- Shows processor information
-- Shows Python version
-- Shows runtime status
+- Tracks Ultron startup time
+- Tracks shutdown time
+- Displays operating system information
+- Displays machine information
+- Displays processor information
+- Monitors system status
 
-Command Activity Logging
+Monitor Output
 
-Functions
+===== ULTRON MONITOR =====
+Start Time : YYYY-MM-DD HH:MM:SS
+Os : Windows
+Os_version : System Version
+Machine : Machine Info
+Processor : Processor Info
+==========================
 
-- Logs every user command
-- Logs unknown commands
-- Logs exit command
-- Integrates with monitor and logger
-- Maintains complete command history in logs
+Logger System
 
-Example Log
+Log File
 
-[2026-08-01 00:05:10] [INFO] Ultron Started
-[2026-08-01 00:05:15] [INFO] User Command : help
-[2026-08-01 00:05:20] [INFO] User Command : backup
-[2026-08-01 00:05:25] [INFO] User Command : profile show
-[2026-08-01 00:05:30] [INFO] User Command : exit
-[2026-08-01 00:05:30] [INFO] Ultron Shutdown
+data/logs.txt
+
+Log Format
+
+[DATE TIME] [LEVEL] MESSAGE
+
+Example:
+
+[2026-08-01 00:30:00] [INFO] User Command : help
+
+Log Levels
+
+- INFO
+- WARNING
+- ERROR
+- DEBUG
+
+Log Management Commands
+
+Show Logs
+
+Command:
+
+show logs
+
+Functions:
+
+- Displays all saved logs
+- Shows Ultron activity history
+
+Search Logs
+
+Command:
+
+search logs KEYWORD
+
+Functions:
+
+- Searches logs using keywords
+- Displays matching log entries
+
+Clear Logs
+
+Command:
+
+clear logs
+
+Functions:
+
+- Removes all stored logs
+- Resets log file
 
 Project Structure
 
 core/
-modules/
+
+    commands.py
+
+    conversation.py
+
+    memory.py
+
+    profile.py
+
+    history.py
+
+    backup.py
+
+    restore.py
+
+    export.py
+
+    import_data.py
+
+    settings.py
+
+    profile_manager.py
+
+    monitor.py
+
+    logger.py
+
+
 data/
+
+    memory.txt
+
+    profile.txt
+
+    settings.txt
+
+    logs.txt
+
+
 backup/
+
 exports/
+
 tests/
+
 assets/
 
 Developer
@@ -179,9 +257,10 @@ Project: Ultron AI Assistant
 
 Language: Python
 
-Development:
-AI, Automation, Software Development
+About Developer
+
+Aditya is building Ultron as a personal AI assistant focused on intelligent conversations, memory systems, automation, monitoring, and future AI capabilities.
 
 Vision
 
-To evolve Ultron into a powerful AI assistant capable of understanding users, managing tasks, logging activities, and providing intelligent support.
+To evolve Ultron into a powerful AI assistant capable of understanding users, managing tasks, automating workflows, and providing intelligent support.

@@ -47,6 +47,12 @@ from core.profile_manager import (
     reset_profile
 )
 
+from core.logger import (
+    get_logs,
+    clear_logs,
+    search_logs
+)
+
 
 def handle_command(user):
 
@@ -82,6 +88,9 @@ def handle_command(user):
         print("import memories       - Import memories")
         print("import profile        - Import profile")
         print("import all            - Import all data")
+        print("show logs             - Show all logs")
+        print("clear logs            - Clear all logs")
+        print("search logs KEYWORD   - Search logs")
         print("exit                  - Close Ultron")
         print("==============================\n")
 
@@ -89,6 +98,7 @@ def handle_command(user):
 
 
     elif user == "about":
+
         print(f"\n{APP_NAME} AI Assistant")
         print(f"Developer : {DEVELOPER}")
         print("Language  : Python")
@@ -98,12 +108,7 @@ def handle_command(user):
 
 
     elif user == "version":
-        print(f"\nCurrent Version : {VERSION}\n")
 
-        return True
-
-
-    elif user == "version":
         print(f"\nCurrent Version : {VERSION}\n")
 
         return True
@@ -185,7 +190,7 @@ def handle_command(user):
 
         return True
 
-
+    
     elif user == "profile show":
 
         profile = show_profile()
@@ -227,9 +232,11 @@ def handle_command(user):
         key = user.replace("profile delete ", "", 1).strip()
 
         if delete_profile(key):
+
             print("\nUltron: Profile data deleted successfully.\n")
 
         else:
+
             print("\nUltron: Profile key not found.\n")
 
         return True
@@ -247,9 +254,11 @@ def handle_command(user):
     elif user == "backup":
 
         if create_backup():
+
             print("\nUltron: Backup created successfully.\n")
 
         else:
+
             print("\nUltron: Backup failed.\n")
 
         return True
@@ -260,12 +269,15 @@ def handle_command(user):
         backups = list_backups()
 
         if not backups:
+
             print("\nUltron: No backups found.\n")
 
         else:
+
             print("\n===== AVAILABLE BACKUPS =====")
 
             for index, backup in enumerate(backups, start=1):
+
                 print(f"{index}. {backup}")
 
             print("=============================\n")
@@ -278,9 +290,11 @@ def handle_command(user):
         backup = latest_backup()
 
         if backup:
+
             print(f"\nLatest Backup: {backup}\n")
 
         else:
+
             print("\nUltron: No backups found.\n")
 
         return True
@@ -324,6 +338,7 @@ def handle_command(user):
             print("Files:")
 
             for file in files:
+
                 print(f"- {file}")
 
             print()
@@ -422,3 +437,66 @@ def handle_command(user):
             print("\nUltron: Import failed.\n")
 
         return True
+
+
+    elif user == "show logs":
+
+        logs = get_logs()
+
+        if not logs:
+
+            print("\nUltron: No logs found.\n")
+
+        else:
+
+            print("\n========== LOGS ==========")
+
+            for log in logs:
+
+                print(log.strip())
+
+            print("==========================\n")
+
+        return True
+
+
+    elif user == "clear logs":
+
+        clear_logs()
+
+        print("\nUltron: All logs cleared successfully.\n")
+
+        return True
+
+
+    elif user.startswith("search logs "):
+
+        keyword = user.replace("search logs ", "", 1).strip()
+
+        logs = search_logs(keyword)
+
+        if not logs:
+
+            print("\nUltron: No matching logs found.\n")
+
+        else:
+
+            print("\n===== SEARCH RESULTS =====")
+
+            for log in logs:
+
+                print(log.strip())
+
+            print("==========================\n")
+
+        return True
+
+    elif user == "exit":
+
+        return False
+
+
+    else:
+
+        return False
+    
