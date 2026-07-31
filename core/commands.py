@@ -9,6 +9,7 @@ from core.memory import (
 from core.profile import get_all_profiles
 from core.history import get_history
 from core.backup import create_backup
+from core.restore import restore_backup
 
 
 def handle_command(user):
@@ -25,6 +26,7 @@ def handle_command(user):
         print("who am i             - Show your saved profile")
         print("history              - Show command history")
         print("backup               - Create backup")
+        print("restore NAME         - Restore backup")
         print("exit                 - Close Ultron")
         print("==============================\n")
         return True
@@ -71,6 +73,16 @@ def handle_command(user):
             print("\nUltron: Backup created successfully.\n")
         else:
             print("\nUltron: Backup failed.\n")
+
+        return True
+
+    elif user.startswith("restore "):
+        backup_name = user.replace("restore ", "", 1).strip()
+
+        if restore_backup(backup_name):
+            print("\nUltron: Backup restored successfully.\n")
+        else:
+            print("\nUltron: Backup not found.\n")
 
         return True
 

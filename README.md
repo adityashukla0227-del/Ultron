@@ -2,7 +2,7 @@ Ultron 🤖
 
 Version
 
-v0.13.1
+v0.14
 
 Description
 
@@ -40,6 +40,7 @@ Completed Features
 
 ✅ Advanced Timestamp Backup System
 
+✅ Restore System
 
 Current Status
 
@@ -75,6 +76,7 @@ v0.13 - Backup System
 
 v0.13.1 - Advanced Backup System (Timestamp Backup)
 
+v0.14 - Restore System
 
 Backup System
 
@@ -106,6 +108,28 @@ backup/
 └── YYYY-MM-DD_HH-MM-SS/
 ├── memory.txt
 └── profile.txt
+
+Restore System
+
+Command:
+
+restore BACKUP_NAME
+
+Function:
+
+Restores previous backup data
+
+Recovers memory and profile files
+
+Loads data from selected timestamp backup
+
+
+Restore Files:
+
+data/memory.txt
+
+data/profile.txt
+
 
 Developer
 
