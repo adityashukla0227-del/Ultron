@@ -59,6 +59,11 @@ from core.system_health import (
     system_summary
 )
 
+from core.config_validator import (
+    validate_config,
+    config_summary
+)
+
 
 def handle_command(user):
 
@@ -100,6 +105,8 @@ def handle_command(user):
         print("search logs KEYWORD   - Search logs")
         print("system health         - Check system health")
         print("system summary        - Show system summary")
+        print("config check          - Validate configuration")
+        print("config summary        - Show configuration details")
         print("exit                  - Close Ultron")
         print("==============================\n")
 
@@ -120,8 +127,7 @@ def handle_command(user):
 
         print(f"\nCurrent Version : {VERSION}\n")
 
-        return True
-
+        return true
 
     elif user == "who am i":
 
@@ -139,6 +145,7 @@ def handle_command(user):
             print("========================\n")
 
         return True
+
 
     elif user == "history":
 
@@ -259,7 +266,6 @@ def handle_command(user):
 
         return True
 
-
     elif user == "backup":
 
         if create_backup():
@@ -286,6 +292,7 @@ def handle_command(user):
             print("\n===== AVAILABLE BACKUPS =====")
 
             for index, backup in enumerate(backups, start=1):
+
                 print(f"{index}. {backup}")
 
             print("=============================\n")
@@ -306,6 +313,7 @@ def handle_command(user):
             print("\nUltron: No backups found.\n")
 
         return True
+
 
     elif user == "backup count":
 
@@ -445,7 +453,6 @@ def handle_command(user):
 
         return True
 
-
     elif user == "show logs":
 
         logs = get_logs()
@@ -465,6 +472,7 @@ def handle_command(user):
             print("==========================\n")
 
         return True
+
 
     elif user == "clear logs":
 
@@ -522,6 +530,38 @@ def handle_command(user):
         for key, value in summary.items():
 
             print(f"{key.capitalize()} : {value}")
+
+        print("==========================\n")
+
+        return True
+
+
+    elif user == "config check":
+
+        checks = validate_config()
+
+        print("\n===== CONFIG VALIDATOR =====")
+
+        for key, value in checks.items():
+
+            status = "OK" if value else "FAILED"
+
+            print(f"{key} : {status}")
+
+        print("============================\n")
+
+        return True
+
+
+    elif user == "config summary":
+
+        summary = config_summary()
+
+        print("\n===== CONFIG SUMMARY =====")
+
+        for key, value in summary.items():
+
+            print(f"{key} : {value}")
 
         print("==========================\n")
 

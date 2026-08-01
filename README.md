@@ -2,13 +2,13 @@
 
 ## Version
 
-v0.23
+v0.24
 
 ## Description
 
 Ultron is my personal AI assistant project built using Python.
 
-Ultron is designed with a modular architecture focused on intelligent conversations, memory management, user profile handling, automation systems, monitoring, system diagnostics, and activity tracking.
+Ultron is designed with a modular architecture focused on intelligent conversations, memory management, user profile handling, automation systems, monitoring, system diagnostics, configuration validation, and activity tracking.
 
 ---
 
@@ -72,11 +72,21 @@ Ultron is designed with a modular architecture focused on intelligent conversati
 
 ✅ System Health Check
 
+✅ Configuration Validator System
+
 ---
 
 # Current Status
 
 Working Successfully ✅
+
+Current Version
+
+v0.24
+
+Current Development Phase
+
+Core Stability & Configuration Validation
 
 ---
 
@@ -130,6 +140,8 @@ v0.22 - Log Management System
 
 v0.23 - System Health Check
 
+v0.24 - Configuration Validator System
+
 ---
 
 # Monitor System
@@ -173,7 +185,7 @@ data/logs.txt
 [DATE TIME] [LEVEL] MESSAGE
 ```
 
-Example:
+Example
 
 ```
 [2026-08-01 00:30:00] [INFO] User Command : help
@@ -192,13 +204,13 @@ Example:
 
 ## Show Logs
 
-Command:
+Command
 
 ```
 show logs
 ```
 
-Functions:
+Functions
 
 * Displays all saved logs
 * Shows Ultron activity history
@@ -207,13 +219,13 @@ Functions:
 
 ## Search Logs
 
-Command:
+Command
 
 ```
 search logs KEYWORD
 ```
 
-Functions:
+Functions
 
 * Searches logs using keywords
 * Displays matching log entries
@@ -222,13 +234,13 @@ Functions:
 
 ## Clear Logs
 
-Command:
+Command
 
 ```
 clear logs
 ```
 
-Functions:
+Functions
 
 * Removes all stored logs
 * Resets log file
@@ -241,13 +253,13 @@ Functions:
 
 ### System Health
 
-Command:
+Command
 
 ```
 system health
 ```
 
-Functions:
+Functions
 
 * Checks required Ultron files
 * Checks important folders
@@ -257,13 +269,13 @@ Functions:
 
 ### System Summary
 
-Command:
+Command
 
 ```
 system summary
 ```
 
-Functions:
+Functions
 
 * Displays operating system information
 * Displays Python version
@@ -273,50 +285,145 @@ Functions:
 
 ---
 
+# Configuration Validator System
+
+## Commands
+
+### Configuration Check
+
+Command
+
+```
+config check
+```
+
+Functions
+
+* Validates Ultron configuration
+* Checks required project files
+* Checks required folders
+* Checks configuration file availability
+
+---
+
+### Configuration Summary
+
+Command
+
+```
+config summary
+```
+
+Functions
+
+* Displays Ultron application details
+* Shows application name
+* Shows current version
+* Shows developer information
+* Shows project status
+
+---
+
+# Export System
+
+## Commands
+
+```
+export memories
+
+export profile
+
+export all
+```
+
+Functions
+
+* Export memories
+* Export profile
+* Export complete Ultron data
+
+---
+
+# Import System
+
+## Commands
+
+```
+import memories
+
+import profile
+
+import all
+```
+
+Functions
+
+* Import memories
+* Import profile
+* Restore complete exported data
+
+---
+
+# Backup System
+
+## Commands
+
+```
+backup
+
+backup list
+
+backup latest
+
+backup count
+
+backup info NAME
+
+backup delete NAME
+
+restore NAME
+```
+
+Functions
+
+* Create backups
+* View available backups
+* View latest backup
+* Count backups
+* View backup details
+* Delete backups
+* Restore backups
+
+---
+
 # Project Structure
 
 ```
 core/
 
     commands.py
-
     conversation.py
-
     memory.py
-
     profile.py
-
     history.py
-
     backup.py
-
     restore.py
-
     export.py
-
     import_data.py
-
     settings.py
-
     profile_manager.py
-
     monitor.py
-
     logger.py
-
     system_health.py
-
+    config_validator.py
+    config.py
 
 data/
 
     memory.txt
-
     profile.txt
-
     settings.txt
-
     logs.txt
-
 
 backup/
 
@@ -343,12 +450,12 @@ Language: Python
 
 # About Developer
 
-Aditya is building Ultron as a personal AI assistant focused on intelligent conversations, memory systems, automation, monitoring, system diagnostics, and future AI capabilities.
+Aditya is building Ultron as a personal AI assistant focused on intelligent conversations, memory systems, automation, monitoring, system diagnostics, configuration validation, and future AI capabilities.
 
 ---
 
 # Vision
 
-To evolve Ultron into a powerful AI assistant capable of understanding users, managing tasks, automating workflows, protecting user data, and providing intelligent support.
+To evolve Ultron into a powerful AI assistant capable of understanding users, managing tasks, automating workflows, protecting user data, controlling systems, and providing intelligent support.
 
-The goal is to continuously improve Ultron through multiple development phases until reaching a stable v1.0 release.
+The goal is to continuously improve Ultron through multiple development phases until reaching a stable **v1.0** release.
