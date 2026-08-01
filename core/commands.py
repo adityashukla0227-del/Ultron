@@ -1,4 +1,5 @@
 import os
+
 from core.config import APP_NAME, VERSION, DEVELOPER, STATUS
 
 from core.memory import (
@@ -53,10 +54,16 @@ from core.logger import (
     search_logs
 )
 
+from core.system_health import (
+    system_health,
+    system_summary
+)
+
 
 def handle_command(user):
 
     if user == "help":
+
         print("\n========== COMMANDS ==========")
         print("help                  - Show all commands")
         print("about                 - About Ultron")
@@ -91,6 +98,8 @@ def handle_command(user):
         print("show logs             - Show all logs")
         print("clear logs            - Clear all logs")
         print("search logs KEYWORD   - Search logs")
+        print("system health         - Check system health")
+        print("system summary        - Show system summary")
         print("exit                  - Close Ultron")
         print("==============================\n")
 
@@ -130,7 +139,6 @@ def handle_command(user):
             print("========================\n")
 
         return True
-
 
     elif user == "history":
 
@@ -190,7 +198,7 @@ def handle_command(user):
 
         return True
 
-    
+
     elif user == "profile show":
 
         profile = show_profile()
@@ -201,6 +209,7 @@ def handle_command(user):
             print("No profile data found.")
 
         else:
+
             for key, value in profile.items():
                 print(f"{key} : {value}")
 
@@ -277,7 +286,6 @@ def handle_command(user):
             print("\n===== AVAILABLE BACKUPS =====")
 
             for index, backup in enumerate(backups, start=1):
-
                 print(f"{index}. {backup}")
 
             print("=============================\n")
@@ -298,7 +306,6 @@ def handle_command(user):
             print("\nUltron: No backups found.\n")
 
         return True
-
 
     elif user == "backup count":
 
@@ -459,7 +466,6 @@ def handle_command(user):
 
         return True
 
-
     elif user == "clear logs":
 
         clear_logs()
@@ -491,6 +497,37 @@ def handle_command(user):
 
         return True
 
+
+    elif user == "system health":
+
+        health = system_health()
+
+        print("\n===== SYSTEM HEALTH =====")
+
+        for key, value in health.items():
+
+            print(f"{key.capitalize()} : {value}")
+
+        print("=========================\n")
+
+        return True
+
+
+    elif user == "system summary":
+
+        summary = system_summary()
+
+        print("\n===== SYSTEM SUMMARY =====")
+
+        for key, value in summary.items():
+
+            print(f"{key.capitalize()} : {value}")
+
+        print("==========================\n")
+
+        return True
+
+
     elif user == "exit":
 
         return False
@@ -499,4 +536,3 @@ def handle_command(user):
     else:
 
         return False
-    
