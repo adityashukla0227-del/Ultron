@@ -1,3 +1,5 @@
+from difflib import get_close_matches
+
 COMMANDS = [
     "help",
     "about",
@@ -53,21 +55,30 @@ COMMANDS = [
     "exit"
 ]
 
-
 def suggest_command(keyword):
-    """
-    Returns all commands that contain the given keyword.
-    """
+  """
+  Returns closest matching commands.
+  """
 
-    keyword = keyword.strip().lower()
+  keyword = keyword.strip().lower()
 
-    if not keyword:
-        return []
+  if not keyword:
+     return []
 
-    matches = []
+  matches = []
 
-    for command in COMMANDS:
-        if keyword in command.lower():
-            matches.append(command)
+  for command in COMMANDS:
+    if keyword in command.lower():
+       matches.append(command)
 
-    return matches
+  if matches:
+     return matches
+
+  close = get_close_matches(
+    keyword,
+    COMMANDS,
+    n=3,
+    cutoff=0.5
+  )
+
+  return close
