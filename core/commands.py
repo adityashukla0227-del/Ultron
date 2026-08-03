@@ -64,6 +64,9 @@ from core.config_validator import (
     config_summary
 )
 
+# NEW IMPORT (v0.24)
+from core.command_suggestions import suggest_command
+
 
 def handle_command(user):
 
@@ -107,6 +110,7 @@ def handle_command(user):
         print("system summary        - Show system summary")
         print("config check          - Validate configuration")
         print("config summary        - Show configuration details")
+        print("suggest COMMAND       - Suggest matching commands")
         print("exit                  - Close Ultron")
         print("==============================\n")
 
@@ -127,7 +131,8 @@ def handle_command(user):
 
         print(f"\nCurrent Version : {VERSION}\n")
 
-        return true
+        return True
+
 
     elif user == "who am i":
 
@@ -163,7 +168,6 @@ def handle_command(user):
             print("===========================\n")
 
         return True
-
 
     elif user == "show settings":
 
@@ -266,6 +270,7 @@ def handle_command(user):
 
         return True
 
+
     elif user == "backup":
 
         if create_backup():
@@ -298,7 +303,6 @@ def handle_command(user):
             print("=============================\n")
 
         return True
-
 
     elif user == "backup latest":
 
@@ -414,7 +418,6 @@ def handle_command(user):
 
         return True
 
-
     elif user == "import memories":
 
         if import_memories():
@@ -452,6 +455,7 @@ def handle_command(user):
             print("\nUltron: Import failed.\n")
 
         return True
+
 
     elif user == "show logs":
 
@@ -535,7 +539,6 @@ def handle_command(user):
 
         return True
 
-
     elif user == "config check":
 
         checks = validate_config()
@@ -567,12 +570,93 @@ def handle_command(user):
 
         return True
 
+    elif user.startswith("suggest "):
+
+        keyword = user.replace("suggest ", "", 1).strip()
+
+        suggestions = suggest_command(keyword)
+
+        if not suggestions:
+
+            print("\nUltron: No matching commands found.\n")
+
+        else:
+
+            print("\n===== MATCHING COMMANDS =====")
+
+            for command in suggestions:
+
+                print(command)
+
+            print("=============================\n")
+
+        return True
 
     elif user == "exit":
 
         return False
 
-
     else:
 
-        return False
+        print("\nUltron: Unknown command.\n")
+        print("Type:")
+        print("help")
+        print("or")
+        print("suggest <keyword>\n")
+
+        return True
+
+    COMMANDS = [
+    "help",
+    "about",
+    "version",
+    "clear",
+
+    "show memories",
+    "delete memory",
+    "update memory",
+    "search",
+
+    "who am i",
+    "history",
+
+    "show settings",
+    "set",
+    "reset settings",
+
+    "profile show",
+    "profile set",
+    "profile delete",
+    "profile reset",
+
+    "backup",
+    "backup list",
+    "backup latest",
+    "backup count",
+    "backup delete",
+    "backup info",
+
+    "restore",
+
+    "export memories",
+    "export profile",
+    "export all",
+
+    "import memories",
+    "import profile",
+    "import all",
+
+    "show logs",
+    "clear logs",
+    "search logs",
+
+    "system health",
+    "system summary",
+
+    "config check",
+    "config summary",
+
+    "suggest",
+
+    "exit"
+]

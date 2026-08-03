@@ -1,461 +1,247 @@
-# Ultron 🤖
+# 🤖 Ultron AI Assistant v0.24
 
-## Version
-
-v0.24
-
-## Description
-
-Ultron is my personal AI assistant project built using Python.
-
-Ultron is designed with a modular architecture focused on intelligent conversations, memory management, user profile handling, automation systems, monitoring, system diagnostics, configuration validation, and activity tracking.
+Ultron AI is a personal AI assistant built completely in Python.  
+The goal of this project is to create an intelligent assistant capable of remembering information, managing user profiles, handling commands, and eventually supporting voice control, automation, and advanced AI capabilities.
 
 ---
 
-# Completed Features
+# 🚀 Version
 
-✅ Conversation Engine
-
-✅ Command System
-
-✅ Modular Architecture
-
-✅ Memory Save
-
-✅ Memory Recall
-
-✅ Smart User Profile Memory
-
-✅ Memory Viewer
-
-✅ Delete Memory
-
-✅ Update Memory
-
-✅ Search Memory
-
-✅ User Profile Viewer
-
-✅ Dynamic Profile Update
-
-✅ Command History
-
-✅ Backup System
-
-✅ Advanced Timestamp Backup System
-
-✅ Restore System
-
-✅ Backup Management System
-
-✅ Export System
-
-✅ Import System
-
-✅ Settings Management System
-
-✅ Profile Management System
-
-✅ Enhanced Command Integration
-
-✅ System Monitor Module
-
-✅ Startup Monitoring
-
-✅ Shutdown Monitoring
-
-✅ Logger System
-
-✅ Command Activity Logging
-
-✅ Log Management System
-
-✅ System Health Check
-
-✅ Configuration Validator System
+**Current Version:** v0.24
 
 ---
 
-# Current Status
+# ✨ What's New in v0.24
 
-Working Successfully ✅
+### 🆕 Command Suggestions System
 
-Current Version
+Ultron can now suggest matching commands based on a keyword.
 
-v0.24
+Example:
 
-Current Development Phase
-
-Core Stability & Configuration Validation
-
----
-
-# Version History
-
-v0.1 - Project Setup
-
-v0.2 - Conversation Engine
-
-v0.3 - Command System
-
-v0.4 - Modular Architecture
-
-v0.5 - Smart User Profile Memory
-
-v0.6 - Memory Viewer
-
-v0.7 - Delete Memory
-
-v0.8 - Update Memory
-
-v0.9 - Search Memory
-
-v0.10 - User Profile Viewer
-
-v0.11 - Dynamic Profile Update
-
-v0.12 - Command History
-
-v0.13 - Backup System
-
-v0.13.1 - Advanced Timestamp Backup System
-
-v0.14 - Restore System
-
-v0.15 - Backup Management System
-
-v0.16 - Import / Export System
-
-v0.17 - Settings Management System
-
-v0.18 - Profile Management System & Command Enhancement
-
-v0.19 - Logging System Base Module
-
-v0.20 - Logger and Monitor Integration
-
-v0.21 - Command Activity Logging
-
-v0.22 - Log Management System
-
-v0.23 - System Health Check
-
-v0.24 - Configuration Validator System
-
----
-
-# Monitor System
-
-## Functions
-
-* Tracks Ultron startup time
-* Tracks shutdown time
-* Displays operating system information
-* Displays machine information
-* Displays processor information
-* Monitors system status
-
-## Monitor Output
-
-```
-===== ULTRON MONITOR =====
-
-Start Time : YYYY-MM-DD HH:MM:SS
-OS : Windows
-OS Version : System Version
-Machine : Machine Info
-Processor : Processor Info
-
-==========================
+```text
+> suggest backup
 ```
 
----
+Output:
 
-# Logger System
-
-## Log File
-
-```
-data/logs.txt
-```
-
-## Log Format
-
-```
-[DATE TIME] [LEVEL] MESSAGE
-```
-
-Example
-
-```
-[2026-08-01 00:30:00] [INFO] User Command : help
-```
-
-## Log Levels
-
-* INFO
-* WARNING
-* ERROR
-* DEBUG
-
----
-
-# Log Management Commands
-
-## Show Logs
-
-Command
-
-```
-show logs
-```
-
-Functions
-
-* Displays all saved logs
-* Shows Ultron activity history
-
----
-
-## Search Logs
-
-Command
-
-```
-search logs KEYWORD
-```
-
-Functions
-
-* Searches logs using keywords
-* Displays matching log entries
-
----
-
-## Clear Logs
-
-Command
-
-```
-clear logs
-```
-
-Functions
-
-* Removes all stored logs
-* Resets log file
-
----
-
-# System Health Check
-
-## Commands
-
-### System Health
-
-Command
-
-```
-system health
-```
-
-Functions
-
-* Checks required Ultron files
-* Checks important folders
-* Validates project components
-
----
-
-### System Summary
-
-Command
-
-```
-system summary
-```
-
-Functions
-
-* Displays operating system information
-* Displays Python version
-* Displays platform information
-* Displays current system time
-* Shows Ultron project location
-
----
-
-# Configuration Validator System
-
-## Commands
-
-### Configuration Check
-
-Command
-
-```
-config check
-```
-
-Functions
-
-* Validates Ultron configuration
-* Checks required project files
-* Checks required folders
-* Checks configuration file availability
-
----
-
-### Configuration Summary
-
-Command
-
-```
-config summary
-```
-
-Functions
-
-* Displays Ultron application details
-* Shows application name
-* Shows current version
-* Shows developer information
-* Shows project status
-
----
-
-# Export System
-
-## Commands
-
-```
-export memories
-
-export profile
-
-export all
-```
-
-Functions
-
-* Export memories
-* Export profile
-* Export complete Ultron data
-
----
-
-# Import System
-
-## Commands
-
-```
-import memories
-
-import profile
-
-import all
-```
-
-Functions
-
-* Import memories
-* Import profile
-* Restore complete exported data
-
----
-
-# Backup System
-
-## Commands
-
-```
+```text
 backup
-
 backup list
-
 backup latest
-
 backup count
-
-backup info NAME
-
-backup delete NAME
-
-restore NAME
+backup delete
+backup info
 ```
 
-Functions
+Example:
 
-* Create backups
-* View available backups
-* View latest backup
-* Count backups
-* View backup details
-* Delete backups
-* Restore backups
-
----
-
-# Project Structure
-
+```text
+> suggest profile
 ```
-core/
 
-    commands.py
-    conversation.py
-    memory.py
-    profile.py
-    history.py
-    backup.py
-    restore.py
-    export.py
-    import_data.py
-    settings.py
-    profile_manager.py
-    monitor.py
-    logger.py
-    system_health.py
-    config_validator.py
-    config.py
+Output:
 
-data/
-
-    memory.txt
-    profile.txt
-    settings.txt
-    logs.txt
-
-backup/
-
-exports/
-
-tests/
-
-assets/
+```text
+profile show
+profile set
+profile delete
+profile reset
 ```
 
 ---
 
-# Developer
+### 📖 Updated Help Menu
 
-Name: Aditya
+The help menu now includes the new command:
 
-Role: AI Developer & Creator
+```text
+suggest COMMAND
+```
 
-Project: Ultron AI Assistant
-
-Language: Python
-
----
-
-# About Developer
-
-Aditya is building Ultron as a personal AI assistant focused on intelligent conversations, memory systems, automation, monitoring, system diagnostics, configuration validation, and future AI capabilities.
+which helps users quickly discover available commands.
 
 ---
 
-# Vision
+### ❌ Improved Unknown Command Handling
 
-To evolve Ultron into a powerful AI assistant capable of understanding users, managing tasks, automating workflows, protecting user data, controlling systems, and providing intelligent support.
+Instead of simply failing, Ultron now displays:
 
-The goal is to continuously improve Ultron through multiple development phases until reaching a stable **v1.0** release.
+```text
+Ultron: Unknown command.
+
+Type:
+help
+
+or
+
+suggest <keyword>
+```
+
+making the assistant easier to use.
+
+---
+
+# ✅ Features
+
+- Conversation Engine
+- Memory System
+- Smart User Profile
+- Command History
+- Settings Manager
+- Profile Manager
+- Backup System
+- Restore System
+- Export System
+- Import System
+- Logger
+- System Health Checker
+- Configuration Validator
+- Command Suggestions System
+
+---
+
+# 📂 Project Structure
+
+```
+Ultron/
+│
+├── core/
+│   ├── memory.py
+│   ├── profile.py
+│   ├── history.py
+│   ├── backup.py
+│   ├── restore.py
+│   ├── export.py
+│   ├── import_data.py
+│   ├── settings.py
+│   ├── profile_manager.py
+│   ├── logger.py
+│   ├── system_health.py
+│   ├── config_validator.py
+│   ├── command_suggestions.py
+│   └── commands.py
+│
+├── data/
+├── backups/
+├── exports/
+├── imports/
+├── logs/
+├── main.py
+└── README.md
+```
+
+---
+
+# 🛠 Available Commands
+
+```
+help
+about
+version
+
+show memories
+delete memory
+update memory
+search
+
+who am i
+history
+
+show settings
+set
+reset settings
+
+profile show
+profile set
+profile delete
+profile reset
+
+backup
+backup list
+backup latest
+backup count
+backup delete
+backup info
+
+restore
+
+export memories
+export profile
+export all
+
+import memories
+import profile
+import all
+
+show logs
+clear logs
+search logs
+
+system health
+system summary
+
+config check
+config summary
+
+suggest COMMAND
+
+exit
+```
+
+---
+
+# 🎯 Roadmap
+
+## ✅ Completed
+
+- Project Setup
+- Conversation Engine
+- Memory System
+- Smart Profile Memory
+- Backup System
+- Import / Export
+- Logger
+- System Health
+- Config Validator
+- Command Suggestions System
+
+---
+
+## 🚧 Coming Soon
+
+### v0.25
+
+- AI Natural Language Commands
+
+### v0.26
+
+- Command Aliases
+
+### v0.27
+
+- Smart Help Categories
+
+### v0.28
+
+- Command Statistics
+
+### v0.29
+
+- Recent Commands
+
+### v0.30
+
+- Repeat Last Command
+
+---
+
+# 👨‍💻 Developer
+
+**Aditya**
+
+---
+
+# 📄 License
+
+This project is developed for learning, experimentation, and future AI assistant development.
