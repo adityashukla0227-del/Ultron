@@ -4,6 +4,8 @@ from core.config import APP_NAME, VERSION, DEVELOPER, STATUS
 
 from core.commands_system import handle_system_commands
 
+from core.commands_history import handle_history_commands
+
 from core.memory import (
     get_memory,
     delete_memory,
@@ -77,6 +79,9 @@ def handle_command(user):
     if handle_system_commands(user):
         return True
 
+    elif handle_history_commands(user):
+        return True
+
     elif user == "who am i":
 
         profile = get_all_profiles()
@@ -94,23 +99,6 @@ def handle_command(user):
 
         return True
 
-
-    elif user == "history":
-
-        history = get_history()
-
-        if not history:
-            print("\nUltron: No command history found.\n")
-
-        else:
-            print("\n===== COMMAND HISTORY =====")
-
-            for index, command in enumerate(history, start=1):
-                print(f"{index}. {command}")
-
-            print("===========================\n")
-
-        return True
 
     elif user == "show settings":
 
