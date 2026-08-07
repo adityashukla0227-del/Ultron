@@ -1,4 +1,4 @@
 theme=dark
-username=Aditya
+username=User
 assistant=Ultron
 autosave=true
