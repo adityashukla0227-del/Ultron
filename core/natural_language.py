@@ -70,3 +70,71 @@ def translate_command(user):
     user = user.strip().lower()
 
     return COMMAND_ALIASES.get(user)
+
+def parse_command(user):
+    user = user.strip().lower()
+
+    # Backup Info
+    prefix = "show info of backup "
+
+    if user.startswith(prefix):
+        name = user[len(prefix):].strip()
+
+        if name:
+            return f"backup info {name}"
+
+    # Backup Delete
+    prefix = "delete backup "
+
+    if user.startswith(prefix):
+        name = user[len(prefix):].strip()
+
+        if name:
+            return f"backup delete {name}"
+
+    # Profile Set
+    prefix = "set my "
+
+    if user.startswith(prefix) and " to " in user:
+        remaining = user[len(prefix):].strip()
+
+        key, value = remaining.split(" to ", 1)
+
+        key = key.strip()
+        value = value.strip()
+
+        if key and value:
+            return f"profile set {key} {value}"
+
+    # Profile Delete
+    prefix = "delete my "
+
+    if user.startswith(prefix):
+        key = user[len(prefix):].strip()
+
+        if key:
+            return f"profile delete {key}"
+
+    prefix = "remove my "
+
+    if user.startswith(prefix):
+        key = user[len(prefix):].strip()
+
+        if key:
+            return f"profile delete {key}"
+
+    # Profile Change
+    prefix = "change my "
+
+    if user.startswith(prefix) and " to " in user:
+        remaining = user[len(prefix):].strip()
+
+        key, value = remaining.split(" to ", 1)
+
+        key = key.strip()
+        value = value.strip()
+
+        if key and value:
+            return f"profile set {key} {value}"
+
+    return None

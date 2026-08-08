@@ -36,6 +36,8 @@ from core.command_suggestions import suggest_command
 
 from core.commands_memory import handle_memory_commands
 
+from core.natural_language import translate_command, parse_command
+
 COMMANDS = [
     "help",
     "about",
@@ -92,6 +94,24 @@ COMMANDS = [
 ]
 
 def handle_command(user):
+
+    translated = translate_command(user)
+
+    if translated:
+        user = translated
+    else:
+        parsed = parse_command(user)
+
+        if parsed:
+            user = parsed
+
+    if user == "set my" or (user.startswith("set my ") and " to " not in user):
+        print("\nUltron: Usage -> set my KEY to VALUE\n")
+        return True
+
+    if user == "change my" or (user.startswith("change my ") and " to " not in user):
+        print("\nUltron: Usage -> change my KEY to VALUE\n")
+        return True
 
     if handle_system_commands(user):
         return True
