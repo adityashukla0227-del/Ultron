@@ -5,6 +5,7 @@ from core.memory import save_memory
 from core.profile import save_profile
 from core.history import add_history
 from core.logger import log_info
+from core.natural_language import translate_command
 
 from core.monitor import (
     monitor_start,
@@ -31,6 +32,11 @@ while True:
     raw_user = input(f"{name}: ").strip()
 
     user = raw_user.lower()
+
+    natural_command = translate_command(user)
+
+    if natural_command:
+        user = natural_command
 
     # Save every command to history
     add_history(user)
@@ -64,7 +70,7 @@ while True:
 
         print(f"{APP_NAME}: Okay! I'll remember that.")
 
-    elif handle_command(raw_user):
+    elif handle_command(user):
 
         continue
 

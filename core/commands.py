@@ -34,6 +34,8 @@ from core.commands_suggest import handle_suggest_commands
 
 from core.command_suggestions import suggest_command
 
+from core.commands_memory import handle_memory_commands
+
 COMMANDS = [
     "help",
     "about",
@@ -134,6 +136,9 @@ def handle_command(user):
         return True
 
     elif handle_suggest_commands(user):
+        return True
+
+    elif handle_memory_commands(user):
         return True
 
     else:
