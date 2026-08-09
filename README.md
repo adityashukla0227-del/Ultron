@@ -1,348 +1,419 @@
-🤖 ULTRON
+Ultron
 
-«A modular Python-based personal AI assistant with memory, profile management, backups, settings, history, logging, system tools, import/export, command suggestions, and natural-language command parsing.»
+Ultron is a modular command-line personal AI assistant built with Python.
 
----
-
-📌 Project Information
-
-Information| Details
-Project| Ultron
-Version| v0.26
-Developer| Aditya
-Status| Under Development
-Language| Python
-Project Type| Personal AI Assistant
+It is designed with a modular architecture covering command handling, memories, profiles, settings, backups, import/export, history, logging, system diagnostics, command suggestions, and natural-language command parsing.
 
 ---
 
-🚀 About Ultron
+Current Version
 
-Ultron is a modular personal AI assistant built with Python.
-
-The project is designed to provide a structured command-line assistant with persistent memory, profile management, backup management, settings, history, logging, system tools, data import/export, command suggestions, and natural-language command parsing.
-
-Ultron is being developed step-by-step with a focus on modular architecture, reliability, maintainability, and future AI capabilities.
+Version: v0.27
+Status: Under Development
+Developer: Aditya
 
 ---
 
-✨ Features
+v0.27 — Natural-language Command Layer
 
-🧠 Memory System
+Ultron v0.27 expands the natural-language layer across the major command systems.
 
-- Store memories
-- Show memories
-- Update memories
-- Delete memories
-- Search memories
-- Export memories
-- Import memories
+Users can interact with Ultron using natural phrases instead of remembering exact command syntax.
 
-Examples
+Feature Status
 
-show my memories
-show memories
-search <keyword>
+Feature #1  — Smart Help                    ✅
+Feature #2  — Natural-language About         ✅
+Feature #3  — Natural-language Version       ✅
+Feature #4  — Natural-language Clear         ✅
+Feature #5  — Natural-language Exit          ✅
+Feature #6  — Natural-language History       ✅
+Feature #7  — Natural-language Settings      ✅
+Feature #8  — Natural-language Memories      ✅
+Feature #9  — Natural-language Backup        ✅
+Feature #10 — Natural-language Profile       ✅
+Feature #11 — Natural-language Export        ✅
+Feature #12 — Natural-language Import        ✅
+Feature #13 — Natural-language Logs          ✅
+Feature #14 — Natural-language System Health ✅
+Feature #15 — Natural-language System Summary ✅
 
----
-
-👤 Profile Management
-
-Ultron supports complete profile management.
-
-Features
-
-- Show profile
-- Set profile information
-- Change profile information
-- Delete profile information
-- Remove profile information
-- Reset profile
-
-Examples
-
-show my profile
-set my city to Lucknow
-change my city to Kanpur
-delete my city
-remove my city
-reset my profile
+15/15 Features Complete
+Manual Testing: PASS
+Regression Testing: PASS
 
 ---
 
-💾 Backup System
+Natural-language Commands
 
-Ultron includes a backup management system.
+Help
 
-Features
+what can you do
+what commands do you have
+show me available commands
 
-- Create backup
-- List backups
-- Show latest backup
-- Count backups
-- Delete backup
-- Show backup information
-- Display files inside a backup
+→ help
 
-Examples
+About
 
-create a backup
-list my backups
-show my latest backup
-how many backups
-show info of backup BACKUP_NAME
-delete backup BACKUP_NAME
+tell me about yourself
+who are you
+what are you
 
----
+→ about
 
-⚙️ Settings
+Version
 
-Ultron provides settings management.
+what version are you
+which version are you running
+show me your version
 
-Features
+→ version
 
-- Show settings
-- Update settings
-- Reset settings
+Clear
 
-Examples
+clear my screen
+clear the screen
+clean the screen
 
-show my settings
-set city Lucknow
-reset my settings
+→ clear
 
----
+Exit
 
-📝 History
+quit
+close ultron
+shut down
+goodbye
 
-Ultron maintains command history.
+→ exit
 
-Examples
+History
 
 show my history
 show history
+show my command history
+show previous commands
+show what i did
 
----
+→ history
 
-📋 Logging System
+Settings
 
-Ultron maintains application logs for important events and user commands.
+show my settings
+display my settings
+what are my settings
+show my current settings
 
-Features
+→ show settings
 
-- User command logging
-- Startup logging
-- Shutdown logging
-- Log viewing
-- Log clearing
-- Log searching
-- Log tools
+Memories
 
-Examples
+show my memories
+show memories
+what do you remember
+what do you remember about me
+show what you remember
+tell me what you remember
 
-show my logs
-clear my logs
-search logs
+→ show memories
 
-Logs are stored inside:
+Backup
 
-data/logs.txt
+create a backup
+make a backup
+take a backup
+create backup
+make backup
+save a backup
 
----
+→ backup
 
-🩺 System Health
+list my backups
+show my backups
+list all my backups
+what backups do i have
 
-Ultron provides basic system-health and system-status information.
+→ backup list
 
-Examples
+show latest backup
+show my latest backup
+what is my latest backup
 
-check system health
-show system health
-show system summary
+→ backup latest
 
----
+how many backups
+show backup count
+how many backups do i have
 
-🔧 Configuration
+→ backup count
 
-Ultron provides configuration inspection commands.
+Profile
 
-Examples
+show my profile
+display my profile
+what is my profile
+tell me about my profile
+show my personal information
+show my personal info
 
-check config
-check my config
-show config
-show my config
+→ profile show
 
-Example output:
+reset my profile
 
-===== CONFIGURATION =====
-APP NAME : Ultron
-VERSION  : v0.26
-DEVELOPER: Aditya
-STATUS   : Under Development
-=========================
-
----
-
-📦 Import / Export
-
-Ultron supports importing and exporting user data.
+→ profile reset
 
 Export
 
 export my memories
+export memories
+save my memories
+download my memories
+
+→ export memories
+
 export my profile
+export profile
+save my profile
+download my profile
+
+→ export profile
+
 export all my data
+export all data
+export everything
+save all my data
+
+→ export all
 
 Import
 
 import my memories
+import memories
+restore my memories
+load my memories
+
+→ import memories
+
 import my profile
+import profile
+restore my profile
+load my profile
+
+→ import profile
+
 import all my data
+import all data
+restore all my data
+restore everything
+
+→ import all
+
+Logs
+
+show my logs
+show logs
+view my logs
+display my logs
+what are my logs
+
+→ show logs
+
+clear logs
+clear my logs
+delete my logs
+remove my logs
+wipe my logs
+
+→ clear logs
+
+System Health
+
+check system health
+show system health
+check my system health
+how is the system
+is the system healthy
+is ultron healthy
+check ultron health
+show me system health
+
+→ system health
+
+System Summary
+
+show system summary
+show my system summary
+display system summary
+display my system summary
+what is the system summary
+give me system summary
+show me system summary
+tell me about the system
+
+→ system summary
 
 ---
 
-🗣️ Natural Language Command System
+Dynamic Natural-language Commands
 
-v0.26
+Ultron also supports dynamic natural-language commands where the user provides values inside the sentence.
 
-The major feature introduced in v0.26 is:
+Backup Information
 
-«Natural Language Argument Parsing»
+show info of backup BACKUP_NAME
 
-Previously, Ultron could translate predefined natural-language commands.
+Maps to:
 
-v0.26 extends this system so that Ultron can also extract dynamic arguments from natural-language commands.
+backup info BACKUP_NAME
 
----
+Example:
 
-🔹 Backup Info Parsing
+show info of backup 2026-08-08_22-19-56
 
-User command:
+Delete Backup
 
-show info of backup 2026-07-31_15-26-04
+delete backup BACKUP_NAME
 
-Internally becomes:
+Maps to:
 
-backup info 2026-07-31_15-26-04
+backup delete BACKUP_NAME
 
----
+Set Profile
 
-🔹 Backup Delete Parsing
+set my KEY to VALUE
 
-User command:
+Maps to:
 
-delete backup TEST_BACKUP
+profile set KEY VALUE
 
-Internally becomes:
-
-backup delete TEST_BACKUP
-
-If the backup does not exist:
-
-Ultron: Backup not found.
-
----
-
-🔹 Profile Set Parsing
-
-User command:
+Example:
 
 set my city to Lucknow
 
-Internally becomes:
+Change Profile
+
+change my KEY to VALUE
+
+Maps to:
+
+profile set KEY VALUE
+
+Example:
+
+change my city to Kanpur
+
+Delete Profile Field
+
+delete my KEY
+remove my KEY
+
+Maps to:
+
+profile delete KEY
+
+---
+
+Natural-language Architecture
+
+Natural-language processing is handled by:
+
+core/natural_language.py
+
+The module contains:
+
+translate_command(user)
+parse_command(user)
+
+translate_command()
+
+Handles predefined natural-language aliases.
+
+Example:
+
+show my profile
+
+becomes:
+
+profile show
+
+parse_command()
+
+Handles dynamic commands containing user-provided values.
+
+Example:
+
+set my city to Lucknow
+
+becomes:
 
 profile set city Lucknow
 
 ---
 
-🔹 Profile Change Parsing
+Command Handling
 
-User command:
+Natural-language processing is integrated into:
 
-change my city to Kanpur
+core/commands.py
 
-Internally becomes:
+The command flow is:
 
-profile set city Kanpur
+User Input
+    ↓
+translate_command()
+    ↓
+parse_command()
+    ↓
+Existing Command Handlers
+    ↓
+Ultron Response
 
----
-
-🔹 Profile Delete Parsing
-
-User command:
-
-delete my city
-
-Internally becomes:
-
-profile delete city
+This allows the natural-language layer to work on top of the existing command system without duplicating command functionality.
 
 ---
 
-🔹 Profile Remove Parsing
+Core Features
 
-User command:
+Ultron currently includes:
 
-remove my city
-
-Internally becomes:
-
-profile delete city
-
----
-
-⚠️ Incomplete Command Handling
-
-Ultron detects incomplete natural-language commands and provides usage instructions instead of incorrectly executing them.
-
-Example
-
-Input:
-
-set my
-
-Output:
-
-Ultron: Usage -> set my KEY to VALUE
-
-Input:
-
-change my
-
-Output:
-
-Ultron: Usage -> change my KEY to VALUE
-
-Input:
-
-set my city
-
-Output:
-
-Ultron: Usage -> set my KEY to VALUE
-
-Input:
-
-change my city
-
-Output:
-
-Ultron: Usage -> change my KEY to VALUE
+- Command handling
+- Smart command suggestions
+- Natural-language command parsing
+- Memory management
+- Profile management
+- Settings management
+- Command history
+- Backup creation
+- Backup listing
+- Backup information
+- Backup deletion
+- Backup counting
+- Latest backup detection
+- Memory export
+- Profile export
+- Full data export
+- Memory import
+- Profile import
+- Full data import
+- Log management
+- System health checks
+- System summary
+- Configuration information
+- Help system
+- About information
+- Version information
+- Screen clearing
+- Graceful exit
 
 ---
 
-🔍 Command Suggestions
+Command Suggestions
 
-Ultron can suggest commands when the user enters an unknown command.
+Ultron can suggest valid commands when an unknown command is entered.
 
-Example
+Example:
 
-Input:
-
-backupp
-
-Output:
+Aditya: backupp
 
 Ultron: Unknown command.
 
@@ -351,404 +422,218 @@ Did you mean:
 backup
 
 Type:
+
 help
 or
-suggest <Keyword>
-
-Users can also search for suggestions manually:
-
-suggest backup
-suggest profile
-suggest settings
+suggest <keyword>
 
 ---
 
-🧩 Command Processing Architecture
+Error Handling
 
-Ultron processes commands through a modular command pipeline.
+Ultron provides usage instructions for incomplete dynamic commands.
 
-User Input
-    │
-    ▼
-translate_command()
-    │
-    ├── Known Natural Language Alias
-    │
-    ▼
-parse_command()
-    │
-    ├── Dynamic Argument Parsing
-    │
-    ▼
-Command Router
-    │
-    ▼
-Feature Handler
-    │
-    ▼
-Ultron Response
+Example:
 
-This architecture allows natural-language commands to be converted into structured internal commands before being passed to the appropriate command handler.
+Aditya: set my
+
+Ultron: Usage -> set my KEY to VALUE
+
+Another example:
+
+Aditya: change my
+
+Ultron: Usage -> change my KEY to VALUE
 
 ---
 
-📁 Project Structure
+Configuration
+
+Current configuration:
+
+APP_NAME = "Ultron"
+VERSION = "v0.27"
+DEVELOPER = "Aditya"
+STATUS = "Under Development"
+
+---
+
+Project Structure
 
 Ultron/
 │
 ├── core/
-│   │
-│   ├── __init__.py
-│   ├── config.py
-│   │
 │   ├── commands.py
+│   ├── config.py
 │   ├── natural_language.py
 │   ├── command_suggestions.py
-│   │
-│   ├── commands_system.py
-│   ├── commands_history.py
+│   ├── commands_memory.py
 │   ├── commands_profile.py
-│   ├── commands_profile_manager.py
 │   ├── commands_settings.py
 │   ├── commands_backup.py
+│   ├── commands_history.py
 │   ├── commands_logs.py
-│   ├── commands_log_tools.py
-│   ├── commands_memory.py
-│   ├── commands_health.py
-│   ├── commands_config.py
-│   ├── commands_export.py
-│   ├── commands_import_export.py
-│   ├── commands_restore.py
-│   ├── commands_system_summary.py
-│   └── commands_suggest.py
+│   ├── commands_system.py
+│   └── ...
 │
 ├── data/
-│   ├── logs.txt
-│   └── ...
+│   └── logs.txt
 │
 ├── backup/
-│   └── ...
 │
-├── main.py
 ├── README.md
-├── requirements.txt
-└── .gitignore
-
-«The project structure may expand as new modules and features are introduced.»
+│
+└── ...
 
 ---
 
-🛠️ Technology Stack
+Testing
 
-Ultron currently uses:
+v0.27 was developed and tested incrementally.
 
-- Python
-- Git
-- GitHub
-- Virtual Environment
-- File-based data storage
-- Modular Python architecture
+Feature Testing
 
----
+All 15 natural-language feature groups were manually tested.
 
-💻 Installation
+15/15 Features PASS
 
-Clone the repository:
+Regression Testing
 
-git clone https://github.com/adityashukla0227-del/Ultron.git
+Representative commands from all major natural-language categories were tested after completing v0.27.
 
-Enter the project directory:
+Tested categories include:
 
-cd Ultron
+Help
+About
+Version
+Clear
+Exit
+History
+Settings
+Memories
+Backup
+Profile
+Export
+Import
+Logs
+System Health
+System Summary
 
-Create a virtual environment:
+Result:
 
-python -m venv venv
-
-Activate the virtual environment on Windows:
-
-venv\Scripts\activate
-
-Install dependencies:
-
-pip install -r requirements.txt
-
----
-
-▶️ Running Ultron
-
-Start Ultron using:
-
-python main.py
-
-Example:
-
-Aditya: show my profile
-
-Ultron:
-
-===== PROFILE DATA =====
-name : Aditya
-========================
+Regression Test: PASS
 
 ---
 
-🧪 v0.26 Testing
+Release History
 
-The v0.26 release was manually tested through the command-line interface.
+v0.24
 
-Profile Tests
+Command suggestion and command refactoring improvements.
 
-show my profile                 ✅
-set my city to Lucknow          ✅
-change my city to Kanpur        ✅
-delete my city                  ✅
-remove my city                  ✅
-reset my profile                ✅
+v0.25
 
-Backup Tests
+Command system improvements and additional command handling.
 
-create a backup                 ✅
-list my backups                 ✅
-show my latest backup           ✅
-how many backups                ✅
-show info of backup NAME        ✅
-delete backup TEST_BACKUP       ✅
+v0.26
 
-Settings Tests
+Introduced the foundation of the natural-language command parsing layer.
 
-show my settings                ✅
-reset my settings               ✅
+Added support for dynamic natural-language commands including:
 
-System Tests
+- Backup information
+- Backup deletion
+- Profile setting
+- Profile changes
+- Profile field deletion
+- Incomplete command handling
 
-check system health             ✅
-show system summary             ✅
-check my config                 ✅
-show my config                  ✅
-what is my name                 ✅
+v0.27
 
-Safety Tests
+Expanded the natural-language command layer across the major Ultron systems.
 
-set my                          ✅
-change my                       ✅
-set my city                     ✅
-change my city                  ✅
-show info of backup              ✅
-delete backup                    ✅
-unknown command                  ✅
+Added:
 
----
-
-📊 Development Progress
-
-v0.24 — Command Refactoring
-
-Completed
-
-- Command refactoring
-- Command suggestion improvements
-- Modular command handling
-- Improved command routing
-- Better command organization
-
-Status:
-
-v0.24 ✅ COMPLETE
+- 15 natural-language feature groups
+- Expanded command aliases
+- Dynamic command parsing
+- Natural-language backup commands
+- Natural-language profile commands
+- Natural-language memory commands
+- Natural-language settings commands
+- Natural-language history commands
+- Natural-language export/import commands
+- Natural-language log commands
+- Natural-language system health commands
+- Natural-language system summary commands
+- Full manual testing
+- Final regression testing
 
 ---
 
-v0.25 — Core Management Expansion
+Development Workflow
 
-Completed
+Ultron is developed incrementally.
 
-- Backup management
-- Profile management
-- Settings management
-- Import/export system
-- System health tools
-- System summary
-- Configuration tools
-- Logging tools
-- Command management improvements
+Each release follows this workflow:
 
-Status:
-
-v0.25 ✅ COMPLETE
-
----
-
-v0.26 — Natural Language Argument Parsing
-
-Completed
-
-- Natural-language backup info parsing
-- Natural-language backup delete parsing
-- Natural-language profile set parsing
-- Natural-language profile change parsing
-- Natural-language profile delete parsing
-- Natural-language profile remove parsing
-- Incomplete command detection
-- Dynamic argument extraction
-- Improved command routing
-- Version update to v0.26
-- Full manual regression testing
-
-Status:
-
-v0.26 ✅ COMPLETE
+Feature Development
+        ↓
+Manual Testing
+        ↓
+Regression Testing
+        ↓
+Code Verification
+        ↓
+README Update
+        ↓
+Git Commit
+        ↓
+Git Push
+        ↓
+Release Complete
 
 ---
 
-🗺️ Roadmap
+Current Release Status
 
-Future versions may include:
+Project: Ultron
+Version: v0.27
+Status: Under Development
+Developer: Aditya
 
-Voice Input
-Voice Output
-AI Conversation
-Advanced Memory Retrieval
-Context Awareness
-Web Integration
-API Integrations
-Automation
-GUI Application
-Desktop Assistant
-Mobile Integration
-Plugin System
-Cloud Synchronization
-Advanced AI Agent Capabilities
+Natural-language Features: 15/15
+Manual Testing: PASS
+Regression Testing: PASS
 
 ---
 
-📈 Current Development Status
+Future Development
 
-ULTRON DEVELOPMENT STATUS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Ultron is an ongoing project.
 
-Core Architecture          ████████████████████ 100%
-Memory System              ████████████████████ 100%
-Profile System             ████████████████████ 100%
-Backup System              ████████████████████ 100%
-Settings System            ████████████████████ 100%
-History System             ████████████████████ 100%
-Logging System             ████████████████████ 100%
-Import / Export            ████████████████████ 100%
-System Tools               ████████████████████ 100%
-Command Suggestions        ████████████████████ 100%
-Natural Language Parsing   ████████████████████ 100%
-AI Intelligence            ░░░░░░░░░░░░░░░░░░░░ Planned
-Voice Assistant            ░░░░░░░░░░░░░░░░░░░░ Planned
-GUI                         ░░░░░░░░░░░░░░░░░░░░ Planned
-Automation                  ░░░░░░░░░░░░░░░░░░░░ Planned
+Future releases may focus on:
+
+- More natural-language understanding
+- Better command context handling
+- Smarter command suggestions
+- More advanced AI capabilities
+- Improved automation
+- Better modularity
+- Additional integrations
+- Performance improvements
+- User experience improvements
 
 ---
 
-🔐 Privacy
-
-Ultron is designed as a local-first personal assistant.
-
-User data such as:
-
-- Memories
-- Profile information
-- Settings
-- History
-- Logs
-- Backups
-
-is intended to remain within the local project environment unless external integrations are intentionally added.
-
-Users are responsible for managing their local data and backups appropriately.
-
----
-
-⚠️ Project Status
-
-Ultron is currently:
-
-Status: Under Development 🚧
-Version: v0.26
-
-The project is actively evolving.
-
-Features, commands, architecture, internal APIs, and project structure may change in future versions.
-
----
-
-👨‍💻 Developer
+Author
 
 Aditya
 
-Ultron is being developed as a long-term personal AI assistant project focused on modular architecture, automation, memory, natural-language interaction, and future AI capabilities.
+Ultron is a personal AI assistant project developed incrementally with a focus on modular architecture, command intelligence, testing, and continuous improvement.
 
 ---
 
-📜 License
+License
 
-This project currently uses a proprietary development license.
-
-The source code is provided for development and personal project purposes.
-
-Viewing and studying the source code is permitted.
-
-Redistribution, commercial use, or publishing modified versions requires permission from the developer.
-
-All rights reserved by the developer unless otherwise stated.
-
----
-
-⭐ Release Information
-
-ULTRON v0.26
-
-Major Release Feature
-
-Natural Language Argument Parsing
-
-Ultron can now understand dynamic natural-language commands such as:
-
-show info of backup BACKUP_NAME
-delete backup BACKUP_NAME
-set my city to Lucknow
-change my city to Kanpur
-delete my city
-remove my city
-
-and convert them into structured internal commands.
-
----
-
-🚀 Build Progress
-
-Ultron is being developed incrementally.
-
-Every version focuses on improving:
-
-- Architecture
-- Reliability
-- Command handling
-- Data management
-- Natural-language interaction
-- User experience
-- Future AI capabilities
-
-Current Milestone
-
-ULTRON v0.26
-━━━━━━━━━━━━━━━━━━━━━━
-Natural Language Argument Parsing
-━━━━━━━━━━━━━━━━━━━━━━
-STATUS: COMPLETE ✅
-PROJECT: UNDER DEVELOPMENT 🚧
-
----
-
-🔥 Built Step by Step
-
-Ultron is not being built as a single release.
-
-It is being developed version-by-version, with every release adding a new layer of functionality and improving the foundation for future AI capabilities.
-
-Current Release: v0.26 ✅
-Development Status: Under Development 🚧
+This project is currently under development.
