@@ -45,6 +45,11 @@ COMMAND_ALIASES = {
     "show what you remember": "show memories",
     "tell me what you remember": "show memories",
 
+    "did you remember anything": "show memories",
+    "do you remember anything": "show memories",
+    "do you remember my memories": "show memories",
+    "can you show what you remember": "show memories",
+
     # Settings
     "show my settings": "show settings",
     "display my settings": "show settings",
@@ -159,6 +164,60 @@ def translate_command(user):
 
 def parse_command(user):
     user = user.strip().lower()
+
+    # Memory Search
+    prefix = "search my memories for "
+
+    if user.startswith(prefix):
+        keyword = user[len(prefix):].strip()
+
+        if keyword:
+            return f"search {keyword}"
+
+    # Memory Delete
+    prefix = "delete my memory "
+
+    if user.startswith(prefix):
+        number = user[len(prefix):].strip()
+
+        if number:
+            return f"delete memory {number}"
+
+    # Memory Update
+    prefix = "update my memory "
+
+    if user.startswith(prefix) and " to " in user:
+        remaining = user[len(prefix):].strip()
+
+        number, new_memory = remaining.split(" to ", 1)
+
+        number = number.strip()
+        new_memory = new_memory.strip()
+
+        if number and new_memory:
+            return f"update memory {number} {new_memory}"
+
+    # Memory Add
+    prefix = "remember that "
+
+    if user.startswith(prefix):
+        memory = user[len(prefix):].strip()
+
+        if memory:
+            return f"save memory {memory}"
+
+    # Memory List
+    if user == "list my memories":
+        return "show memories"
+
+    # Memory Context Query
+    prefix = "do you remember "
+
+    if user.startswith(prefix):
+        query = user[len(prefix):].strip()
+
+        if query:
+            return f"do you remember {query}"
 
     # Backup Info
     prefix = "show info of backup "

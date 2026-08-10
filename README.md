@@ -1,639 +1,461 @@
-Ultron
+🤖 Ultron AI Assistant
 
-Ultron is a modular command-line personal AI assistant built with Python.
+Ultron is a personal AI assistant built with Python, designed to provide a modular command system, intelligent memory management, user profile handling, system utilities, backups, logs, configuration management, and smart memory features.
 
-It is designed with a modular architecture covering command handling, memories, profiles, settings, backups, import/export, history, logging, system diagnostics, command suggestions, and natural-language command parsing.
-
----
-
-Current Version
-
-Version: v0.27
+«Current Version: "v0.28"
 Status: Under Development
-Developer: Aditya
+Developer: Aditya»
 
 ---
 
-v0.27 — Natural-language Command Layer
+🚀 Features
 
-Ultron v0.27 expands the natural-language layer across the major command systems.
+🧠 Smart Memory System
 
-Users can interact with Ultron using natural phrases instead of remembering exact command syntax.
+Ultron can store, retrieve, update, search, and manage memories.
 
-Feature Status
+- Save memories
+- Show saved memories
+- Search memories
+- Update memories
+- Delete memories
+- Detect existing memories
+- Prevent duplicate memory storage
 
-Feature #1  — Smart Help                    ✅
-Feature #2  — Natural-language About         ✅
-Feature #3  — Natural-language Version       ✅
-Feature #4  — Natural-language Clear         ✅
-Feature #5  — Natural-language Exit          ✅
-Feature #6  — Natural-language History       ✅
-Feature #7  — Natural-language Settings      ✅
-Feature #8  — Natural-language Memories      ✅
-Feature #9  — Natural-language Backup        ✅
-Feature #10 — Natural-language Profile       ✅
-Feature #11 — Natural-language Export        ✅
-Feature #12 — Natural-language Import        ✅
-Feature #13 — Natural-language Logs          ✅
-Feature #14 — Natural-language System Health ✅
-Feature #15 — Natural-language System Summary ✅
+🧠 Smart Memory Queries
 
-15/15 Features Complete
-Manual Testing: PASS
-Regression Testing: PASS
+Ultron can find memories relevant to a user's query by analyzing:
+
+- Exact query matches
+- Individual query words
+- Relevance scores
+- Duplicate memories
+
+Higher-relevance memories are returned first.
+
+🧠 Smart Memory Context
+
+Ultron can use relevant stored memories as context when processing user interactions.
+
+This allows Ultron to provide more context-aware responses based on previously stored information.
+
+💡 Smart Memory Suggestions
+
+Ultron can provide intelligent memory-related suggestions based on stored information and user queries.
+
+🧹 Memory Cleanup & Deduplication
+
+Ultron can automatically clean duplicate memories.
+
+Command:
+
+cleanup memories
+
+Example:
+
+Memory cleanup complete.
+3 duplicate memory removed.
+
+After cleanup, running the command again verifies that duplicates have been removed:
+
+No duplicate memories found.
+
+📊 Memory Insights & Statistics
+
+Ultron can analyze its memory database and provide useful statistics.
+
+Command:
+
+memory stats
+
+The statistics include:
+
+- Total memories
+- Unique memories
+- Duplicate memories
+- Empty memories
+- Average memory length
+- Longest memory
+- Shortest memory
+
+Example:
+
+===== MEMORY INSIGHTS =====
+Total Memories: 10
+Unique Memories: 8
+Duplicate Memories: 2
+Empty Memories: 0
+Average Memory Length: 32.5 characters
+Longest Memory: ...
+Shortest Memory: ...
+===========================
 
 ---
 
-Natural-language Commands
+🧩 Command System
 
-Help
+Ultron uses a modular command architecture.
 
-what can you do
-what commands do you have
-show me available commands
+System Commands
 
-→ help
+help
+about
+version
+clear
+exit
 
-About
+Memory Commands
 
-tell me about yourself
-who are you
-what are you
-
-→ about
-
-Version
-
-what version are you
-which version are you running
-show me your version
-
-→ version
-
-Clear
-
-clear my screen
-clear the screen
-clean the screen
-
-→ clear
-
-Exit
-
-quit
-close ultron
-shut down
-goodbye
-
-→ exit
-
-History
-
-show my history
-show history
-show my command history
-show previous commands
-show what i did
-
-→ history
-
-Settings
-
-show my settings
-display my settings
-what are my settings
-show my current settings
-
-→ show settings
-
-Memories
-
-show my memories
 show memories
-what do you remember
-what do you remember about me
-show what you remember
-tell me what you remember
+memory stats
+save memory <text>
+delete memory <number>
+update memory <number> <new text>
+search <keyword>
+cleanup memories
 
-→ show memories
+Profile Commands
 
-Backup
+who am i
+profile show
+profile set
+profile delete
+profile reset
 
-create a backup
-make a backup
-take a backup
-create backup
-make backup
-save a backup
+History Commands
 
-→ backup
+history
 
-list my backups
-show my backups
-list all my backups
-what backups do i have
+Settings Commands
 
-→ backup list
+show settings
+set
+reset settings
 
-show latest backup
-show my latest backup
-what is my latest backup
+Backup Commands
 
-→ backup latest
+backup
+backup list
+backup latest
+backup count
+backup delete
+backup info
 
-how many backups
-show backup count
-how many backups do i have
+Restore
 
-→ backup count
+restore
 
-Profile
+Import / Export
 
-show my profile
-display my profile
-what is my profile
-tell me about my profile
-show my personal information
-show my personal info
-
-→ profile show
-
-reset my profile
-
-→ profile reset
-
-Export
-
-export my memories
 export memories
-save my memories
-download my memories
-
-→ export memories
-
-export my profile
 export profile
-save my profile
-download my profile
+export all
 
-→ export profile
-
-export all my data
-export all data
-export everything
-save all my data
-
-→ export all
-
-Import
-
-import my memories
 import memories
-restore my memories
-load my memories
-
-→ import memories
-
-import my profile
 import profile
-restore my profile
-load my profile
-
-→ import profile
-
-import all my data
-import all data
-restore all my data
-restore everything
-
-→ import all
+import all
 
 Logs
 
-show my logs
 show logs
-view my logs
-display my logs
-what are my logs
-
-→ show logs
-
 clear logs
-clear my logs
-delete my logs
-remove my logs
-wipe my logs
+search logs
 
-→ clear logs
+System Information
 
-System Health
+system health
+system summary
 
-check system health
-show system health
-check my system health
-how is the system
-is the system healthy
-is ultron healthy
-check ultron health
-show me system health
+Configuration
 
-→ system health
+config check
+config summary
 
-System Summary
+Suggestions
 
-show system summary
-show my system summary
-display system summary
-display my system summary
-what is the system summary
-give me system summary
-show me system summary
-tell me about the system
-
-→ system summary
-
----
-
-Dynamic Natural-language Commands
-
-Ultron also supports dynamic natural-language commands where the user provides values inside the sentence.
-
-Backup Information
-
-show info of backup BACKUP_NAME
-
-Maps to:
-
-backup info BACKUP_NAME
-
-Example:
-
-show info of backup 2026-08-08_22-19-56
-
-Delete Backup
-
-delete backup BACKUP_NAME
-
-Maps to:
-
-backup delete BACKUP_NAME
-
-Set Profile
-
-set my KEY to VALUE
-
-Maps to:
-
-profile set KEY VALUE
-
-Example:
-
-set my city to Lucknow
-
-Change Profile
-
-change my KEY to VALUE
-
-Maps to:
-
-profile set KEY VALUE
-
-Example:
-
-change my city to Kanpur
-
-Delete Profile Field
-
-delete my KEY
-remove my KEY
-
-Maps to:
-
-profile delete KEY
-
----
-
-Natural-language Architecture
-
-Natural-language processing is handled by:
-
-core/natural_language.py
-
-The module contains:
-
-translate_command(user)
-parse_command(user)
-
-translate_command()
-
-Handles predefined natural-language aliases.
-
-Example:
-
-show my profile
-
-becomes:
-
-profile show
-
-parse_command()
-
-Handles dynamic commands containing user-provided values.
-
-Example:
-
-set my city to Lucknow
-
-becomes:
-
-profile set city Lucknow
-
----
-
-Command Handling
-
-Natural-language processing is integrated into:
-
-core/commands.py
-
-The command flow is:
-
-User Input
-    ↓
-translate_command()
-    ↓
-parse_command()
-    ↓
-Existing Command Handlers
-    ↓
-Ultron Response
-
-This allows the natural-language layer to work on top of the existing command system without duplicating command functionality.
-
----
-
-Core Features
-
-Ultron currently includes:
-
-- Command handling
-- Smart command suggestions
-- Natural-language command parsing
-- Memory management
-- Profile management
-- Settings management
-- Command history
-- Backup creation
-- Backup listing
-- Backup information
-- Backup deletion
-- Backup counting
-- Latest backup detection
-- Memory export
-- Profile export
-- Full data export
-- Memory import
-- Profile import
-- Full data import
-- Log management
-- System health checks
-- System summary
-- Configuration information
-- Help system
-- About information
-- Version information
-- Screen clearing
-- Graceful exit
-
----
-
-Command Suggestions
-
-Ultron can suggest valid commands when an unknown command is entered.
-
-Example:
-
-Aditya: backupp
-
-Ultron: Unknown command.
-
-Did you mean:
-
-backup
-
-Type:
-
-help
-or
 suggest <keyword>
 
 ---
 
-Error Handling
+🧠 Memory Management
 
-Ultron provides usage instructions for incomplete dynamic commands.
+Ultron stores memories inside:
+
+data/memory.txt
+
+The memory system supports:
+
+Save
+Recall
+Search
+Update
+Delete
+Duplicate Detection
+Cleanup
+Statistics
+
+Example
+
+save memory My favorite programming language is Python.
+
+Ultron checks whether the memory already exists before saving it.
+
+---
+
+🧹 Memory Cleanup
+
+The cleanup system normalizes:
+
+- Capitalization
+- Extra spaces
+- Empty memories
+
+It then removes duplicate memories while preserving the original stored version.
 
 Example:
 
-Aditya: set my
+cleanup memories
 
-Ultron: Usage -> set my KEY to VALUE
+Output:
 
-Another example:
+Memory cleanup complete.
+3 duplicate memory removed.
 
-Aditya: change my
+Running cleanup again:
 
-Ultron: Usage -> change my KEY to VALUE
+cleanup memories
 
----
+Output:
 
-Configuration
-
-Current configuration:
-
-APP_NAME = "Ultron"
-VERSION = "v0.27"
-DEVELOPER = "Aditya"
-STATUS = "Under Development"
+No duplicate memories found.
 
 ---
 
-Project Structure
+📊 Memory Statistics
+
+The memory statistics engine analyzes the current memory database.
+
+Command:
+
+memory stats
+
+It calculates:
+
+Total Memories
+Unique Memories
+Duplicate Memories
+Empty Memories
+Average Memory Length
+Longest Memory
+Shortest Memory
+
+This provides a quick overview of the health and size of Ultron's memory system.
+
+---
+
+🏗️ Project Structure
 
 Ultron/
 │
+├── main.py
+├── README.md
+│
 ├── core/
+│   ├── memory.py
 │   ├── commands.py
-│   ├── config.py
-│   ├── natural_language.py
-│   ├── command_suggestions.py
 │   ├── commands_memory.py
+│   ├── commands_system.py
+│   ├── commands_history.py
 │   ├── commands_profile.py
 │   ├── commands_settings.py
 │   ├── commands_backup.py
-│   ├── commands_history.py
 │   ├── commands_logs.py
-│   ├── commands_system.py
-│   └── ...
+│   ├── commands_import_export.py
+│   ├── commands_health.py
+│   ├── commands_profile_manager.py
+│   ├── commands_export.py
+│   ├── commands_config.py
+│   ├── commands_system_summary.py
+│   ├── commands_log_tools.py
+│   ├── commands_restore.py
+│   ├── commands_suggest.py
+│   ├── command_suggestions.py
+│   ├── natural_language.py
+│   ├── conversation.py
+│   └── config.py
 │
 ├── data/
-│   └── logs.txt
+│   ├── memory.txt
+│   └── profile.txt
 │
-├── backup/
+├── tests/
 │
-├── README.md
-│
-└── ...
+└── assets/
 
 ---
 
-Testing
+🔧 Technologies
 
-v0.27 was developed and tested incrementally.
-
-Feature Testing
-
-All 15 natural-language feature groups were manually tested.
-
-15/15 Features PASS
-
-Regression Testing
-
-Representative commands from all major natural-language categories were tested after completing v0.27.
-
-Tested categories include:
-
-Help
-About
-Version
-Clear
-Exit
-History
-Settings
-Memories
-Backup
-Profile
-Export
-Import
-Logs
-System Health
-System Summary
-
-Result:
-
-Regression Test: PASS
+- Python
+- File-based storage
+- Modular command architecture
+- Git & GitHub
+- Natural language command parsing
+- Custom memory management system
 
 ---
 
-Release History
+📈 Version History
 
-v0.24
+v0.1 — Project Setup
 
-Command suggestion and command refactoring improvements.
+- Initial project structure
+- Basic Python application
 
-v0.25
+v0.2 — Conversation Engine
 
-Command system improvements and additional command handling.
+- Basic conversation handling
+- User interaction system
 
-v0.26
+v0.3 — Memory Save
 
-Introduced the foundation of the natural-language command parsing layer.
+- Memory saving functionality
 
-Added support for dynamic natural-language commands including:
+v0.4 — Memory Recall
 
-- Backup information
-- Backup deletion
-- Profile setting
-- Profile changes
-- Profile field deletion
-- Incomplete command handling
+- Memory retrieval functionality
 
-v0.27
+v0.5 — Smart User Profile Memory
 
-Expanded the natural-language command layer across the major Ultron systems.
+- User profile memory
+- Profile information management
 
-Added:
+v0.24 — Command Refactoring
 
-- 15 natural-language feature groups
-- Expanded command aliases
-- Dynamic command parsing
-- Natural-language backup commands
-- Natural-language profile commands
-- Natural-language memory commands
-- Natural-language settings commands
-- Natural-language history commands
-- Natural-language export/import commands
-- Natural-language log commands
-- Natural-language system health commands
-- Natural-language system summary commands
-- Full manual testing
-- Final regression testing
+- Modular command system
+- Command suggestions
+- Improved unknown command handling
+- "suggest <keyword>" command
+- Backup command improvements
 
----
+v0.25+
 
-Development Workflow
+- Continued command system improvements
+- Natural language command handling
+- Command aliases
+- Smart help
+- Command statistics
+- Recent commands
+- Repeat command functionality
 
-Ultron is developed incrementally.
+v0.28 — Smart Memory Intelligence
 
-Each release follows this workflow:
+Completed Features
 
-Feature Development
-        ↓
-Manual Testing
-        ↓
-Regression Testing
-        ↓
-Code Verification
-        ↓
-README Update
-        ↓
-Git Commit
-        ↓
-Git Push
-        ↓
-Release Complete
+- 🧠 Smart Memory Queries
+- 🧠 Smart Memory Context
+- 💡 Smart Memory Suggestions
+- 🧹 Memory Cleanup & Deduplication
+- 📊 Memory Insights & Statistics
+
+v0.28 Memory Improvements
+
+Ultron's memory system can now:
+
+Find relevant memories
+Use memory context
+Suggest useful memories
+Detect duplicates
+Remove duplicate memories
+Analyze memory statistics
 
 ---
 
-Current Release Status
+🎯 Current Roadmap
 
-Project: Ultron
-Version: v0.27
+v0.28
+
+- [x] Smart Memory Queries
+- [x] Smart Memory Context
+- [x] Smart Memory Suggestions
+- [x] Memory Cleanup & Deduplication
+- [x] Memory Insights & Statistics
+
+Future
+
+Future versions will continue improving:
+
+- AI intelligence
+- Natural language understanding
+- Memory intelligence
+- Automation
+- Command handling
+- User experience
+- System integrations
+
+---
+
+🧪 Testing
+
+Before releasing a version, test the major memory workflows.
+
+Memory Cleanup Test
+
+cleanup memories
+
+Expected after successful cleanup:
+
+No duplicate memories found.
+
+Memory Statistics Test
+
+memory stats
+
+Expected:
+
+===== MEMORY INSIGHTS =====
+Total Memories: ...
+Unique Memories: ...
+Duplicate Memories: ...
+Empty Memories: ...
+Average Memory Length: ...
+Longest Memory: ...
+Shortest Memory: ...
+===========================
+
+---
+
+🔐 Data
+
+Ultron currently uses local file-based storage for memory and profile information.
+
+Memory:
+
+data/memory.txt
+
+Profile:
+
+data/profile.txt
+
+---
+
+📌 Project Status
+
+Ultron v0.28
 Status: Under Development
-Developer: Aditya
 
-Natural-language Features: 15/15
-Manual Testing: PASS
-Regression Testing: PASS
+Ultron is an actively developed personal AI assistant project.
 
 ---
 
-Future Development
-
-Ultron is an ongoing project.
-
-Future releases may focus on:
-
-- More natural-language understanding
-- Better command context handling
-- Smarter command suggestions
-- More advanced AI capabilities
-- Improved automation
-- Better modularity
-- Additional integrations
-- Performance improvements
-- User experience improvements
-
----
-
-Author
+👨‍💻 Developer
 
 Aditya
 
-Ultron is a personal AI assistant project developed incrementally with a focus on modular architecture, command intelligence, testing, and continuous improvement.
+Building Ultron step by step with the goal of creating a powerful personal AI assistant.
 
 ---
 
-License
+⭐ Project
 
-This project is currently under development.
+Ultron is continuously evolving through incremental releases, with each version adding new capabilities and improving the existing architecture.

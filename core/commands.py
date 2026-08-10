@@ -38,6 +38,8 @@ from core.commands_memory import handle_memory_commands
 
 from core.natural_language import translate_command, parse_command
 
+from core.conversation import handle_conversation
+
 COMMANDS = [
     "help",
     "about",
@@ -45,6 +47,7 @@ COMMANDS = [
     "clear",
 
     "show memories",
+    "memory stats",
     "delete memory",
     "update memory",
     "search",
@@ -161,6 +164,9 @@ def handle_command(user):
     elif handle_memory_commands(user):
         return True
 
+    elif handle_conversation(user):
+        return True 
+    
     else:
         
         suggestion = suggest_command(user)

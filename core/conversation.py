@@ -1,4 +1,4 @@
-from core.memory import get_memory
+from core.memory import get_memory, get_relevant_memories
 from core.profile import get_profile
 
 
@@ -21,21 +21,28 @@ def handle_conversation(user):
         return True
 
     elif user.startswith("do you remember"):
-        memories = get_memory()
+        query = user.replace("do you remember", "", 1).strip()
 
-        if memories:
-            for memory in memories:
-                if memory in user:
-                    print(f"Ultron: Yes, I remember {memory}.")
-                    return True
+        if query:
+            memories = get_relevant_memories(query)
 
-            print("Ultron: I remember these things:")
-            for memory in memories:
-                print(f"- {memory}")
-            return True
+            if memories:
+                print("Ultron: Yes, I remember:")
+                for memory in memories:
+                    print(f"- {memory}")
+            else:
+                print("Ultron: I don't remember anything about that.")
 
         else:
-            print("Ultron: I don't remember anything yet.")
-            return True
+            memories = get_memory()
+
+            if memories:
+                print("Ultron: I remember these things:")
+                for memory in memories:
+                    print(f"- {memory}")
+            else:
+                print("Ultron: I don't remember anything yet.")
+
+        return True
 
     return False
