@@ -23,6 +23,17 @@ from core.commands_memory import handle_memory_commands
 from core.natural_language import translate_command, parse_command
 from core.conversation import handle_conversation
 
+from core.session_state import (
+    start_session,
+    get_session_state,
+    set_goal,
+    get_goal,
+    clear_goal,
+    update_context,
+    get_context,
+    clear_session
+)
+
 
 COMMANDS = [
     "help",
@@ -104,6 +115,116 @@ def handle_command(user):
         user.startswith("change my ") and " to " not in user
     ):
         print("\nUltron: Usage -> change my KEY to VALUE\n")
+        return True
+
+    # ============================================================
+    # Feature #8 — Session Goals & State
+    # ============================================================
+
+    if user == "start session":
+        start_session()
+        print("\nUltron: Session started successfully.\n")
+        return True
+
+    elif user == "show session state":
+        state = get_session_state()
+
+        print("\nUltron: Current session state:")
+        print(f"- Goal: {state.get('goal')}")
+        print(f"- Status: {state.get('status')}")
+        print(f"- Context: {state.get('context')}")
+        print(f"- Started at: {state.get('started_at')}")
+        print(f"- Updated at: {state.get('updated_at')}")
+        print()
+        return True
+
+    elif user.startswith("set session goal"):
+        goal = user[len("set session goal"):].strip()
+
+        if goal.startswith("to "):
+            goal = goal[3:].strip()
+
+        if not goal:
+            print(
+                "\nUltron: Usage -> "
+                "set session goal <GOAL>\n"
+            )
+            return True
+
+        set_goal(goal)
+
+        print(
+            "\nUltron: Session goal updated successfully.\n"
+        )
+        return True
+
+    elif user == "show session goal":
+        goal = get_goal()
+
+        print(
+            f"\nUltron: Current session goal: {goal}\n"
+        )
+        return True
+
+    elif user == "clear session goal":
+        clear_goal()
+
+        print(
+            "\nUltron: Session goal cleared successfully.\n"
+        )
+        return True
+
+    elif user.startswith("update session context"):
+        context_data = (
+            user[len("update session context"):].strip()
+        )
+
+        if not context_data:
+            print(
+                "\nUltron: Usage -> "
+                "update session context KEY VALUE\n"
+            )
+            return True
+
+        parts = context_data.split(maxsplit=1)
+
+        if len(parts) < 2:
+            print(
+                "\nUltron: Usage -> "
+                "update session context KEY VALUE\n"
+            )
+            return True
+
+        key = parts[0]
+        value = parts[1]
+
+        update_context(key, value)
+
+        print(
+            "\nUltron: Session context updated successfully.\n"
+        )
+        return True
+
+    elif user == "show session context":
+        context = get_context()
+
+        print("\nUltron: Current session context:")
+
+        if not context:
+            print("- No session context found.")
+        else:
+            for key, value in context.items():
+                print(f"- {key}: {value}")
+
+        print()
+        return True
+
+    elif user == "clear session":
+        clear_session()
+
+        print(
+            "\nUltron: Session cleared successfully.\n"
+        )
         return True
 
     # System commands
