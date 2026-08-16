@@ -5,6 +5,7 @@ from core.profile import save_profile
 from core.history import add_history
 from core.logger import log_info
 from core.natural_language import translate_command
+from core.ai_client import send_to_claude
 
 from core.monitor import (
     monitor_start,
@@ -73,4 +74,6 @@ while True:
 
         log_info(f"Unknown Command : {raw_user}")
 
-        print(f"{APP_NAME}: Sorry, I don't understand that yet.")
+        ai_response = send_to_claude(raw_user)
+
+        print(f"{APP_NAME}: {ai_response}")

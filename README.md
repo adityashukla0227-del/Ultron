@@ -14,20 +14,20 @@ The project follows a modular architecture so individual systems can be develope
 
 # 🚀 Current Version
 
-**Current Development Version:** `v0.30`
+**Current Development Version:** `v0.31`
 
 ### Completed Conversational Features
 
-| Feature | Name                         | Status     |
+| Feature | Name                         | Status     |
 | ------- | ---------------------------- | ---------- |
-| #1      | Smart Intent Detection       | ✅ Complete |
-| #2      | Contextual Answer Generation | ✅ Complete |
-| #3      | Multi-Turn Goal Tracking     | ✅ Complete |
-| #4      | Conversation Topic Switching | ✅ Complete |
-| #5      | Smart Context Ranking        | ✅ Complete |
-| #6      | Conversational Corrections   | ✅ Complete |
-| #7      | Conversation Summary         | ✅ Complete |
-| #8      | Session Goals & State        | ✅ Complete |
+| #1      | Smart Intent Detection       | ✅ Complete |
+| #2      | Contextual Answer Generation | ✅ Complete |
+| #3      | Multi-Turn Goal Tracking     | ✅ Complete |
+| #4      | Conversation Topic Switching | ✅ Complete |
+| #5      | Smart Context Ranking        | ✅ Complete |
+| #6      | Conversational Corrections   | ✅ Complete |
+| #7      | Conversation Summary         | ✅ Complete |
+| #8      | Session Goals & State        | ✅ Complete |
 
 ---
 
@@ -56,6 +56,12 @@ Ultron currently contains systems for:
 * 📝 Logging
 * 💡 Command suggestions
 * 🌐 Natural-language command translation
+* 🧠 AI Engine
+* 🔌 Pluggable AI Provider System
+* 🤖 Mock AI Provider
+* ☁️ Anthropic AI Provider
+* 🛡️ AI Error Handling
+* 💬 AI-powered conversational fallback
 
 ---
 
@@ -68,54 +74,54 @@ Ultron/
 ├── README.md
 │
 ├── core/
-│   │
-│   ├── __init__.py
-│   │
-│   ├── conversation.py
-│   ├── commands.py
-│   ├── config.py
-│   ├── natural_language.py
-│   ├── session_state.py
-│   │
-│   ├── memory.py
-│   ├── profile.py
-│   ├── logger.py
-│   │
-│   ├── system_health.py
-│   ├── config_validator.py
-│   │
-│   ├── commands_memory.py
-│   ├── commands_backup.py
-│   ├── commands_restore.py
-│   ├── commands_profile.py
-│   ├── commands_settings.py
-│   ├── commands_history.py
-│   ├── commands_export.py
-│   ├── commands_import_export.py
-│   ├── commands_config.py
-│   ├── commands_system_summary.py
-│   ├── commands_log_tools.py
-│   ├── commands_suggest.py
-│   │
-│   └── command_suggestions.py
+│   │
+│   ├── __init__.py
+│   │
+│   ├── conversation.py
+│   ├── commands.py
+│   ├── config.py
+│   ├── natural_language.py
+│   ├── session_state.py
+│   │
+│   ├── memory.py
+│   ├── profile.py
+│   ├── logger.py
+│   │
+│   ├── system_health.py
+│   ├── config_validator.py
+│   │
+│   ├── commands_memory.py
+│   ├── commands_backup.py
+│   ├── commands_restore.py
+│   ├── commands_profile.py
+│   ├── commands_settings.py
+│   ├── commands_history.py
+│   ├── commands_export.py
+│   ├── commands_import_export.py
+│   ├── commands_config.py
+│   ├── commands_system_summary.py
+│   ├── commands_log_tools.py
+│   ├── commands_suggest.py
+│   │
+│   └── command_suggestions.py
 │
 ├── modules/
-│   │
-│   └── ...
+│   │
+│   └── ...
 │
 ├── data/
-│   │
-│   ├── memory.txt
-│   ├── profile.txt
-│   └── ...
+│   │
+│   ├── memory.txt
+│   ├── profile.txt
+│   └── ...
 │
 ├── tests/
-│   │
-│   └── ...
+│   │
+│   └── ...
 │
 └── assets/
-    │
-    └── ...
+    │
+    └── ...
 ```
 
 ---
@@ -125,40 +131,40 @@ Ultron/
 Ultron follows a modular architecture.
 
 ```text
-                     ┌──────────────────────┐
-                     │       main.py        │
-                     │   Application Entry  │
-                     └──────────┬───────────┘
-                                │
-                                ▼
-                     ┌──────────────────────┐
-                     │     commands.py      │
-                     │   Command Router     │
-                     └──────────┬───────────┘
-                                │
-              ┌─────────────────┼──────────────────┐
-              │                 │                  │
-              ▼                 ▼                  ▼
-       ┌─────────────┐   ┌─────────────┐   ┌──────────────┐
-       │   Memory    │   │   Profile   │   │ Conversation │
-       │   System    │   │   System    │   │    Engine    │
-       └─────────────┘   └─────────────┘   └───────┬──────┘
-                                                   │
-                          ┌────────────────────────┼────────────────────┐
-                          │                        │                    │
-                          ▼                        ▼                    ▼
-                   ┌──────────────┐       ┌──────────────┐      ┌──────────────┐
-                   │    Intent    │       │    Context   │      │    Topic     │
-                   │  Detection   │       │   Tracking   │      │   Switching  │
-                   └──────────────┘       └──────────────┘      └──────────────┘
-                          │                        │                    │
-                          └────────────────────────┼────────────────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Session State   │
-                                          │ Goals & State   │
-                                          └─────────────────┘
+                     ┌──────────────────────┐
+                     │       main.py        │
+                     │   Application Entry  │
+                     └──────────┬───────────┘
+                                │
+                                ▼
+                     ┌──────────────────────┐
+                     │     commands.py      │
+                     │   Command Router     │
+                     └──────────┬───────────┘
+                                │
+              ┌─────────────────┼──────────────────┐
+              │                 │                  │
+              ▼                 ▼                  ▼
+       ┌─────────────┐   ┌─────────────┐   ┌──────────────┐
+       │   Memory    │   │   Profile   │   │ Conversation │
+       │   System    │   │   System    │   │    Engine    │
+       └─────────────┘   └─────────────┘   └───────┬──────┘
+                                                   │
+                          ┌────────────────────────┼────────────────────┐
+                          │                        │                    │
+                          ▼                        ▼                    ▼
+                   ┌──────────────┐       ┌──────────────┐      ┌──────────────┐
+                   │    Intent    │       │    Context   │      │    Topic     │
+                   │  Detection   │       │   Tracking   │      │   Switching  │
+                   └──────────────┘       └──────────────┘      └──────────────┘
+                          │                        │                    │
+                          └────────────────────────┼────────────────────┘
+                                                   │
+                                                   ▼
+                                          ┌─────────────────┐
+                                          │ Session State   │
+                                          │ Goals & State   │
+                                          └─────────────────┘
 ```
 
 ---
@@ -590,16 +596,16 @@ Conceptually, the state contains:
 
 ```text
 {
-    goal,
-    status,
-    context,
-    started_at,
-    updated_at,
-    topic,
-    entity,
-    intent,
-    technology,
-    pending_question
+    goal,
+    status,
+    context,
+    started_at,
+    updated_at,
+    topic,
+    entity,
+    intent,
+    technology,
+    pending_question
 }
 ```
 
@@ -998,6 +1004,12 @@ show logs
 ---
 
 # 💡 Command Suggestions
+AI Engine
+AI Provider Architecture
+Mock AI Provider
+Anthropic Provider
+AI Error Handling
+AI Conversation Integration
 
 Ultron includes command suggestions to help users discover supported commands.
 
@@ -1067,15 +1079,15 @@ Conceptually:
 
 ```text
 User Input
-    ↓
+    ↓
 main.py
-    ↓
+    ↓
 commands.py
-    ↓
+    ↓
 Command Detection
-    ↓
+    ↓
 Correct Module
-    ↓
+    ↓
 Response
 ```
 
@@ -1280,21 +1292,21 @@ General workflow:
 
 ```text
 Idea
- ↓
+ ↓
 Feature design
- ↓
+ ↓
 Implementation
- ↓
+ ↓
 Testing
- ↓
+ ↓
 Integration
- ↓
+ ↓
 Bug fixing
- ↓
+ ↓
 Version completion
- ↓
+ ↓
 Git commit
- ↓
+ ↓
 GitHub push
 ```
 
@@ -1391,6 +1403,37 @@ Expanded conversational intelligence and state-related infrastructure.
 
 ---
 
+**---
+
+## v0.31 — AI Integration Foundation
+
+Introduced the first AI integration architecture.
+
+Added
+
+AI Engine
+Provider Architecture
+Mock AI Provider
+Anthropic Provider
+Conversation → AI Integration
+AI Error Handling
+Environment-based AI Configuration
+
+AI Provider Modes
+
+AI_MODE=mock
+
+Used for development and testing without API credits.
+
+AI_MODE=anthropic
+
+Used for real Claude API integration when a valid Anthropic API key is configured.
+
+Status
+
+✅ AI Integration Foundation COMPLETE
+⏳ Real Claude API Testing PENDING API Credits
+
 ## v0.30 — Session State / Multi-Turn Goal Tracking
 
 Feature #8 introduced:
@@ -1415,31 +1458,31 @@ Feature #8 is now:
 # 🏗️ Current Feature Architecture
 
 ```text
-                    ULTRON
-                       │
-        ┌──────────────┼──────────────┐
-        │              │              │
-        ▼              ▼              ▼
-     MEMORY         PROFILE      CONVERSATION
-        │              │              │
-        │              │       ┌──────┼──────┐
-        │              │       │      │      │
-        │              │       ▼      ▼      ▼
-        │              │    INTENT  TOPIC  CONTEXT
-        │              │       │      │      │
-        └──────────────┴───────┼──────┼──────┘
-                               │
-                               ▼
-                        CORRECTIONS
-                               │
-                               ▼
-                          SUMMARIZATION
-                               │
-                               ▼
-                         SESSION STATE
-                               │
-                               ▼
-                         SESSION GOALS
+                    ULTRON
+                       │
+        ┌──────────────┼──────────────┐
+        │              │              │
+        ▼              ▼              ▼
+     MEMORY         PROFILE      CONVERSATION
+        │              │              │
+        │              │       ┌──────┼──────┐
+        │              │       │      │      │
+        │              │       ▼      ▼      ▼
+        │              │    INTENT  TOPIC  CONTEXT
+        │              │       │      │      │
+        └──────────────┴───────┼──────┼──────┘
+                               │
+                               ▼
+                        CORRECTIONS
+                               │
+                               ▼
+                          SUMMARIZATION
+                               │
+                               ▼
+                         SESSION STATE
+                               │
+                               ▼
+                         SESSION GOALS
 ```
 
 ---
@@ -1510,23 +1553,161 @@ Large systems should be divided into manageable modules rather than putting ever
 
 ---
 
+**---
+
+# 🤖 AI Integration — v0.31
+
+Ultron v0.31 introduces the foundation for external AI integration through a provider-based architecture.
+
+                    ULTRON
+                       │
+                       ▼
+              Conversation Engine
+                       │
+                       ▼
+                   AI Engine
+                       │
+              ┌────────┴────────┐
+              │                 │
+              ▼                 ▼
+        Mock Provider     Anthropic Provider
+              │                 │
+              ▼                 ▼
+        Local Testing          Claude
+
+The AI engine is separated from individual providers so future providers can be added without rewriting the main conversation engine.
+
+## 🧠 AI Engine
+
+Main file:
+
+core/ai_engine.py
+
+The AI engine selects the configured provider and generates AI responses.
+
+## 🔌 Provider System
+
+AI Engine
+   │
+   ├── Mock Provider
+   │      └── Development / Testing
+   │
+   └── Anthropic Provider
+          └── Claude API
+
+## 🤖 Mock AI Provider
+
+Main file:
+
+core/providers/mock.py
+
+The Mock Provider allows development and testing without making external API requests or spending API credits.
+
+Example:
+
+User: Hello Ultron
+
+Ultron:
+Mock AI response 🤖
+Prompt received: Hello Ultron
+
+## ☁️ Anthropic Provider
+
+Main file:
+
+core/providers/anthropic_provider.py
+
+The Anthropic Provider is responsible for communicating with Claude through the Anthropic API.
+
+A valid API key is required before an external request is attempted.
+
+Without a valid API key:
+
+Anthropic AI is not configured. Please add a valid Anthropic API key.
+
+## 🔐 API Configuration
+
+AI configuration is stored through environment variables.
+
+Example:
+
+ANTHROPIC_API_KEY=your_api_key_here
+AI_MODE=mock
+
+The .env file is excluded from Git through .gitignore.
+
+Real API keys must never be committed to the repository.
+
+## 🛡️ AI Error Handling
+
+The AI engine catches provider failures and returns a safe fallback response instead of allowing an AI provider error to crash the application.
+
+AI Provider
+     ↓
+   Error
+     ↓
+AI Engine
+     ↓
+Safe fallback response
+     ↓
+Ultron continues running
+
+## 💬 Conversation Integration
+
+The AI layer is integrated with the existing conversation engine.
+
+User Request
+     ↓
+Conversation Engine
+     ↓
+AI Engine
+     ↓
+AI Provider
+     ↓
+AI Response
+
+AI is designed to complement Ultron's existing local capabilities rather than replace them.
+
+## 🧪 AI Testing
+
+Development can be performed without an Anthropic API key by using:
+
+AI_MODE=mock
+
+Example:
+
+python -c "from core.ai_engine import generate_ai_response; print(generate_ai_response('Hello Ultron'))"
+
+Expected:
+
+Mock AI response 🤖
+Prompt received: Hello Ultron
+
+---
+
 # 🗂️ Important Files
 
-| File                       | Responsibility                   |
+| File                       | Responsibility                   |
 | -------------------------- | -------------------------------- |
-| `main.py`                  | Application entry point          |
-| `core/commands.py`         | Main command router              |
-| `core/conversation.py`     | Conversation engine              |
+| `main.py`                  | Application entry point          |
+| `core/commands.py`         | Main command router              |
+| `core/conversation.py`     | Conversation engine              |
 | `core/natural_language.py` | Natural-language command parsing |
-| `core/session_state.py`    | Session goals and state          |
-| `core/memory.py`           | Memory operations                |
-| `core/profile.py`          | Profile management               |
-| `core/logger.py`           | Logging                          |
-| `core/config.py`           | Configuration                    |
-| `core/config_validator.py` | Configuration validation         |
-| `core/system_health.py`    | System health                    |
-| `data/memory.txt`          | Persistent memories              |
-| `data/profile.txt`         | Profile data                     |
+| `core/session_state.py`    | Session goals and state          |
+| `core/memory.py`           | Memory operations                |
+| `core/profile.py`          | Profile management               |
+| `core/logger.py`           | Logging                          |
+| `core/config.py`           | Configuration                    |
+| `core/config_validator.py` | Configuration validation         |
+| `core/system_health.py`    | System health                    |
+| `core/ai_client.py`           | Anthropic AI client and API configuration |
+| `core/ai_engine.py`           | AI provider selection and response generation |
+| `core/providers/base.py`      | Base AI provider interface |
+| `core/providers/mock.py`      | Mock AI provider for testing |
+| `core/providers/anthropic_provider.py` | Anthropic Claude provider |
+
+| `data/memory.txt`          | Persistent memories              |
+| `data/profile.txt`         | Profile data                     |
 
 ---
 
@@ -1607,14 +1788,14 @@ suggest <keyword>
 # 🧪 Development Status
 
 ```text
-Feature #1  Smart Intent Detection       ✅
-Feature #2  Contextual Answer Generation ✅
-Feature #3  Multi-Turn Goal Tracking     ✅
-Feature #4  Topic Switching              ✅
-Feature #5  Smart Context Ranking        ✅
-Feature #6  Conversational Corrections   ✅
-Feature #7  Conversation Summary         ✅
-Feature #8  Session Goals & State        ✅
+Feature #1  Smart Intent Detection       ✅
+Feature #2  Contextual Answer Generation ✅
+Feature #3  Multi-Turn Goal Tracking     ✅
+Feature #4  Topic Switching              ✅
+Feature #5  Smart Context Ranking        ✅
+Feature #6  Conversational Corrections   ✅
+Feature #7  Conversation Summary         ✅
+Feature #8  Session Goals & State        ✅
 ```
 
 ---
@@ -1622,7 +1803,7 @@ Feature #8  Session Goals & State        ✅
 # 🏁 Current Milestone
 
 ```text
-ULTRON v0.30
+ULTRON v0.31
 ```
 
 ### Completed
@@ -1661,19 +1842,19 @@ The long-term objective is to build an assistant that can:
 
 ```text
 Understand
-    ↓
+    ↓
 Remember
-    ↓
+    ↓
 Reason
-    ↓
+    ↓
 Track Context
-    ↓
+    ↓
 Track Goals
-    ↓
+    ↓
 Plan
-    ↓
+    ↓
 Execute
-    ↓
+    ↓
 Learn from Interaction
 ```
 
@@ -1696,7 +1877,7 @@ Ultron AI Assistant
 # 📌 Project Status
 
 ```text
-Current Version: v0.30
+Current Version: v0.31
 Development Status: Active
 Feature #1: Complete
 Feature #2: Complete
@@ -1706,6 +1887,10 @@ Feature #5: Complete
 Feature #6: Complete
 Feature #7: Complete
 Feature #8: Complete
+AI Integration Foundation: Complete
+Mock AI Provider: Complete
+Anthropic Provider: Complete
+Real Claude API Testing: Pending API Credits
 ```
 
 ---
