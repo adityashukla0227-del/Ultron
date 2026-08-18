@@ -3746,32 +3746,48 @@ def handle_conversation(user):
             user
         )
 
-        if answer:
+        if answer and not (
+            detected_topic == "ai"
+            and current_intent in [
+                "question",
+                "learning",
+                "how",
+                "why",
+                "general",
+            ]
+        ):
 
             print(
                 f"Ultron: {answer}"
             )
 
-        else:
-
-            print(
-                f"Ultron: Samajh gaya bhai. "
-                f"Hum {detected_topic.replace('_', ' ')} "
-                f"ke context mein baat kar rahe hain."
+            save_conversation_context(
+                user,
+                detected_topic,
+                current_intent,
+                detected_topic
             )
 
-        save_conversation_context(
-            user,
-            detected_topic,
-            current_intent,
-            detected_topic
-        )
+            last_topic = detected_topic
+            last_entity = detected_topic
+            last_query = user
 
-        last_topic = detected_topic
-        last_entity = detected_topic
-        last_query = user
+            return True
+     
+        if answer:
+            save_conversation_context(
+                user,
+                detected_topic,
+                current_intent,
+                detected_topic
+            )
 
-        return True
+            last_topic = detected_topic
+            last_entity = detected_topic
+            last_query = user
+
+        # YAHAN return True NAHI HOGA
+        # Execution AI Conversation Fallback mein jayega
 
     # ========================================================
     # AI Conversation Fallback
