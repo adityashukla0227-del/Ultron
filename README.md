@@ -1,315 +1,112 @@
 # 🤖 Ultron AI Assistant
 
-> **Ultron** is a personal AI assistant project built in Python with a modular architecture for conversation, memory, profile management, natural-language commands, context tracking, conversation summaries, corrections, and session state.
-
----
-
-## 📌 Project Overview
-
-Ultron is being developed as a personal AI assistant capable of understanding natural user commands, maintaining memories, tracking conversation context, managing user profile information, handling command history, generating conversation summaries, correcting conversational misunderstandings, and maintaining session-level goals and state.
-
-The project follows a modular architecture so individual systems can be developed, tested, improved, and maintained independently.
+> **Ultron** is a modular personal AI assistant built in Python, designed to understand conversations, remember information, track context and goals, execute commands, manage user state, and integrate external AI providers.
 
 ---
 
 # 🚀 Current Version
 
-**Current Development Version:** `v0.31`
+**Current Development Version:** `v0.32`
 
-### Completed Conversational Features
+**Development Status:** 🟢 Active
 
-| Feature | Name                         | Status     |
-| ------- | ---------------------------- | ---------- |
-| #1      | Smart Intent Detection       | ✅ Complete |
-| #2      | Contextual Answer Generation | ✅ Complete |
-| #3      | Multi-Turn Goal Tracking     | ✅ Complete |
-| #4      | Conversation Topic Switching | ✅ Complete |
-| #5      | Smart Context Ranking        | ✅ Complete |
-| #6      | Conversational Corrections   | ✅ Complete |
-| #7      | Conversation Summary         | ✅ Complete |
-| #8      | Session Goals & State        | ✅ Complete |
+Ultron is being developed incrementally through stable feature releases.
 
 ---
 
-# 🧠 Core Capabilities
+# 📌 What Is Ultron?
+
+Ultron is a personal AI assistant project focused on building an intelligent, modular, and extensible assistant from the ground up.
+
+The project combines traditional local assistant functionality with conversational intelligence and external AI integration.
 
 Ultron currently contains systems for:
 
-* 🧠 Memory management
-* 👤 User profile management
-* 💬 Conversation handling
-* 🎯 Intent detection
-* 🔄 Topic switching
-* 🧩 Context tracking
-* 📊 Context ranking
-* 🔧 Conversational corrections
-* 📋 Conversation summaries
-* 🎯 Session goals
-* 🗂️ Session state
-* 📝 Command history
-* 💾 Backup and restore
-* 📤 Data export
-* 📥 Data import
-* ⚙️ Configuration management
-* 🩺 System health
-* 📊 System summary
-* 📝 Logging
-* 💡 Command suggestions
-* 🌐 Natural-language command translation
-* 🧠 AI Engine
-* 🔌 Pluggable AI Provider System
-* 🤖 Mock AI Provider
-* ☁️ Anthropic AI Provider
-* 🛡️ AI Error Handling
-* 💬 AI-powered conversational fallback
-
----
-
-# 📁 Project Structure
-
 ```text
-Ultron/
-│
-├── main.py
-├── README.md
-│
-├── core/
-│   │
-│   ├── __init__.py
-│   │
-│   ├── conversation.py
-│   ├── commands.py
-│   ├── config.py
-│   ├── natural_language.py
-│   ├── session_state.py
-│   │
-│   ├── memory.py
-│   ├── profile.py
-│   ├── logger.py
-│   │
-│   ├── system_health.py
-│   ├── config_validator.py
-│   │
-│   ├── commands_memory.py
-│   ├── commands_backup.py
-│   ├── commands_restore.py
-│   ├── commands_profile.py
-│   ├── commands_settings.py
-│   ├── commands_history.py
-│   ├── commands_export.py
-│   ├── commands_import_export.py
-│   ├── commands_config.py
-│   ├── commands_system_summary.py
-│   ├── commands_log_tools.py
-│   ├── commands_suggest.py
-│   │
-│   └── command_suggestions.py
-│
-├── modules/
-│   │
-│   └── ...
-│
-├── data/
-│   │
-│   ├── memory.txt
-│   ├── profile.txt
-│   └── ...
-│
-├── tests/
-│   │
-│   └── ...
-│
-└── assets/
-    │
-    └── ...
+Memory
+Profile Management
+Command Processing
+Natural-Language Commands
+Conversation Intelligence
+Intent Detection
+Topic Detection
+Topic Switching
+Entity Tracking
+Context Tracking
+Context Ranking
+Goal Tracking
+Conversational Corrections
+Conversation Summaries
+Session State
+Command History
+Backup / Restore
+Import / Export
+Logging
+System Health
+Configuration
+Command Suggestions
+AI Integration
+AI Provider Architecture
+Automated Testing
 ```
 
 ---
 
-# 🧩 Architecture
+# 🧠 What Can Ultron Do Right Now?
 
-Ultron follows a modular architecture.
+This section represents the capabilities available in the current development architecture.
 
-```text
-                     ┌──────────────────────┐
-                     │       main.py        │
-                     │   Application Entry  │
-                     └──────────┬───────────┘
-                                │
-                                ▼
-                     ┌──────────────────────┐
-                     │     commands.py      │
-                     │   Command Router     │
-                     └──────────┬───────────┘
-                                │
-              ┌─────────────────┼──────────────────┐
-              │                 │                  │
-              ▼                 ▼                  ▼
-       ┌─────────────┐   ┌─────────────┐   ┌──────────────┐
-       │   Memory    │   │   Profile   │   │ Conversation │
-       │   System    │   │   System    │   │    Engine    │
-       └─────────────┘   └─────────────┘   └───────┬──────┘
-                                                   │
-                          ┌────────────────────────┼────────────────────┐
-                          │                        │                    │
-                          ▼                        ▼                    ▼
-                   ┌──────────────┐       ┌──────────────┐      ┌──────────────┐
-                   │    Intent    │       │    Context   │      │    Topic     │
-                   │  Detection   │       │   Tracking   │      │   Switching  │
-                   └──────────────┘       └──────────────┘      └──────────────┘
-                          │                        │                    │
-                          └────────────────────────┼────────────────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ Session State   │
-                                          │ Goals & State   │
-                                          └─────────────────┘
-```
+## 💾 1. Remember Information
 
----
+Ultron has a persistent memory system.
 
-# 🧠 Memory System
-
-Ultron contains a persistent memory system designed to store information that can be recalled later.
-
-Memory functionality includes:
-
-* Save memory
-* Show memories
-* Search memory
-* Update memory
-* Delete memory
-* Similar-memory detection
-* Duplicate-memory cleanup
-* Memory command handling
-
----
-
-## 📂 Memory Storage
-
-Persistent memory is stored inside:
+It can:
 
 ```text
-data/
-└── memory.txt
-```
-
-The memory system allows Ultron to retain information across conversations.
-
-Example memories:
-
-```text
-python programming
-i like python
-i like cricket
-my goal is to build ultron
-my name is Aditya
-i live in Lucknow
-i like coding
-i like programming
-i am building ultron
-```
-
----
-
-# 💾 Memory Commands
-
-### Show Memories
-
-```text
-show memories
+Save memories
+Recall memories
+Search memories
+Update memories
+Delete memories
+Detect similar memories
+Clean duplicate memories
 ```
 
 Example:
 
 ```text
-===== MEMORIES =====
-python programming
-i like python
-i like cricket
-my goal is to build ultron
-my name is Aditya
-i like coding
-i like programming
-====================
+User:
+remember that I like Python
+
+Ultron:
+Memory saved successfully.
 ```
 
----
-
-### Search Memory
+Later:
 
 ```text
-search memory python
+User:
+show my memories
 ```
+
+Ultron can retrieve stored information.
 
 ---
 
-### Save Memory
+# 👤 2. Manage User Profile
 
-Natural-language memory statements can be processed by the memory system.
+Ultron maintains a separate profile system.
+
+It can:
+
+```text
+Store profile information
+Show profile information
+Update profile information
+Delete profile information
+```
 
 Examples:
-
-```text
-remember that I like Python
-remember that my goal is to build Ultron
-remember that I like cricket
-```
-
----
-
-### Delete Memory
-
-```text
-delete memory <memory>
-```
-
----
-
-### Update Memory
-
-```text
-update memory <old> <new>
-```
-
----
-
-### Cleanup Memories
-
-```text
-cleanup memories
-```
-
-The cleanup system can detect and remove duplicate memories.
-
-Example:
-
-```text
-Memory cleanup complete.
-3 duplicate memory removed.
-```
-
----
-
-# 👤 Profile System
-
-Ultron includes a separate profile system for user-specific profile information.
-
-Profile data is stored separately from general memories.
-
-```text
-data/
-└── profile.txt
-```
-
----
-
-## Profile Commands
-
-```text
-show my profile
-```
 
 ```text
 set my name to Aditya
@@ -320,147 +117,93 @@ set my location to Lucknow
 ```
 
 ```text
-change my name to Aditya
-```
-
-```text
-delete my name
+show my profile
 ```
 
 ---
 
-# 💬 Conversation Engine
+# 💬 3. Understand Conversations
 
-The conversation engine is one of the main components of Ultron.
+Ultron contains a conversation engine capable of processing multiple conversational turns.
 
-Main responsibilities include:
-
-* Processing user input
-* Maintaining conversational context
-* Detecting intent
-* Detecting topics
-* Tracking entities
-* Tracking technology references
-* Managing pending questions
-* Supporting multi-turn conversations
-* Handling conversational corrections
-* Generating conversation summaries
-
-Main file:
+The conversation system can track:
 
 ```text
-core/conversation.py
-```
-
----
-
-# 🧠 Feature #1 — Smart Intent Detection
-
-### Status
-
-```text
-✅ Complete
-```
-
-Ultron attempts to identify the user's current intent.
-
-Examples of conversational intent include:
-
-* General conversation
-* Questions
-* Commands
-* Corrections
-* Memory-related requests
-* Profile-related requests
-* History requests
-* Summary requests
-* Session requests
-
-Intent information can become part of the active conversational context.
-
----
-
-# 💬 Feature #2 — Contextual Answer Generation
-
-### Status
-
-```text
-✅ Complete
-```
-
-Ultron uses available conversational context to make responses more relevant.
-
-Context can include:
-
-```text
+Intent
 Topic
 Entity
-Intent
 Technology
-Pending question
 Conversation history
-Memories
-Profile information
+Pending questions
+Goals
 Session state
 ```
 
-The purpose is to avoid treating every user message as completely independent.
+This allows Ultron to maintain relationships between different messages.
 
 ---
 
-# 🎯 Feature #3 — Multi-Turn Goal Tracking
+# 🧠 4. Detect Intent
 
-### Status
+Ultron can identify different types of user requests.
+
+Examples include:
 
 ```text
-✅ Complete
+General conversation
+Questions
+Commands
+Corrections
+Memory requests
+Profile requests
+History requests
+Summary requests
+Session requests
 ```
 
-Ultron can track goals across multiple conversational turns.
+---
+
+# 🔄 5. Detect Topic Switching
+
+Ultron can detect when the user changes the subject.
 
 Example:
 
 ```text
-Aditya: I want to build Ultron
-Ultron: ...
-Aditya: I want it to become a powerful AI assistant
+User:
+Let's talk about Ultron.
+
+...
+
+User:
+How does AI work?
+```
+
+Ultron can identify that the conversation has moved to another topic.
+
+---
+
+# 🎯 6. Track Goals Across Conversations
+
+Ultron can track goals across multiple turns.
+
+Example:
+
+```text
+User:
+I want to build Ultron.
+
+User:
+I want it to become a powerful AI assistant.
 ```
 
 The second statement can be interpreted in relation to the previously established goal.
 
 ---
 
-# 🔄 Feature #4 — Conversation Topic Switching
+# 🧩 7. Track and Rank Context
 
-### Status
-
-```text
-✅ Complete
-```
-
-Ultron detects when the conversation moves from one topic to another.
-
-Example:
-
-```text
-Ultron: Topic switch detected 🔄 ultron → ai.
-```
-
-This allows the conversation engine to adapt to changing subjects.
-
----
-
-# 🧠 Feature #5 — Smart Context Ranking
-
-### Status
-
-```text
-✅ Complete
-```
-
-Ultron ranks available contextual information so that more relevant information can receive greater importance during conversation processing.
-
-Potential contextual information includes:
+Ultron maintains contextual information such as:
 
 ```text
 Current topic
@@ -469,103 +212,68 @@ Current intent
 Technology
 Recent conversation
 Previous conversation
-User profile
 Memory
+Profile
 Session state
+Goals
 ```
+
+Context ranking allows relevant information to receive greater importance during processing.
 
 ---
 
-# 🔧 Feature #6 — Conversational Corrections
+# 🔧 8. Handle Conversational Corrections
 
-### Status
-
-```text
-✅ Complete
-```
-
-Ultron can recognize conversational corrections.
+Ultron can recognize when the user corrects a previous request.
 
 Example:
 
 ```text
-Aditya: show my memories
-Aditya: no, I meant show my history
+User:
+show my memories
+
+User:
+No, I meant show my history.
 ```
 
-Ultron can interpret the second statement as a correction rather than treating it as an unrelated request.
-
-Example response:
-
-```text
-Ultron: Correction applied. 🔧
-```
-
-The correction system helps improve multi-turn conversational behavior.
+The second message can be interpreted as a correction rather than a completely unrelated request.
 
 ---
 
-# 📋 Feature #7 — Conversation Summary
+# 📋 9. Generate Conversation Summaries
 
-### Status
+Ultron can generate summaries of the current conversation.
 
-```text
-✅ Complete
-```
-
-Ultron can generate a summary of the current conversation.
-
-Command:
+Supported commands include:
 
 ```text
 show conversation summary
 ```
 
-Example:
-
 ```text
-===== CONVERSATION SUMMARY =====
-
-Current topic: ai
-Current entity: features
-Technology: AI
-Current intent: general
-
-Key points:
-- aditya: i am building ultron
-- aditya: my goal is to make it a powerful ai assistant
-- aditya: i am working on conversational features
-- aditya: show conversation summary
-
-Recent conversation:
-- aditya: show conversation summary
-- i am building ultron
-- my goal is to make it a powerful ai assistant
-- i am working on conversational features
-- show conversation summary
-
-================================
+show summary
 ```
-
-Other supported summary-style commands include:
 
 ```text
 what did we discuss
-show summary
-show conversation summary
+```
+
+A summary can contain:
+
+```text
+Current topic
+Current entity
+Technology
+Current intent
+Key points
+Recent conversation
 ```
 
 ---
 
-# 🎯 Feature #8 — Session Goals & State
+# 🎯 10. Manage Session Goals and State
 
-### Status
-
-```text
-✅ Complete
-```
-
-Feature #8 introduces a dedicated session-state system.
+Ultron has a dedicated session-state system.
 
 Main file:
 
@@ -573,7 +281,7 @@ Main file:
 core/session_state.py
 ```
 
-The session state maintains information such as:
+Session information can include:
 
 ```text
 Goal
@@ -588,211 +296,56 @@ Technology
 Pending question
 ```
 
----
-
-# 🧩 Session State Structure
-
-Conceptually, the state contains:
-
-```text
-{
-    goal,
-    status,
-    context,
-    started_at,
-    updated_at,
-    topic,
-    entity,
-    intent,
-    technology,
-    pending_question
-}
-```
-
-The session state is maintained as a shared state so different Ultron components can access the same active session.
-
----
-
-# ▶️ Start Session
-
-Command:
+Example:
 
 ```text
 start session
 ```
 
-Example:
-
-```text
-Ultron: Session started successfully.
-```
-
-A new active session is created.
-
----
-
-# 🎯 Set Session Goal
-
-Command:
-
 ```text
 set session goal to build ultron
 ```
-
-Example:
-
-```text
-Ultron: Session goal updated successfully.
-```
-
----
-
-# 🔎 Show Session Goal
-
-Command:
-
-```text
-show session goal
-```
-
-Example:
-
-```text
-Ultron: Current session goal: build ultron
-```
-
----
-
-# 📊 Show Session State
-
-Command:
 
 ```text
 show session state
 ```
 
-Example:
-
-```text
-Ultron: Current session state:
-- Goal: build ultron
-- Status: active
-- Context: {}
-- Started at: 2026-08-13T22:28:48
-- Updated at: 2026-08-13T22:28:48
-```
-
----
-
-# 🗂️ Update Session Context
-
-Command:
-
 ```text
 update session context project ultron
 ```
-
-Example:
-
-```text
-Ultron: Session context updated successfully.
-```
-
----
-
-# 🔎 Show Session Context
-
-Command:
-
-```text
-show session context
-```
-
-Example:
-
-```text
-Ultron: Current session context:
-- project: ultron
-```
-
----
-
-# 🧹 Clear Session Goal
-
-Command:
-
-```text
-clear session goal
-```
-
-Example:
-
-```text
-Ultron: Session goal cleared successfully.
-```
-
-The goal becomes:
-
-```text
-None
-```
-
----
-
-# 🧹 Clear Complete Session
-
-Command:
 
 ```text
 clear session
 ```
 
-Example:
-
-```text
-Ultron: Session cleared successfully.
-```
-
-The state returns to:
-
-```text
-Goal: None
-Status: idle
-Context: {}
-Started at: None
-Updated at: None
-```
-
 ---
 
-# 📝 Command History
+# 📝 11. Maintain Command History
 
-Ultron maintains command history for previous commands.
+Ultron can maintain a history of previously executed commands.
 
-Command:
+Example:
 
 ```text
 show my history
 ```
 
-Example:
+Possible output:
 
 ```text
 ===== COMMAND HISTORY =====
 1. show memories
-2. history
-3. profile show
+2. show my profile
+3. start session
 4. show conversation summary
 ===========================
 ```
 
-Command history helps Ultron maintain a record of user commands during operation.
-
 ---
 
-# 🌐 Natural Language Command System
+# 🌐 12. Understand Natural-Language Commands
 
-Ultron contains a natural-language command layer.
+Ultron includes a natural-language command processing layer.
 
 Main file:
 
@@ -800,64 +353,54 @@ Main file:
 core/natural_language.py
 ```
 
-Responsibilities include:
+Different expressions can map to the same internal command.
 
-* Command aliases
-* Command translation
-* Command parsing
-* Natural-language variations
-* Profile command parsing
-* Backup command parsing
-* History command parsing
-* Memory command parsing
-* System command parsing
-
-Examples:
-
-```text
-show my memories
-```
+Example:
 
 ```text
 show memories
+show my memories
 ```
 
-```text
-show my history
-```
+Both can represent the same intent.
+
+Other examples:
 
 ```text
-show my profile
-```
-
-```text
-show system health
-```
-
-Different natural-language variations can map to the same internal command.
-
----
-
-# 💾 Backup System
-
-Ultron includes backup functionality.
-
-Capabilities include:
-
-* Create backup
-* List backups
-* Show backup information
-* Delete backup
-* Restore backup
-
-Example commands:
-
-```text
+make a backup
 create a backup
 ```
 
 ```text
-make a backup
+show profile
+show my profile
+```
+
+```text
+show history
+show my history
+```
+
+---
+
+# 💾 13. Backup and Restore
+
+Ultron supports data backup functionality.
+
+Capabilities include:
+
+```text
+Create backup
+List backups
+Inspect backups
+Delete backup
+Restore backup
+```
+
+Examples:
+
+```text
+create a backup
 ```
 
 ```text
@@ -865,28 +408,14 @@ show backups
 ```
 
 ```text
-delete backup <name>
-```
-
----
-
-# ♻️ Restore System
-
-Restore functionality allows stored backup data to be restored.
-
-Example:
-
-```text
 restore backup <name>
 ```
 
-The restore system is implemented separately so backup operations do not need to be handled directly inside the main command router.
-
 ---
 
-# 📤 Export System
+# 📤 14. Import and Export
 
-Ultron supports data export.
+Ultron supports data import and export.
 
 Possible exported information includes:
 
@@ -899,39 +428,33 @@ Logs
 System information
 ```
 
-Example:
+Examples:
 
 ```text
 export all my data
 ```
 
----
-
-# 📥 Import System
-
-Ultron also supports importing previously exported information.
-
-Example:
-
 ```text
 import all my data
 ```
 
-The import/export system is separated from the main command router.
-
 ---
 
-# ⚙️ Configuration System
+# ⚙️ 15. Configuration Management
 
-Configuration functionality includes:
+Ultron includes configuration management.
 
-* Configuration inspection
-* Configuration validation
-* Configuration summary
-* Version management
-* System configuration handling
+It supports:
 
-Main files include:
+```text
+Configuration inspection
+Configuration validation
+Configuration summaries
+Environment configuration
+Version information
+```
+
+Important files:
 
 ```text
 core/config.py
@@ -941,19 +464,11 @@ core/commands_config.py
 
 ---
 
-# 🩺 System Health
+# 🩺 16. System Health
 
-Ultron contains a system-health module.
+Ultron includes a system-health subsystem.
 
-Main file:
-
-```text
-core/system_health.py
-```
-
-The system-health functionality is designed to provide an overview of the assistant's operational state.
-
-Example commands:
+Examples:
 
 ```text
 check system health
@@ -963,11 +478,13 @@ check system health
 system health
 ```
 
+The system is designed to provide information about the current operational state of Ultron.
+
 ---
 
-# 📊 System Summary
+# 📊 17. System Summary
 
-Ultron can provide a higher-level system summary.
+Ultron can provide a high-level overview of the current system.
 
 Example:
 
@@ -975,11 +492,9 @@ Example:
 show system summary
 ```
 
-The summary system can provide information about the current Ultron environment and its major components.
-
 ---
 
-# 📝 Logging System
+# 📝 18. Logging
 
 Ultron contains a logging system for tracking application activity.
 
@@ -989,29 +504,21 @@ Main file:
 core/logger.py
 ```
 
-Log-related functionality is separated into command modules.
-
-Example commands include:
-
-```text
-show my logs
-```
+Examples:
 
 ```text
 show logs
 ```
 
+```text
+show my logs
+```
+
 ---
 
-# 💡 Command Suggestions
-AI Engine
-AI Provider Architecture
-Mock AI Provider
-Anthropic Provider
-AI Error Handling
-AI Conversation Integration
+# 💡 19. Command Suggestions
 
-Ultron includes command suggestions to help users discover supported commands.
+Ultron contains a command suggestion system.
 
 Example:
 
@@ -1019,183 +526,418 @@ Example:
 suggest memory
 ```
 
-The suggestion system can recommend relevant commands based on a keyword or user input.
+The system can help users discover relevant commands.
 
-Main components include:
+---
+
+# 🤖 20. AI Integration
+
+Ultron introduced external AI integration through a provider-based architecture.
+
+The architecture contains:
 
 ```text
-core/commands_suggest.py
-core/command_suggestions.py
+AI Engine
+AI Provider Interface
+Mock AI Provider
+Anthropic Provider
+AI Error Handling
+Conversation Integration
+Environment Configuration
 ```
 
 ---
 
-# 🛠️ Command Router
+# 🔌 AI Provider Architecture
 
-The main command router is:
+Ultron does not directly depend on one AI provider.
 
 ```text
-core/commands.py
+                    ULTRON
+                       │
+                       ▼
+               Conversation Engine
+                       │
+                       ▼
+                   AI Engine
+                       │
+              ┌────────┴────────┐
+              │                 │
+              ▼                 ▼
+        Mock Provider     Anthropic Provider
+              │                 │
+              ▼                 ▼
+       Local Testing         Claude API
 ```
 
-Its responsibilities include routing commands to the correct subsystem.
+This architecture makes it possible to add additional providers later.
 
-Major command categories include:
+---
+
+# 🤖 Mock AI Provider
+
+Main file:
 
 ```text
-System
-History
-Profile
-Settings
-Backup
-Logs
-Import / Export
-Health
-Profile Manager
-Export
-Config
-System Summary
-Log Tools
-Restore
-Suggestions
-Memory
-Session State
-Conversation
+core/providers/mock.py
+```
+
+The Mock Provider allows AI functionality to be tested without using API credits.
+
+Configuration:
+
+```text
+AI_MODE=mock
+```
+
+Example:
+
+```text
+User:
+Hello Ultron
+```
+
+```text
+Ultron:
+Mock AI response 🤖
+Prompt received: Hello Ultron
 ```
 
 ---
 
-# 🧱 Main Entry Point
+# ☁️ Anthropic Provider
 
-Ultron starts through:
+Main file:
 
 ```text
-main.py
+core/providers/anthropic_provider.py
 ```
 
-The main entry point initializes the assistant and handles the primary interaction loop.
+The Anthropic provider communicates with Claude through the Anthropic API.
+
+Configuration:
+
+```text
+AI_MODE=anthropic
+```
+
+A valid Anthropic API key is required for real external requests.
+
+Current status:
+
+```text
+Provider implementation:      ✅ Complete
+Provider selection:           ✅ Complete
+Error handling:               ✅ Complete
+Automated tests:              ✅ Complete
+Real Claude API testing:      ⏳ Pending API Credits
+```
+
+---
+
+# 🛡️ AI Error Handling
+
+Ultron is designed to prevent AI provider failures from crashing the entire assistant.
 
 Conceptually:
 
 ```text
+AI Request
+    ↓
+AI Provider
+    ↓
+Error
+    ↓
+Error Handling
+    ↓
+Safe Response
+    ↓
+Ultron Continues
+```
+
+---
+
+# 💬 Conversation → AI Integration
+
+The AI layer is connected to the existing conversation architecture.
+
+```text
+User Request
+     ↓
+Conversation Engine
+     ↓
+AI Engine
+     ↓
+Selected Provider
+     ↓
+AI Response
+     ↓
+Ultron
+```
+
+AI is designed to complement Ultron's existing local capabilities.
+
+---
+
+# 🧪 Automated Testing
+
+Ultron now contains automated AI tests.
+
+Test file:
+
+```text
+tests/test_ai.py
+```
+
+Current tests include:
+
+```text
+test_mock_ai_response
+test_mock_provider_selection
+test_anthropic_provider_selection
+test_empty_prompt
+test_prompt_with_context
+test_mock_provider_with_context
+test_anthropic_without_api_key
+test_anthropic_placeholder_api_key
+```
+
+Current result:
+
+```text
+8 passed
+0 failed
+```
+
+Run all tests:
+
+```powershell
+python -m pytest -v
+```
+
+Run AI tests:
+
+```powershell
+python -m pytest tests/test_ai.py -v
+```
+
+---
+
+# 📁 Project Structure
+
+```text
+Ultron/
+│
+├── main.py
+├── README.md
+├── .gitignore
+├── .env
+│
+├── core/
+│   │
+│   ├── __init__.py
+│   │
+│   ├── conversation.py
+│   ├── commands.py
+│   ├── config.py
+│   ├── natural_language.py
+│   ├── session_state.py
+│   │
+│   ├── memory.py
+│   ├── profile.py
+│   ├── logger.py
+│   │
+│   ├── system_health.py
+│   ├── config_validator.py
+│   │
+│   ├── ai_client.py
+│   ├── ai_engine.py
+│   │
+│   ├── providers/
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   ├── mock.py
+│   │   └── anthropic_provider.py
+│   │
+│   ├── commands_memory.py
+│   ├── commands_backup.py
+│   ├── commands_restore.py
+│   ├── commands_profile.py
+│   ├── commands_settings.py
+│   ├── commands_history.py
+│   ├── commands_export.py
+│   ├── commands_import_export.py
+│   ├── commands_config.py
+│   ├── commands_system_summary.py
+│   ├── commands_log_tools.py
+│   ├── commands_suggest.py
+│   │
+│   └── command_suggestions.py
+│
+├── modules/
+│   └── ...
+│
+├── data/
+│   ├── memory.txt
+│   ├── profile.txt
+│   └── ...
+│
+├── tests/
+│   └── test_ai.py
+│
+└── assets/
+    └── ...
+```
+
+> `.env` is a local configuration file and must remain excluded from Git.
+
+---
+
+# 🧩 Complete Architecture
+
+```text
+                         ULTRON
+                            │
+                            ▼
+                         main.py
+                            │
+                            ▼
+                    Command Router
+                  core/commands.py
+                            │
+          ┌─────────────────┼──────────────────┐
+          │                 │                  │
+          ▼                 ▼                  ▼
+       Memory            Profile          Conversation
+       System            System              Engine
+                                              │
+                    ┌─────────────────────────┼────────────────────┐
+                    │                         │                    │
+                    ▼                         ▼                    ▼
+                 Intent                   Context                Topic
+                Detection                 Tracking              Switching
+                    │                         │                    │
+                    └─────────────────────────┼────────────────────┘
+                                              │
+                                              ▼
+                                       Context Ranking
+                                              │
+                                              ▼
+                                      Corrections
+                                              │
+                                              ▼
+                                      Conversation
+                                        Summary
+                                              │
+                                              ▼
+                                       Session State
+                                              │
+                                              ▼
+                                       Session Goals
+                                              │
+                                              ▼
+                                          AI Engine
+                                              │
+                                    ┌─────────┴─────────┐
+                                    │                   │
+                                    ▼                   ▼
+                              Mock Provider      Anthropic Provider
+                                    │                   │
+                                    ▼                   ▼
+                             Local Testing         Claude API
+```
+
+---
+
+# 🧠 Memory Architecture
+
+```text
 User Input
-    ↓
-main.py
-    ↓
-commands.py
-    ↓
-Command Detection
-    ↓
-Correct Module
-    ↓
-Response
+    ↓
+Memory Detection
+    │
+    ├── Save
+    ├── Search
+    ├── Update
+    ├── Delete
+    └── Cleanup
+           ↓
+    data/memory.txt
 ```
 
 ---
 
-# 🧪 Testing
-
-Ultron is developed incrementally and tested feature-by-feature.
-
-Typical testing process:
+# 🎯 Session Architecture
 
 ```text
-1. Implement feature
-2. Save code
-3. Run application
-4. Execute feature commands
-5. Check expected output
-6. Fix integration issues
-7. Repeat
-8. Commit stable version
+Session State
+     │
+     ├── Goal
+     ├── Status
+     ├── Context
+     ├── Started Time
+     ├── Updated Time
+     ├── Topic
+     ├── Entity
+     ├── Intent
+     ├── Technology
+     └── Pending Question
 ```
 
 ---
 
-# 🧪 Feature #8 Test
+# 🔐 Security
 
-The final Feature #8 test sequence was:
+Ultron uses environment variables for sensitive AI configuration.
 
-```text
-start session
-set session goal to build ultron
-show session goal
-show session state
-update session context project ultron
-show session context
-clear session goal
-show session goal
-clear session
-show session state
-```
-
-Expected behavior:
+Example:
 
 ```text
-Session starts
-↓
-Goal becomes "build ultron"
-↓
-Goal is displayed correctly
-↓
-State shows active session
-↓
-Context becomes project=ultron
-↓
-Context is displayed
-↓
-Goal is cleared
-↓
-Complete session is cleared
-↓
-State returns to idle
+ANTHROPIC_API_KEY=your_api_key_here
 ```
+
+API keys must:
+
+```text
+Never be committed to Git
+Never be hardcoded
+Never be shared publicly
+Never be uploaded to GitHub
+```
+
+The `.env` file should be included in `.gitignore`.
 
 ---
 
-# 🔒 State Management Principle
-
-Ultron uses a single session-state source rather than maintaining multiple independent session dictionaries.
-
-The primary session state module is:
-
-```text
-core/session_state.py
-```
-
-This prevents different parts of Ultron from reading different versions of the current session state.
-
----
-
-# 📦 Dependencies
-
-The project is primarily developed in Python.
-
-Recommended environment:
-
-```text
-Python
-Virtual Environment
-VS Code
-Git
-GitHub
-```
+# ▶️ Installation
 
 Create a virtual environment:
 
 ```powershell
-python -m venv venv
+python -m venv venv313
 ```
 
-Activate it on Windows:
+Activate it:
 
 ```powershell
-venv\Scripts\activate
+venv313\Scripts\activate
+```
+
+Install project dependencies:
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+Install pytest for development:
+
+```powershell
+python -m pip install pytest
 ```
 
 ---
 
-# ▶️ Running Ultron
+# ▶️ Run Ultron
 
 From the project root:
 
@@ -1206,109 +948,143 @@ python main.py
 Example:
 
 ```text
-(venv) PS C:\Users\...\ultron> python main.py
-```
-
-Then interact with Ultron through the terminal.
-
----
-
-# 🧭 Example Conversation
-
-```text
-Aditya: I am building Ultron
-
-Ultron: Ultron tumhara personal AI assistant project hai...
-
-Aditya: My goal is to make it a powerful AI assistant
-
-Ultron: ...
-
-Aditya: I am working on conversational features
-
-Ultron: ...
-
-Aditya: show conversation summary
-
-Ultron: ===== CONVERSATION SUMMARY =====
-...
+(venv313) PS C:\Users\...\ultron> python main.py
 ```
 
 ---
 
-# 🧠 Example Memory Flow
+# 🧪 Run Tests
 
-```text
-Aditya: remember that I like Python
+Run the complete test suite:
 
-Ultron:
-Memory saved successfully.
+```powershell
+python -m pytest -v
 ```
 
-Later:
+Run AI tests:
 
-```text
-Aditya: show my memories
+```powershell
+python -m pytest tests/test_ai.py -v
 ```
 
-Ultron retrieves stored memories.
-
----
-
-# 🎯 Example Session Flow
+Current AI test result:
 
 ```text
-Aditya: start session
-
-Ultron: Session started successfully.
-
-Aditya: set session goal to build ultron
-
-Ultron: Session goal updated successfully.
-
-Aditya: show session goal
-
-Ultron: Current session goal: build ultron
-
-Aditya: update session context project ultron
-
-Ultron: Session context updated successfully.
-
-Aditya: show session state
-
-Ultron:
-- Goal: build ultron
-- Status: active
-- Context: {'project': 'ultron'}
+8 passed
+0 failed
 ```
 
 ---
 
-# 🔄 Development Workflow
+# 📋 Useful Commands
 
-The project is developed using incremental versions.
-
-General workflow:
+## Memory
 
 ```text
-Idea
- ↓
-Feature design
- ↓
-Implementation
- ↓
-Testing
- ↓
-Integration
- ↓
-Bug fixing
- ↓
-Version completion
- ↓
-Git commit
- ↓
-GitHub push
+show memories
+search memory <query>
+cleanup memories
+delete memory <memory>
+update memory <old> <new>
 ```
+
+## Profile
+
+```text
+show my profile
+set my <key> to <value>
+change my <key> to <value>
+delete my <key>
+```
+
+## History
+
+```text
+show my history
+show history
+```
+
+## Conversation
+
+```text
+show conversation summary
+show summary
+what did we discuss
+```
+
+## Session
+
+```text
+start session
+set session goal to <goal>
+show session goal
+show session state
+update session context <key> <value>
+show session context
+clear session goal
+clear session
+```
+
+## System
+
+```text
+check system health
+show system health
+show system summary
+show my config
+show my logs
+```
+
+## Data
+
+```text
+create a backup
+show backups
+delete backup <name>
+restore backup <name>
+export all my data
+import all my data
+```
+
+## Suggestions
+
+```text
+suggest <keyword>
+```
+
+---
+
+# 🧪 Feature Status
+
+| Feature                       | Status                |
+| ----------------------------- | --------------------- |
+| Smart Intent Detection        | ✅ Complete            |
+| Contextual Answer Generation  | ✅ Complete            |
+| Multi-Turn Goal Tracking      | ✅ Complete            |
+| Conversation Topic Switching  | ✅ Complete            |
+| Smart Context Ranking         | ✅ Complete            |
+| Conversational Corrections    | ✅ Complete            |
+| Conversation Summary          | ✅ Complete            |
+| Session Goals & State         | ✅ Complete            |
+| Memory System                 | ✅ Complete            |
+| Profile System                | ✅ Complete            |
+| Natural-Language Commands     | ✅ Complete            |
+| Command History               | ✅ Complete            |
+| Backup / Restore              | ✅ Complete            |
+| Import / Export               | ✅ Complete            |
+| Logging                       | ✅ Complete            |
+| System Health                 | ✅ Complete            |
+| System Summary                | ✅ Complete            |
+| Configuration                 | ✅ Complete            |
+| Command Suggestions           | ✅ Complete            |
+| AI Engine                     | ✅ Complete            |
+| AI Provider Architecture      | ✅ Complete            |
+| Mock AI Provider              | ✅ Complete            |
+| Anthropic Provider            | ✅ Complete            |
+| AI Error Handling             | ✅ Complete            |
+| Conversation → AI Integration | ✅ Complete            |
+| Automated AI Tests            | ✅ Complete            |
+| Real Claude API Testing       | ⏳ Pending API Credits |
 
 ---
 
@@ -1316,13 +1092,13 @@ GitHub push
 
 ## v0.1 — Project Setup
 
-Initial Ultron project structure and foundation.
+Initial project structure and foundation.
 
 ---
 
 ## v0.2 — Conversation Engine
 
-Initial conversation-processing system.
+Introduced the initial conversation-processing system.
 
 ---
 
@@ -1346,7 +1122,7 @@ Introduced user profile-related memory functionality.
 
 ## v0.23 — Command Expansion
 
-Expanded the command architecture and supporting systems.
+Expanded the command architecture.
 
 ---
 
@@ -1356,87 +1132,52 @@ Refactored command handling into dedicated modules.
 
 ---
 
-## v0.25 — Natural Language Commands
+## v0.25 — Natural-Language Commands
 
 Added natural-language command translation and parsing.
-
-Examples included:
-
-```text
-create a backup
-make a backup
-show my profile
-show my history
-show my memories
-export all my data
-import all my data
-show my logs
-check system health
-show system summary
-check my config
-show my config
-```
 
 ---
 
 ## v0.26 — System Improvements
 
-Expanded command systems, configuration validation, logging, system health, system summaries, import/export, restore, suggestions, and supporting modules.
+Expanded:
+
+```text
+Configuration
+Validation
+Logging
+System Health
+System Summary
+Import / Export
+Restore
+Command Suggestions
+```
 
 ---
 
-## v0.27+
+## v0.27 — Conversational Intelligence
 
-Continued conversational-system development and integration.
-
----
-
-## v0.28
-
-Conversation and memory-related development continued.
+Continued development of conversational intelligence and context systems.
 
 ---
 
-## v0.29
+## v0.28 — Smart Memory Intelligence
 
-Expanded conversational intelligence and state-related infrastructure.
+Expanded memory intelligence and conversational capabilities.
 
 ---
 
-**---
+## v0.29 — Conversational State Infrastructure
 
-## v0.31 — AI Integration Foundation
+Expanded conversational context and state infrastructure.
 
-Introduced the first AI integration architecture.
+---
 
-Added
+## v0.30 — Session Goals & State
 
-AI Engine
-Provider Architecture
-Mock AI Provider
-Anthropic Provider
-Conversation → AI Integration
-AI Error Handling
-Environment-based AI Configuration
+Introduced the dedicated session-state architecture.
 
-AI Provider Modes
-
-AI_MODE=mock
-
-Used for development and testing without API credits.
-
-AI_MODE=anthropic
-
-Used for real Claude API integration when a valid Anthropic API key is configured.
-
-Status
-
-✅ AI Integration Foundation COMPLETE
-⏳ Real Claude API Testing PENDING API Credits
-
-## v0.30 — Session State / Multi-Turn Goal Tracking
-
-Feature #8 introduced:
+Added:
 
 ```text
 Session Goals
@@ -1447,416 +1188,213 @@ Session Start Time
 Session Update Time
 ```
 
-Feature #8 is now:
+Status:
 
 ```text
-✅ COMPLETE
+✅ Complete
 ```
 
 ---
 
-# 🏗️ Current Feature Architecture
+## v0.31 — AI Integration Foundation
+
+Introduced external AI integration.
+
+Added:
 
 ```text
-                    ULTRON
-                       │
-        ┌──────────────┼──────────────┐
-        │              │              │
-        ▼              ▼              ▼
-     MEMORY         PROFILE      CONVERSATION
-        │              │              │
-        │              │       ┌──────┼──────┐
-        │              │       │      │      │
-        │              │       ▼      ▼      ▼
-        │              │    INTENT  TOPIC  CONTEXT
-        │              │       │      │      │
-        └──────────────┴───────┼──────┼──────┘
-                               │
-                               ▼
-                        CORRECTIONS
-                               │
-                               ▼
-                          SUMMARIZATION
-                               │
-                               ▼
-                         SESSION STATE
-                               │
-                               ▼
-                         SESSION GOALS
-```
-
----
-
-# 🔮 Future Development Direction
-
-Ultron is designed to evolve beyond a simple command-line assistant.
-
-Potential future development areas include:
-
-```text
-Advanced conversational reasoning
-Long-term memory improvements
-Semantic memory search
-Better context ranking
-Advanced goal planning
-Task management
-Voice interaction
-Vision capabilities
-Tool integration
-Automation
-Web interaction
-Desktop interaction
-AI model integration
-Personal knowledge base
-Agentic workflows
-Multi-agent systems
-Cloud synchronization
-Mobile interface
-Web interface
-```
-
-These are future development directions and are not necessarily implemented in the current version.
-
----
-
-# 🧠 Design Philosophy
-
-Ultron is being built around several principles:
-
-### Modularity
-
-Each major subsystem should have a clear responsibility.
-
-### Persistence
-
-Important user information should be stored so it can be recalled later.
-
-### Context Awareness
-
-Ultron should understand the relationship between different conversation turns.
-
-### Correction Handling
-
-Ultron should be able to recover when the user changes or corrects their intention.
-
-### State Awareness
-
-Ultron should know what the current session is trying to accomplish.
-
-### Incremental Development
-
-Features should be implemented, tested, and stabilized one at a time.
-
-### Maintainability
-
-Large systems should be divided into manageable modules rather than putting everything into one file.
-
----
-
-**---
-
-# 🤖 AI Integration — v0.31
-
-Ultron v0.31 introduces the foundation for external AI integration through a provider-based architecture.
-
-                    ULTRON
-                       │
-                       ▼
-              Conversation Engine
-                       │
-                       ▼
-                   AI Engine
-                       │
-              ┌────────┴────────┐
-              │                 │
-              ▼                 ▼
-        Mock Provider     Anthropic Provider
-              │                 │
-              ▼                 ▼
-        Local Testing          Claude
-
-The AI engine is separated from individual providers so future providers can be added without rewriting the main conversation engine.
-
-## 🧠 AI Engine
-
-Main file:
-
-core/ai_engine.py
-
-The AI engine selects the configured provider and generates AI responses.
-
-## 🔌 Provider System
-
 AI Engine
-   │
-   ├── Mock Provider
-   │      └── Development / Testing
-   │
-   └── Anthropic Provider
-          └── Claude API
+Provider Architecture
+Mock Provider
+Anthropic Provider
+Conversation Integration
+AI Error Handling
+Environment-Based Configuration
+```
 
-## 🤖 Mock AI Provider
+AI testing was also introduced.
 
-Main file:
+---
 
-core/providers/mock.py
+## v0.32 — AI Integration Stabilization & Testing
 
-The Mock Provider allows development and testing without making external API requests or spending API credits.
+The latest development milestone builds on the AI integration architecture and strengthens its testing and reliability foundation.
 
-Example:
+Current AI architecture:
 
-User: Hello Ultron
-
-Ultron:
-Mock AI response 🤖
-Prompt received: Hello Ultron
-
-## ☁️ Anthropic Provider
-
-Main file:
-
-core/providers/anthropic_provider.py
-
-The Anthropic Provider is responsible for communicating with Claude through the Anthropic API.
-
-A valid API key is required before an external request is attempted.
-
-Without a valid API key:
-
-Anthropic AI is not configured. Please add a valid Anthropic API key.
-
-## 🔐 API Configuration
-
-AI configuration is stored through environment variables.
-
-Example:
-
-ANTHROPIC_API_KEY=your_api_key_here
-AI_MODE=mock
-
-The .env file is excluded from Git through .gitignore.
-
-Real API keys must never be committed to the repository.
-
-## 🛡️ AI Error Handling
-
-The AI engine catches provider failures and returns a safe fallback response instead of allowing an AI provider error to crash the application.
-
-AI Provider
-     ↓
-   Error
+```text
+Conversation
      ↓
 AI Engine
      ↓
-Safe fallback response
+Provider Selection
      ↓
-Ultron continues running
-
-## 💬 Conversation Integration
-
-The AI layer is integrated with the existing conversation engine.
-
-User Request
-     ↓
-Conversation Engine
-     ↓
-AI Engine
-     ↓
-AI Provider
-     ↓
-AI Response
-
-AI is designed to complement Ultron's existing local capabilities rather than replace them.
-
-## 🧪 AI Testing
-
-Development can be performed without an Anthropic API key by using:
-
-AI_MODE=mock
-
-Example:
-
-python -c "from core.ai_engine import generate_ai_response; print(generate_ai_response('Hello Ultron'))"
-
-Expected:
-
-Mock AI response 🤖
-Prompt received: Hello Ultron
-
----
-
-# 🗂️ Important Files
-
-| File                       | Responsibility                   |
-| -------------------------- | -------------------------------- |
-| `main.py`                  | Application entry point          |
-| `core/commands.py`         | Main command router              |
-| `core/conversation.py`     | Conversation engine              |
-| `core/natural_language.py` | Natural-language command parsing |
-| `core/session_state.py`    | Session goals and state          |
-| `core/memory.py`           | Memory operations                |
-| `core/profile.py`          | Profile management               |
-| `core/logger.py`           | Logging                          |
-| `core/config.py`           | Configuration                    |
-| `core/config_validator.py` | Configuration validation         |
-| `core/system_health.py`    | System health                    |
-| `core/ai_client.py`           | Anthropic AI client and API configuration |
-| `core/ai_engine.py`           | AI provider selection and response generation |
-| `core/providers/base.py`      | Base AI provider interface |
-| `core/providers/mock.py`      | Mock AI provider for testing |
-| `core/providers/anthropic_provider.py` | Anthropic Claude provider |
-
-| `data/memory.txt`          | Persistent memories              |
-| `data/profile.txt`         | Profile data                     |
-
----
-
-# 📋 Useful Commands
-
-## Memory
-
-```text
-show memories
-search memory <query>
-cleanup memories
+Mock / Anthropic
 ```
 
-## Profile
+Automated AI tests:
 
 ```text
-show my profile
-set my <key> to <value>
-change my <key> to <value>
-delete my <key>
+8 / 8 PASS
 ```
 
-## History
-
-```text
-show my history
-show history
-```
-
-## Conversation
-
-```text
-show conversation summary
-what did we discuss
-show summary
-```
-
-## Session
-
-```text
-start session
-set session goal to <goal>
-show session goal
-show session state
-update session context <key> <value>
-show session context
-clear session goal
-clear session
-```
-
-## System
-
-```text
-check system health
-show system summary
-show my config
-show my logs
-```
-
-## Data
-
-```text
-create a backup
-show backups
-export all my data
-import all my data
-restore backup <name>
-```
-
-## Suggestions
-
-```text
-suggest <keyword>
-```
-
----
-
-# 🧪 Development Status
-
-```text
-Feature #1  Smart Intent Detection       ✅
-Feature #2  Contextual Answer Generation ✅
-Feature #3  Multi-Turn Goal Tracking     ✅
-Feature #4  Topic Switching              ✅
-Feature #5  Smart Context Ranking        ✅
-Feature #6  Conversational Corrections   ✅
-Feature #7  Conversation Summary         ✅
-Feature #8  Session Goals & State        ✅
-```
+The project is now positioned for further AI-powered development and real-provider testing.
 
 ---
 
 # 🏁 Current Milestone
 
 ```text
-ULTRON v0.31
-```
-
-### Completed
-
-```text
-Memory System
-Profile System
-Command System
-Natural Language Commands
-Conversation Engine
-Intent Detection
-Context Tracking
-Goal Tracking
-Topic Switching
-Context Ranking
-Conversational Corrections
-Conversation Summary
-Session Goals
-Session State
-Backup / Restore
-Import / Export
-Logging
-System Health
-System Summary
-Configuration
-Command Suggestions
+╔══════════════════════════════════════════════╗
+║                ULTRON v0.32                 ║
+╠══════════════════════════════════════════════╣
+║ Memory System                  ✅            ║
+║ Profile System                 ✅            ║
+║ Command System                 ✅            ║
+║ Natural Language               ✅            ║
+║ Conversation Engine            ✅            ║
+║ Intent Detection                ✅            ║
+║ Context Tracking                ✅            ║
+║ Goal Tracking                   ✅            ║
+║ Topic Switching                 ✅            ║
+║ Context Ranking                 ✅            ║
+║ Corrections                     ✅            ║
+║ Conversation Summary            ✅            ║
+║ Session State                   ✅            ║
+║ Backup / Restore                ✅            ║
+║ Import / Export                 ✅            ║
+║ Logging                         ✅            ║
+║ System Health                   ✅            ║
+║ Configuration                   ✅            ║
+║ Command Suggestions             ✅            ║
+║ AI Engine                       ✅            ║
+║ Provider Architecture           ✅            ║
+║ Mock Provider                   ✅            ║
+║ Anthropic Provider              ✅            ║
+║ AI Error Handling               ✅            ║
+║ AI Conversation Integration     ✅            ║
+║ Automated AI Tests              ✅            ║
+║                                              ║
+║ Real Claude API Testing         ⏳            ║
+╚══════════════════════════════════════════════╝
 ```
 
 ---
 
-# 🔥 Ultron Development Vision
+# ⚠️ Current Limitations
 
-Ultron is being developed as a personal AI assistant that can gradually move from simple command execution toward intelligent, context-aware assistance.
+Ultron is still an active development project.
 
-The long-term objective is to build an assistant that can:
+Current limitations include:
+
+```text
+Real Claude API testing is pending API credits.
+Ultron is primarily terminal-based.
+Advanced reasoning is still under development.
+Voice interaction is not implemented yet.
+Vision capabilities are not implemented yet.
+Desktop automation is not implemented yet.
+Web automation is not implemented yet.
+Advanced agentic workflows are future work.
+```
+
+---
+
+# 🔮 Future Development
+
+Potential future development areas include:
+
+```text
+Advanced AI reasoning
+Semantic memory
+Long-term memory intelligence
+Advanced planning
+Task management
+Voice interaction
+Vision
+Web interaction
+Desktop interaction
+Automation
+Tool calling
+Agentic workflows
+Multi-agent systems
+Personal knowledge base
+Cloud synchronization
+Web interface
+Mobile interface
+Additional AI providers
+AI model selection
+AI agents
+Workflow automation
+```
+
+These are future directions and are not necessarily implemented in `v0.32`.
+
+---
+
+# 🧭 Long-Term Vision
+
+Ultron is being developed toward a system that can progressively:
 
 ```text
 Understand
-    ↓
+    ↓
 Remember
-    ↓
+    ↓
 Reason
-    ↓
+    ↓
 Track Context
-    ↓
+    ↓
 Track Goals
-    ↓
+    ↓
 Plan
-    ↓
+    ↓
 Execute
-    ↓
+    ↓
 Learn from Interaction
 ```
+
+The current architecture provides the foundation for this progression.
+
+---
+
+# 🏛️ Design Philosophy
+
+### Modularity
+
+Each subsystem should have a clear responsibility.
+
+### Persistence
+
+Important information should persist across sessions.
+
+### Context Awareness
+
+Ultron should understand relationships between conversation turns.
+
+### Goal Awareness
+
+Ultron should understand what the user is trying to accomplish.
+
+### Correction Handling
+
+Ultron should recover when the user changes their intention.
+
+### Provider Independence
+
+AI functionality should not be permanently tied to a single provider.
+
+### Testing
+
+Features should be tested before being considered stable.
+
+### Incremental Development
+
+Ultron is built step-by-step and version-by-version.
+
+### Maintainability
+
+The codebase should remain modular and understandable as the project grows.
 
 ---
 
@@ -1866,66 +1404,79 @@ Learn from Interaction
 
 Personal AI Assistant Project
 
-Project:
-
 ```text
+Project:
 Ultron AI Assistant
 ```
 
 ---
 
-# 📌 Project Status
+# 📊 Project Status
 
 ```text
-Current Version: v0.31
+Current Version: v0.32
 Development Status: Active
-Feature #1: Complete
-Feature #2: Complete
-Feature #3: Complete
-Feature #4: Complete
-Feature #5: Complete
-Feature #6: Complete
-Feature #7: Complete
-Feature #8: Complete
-AI Integration Foundation: Complete
+
+Core Assistant Systems: Complete
+Conversation Intelligence: Complete
+Memory System: Complete
+Profile System: Complete
+Session System: Complete
+Natural-Language Commands: Complete
+
+AI Engine: Complete
+AI Provider Architecture: Complete
 Mock AI Provider: Complete
 Anthropic Provider: Complete
-Real Claude API Testing: Pending API Credits
+AI Error Handling: Complete
+AI Conversation Integration: Complete
+
+Automated AI Tests:
+8 Passed / 8 Total
+
+Real Claude API Testing:
+Pending API Credits
 ```
 
 ---
 
 # ⭐ Final Note
 
-Ultron is an evolving project.
+Ultron is an evolving AI assistant project.
 
-The architecture is intentionally modular so new capabilities can be added without rewriting the entire system.
+The architecture is intentionally modular so future capabilities can be added without rewriting the entire system.
 
-The current foundation focuses on:
+The current foundation combines:
 
 ```text
 Memory
 Conversation
 Context
+Intent
 Goals
 State
 Commands
 Profile
 Persistence
+AI Integration
+Provider Architecture
+Testing
 ```
 
 Future versions will build higher-level intelligence on top of these foundations.
 
 ---
 
-## 🚀 ULTRON
+# 🚀 ULTRON
 
 ```text
 Understand → Remember → Reason → Plan → Execute
 ```
 
 **Built step by step.**
+
 **Feature by feature.**
+
 **Version by version.**
 
-🔥 `v0.30 — Session Goals & State COMPLETE`
+🔥 **Current Milestone: `v0.32`**
