@@ -2951,6 +2951,35 @@ def handle_conversation(user):
         return True
 
     # --------------------------------------------------------
+    # AI Request Detection
+    # --------------------------------------------------------
+
+    ai_request_phrases = [
+        "tell me",
+        "explain",
+        "what is",
+        "what are",
+        "why is",
+        "why are",
+        "how do",
+        "how can",
+        "how to",
+        "can you",
+        "could you",
+        "give me",
+        "help me",
+        "i want to know",
+    ]
+
+    should_use_ai = (
+        any(
+        user.startswith(phrase)
+        for phrase in ai_request_phrases
+    )
+    or user.endswith("?")
+)
+
+    # --------------------------------------------------------
     # Follow-up detection BEFORE context update
     # --------------------------------------------------------
 
@@ -3066,7 +3095,7 @@ def handle_conversation(user):
     # Follow-up handling
     # --------------------------------------------------------
 
-    if follow_up:
+    if follow_up and not should_use_ai:
 
         follow_up_intent = detect_follow_up_intent(
             user
@@ -3792,32 +3821,6 @@ def handle_conversation(user):
     # ========================================================
     # AI Conversation Fallback
     # ========================================================
-
-    ai_request_phrases = [
-        "tell me",
-        "explain",
-        "what is",
-        "what are",
-        "why is",
-        "why are",
-        "how do",
-        "how can",
-        "how to",
-        "can you",
-        "could you",
-        "give me",
-        "help me",
-        "i want to know",
-    ]
-
-    should_use_ai = (
-        any(
-            user.startswith(phrase)
-            for phrase in ai_request_phrases
-        )
-        or user.endswith("?")
-    )
-
 
     if should_use_ai:
 
