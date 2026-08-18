@@ -1,6 +1,6 @@
 """
 Ultron Automation System Tests
-Version: v0.34
+Version: v0.36
 """
 
 import pytest
@@ -19,6 +19,26 @@ from modules.automation.engine import (
 from modules.automation.manager import (
     AutomationManager,
 )
+
+from modules.automation.storage import (
+    AutomationStorage,
+)
+
+
+# ============================================================
+# Test Fixtures
+# ============================================================
+
+@pytest.fixture
+def test_storage(tmp_path):
+    """
+    Provide isolated temporary automation storage
+    for each test.
+    """
+
+    return AutomationStorage(
+        tmp_path / "automations.json"
+    )
 
 
 # ============================================================
@@ -92,9 +112,9 @@ def test_default_action_registry():
     assert (
         registry.execute(
             "echo",
-            message="Ultron v0.34",
+            message="Ultron v0.36",
         )
-        == "Ultron v0.34"
+        == "Ultron v0.36"
     )
 
 
@@ -178,7 +198,7 @@ def test_engine_execute_with_parameters():
         name="Echo Automation",
         action="echo",
         parameters={
-            "message": "Ultron v0.34",
+            "message": "Ultron v0.36",
         },
     )
 
@@ -186,7 +206,7 @@ def test_engine_execute_with_parameters():
         automation_id
     )
 
-    assert result == "Ultron v0.34"
+    assert result == "Ultron v0.36"
 
 
 def test_engine_disable_automation():
@@ -293,8 +313,12 @@ def test_engine_delete_automation():
 # Automation Manager Tests
 # ============================================================
 
-def test_manager_create_and_run():
-    manager = AutomationManager()
+def test_manager_create_and_run(
+    test_storage,
+):
+    manager = AutomationManager(
+        storage=test_storage
+    )
 
     manager.register_action(
         "hello",
@@ -311,8 +335,12 @@ def test_manager_create_and_run():
     ) == "Manager working"
 
 
-def test_manager_status():
-    manager = AutomationManager()
+def test_manager_status(
+    test_storage,
+):
+    manager = AutomationManager(
+        storage=test_storage
+    )
 
     manager.register_action(
         "hello",
@@ -348,8 +376,12 @@ def test_manager_status():
     )
 
 
-def test_manager_delete():
-    manager = AutomationManager()
+def test_manager_delete(
+    test_storage,
+):
+    manager = AutomationManager(
+        storage=test_storage
+    )
 
     manager.register_action(
         "hello",
@@ -370,8 +402,12 @@ def test_manager_delete():
     ) is None
 
 
-def test_manager_list_automations():
-    manager = AutomationManager()
+def test_manager_list_automations(
+    test_storage,
+):
+    manager = AutomationManager(
+        storage=test_storage
+    )
 
     manager.register_action(
         "hello",

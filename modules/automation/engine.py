@@ -1,6 +1,6 @@
 """
 Ultron Automation Engine
-Version: v0.35
+Version: v0.36
 
 Core engine for creating, registering, restoring, validating,
 and executing automation tasks.
@@ -107,6 +107,10 @@ class AutomationEngine:
     ) -> bool:
         """
         Validate the basic automation structure.
+
+        This validation is intended for new automation
+        registration and therefore also verifies that the
+        referenced action exists in the action registry.
         """
 
         if not isinstance(
@@ -223,8 +227,14 @@ class AutomationEngine:
         """
         Restore an existing automation from persistent storage.
 
-        Unlike register_automation(), this method preserves
-        the original automation ID and metadata.
+        Runtime action handlers are intentionally NOT required
+        during restoration.
+
+        Action handlers are runtime objects and are expected to
+        be registered again when the application starts.
+
+        This allows persisted automations to be restored before
+        their runtime handlers are registered.
         """
 
         if not isinstance(
@@ -248,28 +258,66 @@ class AutomationEngine:
                 "Automation ID is required."
             )
 
-        self.validate_automation(
-            automation
+        name = automation.get(
+            "name"
         )
+
+        if not isinstance(
+            name,
+            str,
+        ) or not name.strip():
+
+            raise AutomationValidationError(
+                "Automation name is required."
+            )
+
+        action = automation.get(
+            "action"
+        )
+
+        if not isinstance(
+            action,
+            str,
+        ) or not action.strip():
+
+            raise AutomationValidationError(
+                "Automation action is required."
+            )
+
+        parameters = automation.get(
+            "parameters",
+            {},
+        )
+
+        if not isinstance(
+            parameters,
+            dict,
+        ):
+            raise AutomationValidationError(
+                "Automation parameters must be a dictionary."
+            )
+
+        enabled = automation.get(
+            "enabled",
+            True,
+        )
+
+        if not isinstance(
+            enabled,
+            bool,
+        ):
+            raise AutomationValidationError(
+                "Automation enabled state must be boolean."
+            )
 
         restored = {
             "id": automation_id,
-            "name": str(
-                automation["name"]
-            ).strip(),
-            "action": str(
-                automation["action"]
-            ).strip().lower(),
+            "name": name.strip(),
+            "action": action.strip().lower(),
             "parameters": dict(
-                automation.get(
-                    "parameters",
-                    {},
-                )
+                parameters
             ),
-            "enabled": automation.get(
-                "enabled",
-                True,
-            ),
+            "enabled": enabled,
             "created_at": automation.get(
                 "created_at",
                 datetime.now().isoformat(),
