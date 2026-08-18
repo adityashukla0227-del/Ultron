@@ -1,33 +1,114 @@
 """
 Ultron Automation Manager
-Version: v0.34
+Version: v0.35
 
-Management layer for Ultron automations.
+Persistent management layer for Ultron automations.
+
+Responsibilities:
+- Create and manage automations
+- Delegate execution to AutomationEngine
+- Persist automations through AutomationStorage
+- Restore saved automations when the manager starts
+- Persist state changes
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Callable, Dict, Optional
 
 from modules.automation.engine import (
     AutomationEngine,
-    AutomationValidationError,
 )
+from modules.automation.storage import AutomationStorage
 
 
 class AutomationManager:
     """
     High-level manager for creating and managing automations.
 
-    The manager delegates execution and validation to the
-    AutomationEngine while providing a simpler interface
-    for Ultron's command/conversation layers.
+    The manager connects the AutomationEngine with the
+    persistent AutomationStorage layer.
     """
 
     def __init__(
         self,
         engine: Optional[AutomationEngine] = None,
+        storage: Optional[AutomationStorage] = None,
     ) -> None:
 
-        self.engine = engine or AutomationEngine()
+        self.engine = (
+            engine
+            or AutomationEngine()
+        )
+
+        self.storage = (
+            storage
+            or AutomationStorage()
+        )
+
+        self._restore_automations()
+
+    # ========================================================
+    # Storage
+    # ========================================================
+
+    def _restore_automations(self) -> None:
+        """
+        Restore persisted automations into the engine.
+
+        Existing automations already registered in the engine
+        are not duplicated.
+        """
+
+        stored_automations = (
+            self.storage.list_automations()
+        )
+
+        for automation in stored_automations:
+
+            automation_id = automation.get(
+                "id"
+            )
+
+            if not automation_id:
+                continue
+
+            if self.engine.get_automation(
+                automation_id
+            ) is not None:
+                continue
+
+            try:
+
+                self.engine.restore_automation(
+                    automation
+                )
+
+            except Exception:
+                # Ignore invalid persisted entries
+                # instead of preventing the manager
+                # from starting.
+                continue
+
+    def _persist_automation(
+        self,
+        automation_id: str,
+    ) -> None:
+        """
+        Persist one automation using its
+        current engine state.
+        """
+
+        automation = (
+            self.engine.get_automation(
+                automation_id
+            )
+        )
+
+        if automation is None:
+            return
+
+        self.storage.save_automation(
+            automation
+        )
 
     # ========================================================
     # Action Management
@@ -36,7 +117,7 @@ class AutomationManager:
     def register_action(
         self,
         action_name: str,
-        handler,
+        handler: Callable[..., Any],
     ) -> bool:
         """
         Register an action with the automation engine.
@@ -55,20 +136,30 @@ class AutomationManager:
         self,
         name: str,
         action: str,
-        parameters: Optional[Dict[str, Any]] = None,
+        parameters: Optional[
+            Dict[str, Any]
+        ] = None,
     ) -> str:
         """
-        Create a new automation.
+        Create and persist a new automation.
 
         Returns:
             Automation ID.
         """
 
-        return self.engine.register_automation(
-            name=name,
-            action=action,
-            parameters=parameters,
+        automation_id = (
+            self.engine.register_automation(
+                name=name,
+                action=action,
+                parameters=parameters,
+            )
         )
+
+        self._persist_automation(
+            automation_id
+        )
+
+        return automation_id
 
     # ========================================================
     # Get Automation
@@ -90,9 +181,11 @@ class AutomationManager:
     # List Automations
     # ========================================================
 
-    def list_automations(self) -> list[Dict[str, Any]]:
+    def list_automations(
+        self,
+    ) -> list[Dict[str, Any]]:
         """
-        Return all automations.
+        Return all currently loaded automations.
         """
 
         return self.engine.list_automations()
@@ -106,12 +199,21 @@ class AutomationManager:
         automation_id: str,
     ) -> bool:
         """
-        Enable an automation.
+        Enable an automation and persist the change.
         """
 
-        return self.engine.enable_automation(
-            automation_id
+        result = (
+            self.engine.enable_automation(
+                automation_id
+            )
         )
+
+        if result:
+            self._persist_automation(
+                automation_id
+            )
+
+        return result
 
     # ========================================================
     # Disable Automation
@@ -122,12 +224,21 @@ class AutomationManager:
         automation_id: str,
     ) -> bool:
         """
-        Disable an automation.
+        Disable an automation and persist the change.
         """
 
-        return self.engine.disable_automation(
-            automation_id
+        result = (
+            self.engine.disable_automation(
+                automation_id
+            )
         )
+
+        if result:
+            self._persist_automation(
+                automation_id
+            )
+
+        return result
 
     # ========================================================
     # Run Automation
@@ -138,12 +249,19 @@ class AutomationManager:
         automation_id: str,
     ) -> Any:
         """
-        Execute an automation.
+        Execute an automation and persist its
+        updated execution state.
         """
 
-        return self.engine.execute(
+        result = self.engine.execute(
             automation_id
         )
+
+        self._persist_automation(
+            automation_id
+        )
+
+        return result
 
     # ========================================================
     # Delete Automation
@@ -154,12 +272,22 @@ class AutomationManager:
         automation_id: str,
     ) -> bool:
         """
-        Delete an automation.
+        Delete an automation from both the engine
+        and persistent storage.
         """
 
-        return self.engine.delete_automation(
-            automation_id
+        result = (
+            self.engine.delete_automation(
+                automation_id
+            )
         )
+
+        if result:
+            self.storage.delete_automation(
+                automation_id
+            )
+
+        return result
 
     # ========================================================
     # Automation Status
@@ -173,14 +301,44 @@ class AutomationManager:
         Return the current automation status.
         """
 
-        automation = self.get_automation(
-            automation_id
+        automation = (
+            self.get_automation(
+                automation_id
+            )
         )
 
         if automation is None:
             return None
 
-        if automation.get("enabled"):
+        if automation.get(
+            "enabled"
+        ):
             return "enabled"
 
         return "disabled"
+
+    # ========================================================
+    # Storage Access
+    # ========================================================
+
+    def save(self) -> None:
+        """
+        Persist all currently loaded automations.
+        """
+
+        for automation in (
+            self.engine.list_automations()
+        ):
+
+            self.storage.save_automation(
+                automation
+            )
+
+    def reload(self) -> None:
+        """
+        Reload persisted automations.
+
+        Existing engine automations are preserved.
+        """
+
+        self._restore_automations()

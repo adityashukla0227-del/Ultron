@@ -1,8 +1,8 @@
 """
 Ultron Automation Engine
-Version: v0.34
+Version: v0.35
 
-Core engine for creating, registering, validating,
+Core engine for creating, registering, restoring, validating,
 and executing automation tasks.
 """
 
@@ -29,12 +29,15 @@ class AutomationEngine:
     """
     Central engine for Ultron's automation system.
 
-    The engine currently provides:
+    The engine provides:
     - Automation registration
+    - Automation restoration
     - Automation validation
     - Centralized action registry
     - Automation execution
     - Execution result tracking
+    - Automation enable/disable
+    - Automation deletion
     """
 
     def __init__(
@@ -106,7 +109,10 @@ class AutomationEngine:
         Validate the basic automation structure.
         """
 
-        if not isinstance(automation, dict):
+        if not isinstance(
+            automation,
+            dict,
+        ):
             raise AutomationValidationError(
                 "Automation must be a dictionary."
             )
@@ -114,21 +120,44 @@ class AutomationEngine:
         name = automation.get("name")
         action = automation.get("action")
 
-        if not isinstance(name, str) or not name.strip():
+        if not isinstance(
+            name,
+            str,
+        ) or not name.strip():
+
             raise AutomationValidationError(
                 "Automation name is required."
             )
 
-        if not isinstance(action, str) or not action.strip():
+        if not isinstance(
+            action,
+            str,
+        ) or not action.strip():
+
             raise AutomationValidationError(
                 "Automation action is required."
             )
 
         action = action.strip().lower()
 
-        if not self.action_registry.exists(action):
+        if not self.action_registry.exists(
+            action
+        ):
             raise AutomationValidationError(
                 f"Unknown automation action: {action}"
+            )
+
+        parameters = automation.get(
+            "parameters",
+            {},
+        )
+
+        if not isinstance(
+            parameters,
+            dict,
+        ):
+            raise AutomationValidationError(
+                "Automation parameters must be a dictionary."
             )
 
         return True
@@ -141,7 +170,9 @@ class AutomationEngine:
         self,
         name: str,
         action: str,
-        parameters: Optional[Dict[str, Any]] = None,
+        parameters: Optional[
+            Dict[str, Any]
+        ] = None,
     ) -> str:
         """
         Create and register a new automation.
@@ -164,16 +195,96 @@ class AutomationEngine:
             uuid.uuid4()
         )
 
-        self.automations[automation_id] = {
+        self.automations[
+            automation_id
+        ] = {
             "id": automation_id,
             "name": name.strip(),
             "action": action.strip().lower(),
-            "parameters": parameters or {},
+            "parameters": dict(
+                parameters or {}
+            ),
             "enabled": True,
             "created_at": datetime.now().isoformat(),
             "last_run": None,
             "last_result": None,
         }
+
+        return automation_id
+
+    # ========================================================
+    # Restore Automation
+    # ========================================================
+
+    def restore_automation(
+        self,
+        automation: Dict[str, Any],
+    ) -> str:
+        """
+        Restore an existing automation from persistent storage.
+
+        Unlike register_automation(), this method preserves
+        the original automation ID and metadata.
+        """
+
+        if not isinstance(
+            automation,
+            dict,
+        ):
+            raise AutomationValidationError(
+                "Automation must be a dictionary."
+            )
+
+        automation_id = automation.get(
+            "id"
+        )
+
+        if not isinstance(
+            automation_id,
+            str,
+        ) or not automation_id.strip():
+
+            raise AutomationValidationError(
+                "Automation ID is required."
+            )
+
+        self.validate_automation(
+            automation
+        )
+
+        restored = {
+            "id": automation_id,
+            "name": str(
+                automation["name"]
+            ).strip(),
+            "action": str(
+                automation["action"]
+            ).strip().lower(),
+            "parameters": dict(
+                automation.get(
+                    "parameters",
+                    {},
+                )
+            ),
+            "enabled": automation.get(
+                "enabled",
+                True,
+            ),
+            "created_at": automation.get(
+                "created_at",
+                datetime.now().isoformat(),
+            ),
+            "last_run": automation.get(
+                "last_run"
+            ),
+            "last_result": automation.get(
+                "last_result"
+            ),
+        }
+
+        self.automations[
+            automation_id
+        ] = restored
 
         return automation_id
 
@@ -260,12 +371,17 @@ class AutomationEngine:
                 "Automation not found."
             )
 
-        if not automation["enabled"]:
+        if not automation.get(
+            "enabled",
+            True,
+        ):
             raise AutomationExecutionError(
                 "Automation is disabled."
             )
 
-        action_name = automation["action"]
+        action_name = automation[
+            "action"
+        ]
 
         handler = self.get_action(
             action_name
@@ -283,6 +399,7 @@ class AutomationEngine:
         )
 
         try:
+
             result = handler(
                 **parameters
             )

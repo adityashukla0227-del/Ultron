@@ -1,653 +1,244 @@
-# Ultron 🤖
+# 🤖 Ultron
 
-> **A modular personal AI assistant built with Python — combining conversation intelligence, memory, profile awareness, AI providers, and automation into one extensible system.**
+> **A modular, intelligent, persistent AI assistant built in Python.**
 
-**Current Version:** `v0.34`
-**Status:** 🚧 Active Development
-**Language:** Python 3.13+
-**Test Suite:** `58 passed`
-**Architecture:** Modular / Provider-Based / Extensible
+Ultron is a modular AI assistant designed to combine **conversation intelligence, memory, AI providers, automation, scheduling, and persistent state** into one extensible system.
+
+The project is being developed as a foundation for a larger AI platform capable of understanding users, remembering context, executing tasks, and eventually operating as an intelligent automation layer.
 
 ---
 
-## 🚀 Overview
+## 🚀 Current Version
 
-Ultron is a modular personal AI assistant designed to evolve from a command-based assistant into a powerful AI-driven automation platform.
+**v0.35 — Automation Persistence**
 
-The project focuses on building the core intelligence and infrastructure required for a modern personal AI assistant:
+Ultron v0.35 introduces a persistent storage layer for the automation system, allowing automation definitions and schedules to survive application restarts.
 
-* 🧠 Intelligent conversation
-* 💾 Persistent memory
-* 👤 User profile awareness
-* 🎯 Session goals and state
-* 🔄 Topic switching
-* 🔍 Context ranking
-* 🤖 AI provider architecture
-* 🔐 Secure API configuration
-* ⚙️ Automation engine
-* ⏰ Scheduling
-* ▶️ Automated execution
-* 🔁 Recurring automations
-* 🧵 Background automation worker
-* 🧪 Automated testing
-* 📦 Modular architecture
+### v0.35 Highlights
 
-Ultron is designed so that new capabilities can be added without rewriting the entire system.
+* 💾 Persistent automation storage
+* 🔄 Automation restoration
+* 🗂️ JSON-based storage layer
+* 🛡️ Corrupted storage recovery
+* ⚙️ Persistent automation management
+* 🧪 24 dedicated storage tests
+* ✅ 82 total tests passing
+* 🔒 Clean separation between storage and execution
 
 ---
 
-# 🎯 Vision
+# ✨ Features
 
-The long-term goal of Ultron is to become a complete AI assistant and eventually serve as the foundation for a broader AI platform.
+## 🧠 Conversation Intelligence
 
-The project is being developed around a simple principle:
+Ultron includes a structured conversation engine designed to understand and maintain conversational context.
 
-> **AI should not only answer questions — it should understand context, remember information, execute tasks, and automate workflows.**
+Current capabilities include:
 
-Ultron is therefore being developed in layers.
-
-```text
-Conversation
-     ↓
-Context
-     ↓
-Memory
-     ↓
-AI
-     ↓
-Automation
-     ↓
-Scheduling
-     ↓
-Execution
-     ↓
-External Integrations
-```
-
----
-
-# ✨ Current Capabilities
-
-## 🧠 Conversation System
-
-Ultron contains a modular conversation engine capable of handling:
-
-* Natural language input
+* Natural language interaction
+* Conversation context
 * Intent detection
 * Topic detection
 * Entity extraction
-* Goal detection
-* Technology detection
-* Reference resolution
 * Topic switching
+* Reference resolution
+* Goal detection
 * Session state
 * Context-aware responses
-* AI fallback
-
-The conversation system allows Ultron to distinguish between normal commands and conversational requests.
 
 ---
 
-# 💾 Memory System
+## 🧠 Memory System
 
-Ultron contains a persistent memory architecture designed to store and retrieve useful information.
+Ultron includes a structured memory system designed to store and retrieve useful information.
 
-The memory system supports:
+Capabilities include:
 
-* Memory storage
+* Memory saving
 * Memory recall
 * Smart memory queries
-* Context extraction
+* Memory context
 * Memory suggestions
 * Memory cleanup
-* Duplicate detection
-* Profile memory
+* Memory deduplication
+* User profile memory
 
-The goal is to make Ultron progressively more useful over time.
-
----
-
-# 👤 User Profile
-
-Ultron maintains structured profile information that can be used by other components.
-
-Profile capabilities include:
-
-* User information
-* Profile management
-* Profile updates
-* Profile recall
-* Persistent profile storage
-
-The profile system is intentionally separated from the conversation engine so it can evolve independently.
-
----
-
-# 🎯 Session State
-
-Ultron maintains short-term conversational state.
-
-Session state can track:
-
-* Current topic
-* Previous topics
-* Current goal
-* Current entity
-* Current intent
-* Current technology
-* Pending questions
-* Topic transitions
-* Conversation references
-
-Example:
-
-```text
-User:
-I am building Ultron.
-
-Ultron:
-Understood.
-
-User:
-My goal is to make it a powerful AI assistant.
-
-Ultron:
-Goal detected.
-
-User:
-Tell me something interesting about it.
-
-Ultron:
-Uses the previous session context.
-```
+The memory architecture is designed to evolve toward long-term personalized AI interaction.
 
 ---
 
 # 🤖 AI Engine
 
-Ultron uses a provider-based AI architecture.
+Ultron uses a provider-based AI architecture instead of tightly coupling the application to a single AI provider.
 
-Instead of directly coupling the application to one AI provider, Ultron separates the AI engine from individual providers.
-
-```text
-                 AI Engine
-                     │
-          ┌──────────┴──────────┐
-          │                     │
-     Mock Provider       Anthropic Provider
-```
-
-This architecture allows additional providers to be added later.
-
----
-
-# 🔌 AI Provider Architecture
-
-Current providers:
-
-### Mock Provider
-
-Used for:
-
-* Local development
-* Testing
-* Offline development
-* CI testing
-* API-independent development
-
-### Anthropic Provider
-
-Used for:
-
-* Real AI responses
-* Production AI integration
-* Future intelligent automation
-
-The provider can be selected using configuration.
-
-Example:
-
-```env
-AI_MODE=mock
-```
-
-or:
-
-```env
-AI_MODE=anthropic
-```
-
----
-
-# 🔐 API Security
-
-API credentials are not hard-coded into the source code.
-
-Ultron uses environment variables and `.env` configuration.
-
-Example:
-
-```env
-ANTHROPIC_API_KEY=your_api_key_here
-```
-
-The `.env` file should never be committed to Git.
-
-Use:
+### Current architecture
 
 ```text
-.env
-```
-
-inside `.gitignore`.
-
----
-
-# 🧩 AI Context Engine
-
-Ultron v0.33 introduced a dedicated AI Context Engine.
-
-The context engine separates context construction from the conversation engine.
-
-This allows AI requests to receive useful information such as:
-
-```text
-Current user request
-Current goal
-Current topic
-Current entity
-Current intent
-Current technology
-Pending question
-Relevant previous conversation
-```
-
-Example:
-
-```text
-Current user request:
-Tell me something interesting
-
-Current topic:
-AI
-
-Current goal:
-Build a powerful AI assistant
-```
-
-This creates a cleaner boundary between:
-
-```text
-Conversation Engine
-        ↓
-AI Context Engine
-        ↓
+Ultron
+   │
+   ▼
 AI Engine
-        ↓
-AI Provider
+   │
+   ├── Mock Provider
+   │
+   └── Anthropic Provider
 ```
+
+This architecture makes it possible to add additional AI providers in the future without rewriting the entire application.
+
+### Current providers
+
+* Mock AI Provider
+* Anthropic Provider
+
+### AI features
+
+* Provider selection
+* AI response generation
+* Context-aware prompts
+* API availability detection
+* Error handling
+* Environment-based configuration
+* Secure API key handling through `.env`
 
 ---
 
 # ⚙️ Automation System
 
-## v0.34
+Ultron v0.34 introduced the core automation engine.
 
-Ultron v0.34 introduces the first major automation infrastructure.
-
-The automation architecture is divided into multiple components.
+The automation architecture is designed around modular actions, automation definitions, execution, scheduling, and background workers.
 
 ```text
-Automation
-│
-├── Actions
-├── Engine
-├── Manager
-├── Scheduler
-├── Runner
-└── Worker
-```
-
-Each component has a specific responsibility.
-
----
-
-# 🧰 Action Registry
-
-The Action Registry stores executable actions.
-
-Example actions currently include:
-
-```text
-hello
-echo
-```
-
-Actions can be registered dynamically.
-
-Example:
-
-```python
-registry.register(
-    "hello",
-    lambda: "Hello from Ultron"
-)
-```
-
-Actions can then be executed through the registry.
-
-```python
-registry.execute("hello")
-```
-
----
-
-# ⚙️ Automation Engine
-
-The Automation Engine manages automation definitions and execution.
-
-Responsibilities include:
-
-* Registering actions
-* Registering automations
-* Executing automations
-* Passing parameters
-* Enabling automations
-* Disabling automations
-* Deleting automations
-* Validating actions
-
-Architecture:
-
-```text
+Automation Manager
+        │
+        ▼
 Automation Engine
-       │
-       ├── Action Registry
-       │
-       └── Automation Definitions
+        │
+        ├── Action Registry
+        │
+        ├── Automation Runner
+        │
+        ├── Scheduler
+        │
+        └── Worker
 ```
 
-Example:
+### Automation capabilities
 
-```python
-automation_id = engine.register_automation(
-    "Hello Automation",
-    "hello"
-)
-
-engine.execute(automation_id)
-```
+* Register actions
+* Create automations
+* Validate automations
+* Execute automations
+* Enable/disable automations
+* Delete automations
+* Track execution results
+* Schedule automations
+* Run recurring automations
+* Run one-time automations
+* Background automation worker
+* Automation status tracking
 
 ---
 
-# 🗂️ Automation Manager
+# 💾 Automation Persistence
 
-The Automation Manager provides a higher-level interface for managing automations.
+Introduced in **v0.35**.
 
-Responsibilities include:
-
-* Creating automations
-* Running automations
-* Checking status
-* Enabling automations
-* Disabling automations
-* Listing automations
-* Deleting automations
-
-Example:
-
-```python
-manager.create_automation(
-    "Daily Greeting",
-    "hello"
-)
-```
-
----
-
-# ⏰ Automation Scheduler
-
-The Scheduler determines **when** an automation should run.
-
-This creates a separation between:
+Ultron can now persist automation data using a dedicated storage layer.
 
 ```text
-Scheduler → WHEN
-Runner    → WHAT
-Worker    → WHEN TO CHECK
+Automation Manager
+        │
+        ▼
+Automation Storage
+        │
+        ▼
+data/automations.json
 ```
 
-The scheduler supports:
+The storage layer is intentionally separated from the execution engine.
 
-* One-time schedules
-* Recurring schedules
-* Future schedules
-* Due schedules
-* Schedule status
-* Run counts
-* Execution tracking
+### Storage responsibilities
 
-Example:
+* Save automations
+* Load automations
+* Update automations
+* Delete automations
+* Save schedules
+* Load schedules
+* Delete schedules
+* Bulk save/load
+* Storage initialization
+* Corrupted JSON recovery
+* Missing-file recovery
 
-```python
-schedule_id = scheduler.create_schedule(
-    automation_id,
-    datetime.now()
-)
-```
+This allows automations to remain available after Ultron restarts.
 
 ---
 
-# 🔁 Recurring Automations
+# 🧪 Testing
 
-Ultron supports recurring schedules.
+Ultron uses `pytest` for automated testing.
 
-Example:
+Current test coverage includes:
 
-```python
-scheduler.create_schedule(
-    automation_id,
-    datetime.now(),
-    recurring=True,
-    interval_minutes=60
-)
-```
+* AI engine
+* AI providers
+* Automation actions
+* Automation engine
+* Automation manager
+* Automation runner
+* Automation worker
+* Automation storage
 
-The automation remains enabled and can execute again after the configured interval.
-
-This creates the foundation for future workflows such as:
+### Current test result
 
 ```text
-Every hour
-Every day
-Every week
-Every N minutes
+82 passed
+```
+
+The project currently has **82 automated tests passing successfully**.
+
+Run the complete test suite:
+
+```bash
+python -m pytest -v
+```
+
+Run automation tests:
+
+```bash
+python -m pytest tests/test_automation.py -v
+```
+
+Run automation storage tests:
+
+```bash
+python -m pytest tests/test_automation_storage.py -v
 ```
 
 ---
 
-# ▶️ Automation Runner
-
-The Runner connects the Scheduler with the Automation Engine.
-
-Its responsibility is to execute automations whose schedules are due.
-
-Architecture:
-
-```text
-Scheduler
-    │
-    │ due schedule
-    ▼
-Runner
-    │
-    ▼
-Automation Engine
-    │
-    ▼
-Action
-```
-
-The Runner handles:
-
-* Due schedule detection
-* Automation execution
-* Success results
-* Failure results
-* One-time schedule completion
-* Recurring schedule execution
-
----
-
-# 🧵 Background Automation Worker
-
-The Worker enables automation execution in the background.
-
-Instead of requiring the user to manually call the Runner repeatedly:
-
-```text
-Worker
-   ↓
-Checks Scheduler
-   ↓
-Finds due automation
-   ↓
-Runner executes
-   ↓
-Result stored
-```
-
-The worker supports:
-
-* Background execution
-* Configurable check interval
-* Start
-* Stop
-* Manual execution
-* Worker status
-* Error tracking
-* Recurring execution
-* Context manager support
-
-Example:
-
-```python
-worker = AutomationWorker(
-    runner,
-    interval_seconds=60
-)
-
-worker.start()
-```
-
-Stop it with:
-
-```python
-worker.stop()
-```
-
----
-
-# 🧠 Automation Architecture
-
-The complete automation architecture currently looks like:
-
-```text
-                    Automation System
-                           │
-             ┌─────────────┴─────────────┐
-             │                           │
-       Action Registry             Scheduler
-             │                           │
-             ▼                           ▼
-       Automation Engine            Due Schedule
-             │                           │
-             └──────────────┬────────────┘
-                            ▼
-                         Runner
-                            │
-                            ▼
-                         Worker
-                            │
-                            ▼
-                    Background Execution
-```
-
----
-
-# 🌐 Future Social Media Automation
-
-The current v0.34 automation system is intentionally built as infrastructure.
-
-The next layers can connect it to external services.
-
-Potential future workflows include:
-
-```text
-Content Creation
-      ↓
-Content Processing
-      ↓
-Scheduling
-      ↓
-Social Media Platform
-      ↓
-Publishing
-      ↓
-Analytics
-```
-
-Possible future integrations:
-
-* YouTube
-* Instagram
-* X
-* Facebook
-* LinkedIn
-* Telegram
-* Discord
-* Email
-* Cloud storage
-* Web APIs
-
-These integrations are **not yet part of v0.34**.
-
----
-
-# 📁 Project Structure
-
-Current high-level structure:
+# 🏗️ Project Structure
 
 ```text
 Ultron/
 │
 ├── main.py
 ├── README.md
+├── requirements.txt
 ├── .env
 ├── .gitignore
 │
 ├── core/
 │   ├── ai_client.py
-│   ├── ai_context.py
 │   ├── ai_engine.py
-│   ├── backup.py
 │   ├── commands.py
 │   ├── config.py
-│   ├── config_validator.py
 │   ├── conversation.py
-│   ├── export.py
-│   ├── history.py
-│   ├── import_data.py
-│   ├── logger.py
-│   ├── memory.py
-│   ├── monitor.py
 │   ├── natural_language.py
-│   ├── profile.py
-│   ├── profile_manager.py
-│   ├── restore.py
-│   ├── session_state.py
-│   ├── settings.py
-│   └── system_health.py
+│   └── session_state.py
 │
 ├── modules/
 │   └── automation/
@@ -657,123 +248,54 @@ Ultron/
 │       ├── manager.py
 │       ├── runner.py
 │       ├── scheduler.py
+│       ├── storage.py
 │       └── worker.py
 │
 ├── data/
 │   ├── memory.txt
-│   ├── profile.txt
-│   └── logs.txt
+│   └── profile.txt
 │
 ├── tests/
 │   ├── test_ai.py
 │   ├── test_automation.py
 │   ├── test_automation_runner.py
+│   ├── test_automation_storage.py
 │   └── test_automation_worker.py
 │
-├── assets/
-│
-├── exports/
-│
-├── backup/
-│
-└── venv/
+└── assets/
 ```
+
+> Runtime-generated automation storage is kept in `data/automations.json` and should not be treated as source code.
 
 ---
 
-# 🧱 Core Architecture
+# 🔐 Configuration
 
-Ultron is organized into independent layers.
+Ultron uses environment variables for sensitive configuration.
 
-```text
-┌─────────────────────────────────────┐
-│             User Interface           │
-├─────────────────────────────────────┤
-│          Command Processing          │
-├─────────────────────────────────────┤
-│        Conversation Engine           │
-├─────────────────────────────────────┤
-│       Context / Session State        │
-├─────────────────────────────────────┤
-│       Memory / Profile System        │
-├─────────────────────────────────────┤
-│             AI Engine                │
-├─────────────────────────────────────┤
-│          Automation Layer            │
-├─────────────────────────────────────┤
-│        External Integrations         │
-└─────────────────────────────────────┘
+Create a `.env` file:
+
+```env
+AI_MODE=mock
+ANTHROPIC_API_KEY=
 ```
 
-The architecture is designed to minimize coupling between components.
+For local development, the mock provider can be used without an API key.
 
----
+Example:
 
-# 🧪 Testing
-
-Testing is a major part of the project.
-
-Current test suite:
-
-```text
-58 passed
+```env
+AI_MODE=mock
 ```
 
-Run the complete test suite:
+When Anthropic integration is configured:
 
-```powershell
-python -m pytest -v
+```env
+AI_MODE=anthropic
+ANTHROPIC_API_KEY=your_api_key_here
 ```
 
-Compile individual modules:
-
-```powershell
-python -m py_compile modules\automation\worker.py
-```
-
-Run automation tests:
-
-```powershell
-python -m pytest tests\test_automation.py -v
-```
-
-Run scheduler/runner tests:
-
-```powershell
-python -m pytest tests\test_automation_runner.py -v
-```
-
-Run worker tests:
-
-```powershell
-python -m pytest tests\test_automation_worker.py -v
-```
-
-Run AI tests:
-
-```powershell
-python -m pytest tests\test_ai.py -v
-```
-
----
-
-# 📊 Current Test Coverage
-
-The current suite contains:
-
-| Component         |  Tests |
-| ----------------- | -----: |
-| AI System         |      8 |
-| Automation System |     18 |
-| Automation Runner |     14 |
-| Automation Worker |     18 |
-| **Total**         | **58** |
-
-Current result:
-
-```text
-58 passed
-```
+> Never commit API keys, `.env` files containing secrets, or other credentials to GitHub.
 
 ---
 
@@ -783,15 +305,10 @@ Current result:
 
 ```bash
 git clone https://github.com/adityashukla0227-del/Ultron.git
-```
-
-## 2. Enter the project
-
-```bash
 cd Ultron
 ```
 
-## 3. Create a virtual environment
+## 2. Create a virtual environment
 
 Windows:
 
@@ -799,691 +316,287 @@ Windows:
 python -m venv venv313
 ```
 
-## 4. Activate the environment
+Activate it:
 
 ```powershell
 .\venv313\Scripts\Activate.ps1
 ```
 
-## 5. Install dependencies
+## 3. Install dependencies
 
-Install the required packages for the current project environment.
-
-Example:
-
-```powershell
+```bash
 pip install -r requirements.txt
 ```
 
----
+## 4. Configure environment variables
 
-# 🔐 Environment Configuration
+Create `.env` and configure the desired AI provider.
 
-Create a `.env` file in the project root.
+## 5. Run Ultron
 
-Example:
-
-```env
-AI_MODE=mock
-ANTHROPIC_API_KEY=
-```
-
-For local testing:
-
-```env
-AI_MODE=mock
-```
-
-For Anthropic integration:
-
-```env
-AI_MODE=anthropic
-ANTHROPIC_API_KEY=your_key_here
-```
-
-Never commit your actual API key.
-
----
-
-# ▶️ Running Ultron
-
-After activating the virtual environment:
-
-```powershell
+```bash
 python main.py
 ```
 
-Ultron can then process supported commands and conversational requests.
-
 ---
 
-# 🧪 Mock AI Mode
+# 🧪 Development Workflow
 
-Mock mode is useful when an API key is unavailable.
+Before committing changes, run:
 
-Set:
-
-```powershell
-$env:AI_MODE="mock"
-```
-
-Then start Ultron:
-
-```powershell
-python main.py
-```
-
-This allows development of the application without requiring live AI API requests.
-
----
-
-# 🤖 Anthropic Mode
-
-When a valid API key is configured:
-
-```env
-AI_MODE=anthropic
-ANTHROPIC_API_KEY=your_api_key
-```
-
-Ultron can use the Anthropic provider through its provider architecture.
-
----
-
-# 🔄 Development Workflow
-
-Recommended workflow:
-
-```text
-1. Create feature
-       ↓
-2. Implement module
-       ↓
-3. Compile
-       ↓
-4. Write tests
-       ↓
-5. Run feature tests
-       ↓
-6. Run complete test suite
-       ↓
-7. Review Git diff
-       ↓
-8. Commit
-       ↓
-9. Push
-```
-
-Example:
-
-```powershell
-python -m py_compile modules\automation\worker.py
-
+```bash
 python -m pytest -v
-
-git status
-
-git add .
-
-git commit -m "Release v0.34 - Automation Engine"
-
-git push origin main
 ```
+
+For Python syntax validation:
+
+```powershell
+Get-ChildItem modules\automation\*.py | ForEach-Object {
+    python -m py_compile $_.FullName
+}
+```
+
+The goal is to keep the project stable while new features are introduced incrementally.
 
 ---
 
-# 📦 Version History
+# 🧩 Architecture Philosophy
 
-## v0.34 — Automation Engine
+Ultron is being developed using a modular architecture.
 
-Current release.
+The project avoids placing all functionality inside a single large AI module.
 
-Introduced:
-
-* Automation module
-* Action Registry
-* Automation Engine
-* Automation Manager
-* Scheduler
-* Runner
-* Background Worker
-* Recurring automation
-* Execution tracking
-* Worker status
-* Automation tests
-
-Test result:
+Instead, major responsibilities are separated into independent components.
 
 ```text
-58 passed
+User
+ │
+ ▼
+Conversation Layer
+ │
+ ├── Intent Detection
+ ├── Context
+ ├── Session State
+ └── Memory
+ │
+ ▼
+AI Engine
+ │
+ ├── Mock Provider
+ └── Anthropic Provider
+ │
+ ▼
+Automation Layer
+ │
+ ├── Manager
+ ├── Engine
+ ├── Actions
+ ├── Scheduler
+ ├── Runner
+ ├── Worker
+ └── Storage
 ```
 
----
-
-## v0.33 — AI Context Engine
-
-Introduced:
-
-* Dedicated AI context module
-* Context construction
-* Session state integration
-* Ranked conversation context
-* AI context separation
-* Improved AI conversation fallback
+This structure allows individual components to evolve without unnecessarily affecting the rest of the system.
 
 ---
 
-## v0.31 — AI Integration
+# 📈 Version History
 
-Introduced:
-
-* AI Engine
-* Provider architecture
-* Mock provider
-* Anthropic provider
-* AI conversation integration
-* Error handling
-* `.env` security
-* AI tests
-
----
-
-## v0.30 — Smart Memory Intelligence
-
-Introduced improvements to:
-
-* Memory queries
-* Memory context
-* Memory suggestions
-* Memory cleanup
-* Deduplication
-* Conversation intelligence
-* Session state
+| Version   | Major Milestone                              |
+| --------- | -------------------------------------------- |
+| v0.1      | Project Setup                                |
+| v0.2      | Conversation Engine                          |
+| v0.3      | Memory Save                                  |
+| v0.4      | Memory Recall                                |
+| v0.5      | Smart User Profile Memory                    |
+| v0.23+    | Advanced Conversation & Memory Development   |
+| v0.28     | Smart Memory Intelligence                    |
+| v0.30     | Natural Language & Conversation Intelligence |
+| v0.31     | AI Integration                               |
+| v0.34     | Automation Engine                            |
+| **v0.35** | **Automation Persistence**                   |
 
 ---
 
 # 🗺️ Roadmap
 
-## Phase 1 — Foundation
+Ultron is being developed incrementally toward a much larger AI platform.
 
-* [x] Project setup
+### Completed
+
+* [x] Core project architecture
 * [x] Conversation engine
 * [x] Memory system
-* [x] Profile system
-* [x] Command system
+* [x] User profile memory
+* [x] Context handling
 * [x] Session state
-* [x] AI provider architecture
+* [x] Natural language command handling
+* [x] AI engine
+* [x] Provider architecture
+* [x] Mock AI provider
+* [x] Anthropic provider
+* [x] AI error handling
+* [x] Automation engine
+* [x] Automation actions
+* [x] Automation manager
+* [x] Automation scheduler
+* [x] Automation runner
+* [x] Automation worker
+* [x] Automation persistence
+* [x] Storage recovery
+* [x] Automated testing
+
+### In Development
+
+* [ ] More automation actions
+* [ ] Advanced scheduling
+* [ ] Better automation management
+* [ ] Automation history
+* [ ] Richer AI-assisted automation
+* [ ] Improved conversational automation commands
+* [ ] More persistent state
+* [ ] Expanded AI provider support
+
+### Future
+
+* [ ] AI-powered agents
+* [ ] Agent execution system
+* [ ] Workflow builder
+* [ ] Tool integrations
+* [ ] Developer API
+* [ ] Team/workspace support
+* [ ] Billing infrastructure
+* [ ] Agent marketplace
+* [ ] AI platform infrastructure
 
 ---
 
-## Phase 2 — AI Intelligence
+# 🎯 Long-Term Vision
 
-* [x] AI Engine
-* [x] Mock Provider
-* [x] Anthropic Provider
-* [x] AI Context Engine
-* [x] Context-aware AI requests
-* [x] AI testing
+Ultron is not intended to remain only a simple chatbot.
 
----
-
-## Phase 3 — Automation
-
-* [x] Action Registry
-* [x] Automation Engine
-* [x] Automation Manager
-* [x] Scheduler
-* [x] Runner
-* [x] Background Worker
-* [x] Recurring schedules
-* [x] Automation testing
-
----
-
-## Phase 4 — Integrations
-
-Planned:
-
-* [ ] Web automation
-* [ ] API integrations
-* [ ] Email automation
-* [ ] File automation
-* [ ] Browser automation
-* [ ] Cloud integrations
-* [ ] Social media integrations
-* [ ] Notification system
-
----
-
-## Phase 5 — Advanced Automation
-
-Planned:
-
-* [ ] Multi-step workflows
-* [ ] Conditional execution
-* [ ] Workflow branching
-* [ ] Automation dependencies
-* [ ] Retry policies
-* [ ] Failure recovery
-* [ ] Execution history
-* [ ] Workflow templates
-* [ ] Automation marketplace
-
----
-
-## Phase 6 — AI Agent System
-
-Planned:
-
-* [ ] Autonomous task planning
-* [ ] Tool calling
-* [ ] Agent memory
-* [ ] Agent workflows
-* [ ] Multi-agent collaboration
-* [ ] Long-running tasks
-* [ ] Goal-driven execution
-
----
-
-# 🏗️ Long-Term Architecture
-
-The long-term architecture is expected to evolve toward:
+The long-term goal is to evolve Ultron into an intelligent software platform capable of:
 
 ```text
-                         Ultron
-                            │
-        ┌───────────────────┼───────────────────┐
-        │                   │                   │
-   Conversation          Memory            Automation
-        │                   │                   │
-        └───────────────────┼───────────────────┘
-                            │
-                         AI Engine
-                            │
-                      Agent System
-                            │
-                      Tool System
-                            │
-                  External Integrations
-                            │
-       ┌────────────┬───────┼───────┬────────────┐
-       │            │       │       │            │
-    YouTube      Instagram  X    LinkedIn     APIs
+Understand
+    ↓
+Remember
+    ↓
+Reason
+    ↓
+Plan
+    ↓
+Execute
+    ↓
+Automate
+    ↓
+Learn from context
 ```
+
+The broader vision is to build a powerful **Made-in-India AI platform** with its own ecosystem of AI models, agents, workflows, automation tools, APIs, and developer infrastructure.
 
 ---
 
-# 🔮 Future AI Platform Direction
+# 🔒 Security
 
-Ultron may eventually serve as a foundation for a broader AI platform.
+Security is an important part of Ultron's development.
 
-Potential platform components include:
+Current practices include:
+
+* API keys stored through environment variables
+* `.env` excluded from source control
+* No hard-coded API credentials
+* Provider availability checks
+* Error handling around AI providers
+* Persistent storage isolated from execution logic
+* Corrupted JSON recovery
+
+Security architecture will continue to evolve as the platform becomes more capable.
+
+---
+
+# 🧑‍💻 Development Principles
+
+Ultron follows several core development principles:
+
+### Modular
+
+Every major responsibility should have a clear module.
+
+### Testable
+
+New functionality should be accompanied by automated tests.
+
+### Extensible
+
+The architecture should make future providers, actions, tools, and integrations easy to add.
+
+### Persistent
+
+Important state should survive application restarts where appropriate.
+
+### Secure
+
+Secrets and sensitive configuration should never be hard-coded.
+
+### Incremental
+
+Ultron is developed through small, tested releases rather than attempting to build the entire platform at once.
+
+---
+
+# 📊 Current Project Status
 
 ```text
-AI Models
-     │
-AI Agents
-     │
-Agent Builder
-     │
-Workflow Builder
-     │
-Automation Engine
-     │
-API Platform
-     │
-Developer Tools
-     │
-Integrations
-     │
-Marketplace
-     │
-Teams / Workspaces
-     │
-Billing
+Ultron v0.35
+──────────────────────────────
+
+Conversation Intelligence     ✅
+Memory System                 ✅
+User Profile Memory           ✅
+Session State                 ✅
+Natural Language              ✅
+AI Engine                     ✅
+Provider Architecture         ✅
+Mock AI Provider              ✅
+Anthropic Provider            ✅
+Error Handling                ✅
+Automation Engine             ✅
+Automation Manager            ✅
+Automation Scheduler          ✅
+Automation Runner             ✅
+Automation Worker             ✅
+Automation Storage             ✅
+Persistent Automations        ✅
+Storage Recovery              ✅
+Automated Tests               ✅
+
+Tests                         82 passed
 ```
-
-This is a long-term direction and is not part of the current v0.34 implementation.
-
----
-
-# 🧠 Design Principles
-
-Ultron follows several core engineering principles.
-
-## Modularity
-
-Each major capability should have a dedicated module.
-
-```text
-AI
-Memory
-Conversation
-Automation
-Scheduling
-Execution
-```
-
----
-
-## Separation of Responsibilities
-
-Components should have clear responsibilities.
-
-For example:
-
-```text
-Scheduler → determines when
-Runner    → executes scheduled automation
-Worker    → continuously checks scheduler
-Engine    → manages automation execution
-Manager   → manages automation definitions
-```
-
----
-
-## Testability
-
-Every major feature should have automated tests.
-
-A feature is not considered complete simply because it works manually.
-
-The expected workflow is:
-
-```text
-Implementation
-      ↓
-Test
-      ↓
-Fix
-      ↓
-Regression Test
-      ↓
-Release
-```
-
----
-
-## Extensibility
-
-New capabilities should be added through modules rather than large rewrites.
-
-For example, a future social-media action could be registered as:
-
-```python
-registry.register(
-    "publish_youtube",
-    publish_youtube
-)
-```
-
-The automation engine would not need to know the internal implementation of the action.
-
----
-
-# 🔒 Security Principles
-
-Ultron follows these principles:
-
-* Never hard-code API keys
-* Keep secrets in environment variables
-* Do not commit `.env`
-* Validate external input
-* Isolate external integrations
-* Keep automation permissions explicit
-* Test failure conditions
-* Avoid uncontrolled background execution
-
-Future integrations should additionally implement:
-
-* OAuth
-* Token management
-* Permission scopes
-* Rate-limit handling
-* Secure credential storage
-* Audit logs
-
----
-
-# ⚠️ Current Limitations
-
-Ultron v0.34 is still under active development.
-
-The current automation system provides the infrastructure for automation but does not yet provide complete social-media automation.
-
-Currently:
-
-```text
-Automation Engine       ✅
-Scheduling              ✅
-Background Worker       ✅
-Recurring Automation    ✅
-Social Media Publishing ⏳
-OAuth Integrations      ⏳
-Browser Automation      ⏳
-Workflow Builder        ⏳
-```
-
-The project should therefore be considered an evolving development project rather than a finished production platform.
-
----
-
-# 🧪 Quality Standard
-
-Before releasing a version, Ultron should satisfy:
-
-```text
-Code compiles                 ✅
-Feature tests pass             ✅
-Full regression tests pass     ✅
-No accidental log changes      ✅
-Git working tree reviewed      ✅
-README updated                 ✅
-Version documented             ✅
-Commit created                 ✅
-GitHub synchronized            ✅
-```
-
----
-
-# 🤝 Contributing
-
-Ultron is currently primarily developed as an independent project.
-
-Future contributions may include:
-
-* Bug fixes
-* Tests
-* Documentation
-* New AI providers
-* Automation actions
-* Integrations
-* Developer tooling
-* Performance improvements
-
-Before submitting changes:
-
-```powershell
-python -m pytest -v
-```
-
-All existing tests should pass.
 
 ---
 
 # 📜 License
 
-License information will be added as the project's distribution model is finalized.
+This project is currently under active development.
 
-Until then, the repository should be treated according to the project's current repository terms.
-
----
-
-# 📌 Project Status
-
-| Area                      | Status |
-| ------------------------- | ------ |
-| Conversation Engine       | ✅      |
-| Memory System             | ✅      |
-| Profile System            | ✅      |
-| Session State             | ✅      |
-| AI Engine                 | ✅      |
-| Mock AI Provider          | ✅      |
-| Anthropic Provider        | ✅      |
-| AI Context Engine         | ✅      |
-| Automation Actions        | ✅      |
-| Automation Engine         | ✅      |
-| Automation Manager        | ✅      |
-| Scheduler                 | ✅      |
-| Runner                    | ✅      |
-| Background Worker         | ✅      |
-| Recurring Automation      | ✅      |
-| Automated Tests           | ✅      |
-| Social Media Integrations | ⏳      |
-| Workflow Builder          | ⏳      |
-| AI Agents                 | ⏳      |
-| External API Platform     | ⏳      |
+License and contribution guidelines will be finalized as the project moves toward its public release.
 
 ---
 
-# 📈 Current Milestone
-
-## Ultron v0.34
-
-The v0.34 milestone establishes the first complete automation foundation.
-
-The architecture now supports:
-
-```text
-User Request
-     ↓
-Ultron Intelligence
-     ↓
-Automation Definition
-     ↓
-Scheduler
-     ↓
-Runner
-     ↓
-Action
-     ↓
-Worker
-     ↓
-Background Execution
-```
-
-This is an important architectural milestone because future external integrations can be implemented as actions without rebuilding the automation infrastructure.
-
----
-
-# 🧭 What's Next?
-
-The next development stages will focus on turning the automation foundation into useful real-world workflows.
-
-Potential progression:
-
-```text
-v0.34
-Automation Foundation
-        ↓
-v0.35
-Automation Persistence / History
-        ↓
-v0.36
-Workflow & Conditional Automation
-        ↓
-v0.37
-External API Actions
-        ↓
-v0.38+
-Social Media Integrations
-        ↓
-AI-powered Automation
-        ↓
-Agent System
-        ↓
-Ultron Platform
-```
-
-The exact version roadmap may change as development progresses.
-
----
-
-# ⭐ Why Ultron?
-
-Ultron is being built around a different idea of what an AI assistant should become.
-
-A traditional assistant:
-
-```text
-Question
-   ↓
-Answer
-```
-
-Ultron aims toward:
-
-```text
-Goal
- ↓
-Understand
- ↓
-Remember
- ↓
-Plan
- ↓
-Execute
- ↓
-Automate
- ↓
-Learn from context
-```
-
-The objective is not simply to build another chatbot.
-
-The objective is to build an extensible AI system capable of combining:
-
-**intelligence + memory + context + automation + execution.**
-
----
-
-# 👨‍💻 Developer
+# 👨‍💻 Author
 
 **Aditya Shukla**
 
-Independent developer building Ultron as a long-term AI project.
+Building Ultron step by step with the long-term goal of creating a powerful AI software platform from India.
 
 ---
 
-# 🔗 Repository
+## ⭐ Project Status
 
-GitHub:
+Ultron is an actively developed project.
 
-```text
-https://github.com/adityashukla0227-del/Ultron
-```
+Every version represents another step toward the larger vision.
 
----
-
-# ❤️ Final Note
-
-Ultron is a long-term project.
-
-Every version is designed to establish a stronger foundation for the next one.
-
-```text
-v0.x
-Foundation
-   ↓
-AI
-   ↓
-Automation
-   ↓
-Agents
-   ↓
-Platform
-```
-
-**Built step by step. Tested step by step. Improved version by version.**
-
-> **Ultron — From AI assistant to intelligent automation platform.** 🤖
+**Current milestone: v0.35 — Automation Persistence 🚀**
