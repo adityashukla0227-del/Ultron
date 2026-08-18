@@ -4,6 +4,7 @@ from core.memory import get_memory, get_relevant_memories
 from core.profile import get_profile
 from core.session_state import _session_state as session_state
 from core.ai_engine import generate_ai_response
+from core.ai_context import build_ai_context
 
 
 # ============================================================
@@ -3828,76 +3829,7 @@ def handle_conversation(user):
         # Build Smart AI Context
         # ----------------------------------------------------
 
-        ranked_context = get_smart_context(
-            query=user,
-            limit=3
-        )
-
-        goal_context = get_goal_context()
-
-        context_parts = []
-
-        # Current session state
-        if goal_context.get("goal"):
-            context_parts.append(
-                f"Current goal: {goal_context['goal']}"
-            )
-
-        if goal_context.get("topic"):
-            context_parts.append(
-                f"Current topic: {goal_context['topic']}"
-            )
-
-        if goal_context.get("entity"):
-            context_parts.append(
-                f"Current entity: {goal_context['entity']}"
-            )
-
-        if goal_context.get("intent"):
-            context_parts.append(
-                f"Current intent: {goal_context['intent']}"
-            )
-
-        if goal_context.get("technology"):
-            context_parts.append(
-                f"Current technology: "
-                f"{goal_context['technology']}"
-            )
-
-        if goal_context.get("pending_question"):
-            context_parts.append(
-                f"Pending question: "
-                f"{goal_context['pending_question']}"
-            )
-
-        # ----------------------------------------------------
-        # Ranked Previous Conversation Context
-        # ----------------------------------------------------
-
-        if ranked_context:
-
-            context_parts.append(
-                "\nRelevant previous conversation:"
-            )
-
-            for index, item in enumerate(
-                ranked_context,
-                start=1
-            ):
-
-                context_parts.append(
-                    f"{index}. "
-                    f"Query: {item.get('query') or 'None'} | "
-                    f"Topic: {item.get('topic') or 'None'} | "
-                    f"Entity: {item.get('entity') or 'None'} | "
-                    f"Goal: {item.get('goal') or 'None'} | "
-                    f"Technology: "
-                    f"{item.get('technology') or 'None'}"
-                )
-
-        context = "\n".join(
-            context_parts
-        )
+        context = build_ai_context(user)
 
         # ----------------------------------------------------
         # Send User Request + Context to AI Engine
