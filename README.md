@@ -1,14 +1,15 @@
 # Ultron
 
-**A Modular Personal AI Assistant & Automation Platform**
+**A Modular Personal AI Assistant, Automation & Agent Platform**
 
-![Version](https://img.shields.io/badge/version-v0.36-blue)
+![Version](https://img.shields.io/badge/version-v0.37-blue)
 ![Python](https://img.shields.io/badge/python-3.13%2B-yellow)
-![Tests](https://img.shields.io/badge/tests-95%20passed-brightgreen)
+![Tests](https://img.shields.io/badge/tests-124%20passed-brightgreen)
 ![Status](https://img.shields.io/badge/status-active%20development-orange)
 ![Architecture](https://img.shields.io/badge/architecture-modular-purple)
+![Agents](https://img.shields.io/badge/agents-runtime-purple)
 
-> Building a reliable, extensible, persistent AI assistant — one subsystem at a time.
+> Building a reliable, extensible, persistent AI assistant, automation engine, and agent runtime — one subsystem at a time.
 
 ---
 
@@ -24,60 +25,112 @@
 8. Repository Structure
 9. AI Architecture
 10. AI Provider System
-11. Conversation Engine
-12. Memory System
-13. Natural Language System
-14. Session State
-15. Automation System
-16. Action Registry
-17. Automation Engine
-18. Automation Manager
-19. Automation Scheduler
-20. Automation Runner
-21. Automation Worker
-22. Automation Storage
-23. Persistence Architecture
-24. Restart Recovery
-25. Error Handling
-26. Configuration
-27. Environment Variables
-28. Security
-29. Testing
-30. Test Architecture
-31. Automation Tests
-32. Persistence Tests
-33. Worker Tests
-34. Development Workflow
-35. Git Workflow
-36. Release Workflow
-37. Version History
-38. Roadmap
-39. Future Automation
-40. Future AI Platform
-41. Design Principles
-42. Engineering Principles
-43. Reliability
-44. Extensibility
-45. Maintainability
-46. Performance
-47. Developer Guide
-48. Troubleshooting
-49. FAQ
-50. Project Status
-51. Long-Term Vision
-52. Conclusion
+11. Mock Provider
+12. Anthropic Provider
+13. Conversation Engine
+14. Intent Detection
+15. Topic Detection
+16. Entity Extraction
+17. Session State
+18. Goal Tracking
+19. Memory System
+20. Smart Memory
+21. Natural Language Commands
+22. Automation System
+23. Action Registry
+24. Automation Engine
+25. Automation Manager
+26. Automation Scheduler
+27. Automation Runner
+28. Automation Worker
+29. Automation Storage
+30. Persistence Architecture
+31. Restart Recovery
+32. Runtime vs Persistent State
+33. AI Agent System
+34. Agent Model
+35. Agent Registry
+36. Agent Engine
+37. Agent Lifecycle
+38. Agent Execution
+39. Agent Validation
+40. Agent Status
+41. Agent Persistence Readiness
+42. Future Agent Architecture
+43. Testing
+44. Test Architecture
+45. Agent Tests
+46. AI Tests
+47. Automation Tests
+48. Runner Tests
+49. Worker Tests
+50. Storage Tests
+51. Scheduler Persistence Tests
+52. Persistence Integration Tests
+53. Running Tests
+54. Compilation Checks
+55. Development Workflow
+56. Git Workflow
+57. Release Workflow
+58. Security
+59. API Key Handling
+60. Environment Configuration
+61. Error Handling
+62. Design Principles
+63. Extensibility
+64. Future Storage
+65. Future Scheduling
+66. Future Actions
+67. Future Workflows
+68. Future AI Agents
+69. Future Agent Builder
+70. Future Marketplace
+71. Future Developer API
+72. Future Workspace System
+73. Future Billing
+74. Observability
+75. Audit Logging
+76. Permissions
+77. Reliability
+78. Maintainability
+79. Performance
+80. Concurrency
+81. Testing Philosophy
+82. Regression Protection
+83. Version History
+84. v0.31
+85. v0.34
+86. v0.35
+87. v0.36
+88. v0.37
+89. Roadmap
+90. Development Philosophy
+91. Why Modular Architecture
+92. Project Status
+93. Developer Notes
+94. Troubleshooting
+95. FAQ
+96. Architecture Summary
+97. Engineering Priorities
+98. Future Architecture
+99. Release Gate
+100. Current Release Gate
+101. Conclusion
+102. Core Principle
+103. Long-Term Vision
+104. Maintainer
 
 ---
 
 # 1. Project Overview
 
-Ultron is a modular personal AI assistant and automation platform written in Python.
+Ultron is a modular personal AI assistant, automation engine, and agent platform written in Python.
 
 The project is designed to evolve from a personal assistant into a larger intelligent software platform.
 
 Ultron combines multiple software subsystems instead of treating an AI assistant as a single monolithic program.
 
-The major subsystems include:
+Major subsystems include:
 
 * Conversation
 * Context
@@ -90,6 +143,9 @@ The major subsystems include:
 * Persistent storage
 * Background workers
 * Action registries
+* AI agents
+* Agent registry
+* Agent execution engine
 * Testing infrastructure
 
 The architecture is intentionally modular.
@@ -102,7 +158,7 @@ This makes it possible to improve one part of Ultron without rewriting the entir
 
 # 2. Vision
 
-The long-term vision of Ultron is to create an intelligent software system capable of understanding users, remembering useful information, executing actions, automating repetitive tasks, and connecting multiple AI capabilities through a unified platform.
+The long-term vision of Ultron is to create an intelligent software system capable of understanding users, remembering useful information, executing actions, automating repetitive tasks, and operating AI agents through a unified platform.
 
 Ultron is not intended to remain only a chatbot.
 
@@ -115,6 +171,7 @@ The long-term architecture can support:
 * Personal automation
 * Scheduled tasks
 * AI agents
+* Agent execution
 * Workflows
 * Developer APIs
 * External integrations
@@ -150,76 +207,94 @@ Each version is tested before moving to the next stage.
 
 # 4. Current Release
 
-## v0.36
+## v0.37
 
-Ultron v0.36 focuses heavily on automation persistence and restart-safe automation behavior.
+Ultron v0.37 introduces the first dedicated **AI Agent Runtime foundation**.
 
-The automation subsystem now supports:
+The release adds a modular agent subsystem containing:
 
-* Persistent automations
-* Persistent schedules
-* Automation restoration
-* Schedule restoration
-* Execution persistence
-* Recurring schedule persistence
-* Worker execution after restoration
-* Manager persistence
-* Storage recovery
-* End-to-end persistence testing
+* Agent model
+* Agent validation
+* Agent lifecycle controls
+* Agent status
+* Agent Registry
+* Agent Engine
+* Agent action execution
+* Runtime parameter overrides
+* Safe execution
+* Agent enable/disable behavior
+* Agent-specific error handling
+* Agent regression tests
 
-The current automated test suite contains:
+The automation subsystem from v0.36 remains fully operational.
 
-**95 tests**
+The complete automated test suite now contains:
+
+**124 tests**
 
 Current result:
 
-**95 passed**
+**124 passed**
 
-This provides a strong regression baseline for the automation architecture.
+This provides a strong regression baseline across AI, automation, persistence, scheduling, workers, and agents.
 
 ---
 
 # 5. Release Highlights
 
-## v0.36 Highlights
+## v0.37 Highlights
 
-### Automation persistence
+### AI Agent foundation
 
-Automation definitions can be saved to persistent storage.
+Ultron now contains a dedicated agent architecture.
 
-### Schedule persistence
+### Agent model
 
-Schedules can survive the creation of a new scheduler instance.
+Agents have their own identity, configuration, action, parameters, and lifecycle state.
 
-### Automation restoration
+### Agent Registry
 
-A new automation manager can restore previously persisted automation definitions.
+Agents can be:
 
-### Schedule restoration
+* Registered
+* Retrieved
+* Listed
+* Removed
+* Replaced
+* Restored
+* Exported
+* Filtered
 
-A new scheduler can restore previously persisted schedules.
+### Agent Engine
 
-### Execution persistence
+The Agent Engine provides execution capabilities for registered agents.
 
-Execution state can be written back to persistent storage.
+### Runtime parameters
 
-### Worker restoration
+Agent parameters can be overridden at execution time without modifying the stored agent definition.
 
-The worker can execute schedules restored from persistent storage.
+### Safe execution
 
-### Recurring automation persistence
+The Agent Engine provides a safe execution path for controlled agent failures.
 
-Recurring schedules remain functional across persistence boundaries.
+### Agent lifecycle
+
+Agents can be enabled and disabled.
+
+Disabled agents cannot execute.
 
 ### Regression coverage
 
-The full project test suite passes.
+The full project test suite passes:
+
+```text
+124 passed
+0 failed
+```
 
 ---
 
 # 6. Core Capabilities
-
-Ultron currently contains several major capabilities.
 
 ## AI
 
@@ -265,11 +340,23 @@ Ultron currently contains several major capabilities.
 * Recurring schedules
 * Execution tracking
 
+## Agents
+
+* Agent model
+* Agent validation
+* Agent registry
+* Agent engine
+* Agent execution
+* Agent status management
+* Runtime parameter overrides
+* Safe execution
+* Agent restoration/export architecture
+
 ---
 
 # 7. Architecture
 
-Ultron follows a layered architecture.
+Ultron follows a layered modular architecture.
 
 ```text
 User
@@ -289,19 +376,21 @@ AI Engine
 Mock Provider     Anthropic Provider
  |
  v
-Automation / Commands
+Commands / Agents / Automation
  |
- v
-Automation Manager
- |
- v
-Automation Engine
- |
- v
-Action Registry
- |
- v
-Action Handler
+ +--------------------------+
+ |                          |
+ v                          v
+Agent Engine          Automation Manager
+ |                          |
+ v                          v
+Agent Registry        Automation Engine
+ |                          |
+ v                          v
+Agent Action          Action Registry
+                            |
+                            v
+                       Action Handler
 ```
 
 The scheduling system is connected through:
@@ -379,17 +468,24 @@ Ultron/
 │   └── session_state.py
 │
 ├── modules/
-│   └── automation/
-│       ├── actions.py
-│       ├── engine.py
-│       ├── manager.py
-│       ├── runner.py
-│       ├── scheduler.py
-│       ├── storage.py
-│       └── worker.py
+│   ├── automation/
+│   │   ├── actions.py
+│   │   ├── engine.py
+│   │   ├── manager.py
+│   │   ├── runner.py
+│   │   ├── scheduler.py
+│   │   ├── storage.py
+│   │   └── worker.py
+│   │
+│   └── agent/
+│       ├── __init__.py
+│       ├── agent.py
+│       ├── agent_engine.py
+│       └── agent_registry.py
 │
 ├── tests/
 │   ├── test_ai.py
+│   ├── test_agent.py
 │   ├── test_automation.py
 │   ├── test_automation_runner.py
 │   ├── test_automation_worker.py
@@ -460,11 +556,11 @@ It allows Ultron to operate without a production API key.
 
 This provides:
 
-* deterministic testing
-* local development
-* faster debugging
-* offline development
-* provider architecture testing
+* Deterministic testing
+* Local development
+* Faster debugging
+* Offline development
+* Provider architecture testing
 
 The mock provider is particularly useful for CI and regression testing.
 
@@ -490,8 +586,6 @@ The conversation engine is one of the central intelligence components.
 
 It is responsible for processing conversational input.
 
-The architecture has evolved from basic responses into a context-aware system.
-
 Current concepts include:
 
 * Intent
@@ -502,6 +596,8 @@ Current concepts include:
 * Goal
 * Reference
 * Memory
+
+The conversation system provides the intelligence layer that can eventually feed automation and agent execution.
 
 ---
 
@@ -529,7 +625,7 @@ A conversation may change topics.
 
 The session system can track topic history.
 
-This creates a foundation for topic switching.
+This creates a foundation for topic switching and longer-running interactions.
 
 ---
 
@@ -639,7 +735,7 @@ This allows users to interact with the system without needing to know internal c
 
 Automation is one of the major architectural components of Ultron.
 
-The system is designed around five primary responsibilities:
+The system is designed around:
 
 ```text
 Manager
@@ -647,9 +743,10 @@ Engine
 Scheduler
 Runner
 Worker
+Storage
 ```
 
-Storage provides persistence across these components.
+Each component has a defined responsibility.
 
 ---
 
@@ -674,24 +771,11 @@ The registry provides:
 * Removal
 * Execution
 
----
-
-# 24. Default Actions
-
-The default registry currently provides baseline actions used for development and testing.
-
-Examples include:
-
-```text
-hello
-echo
-```
-
-The default actions provide a predictable environment for testing the automation system.
+The action registry is the execution foundation used by the automation subsystem.
 
 ---
 
-# 25. Automation Engine
+# 24. Automation Engine
 
 The AutomationEngine is the execution core.
 
@@ -708,81 +792,7 @@ Responsibilities include:
 
 ---
 
-# 26. Automation Validation
-
-Before an automation is registered, it is validated.
-
-Validation checks include:
-
-* Correct data type
-* Name presence
-* Action presence
-* Action existence
-* Parameter structure
-
-Invalid automations should fail early.
-
----
-
-# 27. Automation Registration
-
-A new automation contains information such as:
-
-```text
-id
-name
-action
-parameters
-enabled
-created_at
-last_run
-last_result
-```
-
-The unique automation identifier preserves identity.
-
----
-
-# 28. Automation Restoration
-
-Restoration is different from registration.
-
-Registration creates a new automation ID.
-
-Restoration preserves the original ID.
-
-This distinction is important for persistence.
-
-The stored automation must continue to be referenced by existing schedules.
-
----
-
-# 29. Automation Execution
-
-Execution follows this flow:
-
-```text
-Automation ID
-      |
-      v
-Find Automation
-      |
-      v
-Check Enabled
-      |
-      v
-Find Action
-      |
-      v
-Execute Handler
-      |
-      v
-Update Execution State
-```
-
----
-
-# 30. Automation Manager
+# 25. Automation Manager
 
 The manager provides a higher-level API.
 
@@ -802,46 +812,7 @@ The manager connects the engine and storage.
 
 ---
 
-# 31. Manager Persistence
-
-When an automation is created through the manager:
-
-```text
-Manager
-   |
-   v
-Engine creates automation
-   |
-   v
-Manager persists automation
-```
-
-This ensures that newly created automations do not disappear when the process ends.
-
----
-
-# 32. Manager Restoration
-
-When a manager starts:
-
-```text
-Storage
-   |
-   v
-Saved Automations
-   |
-   v
-Manager
-   |
-   v
-Engine
-```
-
-The manager restores persisted automation definitions.
-
----
-
-# 33. Automation Scheduler
+# 26. Automation Scheduler
 
 The scheduler decides when automations should run.
 
@@ -861,37 +832,7 @@ The scheduler can handle:
 
 ---
 
-# 34. One-Time Schedules
-
-A one-time schedule is designed to execute once.
-
-After successful execution, it should no longer behave as an active due schedule.
-
-This prevents accidental repeated execution.
-
----
-
-# 35. Recurring Schedules
-
-Recurring schedules calculate future execution opportunities.
-
-The scheduler can retain the schedule after an execution.
-
-This allows repeated automation.
-
----
-
-# 36. Scheduler Persistence
-
-Schedule state is persisted.
-
-This means a schedule does not depend on the lifetime of a single Python object.
-
-A new scheduler can restore previously stored schedules.
-
----
-
-# 37. Automation Runner
+# 27. Automation Runner
 
 The AutomationRunner connects scheduling and execution.
 
@@ -916,46 +857,7 @@ That responsibility belongs to the worker.
 
 ---
 
-# 38. Run Schedule
-
-The runner can execute a specific schedule.
-
-It validates:
-
-1. Schedule exists.
-2. Schedule is enabled.
-3. Associated automation is executed.
-4. Schedule execution is recorded.
-
-Errors are converted into automation execution errors.
-
----
-
-# 39. Run Due Schedules
-
-The runner can process all currently due schedules.
-
-Results contain:
-
-```text
-schedule_id
-automation_id
-success
-result
-```
-
-Failed executions contain:
-
-```text
-success
-error
-```
-
-This provides structured execution information.
-
----
-
-# 40. Automation Worker
+# 28. Automation Worker
 
 The worker is responsible for periodic checking.
 
@@ -976,28 +878,7 @@ Due schedules
 
 The worker can operate in a background thread.
 
----
-
-# 41. Worker Interval
-
-The worker accepts an interval.
-
-Example:
-
-```python
-worker = AutomationWorker(
-    runner=runner,
-    interval_seconds=60,
-)
-```
-
-The interval controls how often the worker checks for due schedules.
-
----
-
-# 42. Worker Lifecycle
-
-The worker supports:
+It supports:
 
 ```text
 start()
@@ -1006,47 +887,9 @@ run_once()
 status()
 ```
 
-It also supports context-manager usage.
-
-Example:
-
-```python
-with AutomationWorker(runner) as worker:
-    ...
-```
-
 ---
 
-# 43. Worker Thread Safety
-
-The worker uses a lock to protect shared state.
-
-Protected information includes:
-
-* Running state
-* Last results
-* Last error
-* Thread state
-
-The stop event controls background-loop termination.
-
----
-
-# 44. Worker Error Handling
-
-Worker errors are captured.
-
-The worker exposes the latest error through:
-
-```python
-worker.last_error
-```
-
-A failure in one scheduler cycle should not silently crash the entire application.
-
----
-
-# 45. Automation Storage
+# 29. Automation Storage
 
 AutomationStorage provides JSON-backed persistence.
 
@@ -1065,88 +908,63 @@ The storage system supports:
 * Load
 * Save
 
----
-
-# 46. Storage Validation
-
-Storage validates records before saving.
-
-Automation records must contain an identifier.
-
-Schedule records must contain an identifier.
-
-Invalid types are rejected.
-
-This prevents malformed state from silently entering persistence.
+It also provides recovery behavior for corrupted or invalid persistent data.
 
 ---
 
-# 47. Storage Recovery
-
-The storage system contains recovery behavior for corrupted or invalid persistent data.
-
-The test suite verifies behavior for:
-
-* Corrupted JSON
-* Invalid root data
-
-The goal is to prevent a malformed local file from making the entire automation subsystem unusable.
-
----
-
-# 48. Persistence Architecture
+# 30. Persistence Architecture
 
 The complete architecture is:
 
 ```text
-                 +----------------+
-                 | AutomationManager |
-                 +--------+-------+
-                          |
-                          v
-                 +----------------+
-                 | AutomationEngine|
-                 +--------+-------+
-                          |
-                          v
-                 +----------------+
-                 | ActionRegistry |
-                 +--------+-------+
-                          |
-                          v
-                    Action Handler
+                 +----------------------+
+                 | Automation Manager   |
+                 +----------+-----------+
+                            |
+                            v
+                 +----------------------+
+                 | Automation Engine    |
+                 +----------+-----------+
+                            |
+                            v
+                 +----------------------+
+                 | Action Registry      |
+                 +----------+-----------+
+                            |
+                            v
+                       Action Handler
 
 
-+--------------------+
-| AutomationScheduler|
-+---------+----------+
-          |
-          v
-+--------------------+
-| AutomationStorage  |
-+--------------------+
++----------------------+
+| Automation Scheduler |
++----------+-----------+
+           |
+           v
++----------------------+
+| Automation Storage   |
++----------------------+
 
 
-+--------------------+
-| AutomationWorker   |
-+---------+----------+
-          |
-          v
-+--------------------+
-| AutomationRunner   |
-+---------+----------+
-          |
-          v
-+--------------------+
-| AutomationEngine   |
-+--------------------+
++----------------------+
+| Automation Worker    |
++----------+-----------+
+           |
+           v
++----------------------+
+| Automation Runner    |
++----------+-----------+
+           |
+           v
++----------------------+
+| Automation Engine    |
++----------------------+
 ```
 
 ---
 
-# 49. Restart Recovery
+# 31. Restart Recovery
 
-A major v0.36 goal is restart recovery.
+A major architecture goal is restart recovery.
 
 Before restart:
 
@@ -1175,7 +993,7 @@ Schedules can also be restored.
 
 ---
 
-# 50. Runtime vs Persistent State
+# 32. Runtime vs Persistent State
 
 Not everything should be persisted.
 
@@ -1202,50 +1020,429 @@ This separation is critical.
 
 ---
 
-# 51. Why Handlers Are Not Persisted
+# 33. AI Agent System
 
-Python callable objects are runtime objects.
+## v0.37 Agent Runtime Foundation
 
-A JSON file cannot safely represent an arbitrary Python function.
+Ultron v0.37 introduces the first dedicated agent subsystem.
 
-Therefore the persisted automation stores the action name.
+The agent architecture is intentionally separated from the automation system.
 
-After restart, the application registers the action handler again.
-
-Example:
+The initial architecture is:
 
 ```text
-Stored:
-"action": "hello"
-
-Runtime:
-"hello" -> Python callable
+Agent
+ |
+ v
+Agent Registry
+ |
+ v
+Agent Engine
+ |
+ v
+Agent Action
 ```
 
-This is intentional.
+This creates a clean foundation for future autonomous agent behavior.
+
+The current system focuses on reliable agent representation and controlled execution rather than attempting to implement a fully autonomous reasoning loop prematurely.
 
 ---
 
-# 52. Testing
+# 34. Agent Model
+
+The `Agent` class represents an executable Ultron agent.
+
+An agent contains information required to identify and execute an agent capability.
+
+The model supports concepts such as:
+
+* Agent ID
+* Agent name
+* Action
+* Parameters
+* Status
+* Validation
+* Enable/disable lifecycle
+* Serialization
+* Restoration
+
+The agent model is intentionally lightweight.
+
+This makes it possible to add more advanced capabilities later without coupling them directly to the registry or execution engine.
+
+---
+
+# 35. Agent Registry
+
+The `AgentRegistry` is the central in-memory registry for Ultron agents.
+
+Location:
+
+```text
+modules/agent/agent_registry.py
+```
+
+Responsibilities include:
+
+* Register agents
+* Retrieve agents
+* Require agents
+* Check existence
+* List agents
+* Count agents
+* Clear registry
+* Remove agents
+* Replace agents
+* Restore agents
+* Export agents
+* Find agents by name
+* List active agents
+* Filter agents by status
+
+Example architecture:
+
+```text
+Agent
+  |
+  v
+AgentRegistry
+  |
+  +---- get()
+  +---- require()
+  +---- list()
+  +---- remove()
+  +---- replace()
+  +---- restore()
+  +---- export_all()
+```
+
+The registry is intentionally independent from persistence.
+
+Persistence can be added without coupling the core registry to a specific storage implementation.
+
+---
+
+# 36. Agent Engine
+
+The `AgentEngine` provides execution functionality for agents.
+
+Location:
+
+```text
+modules/agent/agent_engine.py
+```
+
+The engine is responsible for:
+
+* Registering agent actions
+* Looking up actions
+* Removing actions
+* Listing actions
+* Executing agents
+* Executing agents by ID
+* Passing parameters
+* Applying runtime parameter overrides
+* Safe execution
+* Validating agent definitions
+* Handling invalid actions
+
+The architecture is:
+
+```text
+Agent
+ |
+ v
+Agent Engine
+ |
+ v
+Action Lookup
+ |
+ v
+Action Handler
+ |
+ v
+Execution Result
+```
+
+---
+
+# 37. Agent Lifecycle
+
+Agents support an explicit lifecycle.
+
+Basic lifecycle:
+
+```text
+Created
+   |
+   v
+Validated
+   |
+   v
+Registered
+   |
+   v
+Enabled
+   |
+   v
+Executed
+   |
+   v
+Disabled / Enabled
+```
+
+An agent can be disabled without being removed from the registry.
+
+This allows lifecycle control without destroying the agent definition.
+
+---
+
+# 38. Agent Execution
+
+Agent execution follows a controlled path:
+
+```text
+Agent ID
+   |
+   v
+Find Agent
+   |
+   v
+Validate Agent
+   |
+   v
+Check Agent Status
+   |
+   v
+Find Action
+   |
+   v
+Apply Parameters
+   |
+   v
+Execute Handler
+   |
+   v
+Return Result
+```
+
+The architecture keeps agent definition separate from execution.
+
+This is important for future agent orchestration.
+
+---
+
+# 39. Agent Validation
+
+Agents are validated before registration and execution.
+
+Validation protects the runtime from invalid definitions.
+
+The architecture uses explicit validation errors for invalid agent objects and definitions.
+
+This allows callers to distinguish configuration problems from runtime execution failures.
+
+---
+
+# 40. Agent Status
+
+Agents have lifecycle status.
+
+The registry can filter agents based on status.
+
+It can also identify currently active agents.
+
+Example:
+
+```python
+registry.list_active()
+```
+
+Status filtering provides a foundation for future agent management systems.
+
+Possible future states may include:
+
+```text
+ACTIVE
+DISABLED
+PAUSED
+ERROR
+ARCHIVED
+```
+
+The exact supported statuses remain controlled by the Agent model.
+
+---
+
+# 41. Agent Persistence Readiness
+
+The agent architecture already supports serialization-oriented design.
+
+Agents can be exported to dictionaries and restored from dictionaries.
+
+Example flow:
+
+```text
+Agent
+  |
+  v
+to_dict()
+  |
+  v
+Persistent Data
+  |
+  v
+from_dict()
+  |
+  v
+Agent
+```
+
+This provides a foundation for future persistent agents.
+
+The current registry remains intentionally in-memory so that persistence concerns do not prematurely complicate the core runtime.
+
+---
+
+# 42. Future Agent Architecture
+
+The current agent system is the foundation for a more advanced runtime.
+
+Future architecture:
+
+```text
+User Goal
+    |
+    v
+Agent
+    |
+    v
+Reasoning
+    |
+    v
+Planning
+    |
+    v
+Tool Selection
+    |
+    v
+Action
+    |
+    v
+Observation
+    |
+    v
+Memory
+    |
+    v
+Next Step
+```
+
+Eventually, an agent may be able to:
+
+* Understand a goal
+* Create a plan
+* Select tools
+* Execute actions
+* Observe results
+* Update memory
+* Continue until completion
+* Stop safely
+* Request user approval when required
+
+These capabilities will be introduced incrementally.
+
+---
+
+# 43. Testing
 
 Ultron uses pytest.
 
 The current full suite contains:
 
-**95 tests**
+**124 tests**
 
 Current result:
 
 ```text
-95 passed
+124 passed
 0 failed
 ```
 
-This is the primary regression signal for the current release.
+The full suite is the primary regression signal for the current release.
 
 ---
 
-# 53. AI Tests
+# 44. Test Architecture
+
+Tests are separated by subsystem.
+
+Current test areas include:
+
+```text
+AI
+Agents
+Automation
+Runner
+Worker
+Storage
+Scheduler Persistence
+Persistence Integration
+```
+
+This makes failures easier to isolate.
+
+---
+
+# 45. Agent Tests
+
+The agent test suite currently contains:
+
+**29 tests**
+
+The tests verify:
+
+* Agent creation
+* Default parameters
+* Custom parameters
+* Validation
+* Active state
+* Enable
+* Disable
+* Registry registration
+* Registry lookup
+* Registry listing
+* Registry removal
+* Engine action registration
+* Engine action lookup
+* Engine action removal
+* Engine action listing
+* Agent execution
+* Parameter execution
+* Runtime parameter override
+* Execute by ID
+* Safe execution
+* Failure handling
+* Unknown actions
+* Disabled agents
+* Invalid agents
+* Invalid action names
+* Invalid handlers
+* Engine length
+* Engine clearing
+* Engine representation
+
+Current result:
+
+```text
+29 passed
+0 failed
+```
+
+---
+
+# 46. AI Tests
 
 AI tests verify:
 
@@ -1260,7 +1457,7 @@ AI tests verify:
 
 ---
 
-# 54. Automation Tests
+# 47. Automation Tests
 
 Automation tests verify:
 
@@ -1280,7 +1477,7 @@ Automation tests verify:
 
 ---
 
-# 55. Runner Tests
+# 48. Runner Tests
 
 Runner tests verify:
 
@@ -1297,7 +1494,7 @@ Runner tests verify:
 
 ---
 
-# 56. Worker Tests
+# 49. Worker Tests
 
 Worker tests verify:
 
@@ -1315,7 +1512,7 @@ Worker tests verify:
 
 ---
 
-# 57. Storage Tests
+# 50. Storage Tests
 
 Storage tests verify:
 
@@ -1337,7 +1534,7 @@ Storage tests verify:
 
 ---
 
-# 58. Scheduler Persistence Tests
+# 51. Scheduler Persistence Tests
 
 The scheduler persistence suite verifies:
 
@@ -1354,11 +1551,11 @@ The scheduler persistence suite verifies:
 
 ---
 
-# 59. Persistence Integration Tests
+# 52. Persistence Integration Tests
 
-The integration suite verifies the complete lifecycle.
+The integration suite verifies complete lifecycle behavior.
 
-Test 1:
+Example:
 
 ```text
 Create
@@ -1372,7 +1569,7 @@ Restore
 Execute
 ```
 
-Test 2:
+Recurring workflow:
 
 ```text
 Recurring schedule
@@ -1384,7 +1581,7 @@ Persist
 Restore
 ```
 
-Test 3:
+Worker workflow:
 
 ```text
 Persisted schedule
@@ -1398,16 +1595,20 @@ Restored Engine
 Successful execution
 ```
 
-All three currently pass.
-
 ---
 
-# 60. Running Tests
+# 53. Running Tests
 
 Run the complete suite:
 
 ```powershell
 python -m pytest -v
+```
+
+Run agent tests:
+
+```powershell
+python -m pytest tests\test_agent.py -v
 ```
 
 Run automation tests:
@@ -1448,21 +1649,27 @@ python -m pytest tests\test_automation_persistence_integration.py -v
 
 ---
 
-# 61. Compilation Checks
+# 54. Compilation Checks
 
 Individual modules can be checked using:
 
 ```powershell
-python -m py_compile modules\automation\engine.py
+python -m py_compile modules\agent\agent.py
 ```
 
-Multiple files can be checked independently.
+```powershell
+python -m py_compile modules\agent\agent_engine.py
+```
+
+```powershell
+python -m py_compile modules\agent\agent_registry.py
+```
 
 Compilation checks should be performed before running the full test suite when making large changes.
 
 ---
 
-# 62. Development Workflow
+# 55. Development Workflow
 
 Recommended workflow:
 
@@ -1484,7 +1691,7 @@ Recommended workflow:
 
 ---
 
-# 63. Git Workflow
+# 56. Git Workflow
 
 Check status:
 
@@ -1507,7 +1714,7 @@ git add .
 Commit:
 
 ```powershell
-git commit -m "Release v0.36 - Automation Persistence"
+git commit -m "Release v0.37 - Agent Runtime Foundation"
 ```
 
 Push:
@@ -1524,26 +1731,33 @@ git status
 
 ---
 
-# 64. Release v0.36
+# 57. Release Workflow
 
-Recommended commit:
+Each release should follow:
 
 ```text
-Release v0.36 - Automation Persistence
+Implementation
+      ↓
+Focused Tests
+      ↓
+Integration Tests
+      ↓
+Full Test Suite
+      ↓
+Git Diff Review
+      ↓
+Commit
+      ↓
+Push
+      ↓
+Clean Working Tree
 ```
 
-The release represents:
-
-* Persistent automation management
-* Persistent schedules
-* Restoration
-* Integration testing
-* Worker restoration
-* Regression stability
+A release should not be pushed without verifying the complete regression suite.
 
 ---
 
-# 65. Security
+# 58. Security
 
 Security is an important architectural concern.
 
@@ -1568,7 +1782,7 @@ The `.env` file should be excluded through `.gitignore`.
 
 ---
 
-# 66. API Key Handling
+# 59. API Key Handling
 
 AI API keys should be loaded through environment variables.
 
@@ -1588,7 +1802,7 @@ Never place real credentials directly into:
 
 ---
 
-# 67. Environment Configuration
+# 60. Environment Configuration
 
 The project can use environment configuration to control AI behavior.
 
@@ -1608,11 +1822,11 @@ The exact production configuration should remain environment-specific.
 
 ---
 
-# 68. Error Handling
+# 61. Error Handling
 
 Ultron uses subsystem-specific exceptions.
 
-Automation includes:
+Automation includes concepts such as:
 
 ```text
 AutomationError
@@ -1620,41 +1834,17 @@ AutomationValidationError
 AutomationExecutionError
 ```
 
-This creates clear boundaries.
+Agent functionality includes dedicated registry and validation boundaries.
+
+This creates clear subsystem boundaries.
 
 Validation errors represent invalid definitions.
 
-Execution errors represent failures while attempting to execute an automation.
+Execution errors represent failures while attempting to execute an operation.
 
 ---
 
-# 69. Error Propagation
-
-The architecture intentionally wraps lower-level failures.
-
-Example:
-
-```text
-Action Handler
-     |
-     v
-Automation Engine
-     |
-     v
-AutomationExecutionError
-     |
-     v
-Runner
-     |
-     v
-Worker
-```
-
-This prevents callers from depending on arbitrary internal exception types.
-
----
-
-# 70. Design Principles
+# 62. Design Principles
 
 Ultron follows several principles.
 
@@ -1670,6 +1860,8 @@ Execution should not manage storage directly.
 
 Storage should not decide business logic.
 
+Agent definition should remain separate from agent execution.
+
 ## Dependency Injection
 
 Components can receive dependencies such as:
@@ -1678,16 +1870,19 @@ Components can receive dependencies such as:
 * Scheduler
 * Storage
 * Runner
+* Registry
 
-This improves testing.
+This improves testing and extensibility.
 
 ---
 
-# 71. Extensibility
+# 63. Extensibility
 
 New automation actions can be added without rewriting the engine.
 
 New AI providers can be added without rewriting the conversation engine.
+
+New agents can be registered without modifying the registry implementation.
 
 New storage backends can eventually be added without redesigning automation logic.
 
@@ -1697,7 +1892,7 @@ This is one of the most important architectural goals.
 
 ---
 
-# 72. Future Storage
+# 64. Future Storage
 
 JSON is currently suitable for a lightweight local development system.
 
@@ -1712,7 +1907,7 @@ The storage abstraction should make such changes possible without changing the a
 
 ---
 
-# 73. Future Scheduling
+# 65. Future Scheduling
 
 Future scheduling capabilities may include:
 
@@ -1728,7 +1923,7 @@ Future scheduling capabilities may include:
 
 ---
 
-# 74. Future Actions
+# 66. Future Actions
 
 Possible future actions include:
 
@@ -1751,7 +1946,7 @@ Every action should have controlled validation and error handling.
 
 ---
 
-# 75. Future Workflows
+# 67. Future Workflows
 
 Ultron can evolve from single-action automation into workflows.
 
@@ -1771,7 +1966,8 @@ Yes  No
  v    v
 A2   A3
  \    /
-  v  v
+  \  /
+   vv
  Final
 ```
 
@@ -1779,11 +1975,11 @@ This is a foundation for an automation graph system.
 
 ---
 
-# 76. Future AI Agents
+# 68. Future AI Agents
 
-The automation engine can eventually become an execution foundation for AI agents.
+The agent subsystem is designed to evolve toward goal-oriented execution.
 
-An agent could:
+A future agent could:
 
 ```text
 Understand Goal
@@ -1792,23 +1988,26 @@ Understand Goal
 Plan
       |
       v
-Select Action
+Select Tool
       |
       v
 Execute
       |
       v
-Observe Result
+Observe
       |
       v
-Continue
+Update Memory
+      |
+      v
+Continue / Complete
 ```
 
-The current modular architecture helps prepare for this direction.
+The v0.37 implementation intentionally establishes the runtime foundation before adding autonomous planning complexity.
 
 ---
 
-# 77. Future Agent Builder
+# 69. Future Agent Builder
 
 A future Ultron platform could provide a visual agent builder.
 
@@ -1824,10 +2023,11 @@ Possible components:
 * Permissions
 * Logs
 * Testing
+* Deployment
 
 ---
 
-# 78. Future Marketplace
+# 70. Future Marketplace
 
 A future marketplace could allow developers to publish:
 
@@ -1842,7 +2042,7 @@ Users could install capabilities without manually modifying source code.
 
 ---
 
-# 79. Future Developer API
+# 71. Future Developer API
 
 Ultron can eventually expose APIs for:
 
@@ -1858,7 +2058,7 @@ The API should sit above stable internal service boundaries.
 
 ---
 
-# 80. Future Workspace System
+# 72. Future Workspace System
 
 A future platform may support:
 
@@ -1873,7 +2073,7 @@ A future platform may support:
 
 ---
 
-# 81. Future Billing
+# 73. Future Billing
 
 A future SaaS platform may introduce:
 
@@ -1885,11 +2085,11 @@ A future SaaS platform may introduce:
 * Team plans
 * Enterprise plans
 
-Billing should remain separate from the core automation engine.
+Billing should remain separate from the core automation and agent engines.
 
 ---
 
-# 82. Observability
+# 74. Observability
 
 Future versions should improve observability.
 
@@ -1901,20 +2101,23 @@ Potential metrics:
 * Average execution duration
 * AI requests
 * AI failures
+* Agent executions
+* Agent failures
 * Worker cycles
 * Storage errors
 
 ---
 
-# 83. Audit Logging
+# 75. Audit Logging
 
-Automation systems eventually require audit logs.
+Automation and agent systems eventually require audit logs.
 
 A future audit event might contain:
 
 ```text
 timestamp
 user
+agent_id
 automation_id
 schedule_id
 action
@@ -1927,9 +2130,9 @@ This becomes important for production deployments.
 
 ---
 
-# 84. Permissions
+# 76. Permissions
 
-Automation actions can become powerful.
+Automation and agents can eventually become powerful.
 
 Therefore future versions should introduce permission controls.
 
@@ -1948,7 +2151,7 @@ Dangerous actions should require explicit permission.
 
 ---
 
-# 85. Reliability
+# 77. Reliability
 
 Reliability is more important than feature count.
 
@@ -1958,7 +2161,7 @@ The test suite therefore plays a major role in development.
 
 ---
 
-# 86. Maintainability
+# 78. Maintainability
 
 Maintainability goals include:
 
@@ -1973,7 +2176,7 @@ Maintainability goals include:
 
 ---
 
-# 87. Performance
+# 79. Performance
 
 The current system prioritizes correctness and simplicity.
 
@@ -1986,14 +2189,15 @@ Future performance work can address:
 * Queue-based execution
 * Caching
 * Batch operations
+* Agent execution optimization
 
 Performance optimization should be evidence-driven.
 
 ---
 
-# 88. Concurrency
+# 80. Concurrency
 
-The worker currently uses a background thread.
+The automation worker currently uses a background thread.
 
 Future concurrency models could include:
 
@@ -2006,7 +2210,7 @@ Any concurrency upgrade must preserve execution correctness.
 
 ---
 
-# 89. Testing Philosophy
+# 81. Testing Philosophy
 
 Every important behavior should have a test.
 
@@ -2020,9 +2224,11 @@ Features should have:
 
 Critical workflows should be tested from beginning to end.
 
+The v0.37 agent subsystem follows the same principle.
+
 ---
 
-# 90. Regression Protection
+# 82. Regression Protection
 
 The full test suite is the release gate.
 
@@ -2032,17 +2238,17 @@ A release should not be considered stable if:
 Tests Failed > 0
 ```
 
-Current v0.36 state:
+Current v0.37 state:
 
 ```text
-Tests = 95
-Passed = 95
+Tests = 124
+Passed = 124
 Failed = 0
 ```
 
 ---
 
-# 91. Version History
+# 83. Version History
 
 ## v0.1
 
@@ -2078,7 +2284,7 @@ Expanded:
 
 ---
 
-# 92. v0.31
+# 84. v0.31
 
 v0.31 introduced the AI integration architecture.
 
@@ -2095,7 +2301,7 @@ Major components included:
 
 ---
 
-# 93. v0.34
+# 85. v0.34
 
 The automation architecture developed significantly.
 
@@ -2109,7 +2315,7 @@ Major concepts included:
 
 ---
 
-# 94. v0.35
+# 86. v0.35
 
 The automation engine and management layer were strengthened.
 
@@ -2123,9 +2329,9 @@ Important improvements included:
 
 ---
 
-# 95. v0.36
+# 87. v0.36
 
-The current release completes the persistent automation workflow.
+The automation persistence architecture was completed.
 
 Major improvements:
 
@@ -2137,26 +2343,55 @@ Major improvements:
 * Recurring persistence
 * Full regression verification
 
----
-
-# 96. Current Test Result
+Release verification:
 
 ```text
-===========================
 95 passed
 0 failed
-===========================
 ```
-
-The current project state is therefore suitable for moving to the next development milestone.
 
 ---
 
-# 97. Roadmap
+# 88. v0.37
+
+v0.37 introduces the **Agent Runtime Foundation**.
+
+Major improvements:
+
+* Agent model
+* Agent validation
+* Agent lifecycle
+* Agent Registry
+* Agent Engine
+* Agent action registration
+* Agent action lookup
+* Agent action removal
+* Agent execution
+* Execution by agent ID
+* Runtime parameter overrides
+* Safe execution
+* Disabled-agent protection
+* Agent export
+* Agent restoration
+* Agent-specific regression tests
+
+The agent subsystem is intentionally modular and prepared for future autonomous agent capabilities.
+
+Current verification:
+
+```text
+124 passed
+0 failed
+```
+
+---
+
+# 89. Roadmap
 
 ## Near Term
 
-* Improve automation actions
+* Expand agent capabilities
+* Improve agent actions
 * Improve scheduler capabilities
 * Improve persistence abstractions
 * Improve error reporting
@@ -2168,6 +2403,8 @@ The current project state is therefore suitable for moving to the next developme
 * Conditional execution
 * More AI-powered automation
 * External integrations
+* Agent tools
+* Agent memory integration
 * Better observability
 
 ## Long Term
@@ -2183,7 +2420,7 @@ The current project state is therefore suitable for moving to the next developme
 
 ---
 
-# 98. Development Philosophy
+# 90. Development Philosophy
 
 Ultron is developed incrementally.
 
@@ -2209,7 +2446,7 @@ This approach reduces architectural debt.
 
 ---
 
-# 99. Why Modular Architecture
+# 91. Why Modular Architecture
 
 A monolithic AI assistant becomes difficult to maintain as features increase.
 
@@ -2221,6 +2458,8 @@ Storage
 Scheduler
 Worker
 Action Registry
+Agent Registry
+Agent Engine
 ```
 
 independently.
@@ -2229,66 +2468,77 @@ This gives Ultron a stronger long-term foundation.
 
 ---
 
-# 100. Project Status
+# 92. Project Status
 
 **Ultron is in active development.**
 
 Current release:
 
-**v0.36**
+**v0.37**
 
 Current regression status:
 
-**95/95 tests passing**
+**124/124 tests passing**
 
 Current major focus:
 
-**Reliable persistent automation**
+**AI Agent Runtime Foundation**
+
+Previous major foundation:
+
+**Reliable Persistent Automation**
 
 ---
 
-# 101. Developer Notes
+# 93. Developer Notes
 
-When modifying automation:
+When modifying agents:
 
-1. Read the relevant module.
+1. Read the relevant agent module.
 2. Understand its responsibility.
-3. Check existing tests.
+3. Check existing agent tests.
 4. Make the smallest safe change.
-5. Compile the file.
-6. Run focused tests.
-7. Run integration tests.
-8. Run all tests.
+5. Compile the modified files.
+6. Run `tests\test_agent.py`.
+7. Run integration tests if required.
+8. Run the full suite.
 9. Inspect the diff.
 10. Commit only intended changes.
 
----
-
-# 102. Troubleshooting
-
-## Tests fail after a storage change
-
-First run the storage tests.
-
-```powershell
-python -m pytest tests\test_automation_storage.py -v
-```
-
-Then scheduler persistence tests.
-
-```powershell
-python -m pytest tests\test_automation_scheduler_storage.py -v
-```
-
-Then integration tests.
-
-```powershell
-python -m pytest tests\test_automation_persistence_integration.py -v
-```
+When modifying automation, follow the same process with the relevant automation tests.
 
 ---
 
-# 103. Troubleshooting Missing Automation
+# 94. Troubleshooting
+
+## Agent tests fail
+
+Run:
+
+```powershell
+python -m pytest tests\test_agent.py -v
+```
+
+Check:
+
+* Agent validation
+* Registry behavior
+* Agent IDs
+* Agent status
+* Registered actions
+* Action handlers
+* Runtime parameters
+* Engine execution
+
+Then run the complete suite:
+
+```powershell
+python -m pytest -v
+```
+
+---
+
+# 95. Troubleshooting Automation
 
 If an automation cannot be restored:
 
@@ -2305,7 +2555,7 @@ Remember that action handlers must exist in the runtime registry.
 
 ---
 
-# 104. Troubleshooting Worker
+# 96. Troubleshooting Worker
 
 If the worker does not execute:
 
@@ -2321,7 +2571,7 @@ Check:
 
 ---
 
-# 105. Troubleshooting AI
+# 97. Troubleshooting AI
 
 If Anthropic is unavailable:
 
@@ -2336,13 +2586,13 @@ Mock mode should remain available for development.
 
 ---
 
-# 106. FAQ
+# 98. FAQ
 
 ## Is Ultron only a chatbot?
 
 No.
 
-Ultron is being designed as an AI assistant and automation platform.
+Ultron is being designed as an AI assistant, automation engine, and agent platform.
 
 ## Does Ultron require an API key for tests?
 
@@ -2352,13 +2602,39 @@ Mock AI mode supports local testing.
 
 ## Can automations survive restart?
 
-Yes, persistent automation and schedule workflows are tested in v0.36.
+Yes.
+
+Persistent automation and schedule workflows are tested.
+
+## Does Ultron have AI agents?
+
+Yes.
+
+v0.37 introduces the first Agent Runtime foundation.
+
+## Can agents be enabled or disabled?
+
+Yes.
+
+The Agent model supports lifecycle controls.
+
+## Can agents execute actions?
+
+Yes.
+
+The Agent Engine provides controlled action execution.
+
+## Can agent parameters be overridden?
+
+Yes.
+
+Runtime parameter overrides are supported.
 
 ## Are Python action functions stored in JSON?
 
 No.
 
-Only serializable automation information is persisted.
+Only serializable information is persisted.
 
 ## Can schedules recur?
 
@@ -2368,7 +2644,7 @@ Recurring schedule persistence is tested.
 
 ---
 
-# 107. Architecture Summary
+# 99. Architecture Summary
 
 Ultron can be summarized as:
 
@@ -2382,26 +2658,56 @@ Context
 AI
      |
      v
-Commands / Automation
+Commands
      |
-     +----------------+
-     |                |
-     v                v
-Manager           Scheduler
-     |                |
-     v                v
-Engine             Storage
-     |
-     v
-Registry
+     +---------------------+
+     |                     |
+     v                     v
+Automation              Agents
+     |                     |
+     v                     v
+Manager              Agent Engine
+     |                     |
+     v                     v
+Engine               Agent Registry
+     |                     |
+     v                     v
+Registry              Agent Action
      |
      v
 Action
 ```
 
+Scheduling:
+
+```text
+Scheduler
+    |
+    v
+Runner
+    |
+    v
+Engine
+    |
+    v
+Action
+```
+
+Background execution:
+
+```text
+Worker
+    |
+    v
+Runner
+    |
+    v
+Scheduler
+```
+
 ---
 
-# 108. Engineering Priorities
+# 100. Engineering Priorities
 
 Current priorities:
 
@@ -2413,11 +2719,12 @@ Current priorities:
 6. Developer experience
 7. AI capability
 8. Automation capability
-9. Platform scalability
+9. Agent capability
+10. Platform scalability
 
 ---
 
-# 109. Future Architecture
+# 101. Future Architecture
 
 The long-term architecture may become:
 
@@ -2441,85 +2748,11 @@ The long-term architecture may become:
                 API            Workspace
 ```
 
----
-
-# 110. Final Statement
-
-Ultron is not being built as a one-off script.
-
-It is being developed as a long-term software platform.
-
-The objective is to establish strong foundations first.
-
-The current v0.36 release demonstrates an important milestone:
-
-```text
-Automation
-    +
-Scheduling
-    +
-Persistence
-    +
-Restoration
-    +
-Background Worker
-    +
-Integration Testing
-```
-
-All of these components are now covered by automated tests.
-
-Current verification:
-
-```text
-95 tests
-95 passed
-0 failed
-```
-
-That is the standard future releases should maintain.
+The agent layer can eventually connect intelligence, memory, tools, automation, and workflows.
 
 ---
 
-# 111. Core Principle
-
-> Build it modular.
->
-> Test it thoroughly.
->
-> Persist what matters.
->
-> Keep runtime state separate.
->
-> Improve one release at a time.
-
----
-
-# 112. Long-Term Vision
-
-Ultron's long-term direction extends beyond a personal assistant.
-
-The architecture can evolve toward:
-
-```text
-Personal AI
-     ↓
-AI Assistant
-     ↓
-Automation Engine
-     ↓
-AI Agent Runtime
-     ↓
-Agent Platform
-     ↓
-AI Developer Platform
-```
-
-The objective is to build a capable platform that combines AI intelligence with reliable execution.
-
----
-
-# 113. Release Gate
+# 102. Release Gate
 
 Before every release:
 
@@ -2538,45 +2771,117 @@ Before every release:
 
 ---
 
-# 114. Current Release Gate
+# 103. Current Release Gate
 
-For v0.36:
+For v0.37:
 
 ```text
-Code compilation       PASS
-Automation tests       PASS
-Storage tests          PASS
-Scheduler tests        PASS
-Runner tests           PASS
-Worker tests            PASS
-Persistence tests      PASS
-Full test suite        PASS
+Agent tests              PASS
+AI tests                 PASS
+Automation tests         PASS
+Storage tests            PASS
+Scheduler tests          PASS
+Runner tests             PASS
+Worker tests             PASS
+Persistence tests        PASS
+Full test suite          PASS
 ```
 
 Final:
 
 ```text
-95/95 PASS
+124/124 PASS
+0 FAILED
 ```
 
 ---
 
-# 115. Conclusion
+# 104. Conclusion
 
-Ultron v0.36 establishes a reliable persistent automation foundation.
+Ultron v0.37 establishes the first dedicated AI Agent Runtime foundation on top of the reliable automation architecture created in previous releases.
 
-The architecture now separates:
+The project now separates:
 
-* What should execute
-* When it should execute
-* How it executes
-* How execution is monitored
-* How state is persisted
-* How state is restored
+```text
+What should execute
+        +
+When it should execute
+        +
+How it executes
+        +
+How execution is monitored
+        +
+How state is persisted
+        +
+How state is restored
+        +
+How agents are represented
+        +
+How agents execute actions
+```
 
-This separation gives the project a strong foundation for future AI agents, workflows, integrations, and platform-level capabilities.
+The current architecture provides a strong foundation for future:
+
+* AI agents
+* Agent tools
+* Agent memory
+* Workflows
+* Integrations
+* Developer APIs
+* Agent marketplaces
+* Platform-level capabilities
+
+Current verification:
+
+```text
+124 tests
+124 passed
+0 failed
+```
 
 The next releases can build on this foundation without sacrificing the reliability already established.
+
+---
+
+# Core Principle
+
+> Build it modular.
+>
+> Test it thoroughly.
+>
+> Persist what matters.
+>
+> Keep runtime state separate.
+>
+> Introduce intelligence incrementally.
+>
+> Improve one release at a time.
+
+---
+
+# Long-Term Vision
+
+Ultron's long-term direction extends beyond a personal assistant.
+
+The architecture can evolve toward:
+
+```text
+Personal AI
+     ↓
+AI Assistant
+     ↓
+Automation Engine
+     ↓
+AI Agent Runtime
+     ↓
+Agent Platform
+     ↓
+AI Developer Platform
+     ↓
+AI Operating Layer
+```
+
+The objective is to build a capable platform that combines AI intelligence with reliable execution.
 
 ---
 
@@ -2590,17 +2895,21 @@ Ultron is an independent software project under active development.
 
 # Project Status
 
-**Current Version:** v0.36
-
-**Automation Persistence:** Complete
+**Current Version:** v0.37
 
 **AI Integration:** Complete foundation
 
+**Automation Persistence:** Complete
+
+**Agent Runtime Foundation:** Complete
+
 **Automation Testing:** Complete
 
-**Regression Tests:** 95
+**Agent Testing:** Complete
 
-**Passing Tests:** 95
+**Regression Tests:** 124
+
+**Passing Tests:** 124
 
 **Failing Tests:** 0
 
