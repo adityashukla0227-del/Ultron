@@ -1,16 +1,19 @@
 """
 Ultron Agent Engine
-Version: v0.37
+Version: v0.38
 
 Execution engine for Ultron AI Agents.
 
 Responsibilities:
 - Validate agents before execution
 - Execute registered agent actions
+- Resolve and execute agent tools
+- Enforce agent tool permissions
 - Manage execution context
 - Track execution results
 - Handle execution errors safely
-- Provide a clean foundation for future AI-powered agents
+- Provide standardized safe tool execution
+- Provide a foundation for future AI-powered agents
 
 The engine does NOT decide how an agent is persisted.
 Persistence belongs to the registry/storage layers.
@@ -20,6 +23,8 @@ from datetime import datetime
 from typing import Any, Callable, Dict, Optional
 
 from modules.agent.agent import Agent
+from modules.agent.tool_registry import ToolRegistry
+from modules.agent.tool_result import ToolResult
 
 
 class AgentEngineError(Exception):
@@ -34,29 +39,31 @@ class AgentEngine:
     """
     Core execution engine for Ultron agents.
 
-    The engine maintains a runtime action registry.
+    The engine maintains:
+    - Runtime action registry
+    - ToolRegistry
 
-    An agent specifies an action name. The engine resolves that
-    action to a registered Python callable and executes it using
-    the agent's parameters.
+    An agent specifies an action name.
+    The engine resolves that action to a Python callable.
 
-    This architecture allows future expansion into:
-
-    - AI model execution
-    - Tool calling
-    - Browser automation
-    - Computer control
-    - Voice interaction
-    - Vision
-    - Workflow execution
-    - Multi-agent collaboration
+    Agent tools are resolved through ToolRegistry.
     """
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        tool_registry: Optional[ToolRegistry] = None,
+    ) -> None:
+
         self._actions: Dict[
             str,
             Callable[..., Any],
         ] = {}
+
+        self.tool_registry = (
+            tool_registry
+            if tool_registry is not None
+            else ToolRegistry()
+        )
 
     # ========================================================
     # Action Registration
@@ -69,16 +76,6 @@ class AgentEngine:
     ) -> bool:
         """
         Register an executable agent action.
-
-        Args:
-            action_name:
-                Unique name used by an Agent.
-
-            handler:
-                Callable that performs the action.
-
-        Returns:
-            True when registration succeeds.
         """
 
         if not isinstance(
@@ -158,9 +155,6 @@ class AgentEngine:
     ) -> bool:
         """
         Remove an action from the runtime registry.
-
-        Returns:
-            True if removed, otherwise False.
         """
 
         if not isinstance(
@@ -196,6 +190,333 @@ class AgentEngine:
         )
 
     # ========================================================
+    # Tool Registry
+    # ========================================================
+
+    def register_tool(
+        self,
+        tool,
+    ) -> bool:
+        """
+        Register an AgentTool in the engine's ToolRegistry.
+        """
+
+        try:
+
+            return self.tool_registry.register(
+                tool
+            )
+
+        except Exception as exc:
+
+            raise AgentEngineError(
+                f"Tool registration failed: {exc}"
+            ) from exc
+
+    def remove_tool(
+        self,
+        tool_name: str,
+    ) -> bool:
+        """
+        Remove a tool from the engine's ToolRegistry.
+        """
+
+        try:
+
+            return self.tool_registry.unregister(
+                tool_name
+            )
+
+        except Exception as exc:
+
+            raise AgentEngineError(
+                f"Tool removal failed: {exc}"
+            ) from exc
+
+    def get_tool(
+        self,
+        tool_name: str,
+    ):
+        """
+        Retrieve a tool from the ToolRegistry.
+        """
+
+        return self.tool_registry.get(
+            tool_name
+        )
+
+    def has_tool(
+        self,
+        tool_name: str,
+    ) -> bool:
+        """
+        Check whether a tool is registered.
+        """
+
+        return self.tool_registry.has(
+            tool_name
+        )
+
+    def list_tools(self) -> list[str]:
+        """
+        Return all registered tool names.
+        """
+
+        return self.tool_registry.list_tool_names()
+
+    # ========================================================
+    # Agent Tool Validation
+    # ========================================================
+
+    def validate_agent_tools(
+        self,
+        agent: Agent,
+    ) -> bool:
+        """
+        Validate that all tools assigned to an agent
+        exist in the ToolRegistry.
+        """
+
+        if not isinstance(
+            agent,
+            Agent,
+        ):
+            raise AgentExecutionError(
+                "Only Agent instances can be validated."
+            )
+
+        for tool in agent.get_tools():
+
+            if not self.has_tool(
+                tool.name
+            ):
+
+                raise AgentExecutionError(
+                    f"Tool not found in registry: "
+                    f"{tool.name}"
+                )
+
+        return True
+
+    # ========================================================
+    # Tool Permission Validation
+    # ========================================================
+
+    def _validate_tool_access(
+        self,
+        agent: Agent,
+        tool_name: str,
+    ):
+        """
+        Validate that an agent is allowed to execute
+        a specific tool.
+
+        Returns:
+            Registered AgentTool.
+
+        Raises:
+            AgentExecutionError:
+                When permission or registration fails.
+        """
+
+        if not isinstance(
+            agent,
+            Agent,
+        ):
+            raise AgentExecutionError(
+                "Only Agent instances can execute tools."
+            )
+
+        if not isinstance(
+            tool_name,
+            str,
+        ) or not tool_name.strip():
+
+            raise AgentExecutionError(
+                "Tool name must be a non-empty string."
+            )
+
+        tool_name = tool_name.strip()
+
+        assigned_tool = agent.get_tool(
+            tool_name
+        )
+
+        if assigned_tool is None:
+
+            raise AgentExecutionError(
+                f"Tool '{tool_name}' is not assigned "
+                f"to agent '{agent.name}'."
+            )
+
+        if not assigned_tool.is_enabled():
+
+            raise AgentExecutionError(
+                f"Tool '{tool_name}' is disabled "
+                f"for agent '{agent.name}'."
+            )
+
+        registered_tool = self.get_tool(
+            tool_name
+        )
+
+        if registered_tool is None:
+
+            raise AgentExecutionError(
+                f"Tool '{tool_name}' is not registered."
+            )
+
+        if not registered_tool.is_enabled():
+
+            raise AgentExecutionError(
+                f"Tool '{tool_name}' is disabled "
+                f"in the registry."
+            )
+
+        return registered_tool
+
+    # ========================================================
+    # Tool Execution
+    # ========================================================
+
+    def execute_tool(
+        self,
+        agent: Agent,
+        tool_name: str,
+        **parameters: Any,
+    ) -> ToolResult:
+        """
+        Execute a tool assigned to an agent.
+
+        The tool must:
+        1. Exist on the Agent
+        2. Exist in the ToolRegistry
+        3. Be enabled on the Agent
+        4. Be enabled in the Registry
+
+        Returns:
+            ToolResult from the executed tool.
+
+        Raises:
+            AgentExecutionError:
+                If the tool cannot be accessed or executed.
+        """
+
+        self._validate_tool_access(
+            agent,
+            tool_name,
+        )
+
+        try:
+
+            result = self.tool_registry.execute(
+                tool_name,
+                **parameters,
+            )
+
+            if not isinstance(
+                result,
+                ToolResult,
+            ):
+
+                raise AgentExecutionError(
+                    f"Tool '{tool_name}' returned "
+                    f"an invalid result type."
+                )
+
+            return result
+
+        except AgentExecutionError:
+            raise
+
+        except Exception as exc:
+
+            raise AgentExecutionError(
+                f"Tool execution failed: "
+                f"{tool_name}: {exc}"
+            ) from exc
+
+    # ========================================================
+    # Safe Tool Execution
+    # ========================================================
+
+    def execute_tool_safe(
+        self,
+        agent: Agent,
+        tool_name: str,
+        **parameters: Any,
+    ) -> ToolResult:
+        """
+        Safely execute a tool assigned to an agent.
+
+        Every execution path returns a ToolResult.
+
+        This method does not propagate AgentExecutionError
+        to the caller.
+
+        Useful for:
+        - AI agents
+        - API responses
+        - Background workers
+        - Workflow execution
+        - Agent orchestration
+        """
+
+        normalized_name = (
+            tool_name.strip()
+            if isinstance(
+                tool_name,
+                str,
+            )
+            else str(tool_name)
+        )
+
+        try:
+
+            self._validate_tool_access(
+                agent,
+                normalized_name,
+            )
+
+        except Exception as exc:
+
+            return ToolResult(
+                tool_name=normalized_name,
+                success=False,
+                result=None,
+                error=str(exc),
+            )
+
+        try:
+
+            result = self.tool_registry.execute_safe(
+                normalized_name,
+                **parameters,
+            )
+
+            if isinstance(
+                result,
+                ToolResult,
+            ):
+                return result
+
+            return ToolResult(
+                tool_name=normalized_name,
+                success=True,
+                result=result,
+                error=None,
+            )
+
+        except Exception as exc:
+
+            return ToolResult(
+                tool_name=normalized_name,
+                success=False,
+                result=None,
+                error=str(exc),
+            )
+
+    # ========================================================
     # Agent Validation
     # ========================================================
 
@@ -205,13 +526,6 @@ class AgentEngine:
     ) -> bool:
         """
         Validate an Agent before execution.
-
-        Returns:
-            True when the agent is executable.
-
-        Raises:
-            AgentExecutionError:
-                If the agent is invalid or inactive.
         """
 
         if not isinstance(
@@ -223,18 +537,23 @@ class AgentEngine:
             )
 
         try:
+
             agent.validate()
+
         except Exception as exc:
+
             raise AgentExecutionError(
                 f"Agent validation failed: {exc}"
             ) from exc
 
         if not agent.is_active():
+
             raise AgentExecutionError(
                 f"Agent is not active: {agent.id}"
             )
 
         if not agent.action:
+
             raise AgentExecutionError(
                 f"Agent has no action: {agent.id}"
             )
@@ -242,6 +561,7 @@ class AgentEngine:
         if not self.has_action(
             agent.action
         ):
+
             raise AgentExecutionError(
                 f"Action handler not found: "
                 f"{agent.action}"
@@ -263,16 +583,6 @@ class AgentEngine:
 
         Runtime parameters override parameters stored
         inside the agent.
-
-        Example:
-
-            engine.execute(
-                agent,
-                message="Hello"
-            )
-
-        Returns:
-            Result returned by the registered action.
         """
 
         self.validate_agent(
@@ -284,6 +594,7 @@ class AgentEngine:
         )
 
         if handler is None:
+
             raise AgentExecutionError(
                 f"Action handler not found: "
                 f"{agent.action}"
@@ -446,26 +757,28 @@ class AgentEngine:
     ) -> Any:
         """
         Resolve an Agent from a registry and execute it.
-
-        The registry is intentionally accepted as a dependency
-        instead of being owned by the engine.
         """
 
         if registry is None:
+
             raise AgentExecutionError(
                 "Agent registry is required."
             )
 
         try:
+
             agent = registry.get(
                 agent_id
             )
+
         except Exception as exc:
+
             raise AgentExecutionError(
                 f"Unable to retrieve agent: {exc}"
             ) from exc
 
         if agent is None:
+
             raise AgentExecutionError(
                 f"Agent not found: {agent_id}"
             )
@@ -476,7 +789,7 @@ class AgentEngine:
         )
 
     # ========================================================
-    # Execute Safely
+    # Execute Safe
     # ========================================================
 
     def execute_safe(
@@ -485,12 +798,7 @@ class AgentEngine:
         **runtime_parameters: Any,
     ) -> Dict[str, Any]:
         """
-        Execute an agent without propagating execution errors.
-
-        Returns a standardized result dictionary.
-
-        This will be useful later for API responses,
-        background workers and agent orchestration.
+        Execute an agent without propagating errors.
         """
 
         started_at = datetime.now()
@@ -537,6 +845,13 @@ class AgentEngine:
 
         self._actions.clear()
 
+    def clear_tools(self) -> None:
+        """
+        Remove all registered tools.
+        """
+
+        self.tool_registry.clear()
+
     # ========================================================
     # Representation
     # ========================================================
@@ -557,6 +872,7 @@ class AgentEngine:
 
         return (
             f"AgentEngine("
-            f"actions={len(self._actions)}"
+            f"actions={len(self._actions)}, "
+            f"tools={self.tool_registry.count()}"
             f")"
         )

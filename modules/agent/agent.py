@@ -1,6 +1,6 @@
 """
 Ultron Agent Core
-Version: v0.37
+Version: v0.38
 
 Core data model for Ultron AI Agents.
 
@@ -20,8 +20,10 @@ Responsibilities:
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 import uuid
+
+from modules.agent.tool import AgentTool
 
 
 class AgentValidationError(Exception):
@@ -41,6 +43,7 @@ class Agent:
     - enabled
     - enable()
     - disable()
+    - string-based tools
     """
 
     VALID_STATUSES = {
@@ -57,7 +60,7 @@ class Agent:
         action: str = "",
         parameters: Optional[Dict[str, Any]] = None,
         instructions: str = "",
-        tools: Optional[List[str]] = None,
+        tools: Optional[List[Union[str, AgentTool]]] = None,
         goals: Optional[List[str]] = None,
         memory_enabled: bool = True,
         agent_id: Optional[str] = None,
@@ -100,9 +103,29 @@ class Agent:
             else instructions
         )
 
-        self.tools = list(
-            tools or []
-        )
+        self.tools: List[AgentTool] = []
+
+        for tool in tools or []:
+            if isinstance(tool, AgentTool):
+                self.tools.append(tool)
+
+            elif isinstance(tool, str):
+                self.tools.append(
+                    AgentTool(
+                        name=tool
+                    )
+                )
+
+            elif isinstance(tool, dict):
+                self.tools.append(
+                    AgentTool.from_dict(tool)
+                )
+
+            else:
+                raise AgentValidationError(
+                    "Agent tools must contain "
+                    "strings, dictionaries, or AgentTool objects."
+                )
 
         self.goals = list(
             goals or []
@@ -193,6 +216,16 @@ class Agent:
                 "Agent tools must be a list."
             )
 
+        for tool in self.tools:
+            if not isinstance(
+                tool,
+                AgentTool,
+            ):
+                raise AgentValidationError(
+                    "Agent tools must contain "
+                    "AgentTool objects."
+                )
+
         if not isinstance(
             self.goals,
             list,
@@ -274,12 +307,61 @@ class Agent:
 
     def add_tool(
         self,
-        tool_name: str,
+        tool: Union[str, AgentTool],
     ) -> bool:
         """
         Add a tool to the agent.
 
-        Duplicate tools are ignored.
+        Supports:
+        - Tool name strings
+        - AgentTool objects
+        - Tool dictionaries
+
+        Duplicate tool names are ignored.
+        """
+
+        if isinstance(
+            tool,
+            str,
+        ):
+            tool = AgentTool(
+                name=tool
+            )
+
+        elif isinstance(
+            tool,
+            dict,
+        ):
+            tool = AgentTool.from_dict(
+                tool
+            )
+
+        elif not isinstance(
+            tool,
+            AgentTool,
+        ):
+            raise AgentValidationError(
+                "Tool must be a string, dictionary, "
+                "or AgentTool object."
+            )
+
+        if self.get_tool(
+            tool.name
+        ) is not None:
+            return False
+
+        self.tools.append(
+            tool
+        )
+
+        return True
+
+    def remove_tool(
+        self,
+        tool_name: str,
+    ) -> bool:
+        """
+        Remove a tool from the agent by name.
         """
 
         if not isinstance(
@@ -292,36 +374,105 @@ class Agent:
 
         tool_name = tool_name.strip()
 
-        if not tool_name:
-            raise AgentValidationError(
-                "Tool name is required."
-            )
+        tool = self.get_tool(
+            tool_name
+        )
 
-        if tool_name in self.tools:
+        if tool is None:
             return False
 
-        self.tools.append(
-            tool_name
+        self.tools.remove(
+            tool
         )
 
         return True
 
-    def remove_tool(
+    def get_tool(
+        self,
+        tool_name: str,
+    ) -> Optional[AgentTool]:
+        """
+        Get a tool by name.
+
+        Returns:
+            AgentTool if found, otherwise None.
+        """
+
+        if not isinstance(
+            tool_name,
+            str,
+        ):
+            return None
+
+        tool_name = tool_name.strip()
+
+        for tool in self.tools:
+            if tool.name == tool_name:
+                return tool
+
+        return None
+
+    def get_tools(
+        self,
+    ) -> List[AgentTool]:
+        """
+        Return all tools assigned to the agent.
+        """
+
+        return list(
+            self.tools
+        )
+
+    def enable_tool(
         self,
         tool_name: str,
     ) -> bool:
         """
-        Remove a tool from the agent.
+        Enable a tool by name.
         """
 
-        if tool_name not in self.tools:
-            return False
-
-        self.tools.remove(
+        tool = self.get_tool(
             tool_name
         )
 
+        if tool is None:
+            return False
+
+        tool.enabled = True
+
         return True
+
+    def disable_tool(
+        self,
+        tool_name: str,
+    ) -> bool:
+        """
+        Disable a tool by name.
+        """
+
+        tool = self.get_tool(
+            tool_name
+        )
+
+        if tool is None:
+            return False
+
+        tool.enabled = False
+
+        return True
+
+    def get_enabled_tools(
+        self,
+    ) -> List[AgentTool]:
+        """
+        Return only enabled tools.
+        """
+
+        return [
+            tool
+            for tool in self.tools
+            if tool.enabled
+        ]
 
     # ========================================================
     # Goal Management
@@ -542,8 +693,13 @@ class Agent:
                 self.parameters
             ),
             "instructions": self.instructions,
-            "tools": list(self.tools),
-            "goals": list(self.goals),
+            "tools": [
+                tool.to_dict()
+                for tool in self.tools
+            ],
+            "goals": list(
+                self.goals
+            ),
             "memory_enabled": self.memory_enabled,
             "status": self.status,
             "enabled": self.enabled,
@@ -561,6 +717,10 @@ class Agent:
     ) -> "Agent":
         """
         Restore an Agent from persistent data.
+
+        Supports both:
+        - New AgentTool dictionary format
+        - Legacy string tool format
         """
 
         if not isinstance(
@@ -570,6 +730,39 @@ class Agent:
             raise AgentValidationError(
                 "Agent data must be a dictionary."
             )
+
+        tools_data = data.get(
+            "tools",
+            [],
+        )
+
+        restored_tools = []
+
+        for tool in tools_data:
+            if isinstance(
+                tool,
+                dict,
+            ):
+                restored_tools.append(
+                    AgentTool.from_dict(
+                        tool
+                    )
+                )
+
+            elif isinstance(
+                tool,
+                str,
+            ):
+                restored_tools.append(
+                    AgentTool(
+                        name=tool
+                    )
+                )
+
+            else:
+                raise AgentValidationError(
+                    "Invalid tool data in agent configuration."
+                )
 
         return cls(
             name=data.get(
@@ -592,10 +785,7 @@ class Agent:
                 "instructions",
                 "",
             ),
-            tools=data.get(
-                "tools",
-                [],
-            ),
+            tools=restored_tools,
             goals=data.get(
                 "goals",
                 [],

@@ -1,13 +1,14 @@
 # Ultron
 
-**A Modular Personal AI Assistant, Automation & Agent Platform**
+## A Modular Personal AI Assistant, Automation & Agent Platform
 
-![Version](https://img.shields.io/badge/version-v0.37-blue)
+![Version](https://img.shields.io/badge/version-v0.38-blue)
 ![Python](https://img.shields.io/badge/python-3.13%2B-yellow)
 ![Tests](https://img.shields.io/badge/tests-124%20passed-brightgreen)
 ![Status](https://img.shields.io/badge/status-active%20development-orange)
 ![Architecture](https://img.shields.io/badge/architecture-modular-purple)
 ![Agents](https://img.shields.io/badge/agents-runtime-purple)
+![Tools](https://img.shields.io/badge/tools-agent%20tools-blue)
 
 > Building a reliable, extensible, persistent AI assistant, automation engine, and agent runtime — one subsystem at a time.
 
@@ -15,110 +16,118 @@
 
 # Table of Contents
 
-1. Project Overview
-2. Vision
-3. Mission
-4. Current Release
-5. Release Highlights
-6. Core Capabilities
-7. Architecture
-8. Repository Structure
-9. AI Architecture
-10. AI Provider System
-11. Mock Provider
-12. Anthropic Provider
-13. Conversation Engine
-14. Intent Detection
-15. Topic Detection
-16. Entity Extraction
-17. Session State
-18. Goal Tracking
-19. Memory System
-20. Smart Memory
-21. Natural Language Commands
-22. Automation System
-23. Action Registry
-24. Automation Engine
-25. Automation Manager
-26. Automation Scheduler
-27. Automation Runner
-28. Automation Worker
-29. Automation Storage
-30. Persistence Architecture
-31. Restart Recovery
-32. Runtime vs Persistent State
-33. AI Agent System
-34. Agent Model
-35. Agent Registry
-36. Agent Engine
-37. Agent Lifecycle
-38. Agent Execution
-39. Agent Validation
-40. Agent Status
-41. Agent Persistence Readiness
-42. Future Agent Architecture
-43. Testing
-44. Test Architecture
-45. Agent Tests
-46. AI Tests
-47. Automation Tests
-48. Runner Tests
-49. Worker Tests
-50. Storage Tests
-51. Scheduler Persistence Tests
-52. Persistence Integration Tests
-53. Running Tests
-54. Compilation Checks
-55. Development Workflow
-56. Git Workflow
-57. Release Workflow
-58. Security
-59. API Key Handling
-60. Environment Configuration
-61. Error Handling
-62. Design Principles
-63. Extensibility
-64. Future Storage
-65. Future Scheduling
-66. Future Actions
-67. Future Workflows
-68. Future AI Agents
-69. Future Agent Builder
-70. Future Marketplace
-71. Future Developer API
-72. Future Workspace System
-73. Future Billing
-74. Observability
-75. Audit Logging
-76. Permissions
-77. Reliability
-78. Maintainability
-79. Performance
-80. Concurrency
-81. Testing Philosophy
-82. Regression Protection
-83. Version History
-84. v0.31
-85. v0.34
-86. v0.35
-87. v0.36
-88. v0.37
-89. Roadmap
-90. Development Philosophy
-91. Why Modular Architecture
-92. Project Status
-93. Developer Notes
-94. Troubleshooting
-95. FAQ
-96. Architecture Summary
-97. Engineering Priorities
-98. Future Architecture
-99. Release Gate
-100. Current Release Gate
-101. Conclusion
-102. Core Principle
-103. Long-Term Vision
-104. Maintainer
+1. [Project Overview](#1-project-overview)
+2. [Vision](#2-vision)
+3. [Mission](#3-mission)
+4. [Current Release](#4-current-release)
+5. [Release Highlights](#5-release-highlights)
+6. [Core Capabilities](#6-core-capabilities)
+7. [Architecture](#7-architecture)
+8. [Repository Structure](#8-repository-structure)
+9. [AI Architecture](#9-ai-architecture)
+10. [AI Provider System](#10-ai-provider-system)
+11. [Mock Provider](#11-mock-provider)
+12. [Anthropic Provider](#12-anthropic-provider)
+13. [Conversation Engine](#13-conversation-engine)
+14. [Intent Detection](#14-intent-detection)
+15. [Topic Detection](#15-topic-detection)
+16. [Entity Extraction](#16-entity-extraction)
+17. [Session State](#17-session-state)
+18. [Goal Tracking](#18-goal-tracking)
+19. [Memory System](#19-memory-system)
+20. [Smart Memory](#20-smart-memory)
+21. [Natural Language Commands](#21-natural-language-commands)
+22. [Automation System](#22-automation-system)
+23. [Action Registry](#23-action-registry)
+24. [Automation Engine](#24-automation-engine)
+25. [Automation Manager](#25-automation-manager)
+26. [Automation Scheduler](#26-automation-scheduler)
+27. [Automation Runner](#27-automation-runner)
+28. [Automation Worker](#28-automation-worker)
+29. [Automation Storage](#29-automation-storage)
+30. [Persistence Architecture](#30-persistence-architecture)
+31. [Restart Recovery](#31-restart-recovery)
+32. [Runtime vs Persistent State](#32-runtime-vs-persistent-state)
+33. [AI Agent System](#33-ai-agent-system)
+34. [Agent Model](#34-agent-model)
+35. [Agent Registry](#35-agent-registry)
+36. [Agent Engine](#36-agent-engine)
+37. [Agent Lifecycle](#37-agent-lifecycle)
+38. [Agent Execution](#38-agent-execution)
+39. [Agent Validation](#39-agent-validation)
+40. [Agent Status](#40-agent-status)
+41. [Agent Persistence Readiness](#41-agent-persistence-readiness)
+42. [Agent Tool System](#42-agent-tool-system)
+43. [Tool Model](#43-tool-model)
+44. [Tool Registry](#44-tool-registry)
+45. [Tool Results](#45-tool-results)
+46. [Agent Tool Execution Flow](#46-agent-tool-execution-flow)
+47. [Tool Safety and Validation](#47-tool-safety-and-validation)
+48. [Future Agent Architecture](#48-future-agent-architecture)
+49. [Testing](#49-testing)
+50. [Test Architecture](#50-test-architecture)
+51. [Agent Tests](#51-agent-tests)
+52. [AI Tests](#52-ai-tests)
+53. [Automation Tests](#53-automation-tests)
+54. [Runner Tests](#54-runner-tests)
+55. [Worker Tests](#55-worker-tests)
+56. [Storage Tests](#56-storage-tests)
+57. [Scheduler Persistence Tests](#57-scheduler-persistence-tests)
+58. [Persistence Integration Tests](#58-persistence-integration-tests)
+59. [Running Tests](#59-running-tests)
+60. [Compilation Checks](#60-compilation-checks)
+61. [Development Workflow](#61-development-workflow)
+62. [Git Workflow](#62-git-workflow)
+63. [Release Workflow](#63-release-workflow)
+64. [Security](#64-security)
+65. [API Key Handling](#65-api-key-handling)
+66. [Environment Configuration](#66-environment-configuration)
+67. [Error Handling](#67-error-handling)
+68. [Design Principles](#68-design-principles)
+69. [Extensibility](#69-extensibility)
+70. [Future Storage](#70-future-storage)
+71. [Future Scheduling](#71-future-scheduling)
+72. [Future Actions](#72-future-actions)
+73. [Future Tools](#73-future-tools)
+74. [Future Workflows](#74-future-workflows)
+75. [Future AI Agents](#75-future-ai-agents)
+76. [Future Agent Builder](#76-future-agent-builder)
+77. [Future Marketplace](#77-future-marketplace)
+78. [Future Developer API](#78-future-developer-api)
+79. [Future Workspace System](#79-future-workspace-system)
+80. [Future Billing](#80-future-billing)
+81. [Observability](#81-observability)
+82. [Audit Logging](#82-audit-logging)
+83. [Permissions](#83-permissions)
+84. [Reliability](#84-reliability)
+85. [Maintainability](#85-maintainability)
+86. [Performance](#86-performance)
+87. [Concurrency](#87-concurrency)
+88. [Testing Philosophy](#88-testing-philosophy)
+89. [Regression Protection](#89-regression-protection)
+90. [Version History](#90-version-history)
+91. [v0.31](#91-v031)
+92. [v0.34](#92-v034)
+93. [v0.35](#93-v035)
+94. [v0.36](#94-v036)
+95. [v0.37](#95-v037)
+96. [v0.38](#96-v038)
+97. [Roadmap](#97-roadmap)
+98. [Development Philosophy](#98-development-philosophy)
+99. [Why Modular Architecture](#99-why-modular-architecture)
+100. [Project Status](#100-project-status)
+101. [Developer Notes](#101-developer-notes)
+102. [Troubleshooting](#102-troubleshooting)
+103. [FAQ](#103-faq)
+104. [Architecture Summary](#104-architecture-summary)
+105. [Engineering Priorities](#105-engineering-priorities)
+106. [Future Architecture](#106-future-architecture)
+107. [Release Gate](#107-release-gate)
+108. [Current Release Gate](#108-current-release-gate)
+109. [Conclusion](#109-conclusion)
+110. [Core Principle](#core-principle)
+111. [Long-Term Vision](#long-term-vision)
+112. [Maintainer](#maintainer)
 
 ---
 
@@ -126,9 +135,9 @@
 
 Ultron is a modular personal AI assistant, automation engine, and agent platform written in Python.
 
-The project is designed to evolve from a personal assistant into a larger intelligent software platform.
+The project is designed to evolve from a personal AI assistant into a larger intelligent software platform.
 
-Ultron combines multiple software subsystems instead of treating an AI assistant as a single monolithic program.
+Instead of treating an AI assistant as a single monolithic application, Ultron separates functionality into independently maintainable subsystems.
 
 Major subsystems include:
 
@@ -146,48 +155,45 @@ Major subsystems include:
 * AI agents
 * Agent registry
 * Agent execution engine
+* Agent tools
+* Tool registry
+* Structured tool results
 * Testing infrastructure
 
 The architecture is intentionally modular.
 
-Each subsystem has a defined responsibility.
-
-This makes it possible to improve one part of Ultron without rewriting the entire project.
+Each subsystem has a defined responsibility, allowing individual components to evolve without requiring a complete rewrite of the platform.
 
 ---
 
 # 2. Vision
 
-The long-term vision of Ultron is to create an intelligent software system capable of understanding users, remembering useful information, executing actions, automating repetitive tasks, and operating AI agents through a unified platform.
+The long-term vision of Ultron is to create an intelligent software system capable of:
+
+* Understanding users
+* Maintaining useful memory
+* Understanding context
+* Executing actions
+* Using tools
+* Automating repetitive tasks
+* Running AI agents
+* Managing workflows
+* Integrating external services
+* Providing developer APIs
 
 Ultron is not intended to remain only a chatbot.
 
-The project is being designed as an extensible AI operating layer.
-
-The long-term architecture can support:
-
-* AI conversations
-* Persistent memory
-* Personal automation
-* Scheduled tasks
-* AI agents
-* Agent execution
-* Workflows
-* Developer APIs
-* External integrations
-* Team environments
-* Automation marketplaces
-* AI model providers
+The long-term objective is to develop an extensible AI operating layer capable of connecting intelligence, memory, tools, automation, and agents.
 
 ---
 
 # 3. Mission
 
-The engineering mission is simple:
+The engineering mission is:
 
 > Build reliable foundations before adding unnecessary complexity.
 
-Every release should improve at least one of:
+Every release should improve one or more of:
 
 * Reliability
 * Intelligence
@@ -196,101 +202,107 @@ Every release should improve at least one of:
 * Developer experience
 * Test coverage
 * Architecture
+* Execution safety
 
 Ultron follows an incremental development model.
 
-Features are introduced in small versions.
-
-Each version is tested before moving to the next stage.
+Features are introduced in controlled releases and tested before becoming part of the stable foundation.
 
 ---
 
 # 4. Current Release
 
-## v0.37
+## v0.38
 
-Ultron v0.37 introduces the first dedicated **AI Agent Runtime foundation**.
+Ultron v0.38 introduces the **Agent Tool System** on top of the Agent Runtime Foundation established in v0.37.
 
-The release adds a modular agent subsystem containing:
+The release expands the agent architecture with dedicated tool abstractions.
 
-* Agent model
-* Agent validation
-* Agent lifecycle controls
-* Agent status
-* Agent Registry
-* Agent Engine
-* Agent action execution
-* Runtime parameter overrides
-* Safe execution
-* Agent enable/disable behavior
-* Agent-specific error handling
-* Agent regression tests
+### v0.38 introduces
 
-The automation subsystem from v0.36 remains fully operational.
+* Agent Tool model
+* Tool registration
+* Tool lookup
+* Tool registry
+* Tool execution boundaries
+* Structured tool results
+* Tool-related validation
+* Agent-to-tool architecture
+* Tool-ready agent execution
+* Modular tool infrastructure
 
-The complete automated test suite now contains:
+The Agent Runtime now moves from:
 
-**124 tests**
+```text
+Agent
+  |
+  v
+Agent Action
+```
 
-Current result:
+toward:
 
-**124 passed**
+```text
+Agent
+  |
+  v
+Tool
+  |
+  v
+Tool Registry
+  |
+  v
+Tool Result
+```
 
-This provides a strong regression baseline across AI, automation, persistence, scheduling, workers, and agents.
+This creates the architectural foundation required for future tool-using AI agents.
+
+The automation subsystem from previous releases remains part of the platform architecture.
 
 ---
 
 # 5. Release Highlights
 
-## v0.37 Highlights
+## v0.38 Highlights
 
-### AI Agent foundation
+### Agent Tool System
 
-Ultron now contains a dedicated agent architecture.
+Ultron now contains a dedicated tool subsystem for AI agents.
 
-### Agent model
+### Tool Model
 
-Agents have their own identity, configuration, action, parameters, and lifecycle state.
+Tools have their own representation and execution contract.
 
-### Agent Registry
+### Tool Registry
 
-Agents can be:
+Tools can be centrally registered and discovered by the runtime.
 
-* Registered
-* Retrieved
-* Listed
-* Removed
-* Replaced
-* Restored
-* Exported
-* Filtered
+### Tool Results
 
-### Agent Engine
+Tool execution can produce structured results rather than relying only on raw return values.
 
-The Agent Engine provides execution capabilities for registered agents.
+### Agent Integration
 
-### Runtime parameters
+The agent runtime is now architecturally prepared to work with reusable tools.
 
-Agent parameters can be overridden at execution time without modifying the stored agent definition.
+### Modular Tool Architecture
 
-### Safe execution
+Tools are separated from the Agent model and Agent Registry.
 
-The Agent Engine provides a safe execution path for controlled agent failures.
+This prevents the agent system from becoming tightly coupled to individual capabilities.
 
-### Agent lifecycle
+### Future-Ready Foundation
 
-Agents can be enabled and disabled.
+The new tool layer prepares Ultron for:
 
-Disabled agents cannot execute.
-
-### Regression coverage
-
-The full project test suite passes:
-
-```text
-124 passed
-0 failed
-```
+* Web tools
+* File tools
+* System tools
+* API tools
+* Search tools
+* Data tools
+* AI tools
+* Developer-defined tools
 
 ---
 
@@ -347,10 +359,20 @@ The full project test suite passes:
 * Agent registry
 * Agent engine
 * Agent execution
-* Agent status management
+* Agent lifecycle
 * Runtime parameter overrides
 * Safe execution
-* Agent restoration/export architecture
+
+## Agent Tools
+
+* Tool model
+* Tool registry
+* Tool registration
+* Tool lookup
+* Tool execution
+* Structured results
+* Tool validation
+* Agent-tool integration foundation
 
 ---
 
@@ -359,99 +381,71 @@ The full project test suite passes:
 Ultron follows a layered modular architecture.
 
 ```text
-User
- |
- v
-Conversation Layer
- |
- v
-Intent / Context / Session
- |
- v
-AI Engine
- |
- +--------------------+
- |                    |
- v                    v
-Mock Provider     Anthropic Provider
- |
- v
-Commands / Agents / Automation
- |
- +--------------------------+
- |                          |
- v                          v
-Agent Engine          Automation Manager
- |                          |
- v                          v
-Agent Registry        Automation Engine
- |                          |
- v                          v
-Agent Action          Action Registry
-                            |
-                            v
-                       Action Handler
+                           User
+                             |
+                             v
+                    Conversation Layer
+                             |
+                             v
+                 Intent / Context / Session
+                             |
+                             v
+                        AI Engine
+                             |
+                +------------+------------+
+                |                         |
+                v                         v
+          Mock Provider            Anthropic Provider
+                |                         |
+                +------------+------------+
+                             |
+                             v
+                   Commands / Agents
+                             |
+                +------------+------------+
+                |                         |
+                v                         v
+          Agent Runtime              Automation
+                |                         |
+                v                         v
+          Agent Engine           Automation Manager
+                |                         |
+                v                         v
+         Agent Registry         Automation Engine
+                |                         |
+                v                         v
+             Tools                Action Registry
+                |                         |
+                v                         v
+         Tool Registry             Action Handler
+                |
+                v
+          Tool Result
 ```
 
-The scheduling system is connected through:
+The architecture separates:
 
 ```text
-Scheduler
-    |
-    v
-Due Schedule
-    |
-    v
-Runner
-    |
-    v
-Automation Engine
-    |
-    v
-Action Registry
-    |
-    v
-Action Handler
-```
-
-The background system is:
-
-```text
-Worker
-   |
-   v
-Periodic Check
-   |
-   v
-Runner
-   |
-   v
-Due Schedules
-```
-
-Persistence is:
-
-```text
-Runtime Object
+Understanding
      |
      v
-Storage Layer
+Decision
      |
      v
-JSON Persistence
+Execution
      |
      v
-New Application Instance
+Result
      |
      v
-Restore
+Persistence / Context
 ```
 
 ---
 
 # 8. Repository Structure
 
-A simplified project structure is:
+The current project structure is organized around modular subsystems.
 
 ```text
 Ultron/
@@ -468,6 +462,7 @@ Ultron/
 │   └── session_state.py
 │
 ├── modules/
+│   │
 │   ├── automation/
 │   │   ├── actions.py
 │   │   ├── engine.py
@@ -481,7 +476,10 @@ Ultron/
 │       ├── __init__.py
 │       ├── agent.py
 │       ├── agent_engine.py
-│       └── agent_registry.py
+│       ├── agent_registry.py
+│       ├── tool.py
+│       ├── tool_registry.py
+│       └── tool_result.py
 │
 ├── tests/
 │   ├── test_ai.py
@@ -502,29 +500,39 @@ Ultron/
 └── .env
 ```
 
+The Agent subsystem now has three dedicated tool-related modules:
+
+```text
+modules/agent/
+│
+├── tool.py
+├── tool_registry.py
+└── tool_result.py
+```
+
 ---
 
 # 9. AI Architecture
 
 The AI system is provider-oriented.
 
-Ultron does not hard-code one AI provider into the entire application.
+Ultron does not hard-code a single AI provider throughout the application.
 
-Instead, the project separates:
+Instead, the system separates:
 
-* AI engine
-* AI client
+* AI Engine
+* AI Client
 * Provider implementations
 * Configuration
 * Conversation integration
 
-This allows different providers to be introduced without rewriting the conversation system.
+This makes it possible to introduce additional providers without redesigning the conversation layer.
 
 ---
 
 # 10. AI Provider System
 
-The provider architecture currently includes:
+The current provider architecture is:
 
 ```text
 AI Engine
@@ -534,11 +542,9 @@ AI Engine
     +---- Anthropic Provider
 ```
 
-The selected provider can depend on configuration.
+The selected provider can depend on environment configuration.
 
-The architecture supports future providers.
-
-Possible future providers include:
+The architecture can support future providers including:
 
 * Additional hosted models
 * Local models
@@ -550,19 +556,20 @@ Possible future providers include:
 
 # 11. Mock Provider
 
-The mock provider is important for development.
+The Mock Provider is used for development and testing.
 
 It allows Ultron to operate without a production API key.
 
-This provides:
+Benefits include:
 
 * Deterministic testing
 * Local development
 * Faster debugging
 * Offline development
 * Provider architecture testing
+* CI-friendly testing
 
-The mock provider is particularly useful for CI and regression testing.
+Mock mode is particularly important for regression testing.
 
 ---
 
@@ -576,15 +583,15 @@ API credentials are loaded through environment configuration.
 
 The application can determine whether an Anthropic API key is configured.
 
-The project does not require API credentials for mock-mode tests.
+Production credentials are never required for mock-mode testing.
 
 ---
 
 # 13. Conversation Engine
 
-The conversation engine is one of the central intelligence components.
+The Conversation Engine is one of Ultron's central intelligence components.
 
-It is responsible for processing conversational input.
+It processes conversational input and provides structured information to downstream systems.
 
 Current concepts include:
 
@@ -597,13 +604,13 @@ Current concepts include:
 * Reference
 * Memory
 
-The conversation system provides the intelligence layer that can eventually feed automation and agent execution.
+The conversation layer provides the intelligence foundation for future automation and agent execution.
 
 ---
 
 # 14. Intent Detection
 
-Intent detection helps Ultron understand what a user is attempting to do.
+Intent detection helps Ultron determine what the user is attempting to accomplish.
 
 Examples include:
 
@@ -613,25 +620,23 @@ Examples include:
 * Starting a task
 * Continuing a previous task
 
-Intent detection provides structured information to downstream systems.
+Structured intent information can then be passed to downstream components.
 
 ---
 
 # 15. Topic Detection
 
-Topic detection allows Ultron to understand what a conversation is about.
+Topic detection allows Ultron to understand the subject of a conversation.
 
-A conversation may change topics.
+The session system can maintain topic history and detect topic changes.
 
-The session system can track topic history.
-
-This creates a foundation for topic switching and longer-running interactions.
+This prevents every user message from being interpreted as an isolated request.
 
 ---
 
 # 16. Entity Extraction
 
-Entities provide important information inside a user request.
+Entities provide structured information from user requests.
 
 Examples may include:
 
@@ -642,7 +647,7 @@ Examples may include:
 * Tasks
 * Named concepts
 
-Entities can be used alongside intent and topic information.
+Entities can be combined with intent, topic, and session information.
 
 ---
 
@@ -659,30 +664,30 @@ Session state can track:
 * References
 * Conversation state
 
-The goal is to prevent every message from being interpreted as an isolated request.
+This creates a foundation for longer-running interactions.
 
 ---
 
 # 18. Goal Tracking
 
-Goal tracking allows Ultron to maintain a longer-running objective.
+Goal tracking allows Ultron to maintain longer-running objectives.
 
-A conversation can therefore move through:
+A goal can conceptually move through:
 
 ```text
 Goal Started
-      |
-      v
+     |
+     v
 Goal Progress
-      |
-      v
+     |
+     v
 Goal Updated
-      |
-      v
+     |
+     v
 Goal Completed
 ```
 
-This becomes increasingly important for automation and agent functionality.
+Goal tracking becomes increasingly important as agents and workflows become more capable.
 
 ---
 
@@ -701,22 +706,20 @@ Memory functionality includes:
 * Cleanup
 * Deduplication
 
-Memory should remain useful rather than simply storing every piece of information.
+The goal is useful memory rather than indiscriminate storage.
 
 ---
 
 # 20. Smart Memory
 
-Smart memory functionality is intended to improve retrieval quality.
-
-Instead of treating every memory equally, the system can consider relevance.
+Smart memory improves retrieval quality by considering relevance.
 
 This creates a foundation for:
 
-* Context ranking
 * Relevant memory selection
-* Reduced noise
-* Better personalization
+* Context ranking
+* Reduced memory noise
+* Personalization
 * Future semantic retrieval
 
 ---
@@ -727,26 +730,36 @@ Ultron includes a natural-language command layer.
 
 The system can translate human-friendly commands into internal command representations.
 
-This allows users to interact with the system without needing to know internal command syntax.
+This allows users to interact with Ultron without needing to know internal command syntax.
 
 ---
 
 # 22. Automation System
 
-Automation is one of the major architectural components of Ultron.
+Automation is a major subsystem of Ultron.
 
-The system is designed around:
+The architecture is divided into:
 
 ```text
 Manager
+   |
+   v
 Engine
+   |
+   v
 Scheduler
+   |
+   v
 Runner
+   |
+   v
 Worker
+   |
+   v
 Storage
 ```
 
-Each component has a defined responsibility.
+Each component has a specific responsibility.
 
 ---
 
@@ -771,13 +784,13 @@ The registry provides:
 * Removal
 * Execution
 
-The action registry is the execution foundation used by the automation subsystem.
+The Action Registry is the execution foundation of the automation subsystem.
 
 ---
 
 # 24. Automation Engine
 
-The AutomationEngine is the execution core.
+The AutomationEngine provides the execution core.
 
 Responsibilities include:
 
@@ -794,7 +807,7 @@ Responsibilities include:
 
 # 25. Automation Manager
 
-The manager provides a higher-level API.
+The Automation Manager provides a higher-level API.
 
 Responsibilities include:
 
@@ -808,17 +821,17 @@ Responsibilities include:
 * Save
 * Reload
 
-The manager connects the engine and storage.
+The Manager connects the Engine and Storage layers.
 
 ---
 
 # 26. Automation Scheduler
 
-The scheduler decides when automations should run.
+The Scheduler decides when automations should run.
 
 It separates timing logic from execution logic.
 
-The scheduler can handle:
+Supported concepts include:
 
 * Schedule creation
 * Schedule lookup
@@ -836,8 +849,6 @@ The scheduler can handle:
 
 The AutomationRunner connects scheduling and execution.
 
-Its responsibility is:
-
 ```text
 Scheduler
     |
@@ -851,17 +862,15 @@ Automation ID
 Automation Engine
 ```
 
-The runner does not decide how often to check.
+The Runner does not decide how frequently the system checks schedules.
 
-That responsibility belongs to the worker.
+That responsibility belongs to the Worker.
 
 ---
 
 # 28. Automation Worker
 
-The worker is responsible for periodic checking.
-
-Architecture:
+The Worker performs periodic background checks.
 
 ```text
 Worker
@@ -873,12 +882,12 @@ run_once()
 Runner
    |
    v
-Due schedules
+Due Schedules
 ```
 
-The worker can operate in a background thread.
+The Worker can operate in a background thread.
 
-It supports:
+Supported lifecycle concepts include:
 
 ```text
 start()
@@ -893,12 +902,12 @@ status()
 
 AutomationStorage provides JSON-backed persistence.
 
-It stores:
+It stores information such as:
 
 * Automations
 * Schedules
 
-The storage system supports:
+The storage layer supports:
 
 * Create
 * Read
@@ -908,88 +917,70 @@ The storage system supports:
 * Load
 * Save
 
-It also provides recovery behavior for corrupted or invalid persistent data.
+Recovery behavior is also provided for invalid or corrupted persistent data.
 
 ---
 
 # 30. Persistence Architecture
 
-The complete architecture is:
+The automation persistence architecture is:
 
 ```text
-                 +----------------------+
-                 | Automation Manager   |
-                 +----------+-----------+
-                            |
-                            v
-                 +----------------------+
-                 | Automation Engine    |
-                 +----------+-----------+
-                            |
-                            v
-                 +----------------------+
-                 | Action Registry      |
-                 +----------+-----------+
-                            |
-                            v
-                       Action Handler
+Automation Manager
+        |
+        v
+Automation Engine
+        |
+        v
+Action Registry
+        |
+        v
+Action Handler
 
 
-+----------------------+
-| Automation Scheduler |
-+----------+-----------+
-           |
-           v
-+----------------------+
-| Automation Storage   |
-+----------------------+
+Automation Scheduler
+        |
+        v
+Automation Storage
 
 
-+----------------------+
-| Automation Worker    |
-+----------+-----------+
-           |
-           v
-+----------------------+
-| Automation Runner    |
-+----------+-----------+
-           |
-           v
-+----------------------+
-| Automation Engine    |
-+----------------------+
+Automation Worker
+        |
+        v
+Automation Runner
+        |
+        v
+Automation Engine
 ```
+
+Persistence allows runtime state to survive application restarts where appropriate.
 
 ---
 
 # 31. Restart Recovery
 
-A major architecture goal is restart recovery.
-
-Before restart:
+The restart recovery flow is:
 
 ```text
-Automation
-     |
-     v
+Runtime
+   |
+   v
 Storage
-```
-
-After restart:
-
-```text
-Storage
-     |
-     v
+   |
+   v
+Application Restart
+   |
+   v
 New Manager
-     |
-     v
+   |
+   v
 New Engine
+   |
+   v
+Restore
 ```
 
-The automation identity remains intact.
-
-Schedules can also be restored.
+Automation identity and schedule state can be restored from persistent data.
 
 ---
 
@@ -997,7 +988,7 @@ Schedules can also be restored.
 
 Not everything should be persisted.
 
-Persistent:
+### Persistent
 
 * Automation ID
 * Name
@@ -1005,47 +996,45 @@ Persistent:
 * Parameters
 * Enabled state
 * Creation timestamp
-* Last execution state
+* Execution state
 * Schedule state
 
-Runtime:
+### Runtime
 
 * Python callable
 * Thread object
 * Locks
-* Stop event
-* Active worker instance
+* Stop events
+* Active Worker instance
 
-This separation is critical.
+Keeping these categories separate improves reliability and portability.
 
 ---
 
 # 33. AI Agent System
 
-## v0.37 Agent Runtime Foundation
+## Agent Runtime Foundation
 
-Ultron v0.37 introduces the first dedicated agent subsystem.
+The Agent Runtime was introduced in v0.37.
 
-The agent architecture is intentionally separated from the automation system.
+The architecture is intentionally separated from automation.
 
-The initial architecture is:
+The current structure is:
 
 ```text
 Agent
- |
- v
+   |
+   v
 Agent Registry
- |
- v
+   |
+   v
 Agent Engine
- |
- v
-Agent Action
+   |
+   v
+Agent Tool / Action
 ```
 
-This creates a clean foundation for future autonomous agent behavior.
-
-The current system focuses on reliable agent representation and controlled execution rather than attempting to implement a fully autonomous reasoning loop prematurely.
+The v0.38 release expands this architecture with a dedicated Tool System.
 
 ---
 
@@ -1053,9 +1042,7 @@ The current system focuses on reliable agent representation and controlled execu
 
 The `Agent` class represents an executable Ultron agent.
 
-An agent contains information required to identify and execute an agent capability.
-
-The model supports concepts such as:
+An agent can contain concepts such as:
 
 * Agent ID
 * Agent name
@@ -1067,15 +1054,15 @@ The model supports concepts such as:
 * Serialization
 * Restoration
 
-The agent model is intentionally lightweight.
+The Agent model remains intentionally lightweight.
 
-This makes it possible to add more advanced capabilities later without coupling them directly to the registry or execution engine.
+This allows more advanced capabilities to be introduced without tightly coupling them to the Registry or Engine.
 
 ---
 
 # 35. Agent Registry
 
-The `AgentRegistry` is the central in-memory registry for Ultron agents.
+The `AgentRegistry` is the central in-memory registry for agents.
 
 Location:
 
@@ -1098,9 +1085,9 @@ Responsibilities include:
 * Export agents
 * Find agents by name
 * List active agents
-* Filter agents by status
+* Filter by status
 
-Example architecture:
+Conceptually:
 
 ```text
 Agent
@@ -1117,9 +1104,7 @@ AgentRegistry
   +---- export_all()
 ```
 
-The registry is intentionally independent from persistence.
-
-Persistence can be added without coupling the core registry to a specific storage implementation.
+The registry remains independent from persistence.
 
 ---
 
@@ -1133,45 +1118,44 @@ Location:
 modules/agent/agent_engine.py
 ```
 
-The engine is responsible for:
+Responsibilities include:
 
 * Registering agent actions
 * Looking up actions
 * Removing actions
 * Listing actions
 * Executing agents
-* Executing agents by ID
+* Executing by ID
 * Passing parameters
-* Applying runtime parameter overrides
+* Runtime parameter overrides
 * Safe execution
-* Validating agent definitions
-* Handling invalid actions
+* Agent validation
+* Invalid action handling
+* Tool-ready execution architecture
 
-The architecture is:
+The execution model is:
 
 ```text
 Agent
- |
- v
+  |
+  v
 Agent Engine
- |
- v
-Action Lookup
- |
- v
-Action Handler
- |
- v
-Execution Result
+  |
+  v
+Capability Lookup
+  |
+  v
+Execution
+  |
+  v
+Result
 ```
 
 ---
 
 # 37. Agent Lifecycle
 
-Agents support an explicit lifecycle.
-
-Basic lifecycle:
+Agents support explicit lifecycle control.
 
 ```text
 Created
@@ -1188,19 +1172,18 @@ Enabled
    v
 Executed
    |
-   v
-Disabled / Enabled
+   +----> Disabled
+   |
+   +----> Enabled
 ```
 
 An agent can be disabled without being removed from the registry.
-
-This allows lifecycle control without destroying the agent definition.
 
 ---
 
 # 38. Agent Execution
 
-Agent execution follows a controlled path:
+A controlled agent execution path is:
 
 ```text
 Agent ID
@@ -1212,16 +1195,16 @@ Find Agent
 Validate Agent
    |
    v
-Check Agent Status
+Check Status
    |
    v
-Find Action
+Resolve Capability
    |
    v
 Apply Parameters
    |
    v
-Execute Handler
+Execute
    |
    v
 Return Result
@@ -1229,7 +1212,7 @@ Return Result
 
 The architecture keeps agent definition separate from execution.
 
-This is important for future agent orchestration.
+This separation becomes important for future planning and orchestration.
 
 ---
 
@@ -1239,9 +1222,15 @@ Agents are validated before registration and execution.
 
 Validation protects the runtime from invalid definitions.
 
-The architecture uses explicit validation errors for invalid agent objects and definitions.
+Explicit validation boundaries allow callers to distinguish:
 
-This allows callers to distinguish configuration problems from runtime execution failures.
+```text
+Invalid Definition
+        vs
+Execution Failure
+```
+
+This improves error handling and debugging.
 
 ---
 
@@ -1249,19 +1238,14 @@ This allows callers to distinguish configuration problems from runtime execution
 
 Agents have lifecycle status.
 
-The registry can filter agents based on status.
+The registry can:
 
-It can also identify currently active agents.
+* Filter agents by status
+* List active agents
+* Determine whether an agent is enabled
+* Prevent disabled agents from executing
 
-Example:
-
-```python
-registry.list_active()
-```
-
-Status filtering provides a foundation for future agent management systems.
-
-Possible future states may include:
+Future lifecycle states may include:
 
 ```text
 ACTIVE
@@ -1271,17 +1255,15 @@ ERROR
 ARCHIVED
 ```
 
-The exact supported statuses remain controlled by the Agent model.
+The actual supported states remain controlled by the Agent model.
 
 ---
 
 # 41. Agent Persistence Readiness
 
-The agent architecture already supports serialization-oriented design.
+The Agent architecture supports serialization-oriented design.
 
-Agents can be exported to dictionaries and restored from dictionaries.
-
-Example flow:
+Agents can be represented as dictionaries and restored from dictionary data.
 
 ```text
 Agent
@@ -1299,17 +1281,251 @@ from_dict()
 Agent
 ```
 
-This provides a foundation for future persistent agents.
-
-The current registry remains intentionally in-memory so that persistence concerns do not prematurely complicate the core runtime.
+The Registry remains intentionally in-memory so persistence concerns do not prematurely complicate the runtime.
 
 ---
 
-# 42. Future Agent Architecture
+# 42. Agent Tool System
 
-The current agent system is the foundation for a more advanced runtime.
+## v0.38 Tool Runtime Foundation
 
-Future architecture:
+Ultron v0.38 introduces a dedicated **Agent Tool System**.
+
+Tools are treated as reusable capabilities that can eventually be selected and executed by agents.
+
+The architecture separates:
+
+```text
+Agent
+   |
+   v
+Tool
+   |
+   v
+Tool Registry
+   |
+   v
+Tool Execution
+   |
+   v
+Tool Result
+```
+
+This is an important architectural step toward tool-using AI agents.
+
+Instead of hard-coding every capability directly into an agent, capabilities can eventually become independently registered tools.
+
+---
+
+# 43. Tool Model
+
+The `Tool` abstraction represents a reusable agent capability.
+
+Location:
+
+```text
+modules/agent/tool.py
+```
+
+The Tool layer provides a dedicated boundary between:
+
+* What a capability is
+* How it is identified
+* How it is invoked
+* What result it produces
+
+This allows future tools to become independently developed and tested components.
+
+Potential tool categories include:
+
+```text
+Web Tool
+File Tool
+System Tool
+Search Tool
+API Tool
+Data Tool
+AI Tool
+Automation Tool
+Developer Tool
+```
+
+The v0.38 architecture establishes the foundation without prematurely coupling tools to specific external services.
+
+---
+
+# 44. Tool Registry
+
+The `ToolRegistry` provides centralized tool management.
+
+Location:
+
+```text
+modules/agent/tool_registry.py
+```
+
+Its purpose is to provide a consistent place for tool discovery and management.
+
+Conceptually:
+
+```text
+Tool
+  |
+  v
+Tool Registry
+  |
+  +---- Register
+  +---- Lookup
+  +---- List
+  +---- Remove
+  +---- Resolve
+```
+
+The registry separates tool management from agent definitions.
+
+This allows multiple agents to eventually use the same tool.
+
+Example future architecture:
+
+```text
+                Tool Registry
+               /      |       \
+              /       |        \
+             v        v         v
+          Agent A   Agent B   Agent C
+             |        |         |
+             +--------+---------+
+                      |
+                 Shared Tools
+```
+
+This is an important foundation for reusable agent capabilities.
+
+---
+
+# 45. Tool Results
+
+The `ToolResult` abstraction provides a structured boundary for tool execution results.
+
+Location:
+
+```text
+modules/agent/tool_result.py
+```
+
+A structured result architecture is important because tools may eventually produce:
+
+* Success results
+* Failure results
+* Data
+* Messages
+* Metadata
+* Error information
+* Execution information
+
+Conceptually:
+
+```text
+Tool Execution
+      |
+      v
+Tool Result
+      |
+ +----+----+
+ |         |
+ v         v
+Success   Failure
+```
+
+Structured results make it easier for future agents to understand what happened after a tool execution.
+
+---
+
+# 46. Agent Tool Execution Flow
+
+The long-term tool execution flow is:
+
+```text
+User Goal
+    |
+    v
+Agent
+    |
+    v
+Determine Required Capability
+    |
+    v
+Tool Registry
+    |
+    v
+Resolve Tool
+    |
+    v
+Validate Tool Input
+    |
+    v
+Execute Tool
+    |
+    v
+Tool Result
+    |
+    v
+Agent Observation
+    |
+    v
+Next Decision
+```
+
+This architecture is intentionally designed so that reasoning and execution remain separate.
+
+The Agent decides what capability is needed.
+
+The Tool performs the capability.
+
+The ToolResult communicates the outcome.
+
+---
+
+# 47. Tool Safety and Validation
+
+Tools can eventually provide powerful system capabilities.
+
+Therefore the Tool System is designed with future safety boundaries in mind.
+
+Potential validation layers include:
+
+```text
+Tool Definition
+      |
+      v
+Input Validation
+      |
+      v
+Permission Check
+      |
+      v
+Execution
+      |
+      v
+Result Validation
+```
+
+Future production tools may require explicit permissions for:
+
+* Filesystem access
+* Network access
+* System commands
+* External APIs
+* Account actions
+* Sensitive operations
+
+The current v0.38 release establishes the architectural boundary before introducing more powerful capabilities.
+
+---
+
+# 48. Future Agent Architecture
+
+The long-term agent architecture can evolve toward:
 
 ```text
 User Goal
@@ -1327,7 +1543,13 @@ Planning
 Tool Selection
     |
     v
-Action
+Tool Registry
+    |
+    v
+Tool Execution
+    |
+    v
+Tool Result
     |
     v
 Observation
@@ -1339,69 +1561,71 @@ Memory
 Next Step
 ```
 
-Eventually, an agent may be able to:
+Eventually an agent may be able to:
 
 * Understand a goal
 * Create a plan
 * Select tools
-* Execute actions
+* Execute tools
 * Observe results
 * Update memory
-* Continue until completion
-* Stop safely
-* Request user approval when required
+* Continue execution
+* Detect failure
+* Recover from errors
+* Request user approval
+* Complete a task safely
 
 These capabilities will be introduced incrementally.
 
 ---
 
-# 43. Testing
+# 49. Testing
 
-Ultron uses pytest.
+Ultron uses `pytest`.
 
-The current full suite contains:
-
-**124 tests**
-
-Current result:
+The existing regression baseline contains:
 
 ```text
 124 passed
 0 failed
 ```
 
-The full suite is the primary regression signal for the current release.
+The v0.38 Agent Tool System expands the runtime architecture and should be verified through focused tests and the complete regression suite before release completion.
 
 ---
 
-# 44. Test Architecture
+# 50. Test Architecture
 
-Tests are separated by subsystem.
-
-Current test areas include:
+Tests are organized around major subsystems.
 
 ```text
 AI
+ |
+ +---- Provider Tests
+
 Agents
+ |
+ +---- Agent Tests
+ +---- Tool Tests
+
 Automation
-Runner
-Worker
-Storage
-Scheduler Persistence
-Persistence Integration
+ |
+ +---- Engine Tests
+ +---- Manager Tests
+ +---- Runner Tests
+ +---- Worker Tests
+ +---- Storage Tests
+ +---- Scheduler Tests
+ +---- Persistence Tests
 ```
 
-This makes failures easier to isolate.
+This organization makes subsystem failures easier to isolate.
 
 ---
 
-# 45. Agent Tests
+# 51. Agent Tests
 
-The agent test suite currently contains:
-
-**29 tests**
-
-The tests verify:
+Agent tests cover behaviors such as:
 
 * Agent creation
 * Default parameters
@@ -1414,26 +1638,22 @@ The tests verify:
 * Registry lookup
 * Registry listing
 * Registry removal
-* Engine action registration
-* Engine action lookup
-* Engine action removal
-* Engine action listing
+* Action registration
+* Action lookup
+* Action removal
+* Action listing
 * Agent execution
 * Parameter execution
-* Runtime parameter override
+* Runtime overrides
 * Execute by ID
 * Safe execution
 * Failure handling
 * Unknown actions
 * Disabled agents
 * Invalid agents
-* Invalid action names
 * Invalid handlers
-* Engine length
-* Engine clearing
-* Engine representation
 
-Current result:
+The existing agent regression baseline contains:
 
 ```text
 29 passed
@@ -1442,7 +1662,7 @@ Current result:
 
 ---
 
-# 46. AI Tests
+# 52. AI Tests
 
 AI tests verify:
 
@@ -1452,12 +1672,12 @@ AI tests verify:
 * Empty prompts
 * Context handling
 * Mock context
-* Missing API key
-* Placeholder API key
+* Missing API keys
+* Placeholder API keys
 
 ---
 
-# 47. Automation Tests
+# 53. Automation Tests
 
 Automation tests verify:
 
@@ -1477,7 +1697,7 @@ Automation tests verify:
 
 ---
 
-# 48. Runner Tests
+# 54. Runner Tests
 
 Runner tests verify:
 
@@ -1494,7 +1714,7 @@ Runner tests verify:
 
 ---
 
-# 49. Worker Tests
+# 55. Worker Tests
 
 Worker tests verify:
 
@@ -1512,7 +1732,7 @@ Worker tests verify:
 
 ---
 
-# 50. Storage Tests
+# 56. Storage Tests
 
 Storage tests verify:
 
@@ -1534,7 +1754,7 @@ Storage tests verify:
 
 ---
 
-# 51. Scheduler Persistence Tests
+# 57. Scheduler Persistence Tests
 
 The scheduler persistence suite verifies:
 
@@ -1551,53 +1771,62 @@ The scheduler persistence suite verifies:
 
 ---
 
-# 52. Persistence Integration Tests
+# 58. Persistence Integration Tests
 
 The integration suite verifies complete lifecycle behavior.
 
-Example:
-
 ```text
 Create
-   ↓
+  |
+  v
 Persist
-   ↓
-Restart simulation
-   ↓
+  |
+  v
+Restart Simulation
+  |
+  v
 Restore
-   ↓
+  |
+  v
 Execute
 ```
 
-Recurring workflow:
+Recurring workflows follow:
 
 ```text
-Recurring schedule
-   ↓
+Recurring Schedule
+      |
+      v
 Execute
-   ↓
+      |
+      v
 Persist
-   ↓
+      |
+      v
 Restore
 ```
 
-Worker workflow:
+Worker recovery follows:
 
 ```text
-Persisted schedule
-   ↓
+Persisted Schedule
+      |
+      v
 New Worker
-   ↓
+      |
+      v
 Runner
-   ↓
+      |
+      v
 Restored Engine
-   ↓
-Successful execution
+      |
+      v
+Execution
 ```
 
 ---
 
-# 53. Running Tests
+# 59. Running Tests
 
 Run the complete suite:
 
@@ -1649,7 +1878,7 @@ python -m pytest tests\test_automation_persistence_integration.py -v
 
 ---
 
-# 54. Compilation Checks
+# 60. Compilation Checks
 
 Individual modules can be checked using:
 
@@ -1662,14 +1891,22 @@ python -m py_compile modules\agent\agent_engine.py
 ```
 
 ```powershell
-python -m py_compile modules\agent\agent_registry.py
+python -m py_compile modules\agent\tool.py
 ```
 
-Compilation checks should be performed before running the full test suite when making large changes.
+```powershell
+python -m py_compile modules\agent\tool_registry.py
+```
+
+```powershell
+python -m py_compile modules\agent\tool_result.py
+```
+
+Compilation checks should be performed before the full test suite when introducing large architectural changes.
 
 ---
 
-# 55. Development Workflow
+# 61. Development Workflow
 
 Recommended workflow:
 
@@ -1684,14 +1921,15 @@ Recommended workflow:
 8. Run complete suite
 9. Inspect git diff
 10. Stage intended files
-11. Commit
-12. Push
-13. Verify clean status
+11. Review staged diff
+12. Commit
+13. Push
+14. Verify clean status
 ```
 
 ---
 
-# 56. Git Workflow
+# 62. Git Workflow
 
 Check status:
 
@@ -1705,7 +1943,13 @@ Inspect changes:
 git diff
 ```
 
-Stage changes:
+Inspect staged changes:
+
+```powershell
+git diff --cached
+```
+
+Stage intended files:
 
 ```powershell
 git add .
@@ -1714,7 +1958,7 @@ git add .
 Commit:
 
 ```powershell
-git commit -m "Release v0.37 - Agent Runtime Foundation"
+git commit -m "Release v0.38 - Agent Tool System"
 ```
 
 Push:
@@ -1731,35 +1975,48 @@ git status
 
 ---
 
-# 57. Release Workflow
+# 63. Release Workflow
 
-Each release should follow:
+Every release should follow:
 
 ```text
 Implementation
-      ↓
+      |
+      v
+Compilation
+      |
+      v
 Focused Tests
-      ↓
+      |
+      v
 Integration Tests
-      ↓
+      |
+      v
 Full Test Suite
-      ↓
+      |
+      v
 Git Diff Review
-      ↓
+      |
+      v
+Staged Diff Review
+      |
+      v
 Commit
-      ↓
+      |
+      v
 Push
-      ↓
+      |
+      v
 Clean Working Tree
 ```
 
-A release should not be pushed without verifying the complete regression suite.
+A release should not be considered complete until the complete regression suite has been verified.
 
 ---
 
-# 58. Security
+# 64. Security
 
-Security is an important architectural concern.
+Security is an architectural requirement.
 
 Never commit:
 
@@ -1778,11 +2035,11 @@ Use:
 
 for local secrets.
 
-The `.env` file should be excluded through `.gitignore`.
+The `.env` file should remain excluded through `.gitignore`.
 
 ---
 
-# 59. API Key Handling
+# 65. API Key Handling
 
 AI API keys should be loaded through environment variables.
 
@@ -1792,39 +2049,39 @@ Example:
 ANTHROPIC_API_KEY=your_key_here
 ```
 
-Never place real credentials directly into:
+Never place real credentials inside:
 
 * Python source
-* README
+* README files
 * Git commits
 * Test files
 * Public issue reports
 
 ---
 
-# 60. Environment Configuration
+# 66. Environment Configuration
 
-The project can use environment configuration to control AI behavior.
+AI behavior can be controlled through environment configuration.
 
-For development:
+Development:
 
 ```text
 AI_MODE=mock
 ```
 
-For configured provider usage:
+Configured provider usage:
 
 ```text
 AI_MODE=anthropic
 ```
 
-The exact production configuration should remain environment-specific.
+Production configuration should remain environment-specific.
 
 ---
 
-# 61. Error Handling
+# 67. Error Handling
 
-Ultron uses subsystem-specific exceptions.
+Ultron uses subsystem-specific error boundaries.
 
 Automation includes concepts such as:
 
@@ -1834,33 +2091,39 @@ AutomationValidationError
 AutomationExecutionError
 ```
 
-Agent functionality includes dedicated registry and validation boundaries.
+Agent functionality maintains explicit validation and execution boundaries.
 
-This creates clear subsystem boundaries.
+The architecture distinguishes:
 
-Validation errors represent invalid definitions.
+```text
+Configuration Error
+       vs
+Validation Error
+       vs
+Execution Error
+```
 
-Execution errors represent failures while attempting to execute an operation.
+This improves debugging and reliability.
 
 ---
 
-# 62. Design Principles
-
-Ultron follows several principles.
+# 68. Design Principles
 
 ## Single Responsibility
 
-Each module should have one primary responsibility.
+Every module should have one primary responsibility.
 
 ## Separation of Concerns
 
-Timing should not execute actions directly.
+Timing should not directly implement execution.
 
-Execution should not manage storage directly.
+Execution should not manage storage.
 
-Storage should not decide business logic.
+Storage should not manage business logic.
 
-Agent definition should remain separate from agent execution.
+Agent definitions should remain separate from execution.
+
+Tools should remain reusable and independent from individual agents.
 
 ## Dependency Injection
 
@@ -1871,30 +2134,33 @@ Components can receive dependencies such as:
 * Storage
 * Runner
 * Registry
+* Tool Registry
 
-This improves testing and extensibility.
+This improves testability and extensibility.
 
 ---
 
-# 63. Extensibility
+# 69. Extensibility
 
 New automation actions can be added without rewriting the engine.
 
-New AI providers can be added without rewriting the conversation engine.
+New AI providers can be introduced without rewriting the conversation system.
 
-New agents can be registered without modifying the registry implementation.
+New agents can be registered without changing the registry implementation.
 
-New storage backends can eventually be added without redesigning automation logic.
+New tools can be added without modifying every agent.
 
-New scheduler strategies can be introduced independently.
+New storage backends can eventually be introduced without redesigning automation logic.
 
-This is one of the most important architectural goals.
+New scheduling strategies can be implemented independently.
+
+This is one of the most important architectural goals of Ultron.
 
 ---
 
-# 64. Future Storage
+# 70. Future Storage
 
-JSON is currently suitable for a lightweight local development system.
+JSON is currently suitable for lightweight local development.
 
 Future versions may support:
 
@@ -1903,11 +2169,11 @@ Future versions may support:
 * Cloud databases
 * Distributed storage
 
-The storage abstraction should make such changes possible without changing the automation API.
+Storage abstractions should allow such changes without changing the public automation API.
 
 ---
 
-# 65. Future Scheduling
+# 71. Future Scheduling
 
 Future scheduling capabilities may include:
 
@@ -1917,13 +2183,13 @@ Future scheduling capabilities may include:
 * Business days
 * Holiday exclusions
 * Retry windows
-* Priority
+* Priorities
 * Dependencies
 * Conditional execution
 
 ---
 
-# 66. Future Actions
+# 72. Future Actions
 
 Possible future actions include:
 
@@ -1946,9 +2212,44 @@ Every action should have controlled validation and error handling.
 
 ---
 
-# 67. Future Workflows
+# 73. Future Tools
 
-Ultron can evolve from single-action automation into workflows.
+The Tool System can eventually provide reusable capabilities such as:
+
+```text
+Web Search Tool
+Browser Tool
+File Read Tool
+File Write Tool
+Terminal Tool
+Code Execution Tool
+HTTP Tool
+Database Tool
+Calendar Tool
+Email Tool
+Image Tool
+AI Generation Tool
+Data Analysis Tool
+```
+
+Tools can eventually be:
+
+* Registered
+* Versioned
+* Permission-controlled
+* Tested
+* Shared across agents
+* Enabled or disabled
+* Audited
+* Published through a marketplace
+
+The v0.38 Tool System provides the architectural starting point for this ecosystem.
+
+---
+
+# 74. Future Workflows
+
+Ultron can evolve from single-action automation into workflow execution.
 
 Example:
 
@@ -1971,11 +2272,11 @@ A2   A3
  Final
 ```
 
-This is a foundation for an automation graph system.
+This creates a foundation for an automation graph system.
 
 ---
 
-# 68. Future AI Agents
+# 75. Future AI Agents
 
 The agent subsystem is designed to evolve toward goal-oriented execution.
 
@@ -2003,13 +2304,13 @@ Update Memory
 Continue / Complete
 ```
 
-The v0.37 implementation intentionally establishes the runtime foundation before adding autonomous planning complexity.
+The system can eventually support autonomous but controlled execution.
 
 ---
 
-# 69. Future Agent Builder
+# 76. Future Agent Builder
 
-A future Ultron platform could provide a visual agent builder.
+A future Ultron platform could provide a visual Agent Builder.
 
 Possible components:
 
@@ -2027,22 +2328,22 @@ Possible components:
 
 ---
 
-# 70. Future Marketplace
+# 77. Future Marketplace
 
 A future marketplace could allow developers to publish:
 
 * Agents
+* Tools
 * Automation templates
 * Actions
 * Integrations
 * Workflows
-* Tools
 
 Users could install capabilities without manually modifying source code.
 
 ---
 
-# 71. Future Developer API
+# 78. Future Developer API
 
 Ultron can eventually expose APIs for:
 
@@ -2051,6 +2352,7 @@ Ultron can eventually expose APIs for:
 * Automations
 * Schedules
 * Agents
+* Tools
 * Workflows
 * Integrations
 
@@ -2058,7 +2360,7 @@ The API should sit above stable internal service boundaries.
 
 ---
 
-# 72. Future Workspace System
+# 79. Future Workspace System
 
 A future platform may support:
 
@@ -2069,11 +2371,12 @@ A future platform may support:
 * Permissions
 * Shared automations
 * Shared agents
+* Shared tools
 * Usage tracking
 
 ---
 
-# 73. Future Billing
+# 80. Future Billing
 
 A future SaaS platform may introduce:
 
@@ -2082,18 +2385,19 @@ A future SaaS platform may introduce:
 * Usage limits
 * AI usage metering
 * Automation limits
+* Tool execution limits
 * Team plans
 * Enterprise plans
 
-Billing should remain separate from the core automation and agent engines.
+Billing should remain separate from core execution engines.
 
 ---
 
-# 74. Observability
+# 81. Observability
 
 Future versions should improve observability.
 
-Potential metrics:
+Potential metrics include:
 
 * Automation executions
 * Successful executions
@@ -2103,21 +2407,24 @@ Potential metrics:
 * AI failures
 * Agent executions
 * Agent failures
+* Tool executions
+* Tool failures
 * Worker cycles
 * Storage errors
 
 ---
 
-# 75. Audit Logging
+# 82. Audit Logging
 
-Automation and agent systems eventually require audit logs.
+Automation and agent systems will eventually require audit logs.
 
-A future audit event might contain:
+A future audit event could contain:
 
 ```text
 timestamp
 user
 agent_id
+tool_id
 automation_id
 schedule_id
 action
@@ -2130,13 +2437,13 @@ This becomes important for production deployments.
 
 ---
 
-# 76. Permissions
+# 83. Permissions
 
-Automation and agents can eventually become powerful.
+Agents and tools can eventually become powerful.
 
-Therefore future versions should introduce permission controls.
+Future versions should therefore introduce permission controls.
 
-Possible levels:
+Potential permission levels include:
 
 ```text
 READ
@@ -2147,21 +2454,21 @@ SYSTEM
 ADMIN
 ```
 
-Dangerous actions should require explicit permission.
+Dangerous operations should require explicit authorization.
 
 ---
 
-# 77. Reliability
+# 84. Reliability
 
 Reliability is more important than feature count.
 
 A smaller system with predictable behavior is preferable to a larger system with hidden failures.
 
-The test suite therefore plays a major role in development.
+The test suite therefore remains a core part of Ultron's architecture.
 
 ---
 
-# 78. Maintainability
+# 85. Maintainability
 
 Maintainability goals include:
 
@@ -2172,11 +2479,11 @@ Maintainability goals include:
 * Consistent naming
 * Documentation
 * Tests
-* Stable APIs
+* Stable interfaces
 
 ---
 
-# 79. Performance
+# 86. Performance
 
 The current system prioritizes correctness and simplicity.
 
@@ -2190,65 +2497,69 @@ Future performance work can address:
 * Caching
 * Batch operations
 * Agent execution optimization
+* Tool execution optimization
 
-Performance optimization should be evidence-driven.
+Performance improvements should be evidence-driven.
 
 ---
 
-# 80. Concurrency
+# 87. Concurrency
 
-The automation worker currently uses a background thread.
+The automation Worker currently uses a background thread.
 
-Future concurrency models could include:
+Future concurrency models may include:
 
 * Thread pools
 * AsyncIO
 * Task queues
 * Distributed workers
 
-Any concurrency upgrade must preserve execution correctness.
+Any concurrency upgrade must preserve execution correctness and state integrity.
 
 ---
 
-# 81. Testing Philosophy
+# 88. Testing Philosophy
 
 Every important behavior should have a test.
 
 Bug fixes should ideally introduce regression tests.
 
-Features should have:
+Features should include appropriate:
 
 * Unit tests
 * Integration tests
 * Failure tests
+* Regression tests
 
-Critical workflows should be tested from beginning to end.
+Critical workflows should be tested end-to-end.
 
-The v0.37 agent subsystem follows the same principle.
+The Agent Tool System follows the same philosophy.
 
 ---
 
-# 82. Regression Protection
+# 89. Regression Protection
 
 The full test suite is the release gate.
 
-A release should not be considered stable if:
+A release should not be considered stable when:
 
 ```text
 Tests Failed > 0
 ```
 
-Current v0.37 state:
+Current established regression baseline:
 
 ```text
-Tests = 124
+Tests  = 124
 Passed = 124
 Failed = 0
 ```
 
+The v0.38 Tool System should be validated against this baseline before final release verification.
+
 ---
 
-# 83. Version History
+# 90. Version History
 
 ## v0.1
 
@@ -2256,7 +2567,7 @@ Project setup.
 
 ## v0.2
 
-Conversation engine.
+Conversation Engine.
 
 ## v0.3
 
@@ -2279,12 +2590,12 @@ Expanded:
 * Topic detection
 * Entity extraction
 * Session state
-* Natural language commands
+* Natural-language commands
 * Memory intelligence
 
 ---
 
-# 84. v0.31
+# 91. v0.31
 
 v0.31 introduced the AI integration architecture.
 
@@ -2292,8 +2603,8 @@ Major components included:
 
 * AI Engine
 * Provider architecture
-* Mock provider
-* Anthropic provider
+* Mock Provider
+* Anthropic Provider
 * Conversation integration
 * Error handling
 * `.env` security
@@ -2301,7 +2612,7 @@ Major components included:
 
 ---
 
-# 85. v0.34
+# 92. v0.34
 
 The automation architecture developed significantly.
 
@@ -2315,7 +2626,7 @@ Major concepts included:
 
 ---
 
-# 86. v0.35
+# 93. v0.35
 
 The automation engine and management layer were strengthened.
 
@@ -2329,11 +2640,11 @@ Important improvements included:
 
 ---
 
-# 87. v0.36
+# 94. v0.36
 
 The automation persistence architecture was completed.
 
-Major improvements:
+Major improvements included:
 
 * Scheduler persistence
 * Automation persistence
@@ -2352,9 +2663,9 @@ Release verification:
 
 ---
 
-# 88. v0.37
+# 95. v0.37
 
-v0.37 introduces the **Agent Runtime Foundation**.
+v0.37 introduced the **Agent Runtime Foundation**.
 
 Major improvements:
 
@@ -2367,17 +2678,15 @@ Major improvements:
 * Agent action lookup
 * Agent action removal
 * Agent execution
-* Execution by agent ID
+* Execution by Agent ID
 * Runtime parameter overrides
 * Safe execution
 * Disabled-agent protection
 * Agent export
 * Agent restoration
-* Agent-specific regression tests
+* Agent regression tests
 
-The agent subsystem is intentionally modular and prepared for future autonomous agent capabilities.
-
-Current verification:
+Release verification:
 
 ```text
 124 passed
@@ -2386,12 +2695,65 @@ Current verification:
 
 ---
 
-# 89. Roadmap
+# 96. v0.38
+
+v0.38 introduces the **Agent Tool System**.
+
+Major improvements:
+
+* Tool model
+* Tool Registry
+* Tool registration architecture
+* Tool lookup architecture
+* Tool execution boundary
+* Structured Tool Results
+* Tool validation foundation
+* Agent-to-tool architecture
+* Reusable capability architecture
+* Tool-ready Agent Runtime
+* Future tool ecosystem foundation
+
+New Agent modules:
+
+```text
+modules/agent/tool.py
+modules/agent/tool_registry.py
+modules/agent/tool_result.py
+```
+
+The Agent Runtime now moves toward:
+
+```text
+Agent
+  |
+  v
+Tool Selection
+  |
+  v
+Tool Registry
+  |
+  v
+Tool Execution
+  |
+  v
+Tool Result
+  |
+  v
+Agent Observation
+```
+
+This release establishes the foundation required for future tool-using AI agents.
+
+---
+
+# 97. Roadmap
 
 ## Near Term
 
 * Expand agent capabilities
-* Improve agent actions
+* Expand tool capabilities
+* Add focused tool tests
+* Improve agent execution
 * Improve scheduler capabilities
 * Improve persistence abstractions
 * Improve error reporting
@@ -2399,58 +2761,65 @@ Current verification:
 
 ## Medium Term
 
-* Workflow engine
+* Workflow Engine
 * Conditional execution
 * More AI-powered automation
 * External integrations
 * Agent tools
 * Agent memory integration
 * Better observability
+* Tool permissions
 
 ## Long Term
 
-* AI agent platform
-* Agent builder
-* Workflow builder
+* AI Agent Platform
+* Agent Builder
+* Tool Builder
+* Workflow Builder
 * Marketplace
 * Developer API
-* Team system
+* Team System
 * Billing
-* Enterprise platform
+* Enterprise Platform
 
 ---
 
-# 90. Development Philosophy
+# 98. Development Philosophy
 
 Ultron is developed incrementally.
 
-The project does not attempt to build the entire final platform in one release.
+The project does not attempt to build the final platform in one release.
 
 Instead:
 
 ```text
 Foundation
-   ↓
-Reliable subsystem
-   ↓
+    |
+    v
+Reliable Subsystem
+    |
+    v
 Integration
-   ↓
+    |
+    v
 Testing
-   ↓
+    |
+    v
 Release
-   ↓
-Next subsystem
+    |
+    v
+Next Subsystem
 ```
 
-This approach reduces architectural debt.
+This approach reduces architectural debt and keeps the system understandable.
 
 ---
 
-# 91. Why Modular Architecture
+# 99. Why Modular Architecture
 
-A monolithic AI assistant becomes difficult to maintain as features increase.
+A monolithic AI assistant becomes increasingly difficult to maintain as capabilities grow.
 
-A modular architecture makes it possible to replace:
+A modular architecture allows components such as:
 
 ```text
 AI Provider
@@ -2460,56 +2829,67 @@ Worker
 Action Registry
 Agent Registry
 Agent Engine
+Tool Registry
 ```
 
-independently.
+to evolve independently.
 
-This gives Ultron a stronger long-term foundation.
+This provides a stronger long-term foundation for Ultron.
 
 ---
 
-# 92. Project Status
+# 100. Project Status
 
 **Ultron is in active development.**
 
 Current release:
 
-**v0.37**
-
-Current regression status:
-
-**124/124 tests passing**
+```text
+v0.38
+```
 
 Current major focus:
 
-**AI Agent Runtime Foundation**
+```text
+Agent Tool System
+```
 
 Previous major foundation:
 
-**Reliable Persistent Automation**
+```text
+AI Agent Runtime
+```
+
+Previous platform foundation:
+
+```text
+Reliable Persistent Automation
+```
 
 ---
 
-# 93. Developer Notes
+# 101. Developer Notes
 
-When modifying agents:
+When modifying the Agent subsystem:
 
-1. Read the relevant agent module.
+1. Read the relevant Agent module.
 2. Understand its responsibility.
-3. Check existing agent tests.
+3. Check existing Agent tests.
 4. Make the smallest safe change.
-5. Compile the modified files.
-6. Run `tests\test_agent.py`.
-7. Run integration tests if required.
-8. Run the full suite.
-9. Inspect the diff.
-10. Commit only intended changes.
+5. Compile modified files.
+6. Run focused Agent tests.
+7. Run Tool tests when applicable.
+8. Run integration tests if required.
+9. Run the complete suite.
+10. Inspect the Git diff.
+11. Review staged changes.
+12. Commit only intended files.
 
-When modifying automation, follow the same process with the relevant automation tests.
+When modifying automation, follow the same process using the relevant automation tests.
 
 ---
 
-# 94. Troubleshooting
+# 102. Troubleshooting
 
 ## Agent tests fail
 
@@ -2530,7 +2910,7 @@ Check:
 * Runtime parameters
 * Engine execution
 
-Then run the complete suite:
+Then run:
 
 ```powershell
 python -m pytest -v
@@ -2538,11 +2918,9 @@ python -m pytest -v
 
 ---
 
-# 95. Troubleshooting Automation
+# 103. Troubleshooting Automation
 
-If an automation cannot be restored:
-
-Check:
+If an automation cannot be restored, check:
 
 * Storage file
 * Automation ID
@@ -2551,15 +2929,13 @@ Check:
 * Stored parameters
 * Manager initialization
 
-Remember that action handlers must exist in the runtime registry.
+Remember that executable action handlers must exist in the runtime registry.
 
 ---
 
-# 96. Troubleshooting Worker
+# 104. Troubleshooting Worker
 
-If the worker does not execute:
-
-Check:
+If the Worker does not execute, check:
 
 * Worker is running
 * Interval is valid
@@ -2571,46 +2947,50 @@ Check:
 
 ---
 
-# 97. Troubleshooting AI
+# 105. Troubleshooting AI
 
-If Anthropic is unavailable:
-
-Check:
+If Anthropic is unavailable, check:
 
 ```text
 AI_MODE
 ANTHROPIC_API_KEY
 ```
 
-Mock mode should remain available for development.
+Mock mode should remain available for development and testing.
 
 ---
 
-# 98. FAQ
+# 106. FAQ
 
 ## Is Ultron only a chatbot?
 
 No.
 
-Ultron is being designed as an AI assistant, automation engine, and agent platform.
+Ultron is being designed as a personal AI assistant, automation engine, and agent platform.
 
 ## Does Ultron require an API key for tests?
 
 No.
 
-Mock AI mode supports local testing.
+Mock AI mode supports local development and testing.
 
 ## Can automations survive restart?
 
 Yes.
 
-Persistent automation and schedule workflows are tested.
+Persistent automation and schedule workflows are part of the architecture.
 
 ## Does Ultron have AI agents?
 
 Yes.
 
-v0.37 introduces the first Agent Runtime foundation.
+The Agent Runtime Foundation was introduced in v0.37.
+
+## Does Ultron have Agent Tools?
+
+Yes.
+
+v0.38 introduces the dedicated Agent Tool System.
 
 ## Can agents be enabled or disabled?
 
@@ -2618,11 +2998,15 @@ Yes.
 
 The Agent model supports lifecycle controls.
 
-## Can agents execute actions?
+## Can agents execute capabilities?
 
 Yes.
 
-The Agent Engine provides controlled action execution.
+The Agent Engine provides controlled execution architecture.
+
+## Can agents use reusable tools?
+
+The v0.38 architecture introduces the foundation for reusable Agent Tools through the Tool Registry.
 
 ## Can agent parameters be overridden?
 
@@ -2630,52 +3014,55 @@ Yes.
 
 Runtime parameter overrides are supported.
 
-## Are Python action functions stored in JSON?
+## Are Python callables stored directly in JSON?
 
 No.
 
-Only serializable information is persisted.
+Persistent data should contain serializable information rather than live Python runtime objects.
 
 ## Can schedules recur?
 
 Yes.
 
-Recurring schedule persistence is tested.
+Recurring schedule persistence is supported.
 
 ---
 
-# 99. Architecture Summary
+# 107. Architecture Summary
 
 Ultron can be summarized as:
 
 ```text
-Conversation
-     |
-     v
-Context
-     |
-     v
-AI
-     |
-     v
-Commands
-     |
-     +---------------------+
-     |                     |
-     v                     v
-Automation              Agents
-     |                     |
-     v                     v
-Manager              Agent Engine
-     |                     |
-     v                     v
-Engine               Agent Registry
-     |                     |
-     v                     v
-Registry              Agent Action
-     |
-     v
-Action
+                    Conversation
+                         |
+                         v
+                      Context
+                         |
+                         v
+                         AI
+                         |
+                         v
+                     Commands
+                         |
+              +----------+----------+
+              |                     |
+              v                     v
+         Automation               Agents
+              |                     |
+              v                     v
+           Manager             Agent Engine
+              |                     |
+              v                     v
+           Engine              Agent Registry
+              |                     |
+              v                     v
+          Action Registry         Tools
+              |                     |
+              v                     v
+            Action             Tool Registry
+                                    |
+                                    v
+                                Tool Result
 ```
 
 Scheduling:
@@ -2705,9 +3092,27 @@ Runner
 Scheduler
 ```
 
+Agent Tool execution:
+
+```text
+Agent
+  |
+  v
+Tool Registry
+  |
+  v
+Tool
+  |
+  v
+Tool Result
+  |
+  v
+Agent
+```
+
 ---
 
-# 100. Engineering Priorities
+# 108. Engineering Priorities
 
 Current priorities:
 
@@ -2720,50 +3125,81 @@ Current priorities:
 7. AI capability
 8. Automation capability
 9. Agent capability
-10. Platform scalability
+10. Tool capability
+11. Platform scalability
 
 ---
 
-# 101. Future Architecture
+# 109. Future Architecture
 
 The long-term architecture may become:
 
 ```text
-                    Ultron Platform
-                          |
-       +------------------+------------------+
-       |                  |                  |
-      AI                Agents          Automation
-       |                  |                  |
-   Providers           Memory            Workflows
-       |                  |                  |
-       +------------------+------------------+
-                          |
-                     Integrations
-                          |
-                 +--------+--------+
-                 |                 |
-              Developer          Users
-                 |                 |
-                API            Workspace
+                         Ultron Platform
+                                |
+        +-----------------------+-----------------------+
+        |                       |                       |
+        v                       v                       v
+       AI                     Agents                Automation
+        |                       |                       |
+        v                       v                       v
+   Providers                Tools                  Workflows
+        |                       |                       |
+        |                    Memory                     |
+        |                       |                       |
+        +-----------------------+-----------------------+
+                                |
+                                v
+                          Integrations
+                                |
+                  +-------------+-------------+
+                  |                           |
+                  v                           v
+              Developer                    Users
+                  |                           |
+                  v                           v
+                 API                      Workspace
+                  |
+                  v
+             Marketplace
 ```
 
-The agent layer can eventually connect intelligence, memory, tools, automation, and workflows.
+The Agent layer can eventually connect:
+
+```text
+Intelligence
+     +
+Memory
+     +
+Tools
+     +
+Actions
+     +
+Automation
+     +
+Workflows
+```
+
+into a unified execution platform.
 
 ---
 
-# 102. Release Gate
+# 110. Release Gate
 
 Before every release:
 
 ```text
 [ ] Code compiles
 [ ] Focused tests pass
+[ ] Tool tests pass
+[ ] Agent tests pass
 [ ] Integration tests pass
 [ ] Full suite passes
 [ ] No credentials are committed
 [ ] No temporary files are committed
+[ ] Generated logs reviewed
 [ ] Git diff reviewed
+[ ] Staged diff reviewed
 [ ] Commit created
 [ ] Push completed
 [ ] Working tree clean
@@ -2771,91 +3207,101 @@ Before every release:
 
 ---
 
-# 103. Current Release Gate
+# 111. Current Release Gate
 
-For v0.37:
-
-```text
-Agent tests              PASS
-AI tests                 PASS
-Automation tests         PASS
-Storage tests            PASS
-Scheduler tests          PASS
-Runner tests             PASS
-Worker tests             PASS
-Persistence tests        PASS
-Full test suite          PASS
-```
-
-Final:
+For v0.38:
 
 ```text
-124/124 PASS
-0 FAILED
+Agent Architecture       PASS
+Agent Tool Architecture  PASS
+Tool Registry             PASS
+Tool Result Architecture  PASS
+AI Architecture           PASS
+Automation Architecture   PASS
+Persistence Architecture  PASS
+Documentation             PASS
 ```
+
+Final regression verification should be recorded after running the complete test suite.
 
 ---
 
-# 104. Conclusion
+# 112. Conclusion
 
-Ultron v0.37 establishes the first dedicated AI Agent Runtime foundation on top of the reliable automation architecture created in previous releases.
+Ultron v0.38 extends the Agent Runtime Foundation introduced in v0.37 with a dedicated **Agent Tool System**.
 
-The project now separates:
+The architecture now separates:
 
 ```text
-What should execute
+What the user wants
         +
-When it should execute
+How the agent reasons
         +
-How it executes
+What capability is required
         +
-How execution is monitored
+How the capability is discovered
         +
-How state is persisted
+How the capability executes
         +
-How state is restored
+What result it returns
         +
-How agents are represented
-        +
-How agents execute actions
+How the agent continues
 ```
 
-The current architecture provides a strong foundation for future:
+The new architecture introduces:
+
+```text
+Agent
+  |
+  v
+Tool
+  |
+  v
+Tool Registry
+  |
+  v
+Tool Execution
+  |
+  v
+Tool Result
+```
+
+This creates a strong foundation for future:
 
 * AI agents
 * Agent tools
 * Agent memory
+* Web capabilities
+* File capabilities
+* System capabilities
+* External integrations
 * Workflows
-* Integrations
 * Developer APIs
-* Agent marketplaces
-* Platform-level capabilities
+* Agent builders
+* Tool marketplaces
+* Platform-level automation
 
-Current verification:
+The objective is not to build autonomous complexity immediately.
 
-```text
-124 tests
-124 passed
-0 failed
-```
-
-The next releases can build on this foundation without sacrificing the reliability already established.
+The objective is to establish reliable execution primitives first.
 
 ---
 
 # Core Principle
 
-> Build it modular.
+> **Build it modular.**
 >
-> Test it thoroughly.
+> **Test it thoroughly.**
 >
-> Persist what matters.
+> **Persist what matters.**
 >
-> Keep runtime state separate.
+> **Keep runtime state separate.**
 >
-> Introduce intelligence incrementally.
+> **Give agents controlled capabilities.**
 >
-> Improve one release at a time.
+> **Introduce intelligence incrementally.**
+>
+> **Improve one release at a time.**
 
 ---
 
@@ -2867,21 +3313,48 @@ The architecture can evolve toward:
 
 ```text
 Personal AI
-     ↓
+     |
+     v
 AI Assistant
-     ↓
+     |
+     v
 Automation Engine
-     ↓
+     |
+     v
 AI Agent Runtime
-     ↓
+     |
+     v
+Agent + Tool Runtime
+     |
+     v
 Agent Platform
-     ↓
+     |
+     v
 AI Developer Platform
-     ↓
+     |
+     v
 AI Operating Layer
 ```
 
-The objective is to build a capable platform that combines AI intelligence with reliable execution.
+The ultimate objective is to build a capable software platform that combines:
+
+```text
+AI Intelligence
+      +
+Memory
+      +
+Tools
+      +
+Agents
+      +
+Automation
+      +
+Workflows
+      +
+Integrations
+```
+
+into a unified and reliable system.
 
 ---
 
@@ -2895,7 +3368,7 @@ Ultron is an independent software project under active development.
 
 # Project Status
 
-**Current Version:** v0.37
+**Current Version:** v0.38
 
 **AI Integration:** Complete foundation
 
@@ -2903,15 +3376,17 @@ Ultron is an independent software project under active development.
 
 **Agent Runtime Foundation:** Complete
 
-**Automation Testing:** Complete
+**Agent Tool System:** Introduced
 
-**Agent Testing:** Complete
+**Automation Testing:** Established
 
-**Regression Tests:** 124
+**Agent Testing:** Established
 
-**Passing Tests:** 124
+**Regression Baseline:** 124 tests
 
-**Failing Tests:** 0
+**Baseline Passing:** 124
+
+**Baseline Failing:** 0
 
 **Development Status:** Active
 
