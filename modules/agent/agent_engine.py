@@ -9,6 +9,7 @@ Responsibilities:
 - Execute registered agent actions
 - Resolve and execute agent tools
 - Enforce agent tool permissions
+- Select tools for agents
 - Manage execution context
 - Track execution results
 - Handle execution errors safely
@@ -25,6 +26,7 @@ from typing import Any, Callable, Dict, Optional
 from modules.agent.agent import Agent
 from modules.agent.tool_registry import ToolRegistry
 from modules.agent.tool_result import ToolResult
+from modules.agent.tool_selector import ToolSelector
 
 
 class AgentEngineError(Exception):
@@ -42,11 +44,14 @@ class AgentEngine:
     The engine maintains:
     - Runtime action registry
     - ToolRegistry
+    - ToolSelector
 
     An agent specifies an action name.
     The engine resolves that action to a Python callable.
 
     Agent tools are resolved through ToolRegistry.
+
+    Tool selection is delegated to ToolSelector.
     """
 
     def __init__(
@@ -64,6 +69,8 @@ class AgentEngine:
             if tool_registry is not None
             else ToolRegistry()
         )
+
+        self.tool_selector = ToolSelector()
 
     # ========================================================
     # Action Registration
@@ -263,6 +270,58 @@ class AgentEngine:
         """
 
         return self.tool_registry.list_tool_names()
+
+    # ========================================================
+    # Tool Selection
+    # ========================================================
+
+    def select_tool(
+        self,
+        agent: Agent,
+        query: str,
+    ):
+        """
+        Select an available tool for an agent.
+
+        Delegates deterministic tool selection
+        to ToolSelector.
+
+        Returns:
+            Selected AgentTool or None.
+        """
+
+        return self.tool_selector.select(
+            agent,
+            query,
+        )
+
+    def get_available_tools(
+        self,
+        agent: Agent,
+    ):
+        """
+        Return enabled tools assigned to an agent.
+
+        Delegates tool filtering to ToolSelector.
+        """
+
+        return self.tool_selector.get_available_tools(
+            agent
+        )
+
+    def get_available_tool_names(
+        self,
+        agent: Agent,
+    ) -> list[str]:
+        """
+        Return names of enabled tools assigned to an agent.
+
+        Delegates tool filtering to ToolSelector.
+        """
+
+        return self.tool_selector.get_available_tool_names(
+            agent
+        )
 
     # ========================================================
     # Agent Tool Validation

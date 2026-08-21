@@ -2,13 +2,21 @@
 
 ## A Modular Personal AI Assistant, Automation & Agent Platform
 
-![Version](https://img.shields.io/badge/version-v0.38-blue)
+![Version](https://img.shields.io/badge/version-v0.39-blue)
+
 ![Python](https://img.shields.io/badge/python-3.13%2B-yellow)
+
 ![Tests](https://img.shields.io/badge/tests-124%20passed-brightgreen)
+
 ![Status](https://img.shields.io/badge/status-active%20development-orange)
+
 ![Architecture](https://img.shields.io/badge/architecture-modular-purple)
+
 ![Agents](https://img.shields.io/badge/agents-runtime-purple)
+
 ![Tools](https://img.shields.io/badge/tools-agent%20tools-blue)
+
+![Tool Selection](https://img.shields.io/badge/tool%20selection-capability%20matching-blue)
 
 > Building a reliable, extensible, persistent AI assistant, automation engine, and agent runtime — one subsystem at a time.
 
@@ -61,73 +69,87 @@
 43. [Tool Model](#43-tool-model)
 44. [Tool Registry](#44-tool-registry)
 45. [Tool Results](#45-tool-results)
-46. [Agent Tool Execution Flow](#46-agent-tool-execution-flow)
-47. [Tool Safety and Validation](#47-tool-safety-and-validation)
-48. [Future Agent Architecture](#48-future-agent-architecture)
-49. [Testing](#49-testing)
-50. [Test Architecture](#50-test-architecture)
-51. [Agent Tests](#51-agent-tests)
-52. [AI Tests](#52-ai-tests)
-53. [Automation Tests](#53-automation-tests)
-54. [Runner Tests](#54-runner-tests)
-55. [Worker Tests](#55-worker-tests)
-56. [Storage Tests](#56-storage-tests)
-57. [Scheduler Persistence Tests](#57-scheduler-persistence-tests)
-58. [Persistence Integration Tests](#58-persistence-integration-tests)
-59. [Running Tests](#59-running-tests)
-60. [Compilation Checks](#60-compilation-checks)
-61. [Development Workflow](#61-development-workflow)
-62. [Git Workflow](#62-git-workflow)
-63. [Release Workflow](#63-release-workflow)
-64. [Security](#64-security)
-65. [API Key Handling](#65-api-key-handling)
-66. [Environment Configuration](#66-environment-configuration)
-67. [Error Handling](#67-error-handling)
-68. [Design Principles](#68-design-principles)
-69. [Extensibility](#69-extensibility)
-70. [Future Storage](#70-future-storage)
-71. [Future Scheduling](#71-future-scheduling)
-72. [Future Actions](#72-future-actions)
-73. [Future Tools](#73-future-tools)
-74. [Future Workflows](#74-future-workflows)
-75. [Future AI Agents](#75-future-ai-agents)
-76. [Future Agent Builder](#76-future-agent-builder)
-77. [Future Marketplace](#77-future-marketplace)
-78. [Future Developer API](#78-future-developer-api)
-79. [Future Workspace System](#79-future-workspace-system)
-80. [Future Billing](#80-future-billing)
-81. [Observability](#81-observability)
-82. [Audit Logging](#82-audit-logging)
-83. [Permissions](#83-permissions)
-84. [Reliability](#84-reliability)
-85. [Maintainability](#85-maintainability)
-86. [Performance](#86-performance)
-87. [Concurrency](#87-concurrency)
-88. [Testing Philosophy](#88-testing-philosophy)
-89. [Regression Protection](#89-regression-protection)
-90. [Version History](#90-version-history)
-91. [v0.31](#91-v031)
-92. [v0.34](#92-v034)
-93. [v0.35](#93-v035)
-94. [v0.36](#94-v036)
-95. [v0.37](#95-v037)
-96. [v0.38](#96-v038)
-97. [Roadmap](#97-roadmap)
-98. [Development Philosophy](#98-development-philosophy)
-99. [Why Modular Architecture](#99-why-modular-architecture)
-100. [Project Status](#100-project-status)
-101. [Developer Notes](#101-developer-notes)
-102. [Troubleshooting](#102-troubleshooting)
-103. [FAQ](#103-faq)
-104. [Architecture Summary](#104-architecture-summary)
-105. [Engineering Priorities](#105-engineering-priorities)
-106. [Future Architecture](#106-future-architecture)
-107. [Release Gate](#107-release-gate)
-108. [Current Release Gate](#108-current-release-gate)
-109. [Conclusion](#109-conclusion)
-110. [Core Principle](#core-principle)
-111. [Long-Term Vision](#long-term-vision)
-112. [Maintainer](#maintainer)
+46. [Tool Selector](#46-tool-selector)
+47. [Capability Matching](#47-capability-matching)
+48. [Agent Tool Selection Flow](#48-agent-tool-selection-flow)
+49. [Tool Selection Validation](#49-tool-selection-validation)
+50. [Agent Tool Execution Flow](#50-agent-tool-execution-flow)
+51. [Tool Safety and Validation](#51-tool-safety-and-validation)
+52. [Future Agent Architecture](#52-future-agent-architecture)
+53. [Testing](#53-testing)
+54. [Test Architecture](#54-test-architecture)
+55. [Agent Tests](#55-agent-tests)
+56. [AI Tests](#56-ai-tests)
+57. [Automation Tests](#57-automation-tests)
+58. [Tool Tests](#58-tool-tests)
+59. [Tool Registry Tests](#59-tool-registry-tests)
+60. [Tool Selector Tests](#60-tool-selector-tests)
+61. [Agent Tool Integration Tests](#61-agent-tool-integration-tests)
+62. [Runner Tests](#62-runner-tests)
+63. [Worker Tests](#63-worker-tests)
+64. [Storage Tests](#64-storage-tests)
+65. [Scheduler Persistence Tests](#65-scheduler-persistence-tests)
+66. [Persistence Integration Tests](#66-persistence-integration-tests)
+67. [Running Tests](#67-running-tests)
+68. [Compilation Checks](#68-compilation-checks)
+69. [Development Workflow](#69-development-workflow)
+70. [Git Workflow](#70-git-workflow)
+71. [Release Workflow](#71-release-workflow)
+72. [Security](#72-security)
+73. [API Key Handling](#73-api-key-handling)
+74. [Environment Configuration](#74-environment-configuration)
+75. [Error Handling](#75-error-handling)
+76. [Design Principles](#76-design-principles)
+77. [Extensibility](#77-extensibility)
+78. [Future Storage](#78-future-storage)
+79. [Future Scheduling](#79-future-scheduling)
+80. [Future Actions](#80-future-actions)
+81. [Future Tools](#81-future-tools)
+82. [Future Tool Selection](#82-future-tool-selection)
+83. [Future Workflows](#83-future-workflows)
+84. [Future AI Agents](#84-future-ai-agents)
+85. [Future Agent Builder](#85-future-agent-builder)
+86. [Future Marketplace](#86-future-marketplace)
+87. [Future Developer API](#87-future-developer-api)
+88. [Future Workspace System](#88-future-workspace-system)
+89. [Future Billing](#89-future-billing)
+90. [Observability](#90-observability)
+91. [Audit Logging](#91-audit-logging)
+92. [Permissions](#92-permissions)
+93. [Reliability](#93-reliability)
+94. [Maintainability](#94-maintainability)
+95. [Performance](#95-performance)
+96. [Concurrency](#96-concurrency)
+97. [Testing Philosophy](#97-testing-philosophy)
+98. [Regression Protection](#98-regression-protection)
+99. [Version History](#99-version-history)
+100. [v0.31](#100-v031)
+101. [v0.34](#101-v034)
+102. [v0.35](#102-v035)
+103. [v0.36](#103-v036)
+104. [v0.37](#104-v037)
+105. [v0.38](#105-v038)
+106. [v0.39](#106-v039)
+107. [Roadmap](#107-roadmap)
+108. [Development Philosophy](#108-development-philosophy)
+109. [Why Modular Architecture](#109-why-modular-architecture)
+110. [Project Status](#110-project-status)
+111. [Developer Notes](#111-developer-notes)
+112. [Troubleshooting](#112-troubleshooting)
+113. [Troubleshooting Automation](#113-troubleshooting-automation)
+114. [Troubleshooting Worker](#114-troubleshooting-worker)
+115. [Troubleshooting AI](#115-troubleshooting-ai)
+116. [Troubleshooting Agent Tools](#116-troubleshooting-agent-tools)
+117. [FAQ](#117-faq)
+118. [Architecture Summary](#118-architecture-summary)
+119. [Engineering Priorities](#119-engineering-priorities)
+120. [Future Architecture](#120-future-architecture)
+121. [Release Gate](#121-release-gate)
+122. [Current Release Gate](#122-current-release-gate)
+123. [Conclusion](#123-conclusion)
+124. [Core Principle](#core-principle)
+125. [Long-Term Vision](#long-term-vision)
+126. [Maintainer](#maintainer)
 
 ---
 
@@ -157,6 +179,8 @@ Major subsystems include:
 * Agent execution engine
 * Agent tools
 * Tool registry
+* Tool selection
+* Capability matching
 * Structured tool results
 * Testing infrastructure
 
@@ -174,6 +198,8 @@ The long-term vision of Ultron is to create an intelligent software system capab
 * Maintaining useful memory
 * Understanding context
 * Executing actions
+* Discovering capabilities
+* Selecting appropriate tools
 * Using tools
 * Automating repetitive tasks
 * Running AI agents
@@ -212,50 +238,93 @@ Features are introduced in controlled releases and tested before becoming part o
 
 # 4. Current Release
 
-## v0.38
+## v0.39
 
-Ultron v0.38 introduces the **Agent Tool System** on top of the Agent Runtime Foundation established in v0.37.
+Ultron v0.39 extends the **Agent Tool System** introduced in v0.38 with a dedicated **Tool Selector architecture**.
 
-The release expands the agent architecture with dedicated tool abstractions.
+The release introduces the capability-selection layer between the Agent Runtime and the Tool Registry.
 
-### v0.38 introduces
+### v0.39 introduces
 
-* Agent Tool model
-* Tool registration
-* Tool lookup
-* Tool registry
-* Tool execution boundaries
-* Structured tool results
-* Tool-related validation
-* Agent-to-tool architecture
-* Tool-ready agent execution
-* Modular tool infrastructure
+* Tool Selector
+* Tool discovery
+* Capability-based tool selection
+* Tool matching
+* Tool resolution
+* Agent-to-tool selection architecture
+* Agent Engine integration
+* Tool selection validation
+* Tool selection testing
+* Modular capability resolution
+* Reusable tool selection infrastructure
 
 The Agent Runtime now moves from:
 
 ```text
 Agent
+
   |
+
   v
-Agent Action
+
+Tool
+
+  |
+
+  v
+
+Tool Registry
+
+  |
+
+  v
+
+Tool Result
 ```
 
 toward:
 
 ```text
 Agent
+
   |
+
   v
-Tool
+
+Required Capability
+
   |
+
   v
+
+Tool Selector
+
+  |
+
+  v
+
 Tool Registry
+
   |
+
   v
+
+Tool
+
+  |
+
+  v
+
 Tool Result
+
+  |
+
+  v
+
+Agent Observation
 ```
 
-This creates the architectural foundation required for future tool-using AI agents.
+This creates the architectural foundation required for intelligent tool-using AI agents.
 
 The automation subsystem from previous releases remains part of the platform architecture.
 
@@ -263,37 +332,37 @@ The automation subsystem from previous releases remains part of the platform arc
 
 # 5. Release Highlights
 
-## v0.38 Highlights
+## v0.39 Highlights
 
-### Agent Tool System
+### Tool Selector
 
-Ultron now contains a dedicated tool subsystem for AI agents.
+Ultron now contains a dedicated Tool Selector responsible for resolving the capability required by an agent.
 
-### Tool Model
+### Capability Matching
 
-Tools have their own representation and execution contract.
+The architecture introduces a layer for matching an agent's required capability with registered tools.
 
-### Tool Registry
+### Tool Discovery
 
-Tools can be centrally registered and discovered by the runtime.
+The Agent Runtime can use the Tool Selector to discover available capabilities through the Tool Registry.
 
-### Tool Results
+### Agent Engine Integration
 
-Tool execution can produce structured results rather than relying only on raw return values.
+The Agent Engine is now architecturally prepared to use the Tool Selection layer before tool execution.
 
-### Agent Integration
+### Modular Tool Selection
 
-The agent runtime is now architecturally prepared to work with reusable tools.
+Tool selection is separated from the Agent model and Tool Registry.
 
-### Modular Tool Architecture
+This prevents tool-selection logic from becoming tightly coupled to individual agents.
 
-Tools are separated from the Agent model and Agent Registry.
+### Reusable Capabilities
 
-This prevents the agent system from becoming tightly coupled to individual capabilities.
+Multiple agents can eventually use the same registered tools through centralized discovery and selection.
 
 ### Future-Ready Foundation
 
-The new tool layer prepares Ultron for:
+The new selection layer prepares Ultron for:
 
 * Web tools
 * File tools
@@ -303,6 +372,8 @@ The new tool layer prepares Ultron for:
 * Data tools
 * AI tools
 * Developer-defined tools
+* Tool prioritization
+* Permission-aware tool selection
 
 ---
 
@@ -372,7 +443,10 @@ The new tool layer prepares Ultron for:
 * Tool execution
 * Structured results
 * Tool validation
-* Agent-tool integration foundation
+* Tool selection
+* Capability matching
+* Tool resolution
+* Agent-tool integration
 
 ---
 
@@ -382,44 +456,89 @@ Ultron follows a layered modular architecture.
 
 ```text
                            User
-                             |
-                             v
+
+                            |
+
+                            v
+
                     Conversation Layer
-                             |
-                             v
+
+                            |
+
+                            v
+
                  Intent / Context / Session
-                             |
-                             v
-                        AI Engine
-                             |
-                +------------+------------+
-                |                         |
-                v                         v
-          Mock Provider            Anthropic Provider
-                |                         |
-                +------------+------------+
-                             |
-                             v
+
+                            |
+
+                            v
+
+                       AI Engine
+
+                            |
+
+               +------------+------------+
+
+               |                         |
+
+               v                         v
+
+         Mock Provider           Anthropic Provider
+
+               |                         |
+
+               +------------+------------+
+
+                            |
+
+                            v
+
                    Commands / Agents
-                             |
-                +------------+------------+
-                |                         |
-                v                         v
-          Agent Runtime              Automation
-                |                         |
-                v                         v
+
+                            |
+
+               +------------+------------+
+
+               |                         |
+
+               v                         v
+
+          Agent Runtime             Automation
+
+               |                         |
+
+               v                         v
+
           Agent Engine           Automation Manager
-                |                         |
-                v                         v
-         Agent Registry         Automation Engine
-                |                         |
-                v                         v
-             Tools                Action Registry
-                |                         |
-                v                         v
-         Tool Registry             Action Handler
-                |
-                v
+
+               |                         |
+
+               v                         v
+
+         Agent Registry          Automation Engine
+
+               |                         |
+
+               v                         v
+
+          Tool Selector          Action Registry
+
+               |
+
+               v
+
+          Tool Registry
+
+               |
+
+               v
+
+              Tool
+
+               |
+
+               v
+
           Tool Result
 ```
 
@@ -427,17 +546,35 @@ The architecture separates:
 
 ```text
 Understanding
+
      |
+
      v
+
 Decision
+
      |
+
      v
+
+Capability Selection
+
+     |
+
+     v
+
 Execution
+
      |
+
      v
+
 Result
+
      |
+
      v
+
 Persistence / Context
 ```
 
@@ -449,65 +586,132 @@ The current project structure is organized around modular subsystems.
 
 ```text
 Ultron/
+
 │
+
 ├── main.py
+
 │
+
 ├── core/
+
 │   ├── ai_client.py
+
 │   ├── ai_engine.py
+
 │   ├── commands.py
+
 │   ├── config.py
+
 │   ├── conversation.py
+
 │   ├── natural_language.py
+
 │   └── session_state.py
+
 │
+
 ├── modules/
+
 │   │
+
 │   ├── automation/
+
 │   │   ├── actions.py
+
 │   │   ├── engine.py
+
 │   │   ├── manager.py
+
 │   │   ├── runner.py
+
 │   │   ├── scheduler.py
+
 │   │   ├── storage.py
+
 │   │   └── worker.py
+
 │   │
+
 │   └── agent/
+
 │       ├── __init__.py
+
 │       ├── agent.py
+
 │       ├── agent_engine.py
+
 │       ├── agent_registry.py
+
 │       ├── tool.py
+
 │       ├── tool_registry.py
-│       └── tool_result.py
+
+│       ├── tool_result.py
+
+│       └── tool_selector.py
+
 │
+
 ├── tests/
+
 │   ├── test_ai.py
+
 │   ├── test_agent.py
+
+│   ├── test_agent_engine_tools.py
+
+│   ├── test_agent_tool_selector_integration.py
+
+│   ├── test_agent_tools.py
+
 │   ├── test_automation.py
+
 │   ├── test_automation_runner.py
+
 │   ├── test_automation_worker.py
+
 │   ├── test_automation_storage.py
+
 │   ├── test_automation_scheduler_storage.py
-│   └── test_automation_persistence_integration.py
+
+│   ├── test_automation_persistence_integration.py
+
+│   ├── test_tool_registry.py
+
+│   └── test_tool_selector.py
+
 │
+
 ├── data/
+
 │
+
 ├── assets/
+
 │
+
 ├── README.md
+
 │
+
 └── .env
 ```
 
-The Agent subsystem now has three dedicated tool-related modules:
+The Agent subsystem now contains dedicated tool and tool-selection modules:
 
 ```text
 modules/agent/
+
 │
+
 ├── tool.py
+
 ├── tool_registry.py
-└── tool_result.py
+
+├── tool_result.py
+
+└── tool_selector.py
 ```
 
 ---
@@ -536,9 +740,13 @@ The current provider architecture is:
 
 ```text
 AI Engine
+
     |
+
     +---- Mock Provider
+
     |
+
     +---- Anthropic Provider
 ```
 
@@ -676,14 +884,23 @@ A goal can conceptually move through:
 
 ```text
 Goal Started
+
      |
+
      v
+
 Goal Progress
+
      |
+
      v
+
 Goal Updated
+
      |
+
      v
+
 Goal Completed
 ```
 
@@ -742,20 +959,35 @@ The architecture is divided into:
 
 ```text
 Manager
+
    |
+
    v
+
 Engine
+
    |
+
    v
+
 Scheduler
+
    |
+
    v
+
 Runner
+
    |
+
    v
+
 Worker
+
    |
+
    v
+
 Storage
 ```
 
@@ -851,14 +1083,23 @@ The AutomationRunner connects scheduling and execution.
 
 ```text
 Scheduler
+
     |
+
     v
+
 Due Schedule
+
     |
+
     v
+
 Automation ID
+
     |
+
     v
+
 Automation Engine
 ```
 
@@ -874,14 +1115,23 @@ The Worker performs periodic background checks.
 
 ```text
 Worker
+
    |
+
    v
+
 run_once()
+
    |
+
    v
+
 Runner
+
    |
+
    v
+
 Due Schedules
 ```
 
@@ -891,8 +1141,11 @@ Supported lifecycle concepts include:
 
 ```text
 start()
+
 stop()
+
 run_once()
+
 status()
 ```
 
@@ -927,29 +1180,47 @@ The automation persistence architecture is:
 
 ```text
 Automation Manager
+
         |
+
         v
+
 Automation Engine
+
         |
+
         v
+
 Action Registry
+
         |
+
         v
+
 Action Handler
 
 
 Automation Scheduler
+
         |
+
         v
+
 Automation Storage
 
 
 Automation Worker
+
         |
+
         v
+
 Automation Runner
+
         |
+
         v
+
 Automation Engine
 ```
 
@@ -963,20 +1234,35 @@ The restart recovery flow is:
 
 ```text
 Runtime
+
    |
+
    v
+
 Storage
+
    |
+
    v
+
 Application Restart
+
    |
+
    v
+
 New Manager
+
    |
+
    v
+
 New Engine
+
    |
+
    v
+
 Restore
 ```
 
@@ -1023,18 +1309,47 @@ The current structure is:
 
 ```text
 Agent
+
    |
+
    v
+
 Agent Registry
+
    |
+
    v
+
 Agent Engine
+
    |
+
    v
-Agent Tool / Action
+
+Tool Selection
+
+   |
+
+   v
+
+Tool Registry
+
+   |
+
+   v
+
+Tool
+
+   |
+
+   v
+
+Tool Result
 ```
 
-The v0.38 release expands this architecture with a dedicated Tool System.
+The v0.38 release introduced the dedicated Tool System.
+
+The v0.39 release adds the Tool Selector layer for capability resolution.
 
 ---
 
@@ -1091,16 +1406,27 @@ Conceptually:
 
 ```text
 Agent
+
   |
+
   v
+
 AgentRegistry
+
   |
+
   +---- get()
+
   +---- require()
+
   +---- list()
+
   +---- remove()
+
   +---- replace()
+
   +---- restore()
+
   +---- export_all()
 ```
 
@@ -1131,24 +1457,49 @@ Responsibilities include:
 * Safe execution
 * Agent validation
 * Invalid action handling
+* Tool selection integration
 * Tool-ready execution architecture
 
 The execution model is:
 
 ```text
 Agent
+
   |
+
   v
+
 Agent Engine
+
   |
+
   v
-Capability Lookup
+
+Capability Requirement
+
   |
+
   v
-Execution
+
+Tool Selector
+
   |
+
   v
-Result
+
+Tool Registry
+
+  |
+
+  v
+
+Tool
+
+  |
+
+  v
+
+Tool Result
 ```
 
 ---
@@ -1159,21 +1510,37 @@ Agents support explicit lifecycle control.
 
 ```text
 Created
+
    |
+
    v
+
 Validated
+
    |
+
    v
+
 Registered
+
    |
+
    v
+
 Enabled
+
    |
+
    v
+
 Executed
+
    |
+
    +----> Disabled
+
    |
+
    +----> Enabled
 ```
 
@@ -1187,26 +1554,59 @@ A controlled agent execution path is:
 
 ```text
 Agent ID
+
    |
+
    v
+
 Find Agent
+
    |
+
    v
+
 Validate Agent
+
    |
+
    v
+
 Check Status
+
    |
+
    v
-Resolve Capability
+
+Determine Capability
+
    |
+
    v
+
+Select Tool
+
+   |
+
+   v
+
+Resolve Tool
+
+   |
+
+   v
+
 Apply Parameters
+
    |
+
    v
+
 Execute
+
    |
+
    v
+
 Return Result
 ```
 
@@ -1226,7 +1626,9 @@ Explicit validation boundaries allow callers to distinguish:
 
 ```text
 Invalid Definition
+
         vs
+
 Execution Failure
 ```
 
@@ -1249,9 +1651,13 @@ Future lifecycle states may include:
 
 ```text
 ACTIVE
+
 DISABLED
+
 PAUSED
+
 ERROR
+
 ARCHIVED
 ```
 
@@ -1267,17 +1673,29 @@ Agents can be represented as dictionaries and restored from dictionary data.
 
 ```text
 Agent
+
   |
+
   v
+
 to_dict()
+
   |
+
   v
+
 Persistent Data
+
   |
+
   v
+
 from_dict()
+
   |
+
   v
+
 Agent
 ```
 
@@ -1289,7 +1707,7 @@ The Registry remains intentionally in-memory so persistence concerns do not prem
 
 ## v0.38 Tool Runtime Foundation
 
-Ultron v0.38 introduces a dedicated **Agent Tool System**.
+Ultron v0.38 introduced a dedicated **Agent Tool System**.
 
 Tools are treated as reusable capabilities that can eventually be selected and executed by agents.
 
@@ -1297,23 +1715,35 @@ The architecture separates:
 
 ```text
 Agent
+
    |
+
    v
+
 Tool
+
    |
+
    v
+
 Tool Registry
+
    |
+
    v
+
 Tool Execution
+
    |
+
    v
+
 Tool Result
 ```
 
-This is an important architectural step toward tool-using AI agents.
+The v0.39 release extends this system with a dedicated Tool Selector.
 
-Instead of hard-coding every capability directly into an agent, capabilities can eventually become independently registered tools.
+Instead of an agent needing to directly resolve a specific tool, the architecture can now introduce a capability-selection layer.
 
 ---
 
@@ -1340,17 +1770,25 @@ Potential tool categories include:
 
 ```text
 Web Tool
+
 File Tool
+
 System Tool
+
 Search Tool
+
 API Tool
+
 Data Tool
+
 AI Tool
+
 Automation Tool
+
 Developer Tool
 ```
 
-The v0.38 architecture establishes the foundation without prematurely coupling tools to specific external services.
+The v0.39 architecture adds selection infrastructure without prematurely coupling tools to specific external services.
 
 ---
 
@@ -1370,14 +1808,23 @@ Conceptually:
 
 ```text
 Tool
+
   |
+
   v
+
 Tool Registry
+
   |
+
   +---- Register
+
   +---- Lookup
+
   +---- List
+
   +---- Remove
+
   +---- Resolve
 ```
 
@@ -1389,14 +1836,22 @@ Example future architecture:
 
 ```text
                 Tool Registry
+
                /      |       \
+
               /       |        \
+
              v        v         v
-          Agent A   Agent B   Agent C
-             |        |         |
-             +--------+---------+
-                      |
-                 Shared Tools
+
+         Agent A   Agent B   Agent C
+
+             |       |         |
+
+             +-------+---------+
+
+                     |
+
+                Shared Tools
 ```
 
 This is an important foundation for reusable agent capabilities.
@@ -1427,13 +1882,21 @@ Conceptually:
 
 ```text
 Tool Execution
+
       |
+
       v
+
 Tool Result
+
       |
+
  +----+----+
+
  |         |
+
  v         v
+
 Success   Failure
 ```
 
@@ -1441,44 +1904,210 @@ Structured results make it easier for future agents to understand what happened 
 
 ---
 
-# 46. Agent Tool Execution Flow
+# 46. Tool Selector
 
-The long-term tool execution flow is:
+## v0.39 Tool Selection Architecture
+
+Ultron v0.39 introduces the **Tool Selector** as the capability-resolution layer of the Agent Runtime.
+
+Location:
+
+```text
+modules/agent/tool_selector.py
+```
+
+The Tool Selector is responsible for helping the Agent Runtime determine which registered tool best matches a required capability.
+
+The architecture separates:
+
+* Agent reasoning
+* Capability identification
+* Tool selection
+* Tool registry lookup
+* Tool execution
+* Tool result handling
+
+Conceptually:
+
+```text
+Agent
+
+  |
+
+  v
+
+Required Capability
+
+  |
+
+  v
+
+Tool Selector
+
+  |
+
+  v
+
+Matching Tool
+
+  |
+
+  v
+
+Tool Registry
+
+  |
+
+  v
+
+Tool
+
+  |
+
+  v
+
+Tool Result
+```
+
+This prevents tool-selection logic from being embedded directly into individual agents.
+
+The Tool Selector creates a reusable capability-resolution boundary.
+
+---
+
+# 47. Capability Matching
+
+Capability matching allows the Agent Runtime to identify tools based on the capability required to complete a task.
+
+The conceptual flow is:
+
+```text
+Required Capability
+
+        |
+
+        v
+
+Available Tools
+
+        |
+
+        v
+
+Capability Matching
+
+        |
+
+        v
+
+Matching Tool
+
+        |
+
+        v
+
+Execution
+```
+
+A capability may conceptually represent requirements such as:
+
+```text
+search
+
+file_read
+
+file_write
+
+web_request
+
+database_query
+
+send_message
+
+calendar_action
+
+data_analysis
+```
+
+The exact capability model can evolve as the Tool System becomes more sophisticated.
+
+The important architectural principle is that capability resolution remains separate from tool execution.
+
+---
+
+# 48. Agent Tool Selection Flow
+
+The v0.39 Tool Selection flow is:
 
 ```text
 User Goal
+
     |
+
     v
+
 Agent
+
     |
+
     v
+
 Determine Required Capability
+
     |
+
     v
+
+Tool Selector
+
+    |
+
+    v
+
+Match Available Tools
+
+    |
+
+    v
+
+Select Tool
+
+    |
+
+    v
+
 Tool Registry
+
     |
+
     v
+
 Resolve Tool
+
     |
+
     v
-Validate Tool Input
-    |
-    v
+
 Execute Tool
+
     |
+
     v
+
 Tool Result
+
     |
+
     v
+
 Agent Observation
-    |
-    v
-Next Decision
 ```
 
-This architecture is intentionally designed so that reasoning and execution remain separate.
+This architecture establishes the missing selection layer between agent reasoning and tool execution.
 
-The Agent decides what capability is needed.
+The Agent decides what capability is required.
+
+The Tool Selector resolves the appropriate registered capability.
 
 The Tool performs the capability.
 
@@ -1486,7 +2115,155 @@ The ToolResult communicates the outcome.
 
 ---
 
-# 47. Tool Safety and Validation
+# 49. Tool Selection Validation
+
+Tool selection requires explicit validation boundaries.
+
+Potential validation stages include:
+
+```text
+Capability Requirement
+
+        |
+
+        v
+
+Selector Validation
+
+        |
+
+        v
+
+Tool Availability
+
+        |
+
+        v
+
+Tool Compatibility
+
+        |
+
+        v
+
+Tool Resolution
+
+        |
+
+        v
+
+Execution
+```
+
+The system should distinguish:
+
+```text
+Invalid Capability
+
+        vs
+
+No Matching Tool
+
+        vs
+
+Invalid Tool
+
+        vs
+
+Tool Execution Failure
+```
+
+This improves debugging and provides a cleaner foundation for future agent reasoning.
+
+---
+
+# 50. Agent Tool Execution Flow
+
+The long-term tool execution flow is:
+
+```text
+User Goal
+
+    |
+
+    v
+
+Agent
+
+    |
+
+    v
+
+Determine Required Capability
+
+    |
+
+    v
+
+Tool Selector
+
+    |
+
+    v
+
+Select Matching Tool
+
+    |
+
+    v
+
+Tool Registry
+
+    |
+
+    v
+
+Resolve Tool
+
+    |
+
+    v
+
+Validate Tool Input
+
+    |
+
+    v
+
+Execute Tool
+
+    |
+
+    v
+
+Tool Result
+
+    |
+
+    v
+
+Agent Observation
+
+    |
+
+    v
+
+Next Decision
+```
+
+This architecture is intentionally designed so that reasoning and execution remain separate.
+
+The Agent determines the requirement.
+
+The Tool Selector determines the appropriate capability.
+
+The Tool performs the capability.
+
+The ToolResult communicates the outcome.
+
+---
+
+# 51. Tool Safety and Validation
 
 Tools can eventually provide powerful system capabilities.
 
@@ -1496,17 +2273,35 @@ Potential validation layers include:
 
 ```text
 Tool Definition
+
       |
+
       v
+
 Input Validation
+
       |
+
       v
+
 Permission Check
+
       |
+
       v
+
+Tool Selection
+
+      |
+
+      v
+
 Execution
+
       |
+
       v
+
 Result Validation
 ```
 
@@ -1519,45 +2314,75 @@ Future production tools may require explicit permissions for:
 * Account actions
 * Sensitive operations
 
-The current v0.38 release establishes the architectural boundary before introducing more powerful capabilities.
+The current v0.39 release establishes the selection and resolution boundary before introducing more powerful capabilities.
 
 ---
 
-# 48. Future Agent Architecture
+# 52. Future Agent Architecture
 
 The long-term agent architecture can evolve toward:
 
 ```text
 User Goal
+
     |
+
     v
+
 Agent
+
     |
+
     v
+
 Reasoning
+
     |
+
     v
+
 Planning
+
     |
+
     v
+
 Tool Selection
+
     |
+
     v
+
 Tool Registry
+
     |
+
     v
+
 Tool Execution
+
     |
+
     v
+
 Tool Result
+
     |
+
     v
+
 Observation
+
     |
+
     v
+
 Memory
+
     |
+
     v
+
 Next Step
 ```
 
@@ -1565,6 +2390,7 @@ Eventually an agent may be able to:
 
 * Understand a goal
 * Create a plan
+* Identify required capabilities
 * Select tools
 * Execute tools
 * Observe results
@@ -1579,43 +2405,74 @@ These capabilities will be introduced incrementally.
 
 ---
 
-# 49. Testing
+# 53. Testing
 
 Ultron uses `pytest`.
 
-The existing regression baseline contains:
+The established regression baseline contains:
 
 ```text
 124 passed
+
 0 failed
 ```
 
-The v0.38 Agent Tool System expands the runtime architecture and should be verified through focused tests and the complete regression suite before release completion.
+The v0.39 Agent Tool Selection architecture expands the runtime and should be verified through focused tests and the complete regression suite before release completion.
+
+Testing now covers:
+
+* Agent behavior
+* Tool behavior
+* Tool Registry behavior
+* Tool Selector behavior
+* Agent Engine tool integration
+* Tool selection integration
 
 ---
 
-# 50. Test Architecture
+# 54. Test Architecture
 
 Tests are organized around major subsystems.
 
 ```text
 AI
+
  |
+
  +---- Provider Tests
 
+
 Agents
+
  |
+
  +---- Agent Tests
+
  +---- Tool Tests
 
+ +---- Tool Registry Tests
+
+ +---- Tool Selector Tests
+
+ +---- Agent Tool Integration Tests
+
+
 Automation
+
  |
+
  +---- Engine Tests
+
  +---- Manager Tests
+
  +---- Runner Tests
+
  +---- Worker Tests
+
  +---- Storage Tests
+
  +---- Scheduler Tests
+
  +---- Persistence Tests
 ```
 
@@ -1623,7 +2480,7 @@ This organization makes subsystem failures easier to isolate.
 
 ---
 
-# 51. Agent Tests
+# 55. Agent Tests
 
 Agent tests cover behaviors such as:
 
@@ -1653,16 +2510,17 @@ Agent tests cover behaviors such as:
 * Invalid agents
 * Invalid handlers
 
-The existing agent regression baseline contains:
+The established agent regression baseline contains:
 
 ```text
 29 passed
+
 0 failed
 ```
 
 ---
 
-# 52. AI Tests
+# 56. AI Tests
 
 AI tests verify:
 
@@ -1677,7 +2535,7 @@ AI tests verify:
 
 ---
 
-# 53. Automation Tests
+# 57. Automation Tests
 
 Automation tests verify:
 
@@ -1697,7 +2555,121 @@ Automation tests verify:
 
 ---
 
-# 54. Runner Tests
+# 58. Tool Tests
+
+Tool tests verify the Agent Tool subsystem.
+
+The test architecture covers:
+
+* Tool creation
+* Tool validation
+* Tool identity
+* Tool execution behavior
+* Tool parameters
+* Tool result handling
+* Tool success behavior
+* Tool failure behavior
+* Invalid tool definitions
+* Tool execution boundaries
+
+The goal is to ensure tools remain independently testable from agents.
+
+---
+
+# 59. Tool Registry Tests
+
+Tool Registry tests verify:
+
+* Tool registration
+* Tool lookup
+* Tool listing
+* Tool existence
+* Tool removal
+* Tool replacement
+* Tool resolution
+* Invalid tool handling
+* Registry isolation
+* Shared tool access
+
+The registry remains independent from individual Agent instances.
+
+---
+
+# 60. Tool Selector Tests
+
+Tool Selector tests verify:
+
+* Tool Selector initialization
+* Tool discovery
+* Capability matching
+* Matching registered tools
+* Tool resolution
+* No-match behavior
+* Invalid capability handling
+* Multiple available tools
+* Selection behavior
+* Selection failure handling
+* Registry integration
+
+The Tool Selector tests protect the capability-resolution boundary introduced in v0.39.
+
+---
+
+# 61. Agent Tool Integration Tests
+
+Agent Tool integration tests verify the connection between the Agent Engine and Tool Selection architecture.
+
+The integration flow is:
+
+```text
+Agent
+
+  |
+
+  v
+
+Agent Engine
+
+  |
+
+  v
+
+Tool Selector
+
+  |
+
+  v
+
+Tool Registry
+
+  |
+
+  v
+
+Tool
+
+  |
+
+  v
+
+Tool Result
+```
+
+Integration tests verify:
+
+* Agent-to-tool selection
+* Tool Selector integration
+* Tool Registry integration
+* Selected tool execution
+* Tool result propagation
+* Tool selection failures
+* Unknown tools
+* Invalid capabilities
+* Agent Engine error handling
+
+---
+
+# 62. Runner Tests
 
 Runner tests verify:
 
@@ -1714,7 +2686,7 @@ Runner tests verify:
 
 ---
 
-# 55. Worker Tests
+# 63. Worker Tests
 
 Worker tests verify:
 
@@ -1732,7 +2704,7 @@ Worker tests verify:
 
 ---
 
-# 56. Storage Tests
+# 64. Storage Tests
 
 Storage tests verify:
 
@@ -1754,7 +2726,7 @@ Storage tests verify:
 
 ---
 
-# 57. Scheduler Persistence Tests
+# 65. Scheduler Persistence Tests
 
 The scheduler persistence suite verifies:
 
@@ -1771,23 +2743,35 @@ The scheduler persistence suite verifies:
 
 ---
 
-# 58. Persistence Integration Tests
+# 66. Persistence Integration Tests
 
 The integration suite verifies complete lifecycle behavior.
 
 ```text
 Create
+
   |
+
   v
+
 Persist
+
   |
+
   v
+
 Restart Simulation
+
   |
+
   v
+
 Restore
+
   |
+
   v
+
 Execute
 ```
 
@@ -1795,14 +2779,23 @@ Recurring workflows follow:
 
 ```text
 Recurring Schedule
+
       |
+
       v
+
 Execute
+
       |
+
       v
+
 Persist
+
       |
+
       v
+
 Restore
 ```
 
@@ -1810,23 +2803,35 @@ Worker recovery follows:
 
 ```text
 Persisted Schedule
+
       |
+
       v
+
 New Worker
+
       |
+
       v
+
 Runner
+
       |
+
       v
+
 Restored Engine
+
       |
+
       v
+
 Execution
 ```
 
 ---
 
-# 59. Running Tests
+# 67. Running Tests
 
 Run the complete suite:
 
@@ -1838,6 +2843,36 @@ Run agent tests:
 
 ```powershell
 python -m pytest tests\test_agent.py -v
+```
+
+Run agent engine tool tests:
+
+```powershell
+python -m pytest tests\test_agent_engine_tools.py -v
+```
+
+Run agent tool tests:
+
+```powershell
+python -m pytest tests\test_agent_tools.py -v
+```
+
+Run tool registry tests:
+
+```powershell
+python -m pytest tests\test_tool_registry.py -v
+```
+
+Run tool selector tests:
+
+```powershell
+python -m pytest tests\test_tool_selector.py -v
+```
+
+Run agent tool selector integration tests:
+
+```powershell
+python -m pytest tests\test_agent_tool_selector_integration.py -v
 ```
 
 Run automation tests:
@@ -1878,7 +2913,7 @@ python -m pytest tests\test_automation_persistence_integration.py -v
 
 ---
 
-# 60. Compilation Checks
+# 68. Compilation Checks
 
 Individual modules can be checked using:
 
@@ -1902,34 +2937,51 @@ python -m py_compile modules\agent\tool_registry.py
 python -m py_compile modules\agent\tool_result.py
 ```
 
+```powershell
+python -m py_compile modules\agent\tool_selector.py
+```
+
 Compilation checks should be performed before the full test suite when introducing large architectural changes.
 
 ---
 
-# 61. Development Workflow
+# 69. Development Workflow
 
 Recommended workflow:
 
 ```text
 1. Understand requirement
+
 2. Inspect existing architecture
+
 3. Modify smallest necessary component
+
 4. Compile
+
 5. Run focused tests
+
 6. Fix failures
+
 7. Run integration tests
+
 8. Run complete suite
+
 9. Inspect git diff
+
 10. Stage intended files
+
 11. Review staged diff
+
 12. Commit
+
 13. Push
+
 14. Verify clean status
 ```
 
 ---
 
-# 62. Git Workflow
+# 70. Git Workflow
 
 Check status:
 
@@ -1958,7 +3010,7 @@ git add .
 Commit:
 
 ```powershell
-git commit -m "Release v0.38 - Agent Tool System"
+git commit -m "Release v0.39 - Agent Tool Selection"
 ```
 
 Push:
@@ -1975,38 +3027,65 @@ git status
 
 ---
 
-# 63. Release Workflow
+# 71. Release Workflow
 
 Every release should follow:
 
 ```text
 Implementation
+
       |
+
       v
+
 Compilation
+
       |
+
       v
+
 Focused Tests
+
       |
+
       v
+
 Integration Tests
+
       |
+
       v
+
 Full Test Suite
+
       |
+
       v
+
 Git Diff Review
+
       |
+
       v
+
 Staged Diff Review
+
       |
+
       v
+
 Commit
+
       |
+
       v
+
 Push
+
       |
+
       v
+
 Clean Working Tree
 ```
 
@@ -2014,7 +3093,7 @@ A release should not be considered complete until the complete regression suite 
 
 ---
 
-# 64. Security
+# 72. Security
 
 Security is an architectural requirement.
 
@@ -2039,7 +3118,7 @@ The `.env` file should remain excluded through `.gitignore`.
 
 ---
 
-# 65. API Key Handling
+# 73. API Key Handling
 
 AI API keys should be loaded through environment variables.
 
@@ -2059,7 +3138,7 @@ Never place real credentials inside:
 
 ---
 
-# 66. Environment Configuration
+# 74. Environment Configuration
 
 AI behavior can be controlled through environment configuration.
 
@@ -2079,7 +3158,7 @@ Production configuration should remain environment-specific.
 
 ---
 
-# 67. Error Handling
+# 75. Error Handling
 
 Ultron uses subsystem-specific error boundaries.
 
@@ -2087,19 +3166,31 @@ Automation includes concepts such as:
 
 ```text
 AutomationError
+
 AutomationValidationError
+
 AutomationExecutionError
 ```
 
 Agent functionality maintains explicit validation and execution boundaries.
 
+Tool functionality also maintains explicit selection and execution boundaries.
+
 The architecture distinguishes:
 
 ```text
 Configuration Error
+
        vs
+
 Validation Error
+
        vs
+
+Selection Error
+
+       vs
+
 Execution Error
 ```
 
@@ -2107,7 +3198,7 @@ This improves debugging and reliability.
 
 ---
 
-# 68. Design Principles
+# 76. Design Principles
 
 ## Single Responsibility
 
@@ -2125,6 +3216,8 @@ Agent definitions should remain separate from execution.
 
 Tools should remain reusable and independent from individual agents.
 
+Tool selection should remain separate from tool execution.
+
 ## Dependency Injection
 
 Components can receive dependencies such as:
@@ -2135,12 +3228,13 @@ Components can receive dependencies such as:
 * Runner
 * Registry
 * Tool Registry
+* Tool Selector
 
 This improves testability and extensibility.
 
 ---
 
-# 69. Extensibility
+# 77. Extensibility
 
 New automation actions can be added without rewriting the engine.
 
@@ -2150,6 +3244,8 @@ New agents can be registered without changing the registry implementation.
 
 New tools can be added without modifying every agent.
 
+New tool-selection strategies can eventually be introduced without redesigning individual tools.
+
 New storage backends can eventually be introduced without redesigning automation logic.
 
 New scheduling strategies can be implemented independently.
@@ -2158,7 +3254,7 @@ This is one of the most important architectural goals of Ultron.
 
 ---
 
-# 70. Future Storage
+# 78. Future Storage
 
 JSON is currently suitable for lightweight local development.
 
@@ -2173,7 +3269,7 @@ Storage abstractions should allow such changes without changing the public autom
 
 ---
 
-# 71. Future Scheduling
+# 79. Future Scheduling
 
 Future scheduling capabilities may include:
 
@@ -2189,22 +3285,33 @@ Future scheduling capabilities may include:
 
 ---
 
-# 72. Future Actions
+# 80. Future Actions
 
 Possible future actions include:
 
 ```text
 send_message
+
 send_email
+
 open_application
+
 run_command
+
 create_file
+
 modify_file
+
 http_request
+
 webhook
+
 calendar_event
+
 notification
+
 AI_generation
+
 AI_analysis
 ```
 
@@ -2212,23 +3319,35 @@ Every action should have controlled validation and error handling.
 
 ---
 
-# 73. Future Tools
+# 81. Future Tools
 
 The Tool System can eventually provide reusable capabilities such as:
 
 ```text
 Web Search Tool
+
 Browser Tool
+
 File Read Tool
+
 File Write Tool
+
 Terminal Tool
+
 Code Execution Tool
+
 HTTP Tool
+
 Database Tool
+
 Calendar Tool
+
 Email Tool
+
 Image Tool
+
 AI Generation Tool
+
 Data Analysis Tool
 ```
 
@@ -2243,11 +3362,83 @@ Tools can eventually be:
 * Audited
 * Published through a marketplace
 
-The v0.38 Tool System provides the architectural starting point for this ecosystem.
+The v0.38 Tool System and v0.39 Tool Selector provide the architectural starting point for this ecosystem.
 
 ---
 
-# 74. Future Workflows
+# 82. Future Tool Selection
+
+The Tool Selector can evolve from basic capability matching toward intelligent tool selection.
+
+Future selection capabilities may include:
+
+* Capability scoring
+* Tool priority
+* Tool availability
+* Tool compatibility
+* Parameter compatibility
+* Permission-aware selection
+* Cost-aware selection
+* Latency-aware selection
+* Reliability-aware selection
+* Tool fallback
+* Multiple-tool planning
+* Context-aware selection
+* Agent-specific tool policies
+
+A future architecture may become:
+
+```text
+Agent Goal
+
+    |
+
+    v
+
+Required Capability
+
+    |
+
+    v
+
+Tool Discovery
+
+    |
+
+    v
+
+Candidate Tools
+
+    |
+
+    v
+
+Capability Scoring
+
+    |
+
+    v
+
+Permission Check
+
+    |
+
+    v
+
+Tool Selection
+
+    |
+
+    v
+
+Execution
+```
+
+This allows the Tool Selector to become an intelligent capability-resolution layer without coupling reasoning directly to individual tool implementations.
+
+---
+
+# 83. Future Workflows
 
 Ultron can evolve from single-action automation into workflow execution.
 
@@ -2255,20 +3446,35 @@ Example:
 
 ```text
 Trigger
+
    |
+
    v
+
 Action A
+
    |
+
    v
+
 Condition
+
   / \
+
 Yes  No
+
  |    |
+
  v    v
+
 A2   A3
+
  \    /
+
   \  /
+
    vv
+
  Final
 ```
 
@@ -2276,7 +3482,7 @@ This creates a foundation for an automation graph system.
 
 ---
 
-# 75. Future AI Agents
+# 84. Future AI Agents
 
 The agent subsystem is designed to evolve toward goal-oriented execution.
 
@@ -2284,31 +3490,57 @@ A future agent could:
 
 ```text
 Understand Goal
+
       |
+
       v
+
 Plan
+
       |
+
       v
+
+Determine Capability
+
+      |
+
+      v
+
 Select Tool
+
       |
+
       v
+
 Execute
+
       |
+
       v
+
 Observe
+
       |
+
       v
+
 Update Memory
+
       |
+
       v
+
 Continue / Complete
 ```
+
+The Tool Selector becomes the bridge between agent planning and reusable execution capabilities.
 
 The system can eventually support autonomous but controlled execution.
 
 ---
 
-# 76. Future Agent Builder
+# 85. Future Agent Builder
 
 A future Ultron platform could provide a visual Agent Builder.
 
@@ -2317,6 +3549,7 @@ Possible components:
 * Agent identity
 * Instructions
 * Tools
+* Tool selection policies
 * Memory
 * Actions
 * Triggers
@@ -2328,7 +3561,7 @@ Possible components:
 
 ---
 
-# 77. Future Marketplace
+# 86. Future Marketplace
 
 A future marketplace could allow developers to publish:
 
@@ -2341,9 +3574,20 @@ A future marketplace could allow developers to publish:
 
 Users could install capabilities without manually modifying source code.
 
+The marketplace could eventually include tool metadata such as:
+
+* Capability
+* Version
+* Permissions
+* Compatibility
+* Reliability
+* Usage
+* Developer
+* Documentation
+
 ---
 
-# 78. Future Developer API
+# 87. Future Developer API
 
 Ultron can eventually expose APIs for:
 
@@ -2353,6 +3597,7 @@ Ultron can eventually expose APIs for:
 * Schedules
 * Agents
 * Tools
+* Tool selection
 * Workflows
 * Integrations
 
@@ -2360,7 +3605,7 @@ The API should sit above stable internal service boundaries.
 
 ---
 
-# 79. Future Workspace System
+# 88. Future Workspace System
 
 A future platform may support:
 
@@ -2376,7 +3621,7 @@ A future platform may support:
 
 ---
 
-# 80. Future Billing
+# 89. Future Billing
 
 A future SaaS platform may introduce:
 
@@ -2393,7 +3638,7 @@ Billing should remain separate from core execution engines.
 
 ---
 
-# 81. Observability
+# 90. Observability
 
 Future versions should improve observability.
 
@@ -2409,12 +3654,14 @@ Potential metrics include:
 * Agent failures
 * Tool executions
 * Tool failures
+* Tool selections
+* Tool selection failures
 * Worker cycles
 * Storage errors
 
 ---
 
-# 82. Audit Logging
+# 91. Audit Logging
 
 Automation and agent systems will eventually require audit logs.
 
@@ -2422,14 +3669,25 @@ A future audit event could contain:
 
 ```text
 timestamp
+
 user
+
 agent_id
+
 tool_id
+
 automation_id
+
 schedule_id
+
 action
+
+capability
+
 status
+
 duration
+
 error
 ```
 
@@ -2437,7 +3695,7 @@ This becomes important for production deployments.
 
 ---
 
-# 83. Permissions
+# 92. Permissions
 
 Agents and tools can eventually become powerful.
 
@@ -2447,18 +3705,25 @@ Potential permission levels include:
 
 ```text
 READ
+
 WRITE
+
 EXECUTE
+
 NETWORK
+
 SYSTEM
+
 ADMIN
 ```
+
+Tool selection may eventually consider permissions before a capability is selected.
 
 Dangerous operations should require explicit authorization.
 
 ---
 
-# 84. Reliability
+# 93. Reliability
 
 Reliability is more important than feature count.
 
@@ -2466,9 +3731,11 @@ A smaller system with predictable behavior is preferable to a larger system with
 
 The test suite therefore remains a core part of Ultron's architecture.
 
+Tool selection should also remain deterministic and explainable before introducing more advanced selection strategies.
+
 ---
 
-# 85. Maintainability
+# 94. Maintainability
 
 Maintainability goals include:
 
@@ -2481,9 +3748,11 @@ Maintainability goals include:
 * Tests
 * Stable interfaces
 
+The Tool Selector should remain independent enough to evolve without forcing changes across every tool implementation.
+
 ---
 
-# 86. Performance
+# 95. Performance
 
 The current system prioritizes correctness and simplicity.
 
@@ -2498,12 +3767,13 @@ Future performance work can address:
 * Batch operations
 * Agent execution optimization
 * Tool execution optimization
+* Tool selection optimization
 
 Performance improvements should be evidence-driven.
 
 ---
 
-# 87. Concurrency
+# 96. Concurrency
 
 The automation Worker currently uses a background thread.
 
@@ -2516,9 +3786,11 @@ Future concurrency models may include:
 
 Any concurrency upgrade must preserve execution correctness and state integrity.
 
+Tool execution may eventually require isolated execution contexts for safety and concurrency control.
+
 ---
 
-# 88. Testing Philosophy
+# 97. Testing Philosophy
 
 Every important behavior should have a test.
 
@@ -2533,11 +3805,11 @@ Features should include appropriate:
 
 Critical workflows should be tested end-to-end.
 
-The Agent Tool System follows the same philosophy.
+The Agent Tool System and Tool Selector follow the same philosophy.
 
 ---
 
-# 89. Regression Protection
+# 98. Regression Protection
 
 The full test suite is the release gate.
 
@@ -2551,15 +3823,17 @@ Current established regression baseline:
 
 ```text
 Tests  = 124
+
 Passed = 124
+
 Failed = 0
 ```
 
-The v0.38 Tool System should be validated against this baseline before final release verification.
+The v0.39 Tool Selection architecture should be validated against the complete regression baseline before final release verification.
 
 ---
 
-# 90. Version History
+# 99. Version History
 
 ## v0.1
 
@@ -2595,7 +3869,7 @@ Expanded:
 
 ---
 
-# 91. v0.31
+# 100. v0.31
 
 v0.31 introduced the AI integration architecture.
 
@@ -2612,7 +3886,7 @@ Major components included:
 
 ---
 
-# 92. v0.34
+# 101. v0.34
 
 The automation architecture developed significantly.
 
@@ -2626,7 +3900,7 @@ Major concepts included:
 
 ---
 
-# 93. v0.35
+# 102. v0.35
 
 The automation engine and management layer were strengthened.
 
@@ -2640,7 +3914,7 @@ Important improvements included:
 
 ---
 
-# 94. v0.36
+# 103. v0.36
 
 The automation persistence architecture was completed.
 
@@ -2658,12 +3932,13 @@ Release verification:
 
 ```text
 95 passed
+
 0 failed
 ```
 
 ---
 
-# 95. v0.37
+# 104. v0.37
 
 v0.37 introduced the **Agent Runtime Foundation**.
 
@@ -2690,14 +3965,15 @@ Release verification:
 
 ```text
 124 passed
+
 0 failed
 ```
 
 ---
 
-# 96. v0.38
+# 105. v0.38
 
-v0.38 introduces the **Agent Tool System**.
+v0.38 introduced the **Agent Tool System**.
 
 Major improvements:
 
@@ -2717,42 +3993,159 @@ New Agent modules:
 
 ```text
 modules/agent/tool.py
+
 modules/agent/tool_registry.py
+
 modules/agent/tool_result.py
 ```
 
-The Agent Runtime now moves toward:
+The Agent Runtime moved toward:
 
 ```text
 Agent
+
   |
+
   v
-Tool Selection
-  |
-  v
+
 Tool Registry
+
   |
+
   v
-Tool Execution
+
+Tool
+
   |
+
   v
+
 Tool Result
-  |
-  v
-Agent Observation
 ```
 
-This release establishes the foundation required for future tool-using AI agents.
+This release established the foundation required for future tool-using AI agents.
 
 ---
 
-# 97. Roadmap
+# 106. v0.39
+
+v0.39 introduces the **Agent Tool Selection System**.
+
+Major improvements:
+
+* Tool Selector
+* Capability-based tool selection
+* Tool discovery
+* Tool matching
+* Tool resolution
+* Agent Engine integration
+* Agent-to-tool selection flow
+* Tool selection validation
+* Tool selector tests
+* Agent tool integration tests
+* Modular capability resolution
+* Reusable tool-selection architecture
+
+New Agent module:
+
+```text
+modules/agent/tool_selector.py
+```
+
+New test modules:
+
+```text
+tests/test_agent_engine_tools.py
+
+tests/test_agent_tool_selector_integration.py
+
+tests/test_agent_tools.py
+
+tests/test_tool_registry.py
+
+tests/test_tool_selector.py
+```
+
+The Agent Runtime now moves from:
+
+```text
+Agent
+
+  |
+
+  v
+
+Tool Registry
+
+  |
+
+  v
+
+Tool
+
+  |
+
+  v
+
+Tool Result
+```
+
+toward:
+
+```text
+Agent
+
+  |
+
+  v
+
+Required Capability
+
+  |
+
+  v
+
+Tool Selector
+
+  |
+
+  v
+
+Tool Registry
+
+  |
+
+  v
+
+Tool
+
+  |
+
+  v
+
+Tool Result
+
+  |
+
+  v
+
+Agent Observation
+```
+
+The Tool Selector establishes the capability-selection layer required for future intelligent tool-using agents.
+
+---
+
+# 107. Roadmap
 
 ## Near Term
 
 * Expand agent capabilities
 * Expand tool capabilities
+* Improve tool selection
+* Improve capability matching
 * Add focused tool tests
+* Add more tool types
 * Improve agent execution
 * Improve scheduler capabilities
 * Improve persistence abstractions
@@ -2769,6 +4162,9 @@ This release establishes the foundation required for future tool-using AI agents
 * Agent memory integration
 * Better observability
 * Tool permissions
+* Advanced tool selection
+* Tool fallback
+* Tool scoring
 
 ## Long Term
 
@@ -2784,7 +4180,7 @@ This release establishes the foundation required for future tool-using AI agents
 
 ---
 
-# 98. Development Philosophy
+# 108. Development Philosophy
 
 Ultron is developed incrementally.
 
@@ -2794,20 +4190,35 @@ Instead:
 
 ```text
 Foundation
+
     |
+
     v
+
 Reliable Subsystem
+
     |
+
     v
+
 Integration
+
     |
+
     v
+
 Testing
+
     |
+
     v
+
 Release
+
     |
+
     v
+
 Next Subsystem
 ```
 
@@ -2815,7 +4226,7 @@ This approach reduces architectural debt and keeps the system understandable.
 
 ---
 
-# 99. Why Modular Architecture
+# 109. Why Modular Architecture
 
 A monolithic AI assistant becomes increasingly difficult to maintain as capabilities grow.
 
@@ -2823,13 +4234,22 @@ A modular architecture allows components such as:
 
 ```text
 AI Provider
+
 Storage
+
 Scheduler
+
 Worker
+
 Action Registry
+
 Agent Registry
+
 Agent Engine
+
 Tool Registry
+
+Tool Selector
 ```
 
 to evolve independently.
@@ -2838,23 +4258,29 @@ This provides a stronger long-term foundation for Ultron.
 
 ---
 
-# 100. Project Status
+# 110. Project Status
 
 **Ultron is in active development.**
 
 Current release:
 
 ```text
-v0.38
+v0.39
 ```
 
 Current major focus:
 
 ```text
-Agent Tool System
+Agent Tool Selection System
 ```
 
 Previous major foundation:
+
+```text
+Agent Tool System
+```
+
+Previous Agent foundation:
 
 ```text
 AI Agent Runtime
@@ -2868,7 +4294,7 @@ Reliable Persistent Automation
 
 ---
 
-# 101. Developer Notes
+# 111. Developer Notes
 
 When modifying the Agent subsystem:
 
@@ -2879,17 +4305,18 @@ When modifying the Agent subsystem:
 5. Compile modified files.
 6. Run focused Agent tests.
 7. Run Tool tests when applicable.
-8. Run integration tests if required.
-9. Run the complete suite.
-10. Inspect the Git diff.
-11. Review staged changes.
-12. Commit only intended files.
+8. Run Tool Selector tests when applicable.
+9. Run integration tests if required.
+10. Run the complete suite.
+11. Inspect the Git diff.
+12. Review staged changes.
+13. Commit only intended files.
 
 When modifying automation, follow the same process using the relevant automation tests.
 
 ---
 
-# 102. Troubleshooting
+# 112. Troubleshooting
 
 ## Agent tests fail
 
@@ -2918,7 +4345,7 @@ python -m pytest -v
 
 ---
 
-# 103. Troubleshooting Automation
+# 113. Troubleshooting Automation
 
 If an automation cannot be restored, check:
 
@@ -2933,7 +4360,7 @@ Remember that executable action handlers must exist in the runtime registry.
 
 ---
 
-# 104. Troubleshooting Worker
+# 114. Troubleshooting Worker
 
 If the Worker does not execute, check:
 
@@ -2947,12 +4374,13 @@ If the Worker does not execute, check:
 
 ---
 
-# 105. Troubleshooting AI
+# 115. Troubleshooting AI
 
 If Anthropic is unavailable, check:
 
 ```text
 AI_MODE
+
 ANTHROPIC_API_KEY
 ```
 
@@ -2960,7 +4388,48 @@ Mock mode should remain available for development and testing.
 
 ---
 
-# 106. FAQ
+# 116. Troubleshooting Agent Tools
+
+If an Agent Tool cannot be selected or executed, check:
+
+* Tool definition
+* Tool registration
+* Tool Registry
+* Required capability
+* Tool Selector
+* Capability matching
+* Tool availability
+* Tool validation
+* Agent Engine integration
+* Tool execution handler
+
+Run Tool Selector tests:
+
+```powershell
+python -m pytest tests\test_tool_selector.py -v
+```
+
+Run Tool Registry tests:
+
+```powershell
+python -m pytest tests\test_tool_registry.py -v
+```
+
+Run Agent Tool integration tests:
+
+```powershell
+python -m pytest tests\test_agent_tool_selector_integration.py -v
+```
+
+Then run:
+
+```powershell
+python -m pytest -v
+```
+
+---
+
+# 117. FAQ
 
 ## Is Ultron only a chatbot?
 
@@ -2990,7 +4459,13 @@ The Agent Runtime Foundation was introduced in v0.37.
 
 Yes.
 
-v0.38 introduces the dedicated Agent Tool System.
+v0.38 introduced the dedicated Agent Tool System.
+
+## Does Ultron have Tool Selection?
+
+Yes.
+
+v0.39 introduces the dedicated Tool Selector and capability-selection architecture.
 
 ## Can agents be enabled or disabled?
 
@@ -3006,7 +4481,9 @@ The Agent Engine provides controlled execution architecture.
 
 ## Can agents use reusable tools?
 
-The v0.38 architecture introduces the foundation for reusable Agent Tools through the Tool Registry.
+Yes.
+
+The Tool Registry provides reusable tool management and v0.39 adds the Tool Selector for capability resolution.
 
 ## Can agent parameters be overridden?
 
@@ -3026,42 +4503,83 @@ Yes.
 
 Recurring schedule persistence is supported.
 
+## Can the Tool Selector choose between multiple tools?
+
+The v0.39 architecture establishes the foundation for capability-based tool selection and matching.
+
+More advanced scoring and prioritization can be introduced in future releases.
+
 ---
 
-# 107. Architecture Summary
+# 118. Architecture Summary
 
 Ultron can be summarized as:
 
 ```text
                     Conversation
+
                          |
+
                          v
+
                       Context
+
                          |
+
                          v
+
                          AI
+
                          |
+
                          v
+
                      Commands
+
                          |
-              +----------+----------+
-              |                     |
-              v                     v
-         Automation               Agents
-              |                     |
-              v                     v
-           Manager             Agent Engine
-              |                     |
-              v                     v
+
+             +-----------+-----------+
+
+             |                       |
+
+             v                       v
+
+        Automation                Agents
+
+             |                       |
+
+             v                       v
+
+          Manager               Agent Engine
+
+             |                       |
+
+             v                       v
+
            Engine              Agent Registry
-              |                     |
-              v                     v
-          Action Registry         Tools
-              |                     |
-              v                     v
-            Action             Tool Registry
-                                    |
-                                    v
+
+             |                       |
+
+             v                       v
+
+       Action Registry          Tool Selector
+
+             |                       |
+
+             v                       v
+
+           Action               Tool Registry
+
+                                     |
+
+                                     v
+
+                                    Tool
+
+                                     |
+
+                                     v
+
                                 Tool Result
 ```
 
@@ -3069,14 +4587,23 @@ Scheduling:
 
 ```text
 Scheduler
+
     |
+
     v
+
 Runner
+
     |
+
     v
+
 Engine
+
     |
+
     v
+
 Action
 ```
 
@@ -3084,35 +4611,65 @@ Background execution:
 
 ```text
 Worker
+
     |
+
     v
+
 Runner
+
     |
+
     v
+
 Scheduler
 ```
 
-Agent Tool execution:
+Agent Tool Selection:
 
 ```text
 Agent
+
   |
+
   v
+
+Required Capability
+
+  |
+
+  v
+
+Tool Selector
+
+  |
+
+  v
+
 Tool Registry
+
   |
+
   v
+
 Tool
+
   |
+
   v
+
 Tool Result
+
   |
+
   v
+
 Agent
 ```
 
 ---
 
-# 108. Engineering Priorities
+# 119. Engineering Priorities
 
 Current priorities:
 
@@ -3126,41 +4683,86 @@ Current priorities:
 8. Automation capability
 9. Agent capability
 10. Tool capability
-11. Platform scalability
+11. Tool selection
+12. Platform scalability
 
 ---
 
-# 109. Future Architecture
+# 120. Future Architecture
 
 The long-term architecture may become:
 
 ```text
                          Ultron Platform
+
                                 |
+
         +-----------------------+-----------------------+
+
         |                       |                       |
+
         v                       v                       v
-       AI                     Agents                Automation
+
+       AI                    Agents                 Automation
+
         |                       |                       |
+
         v                       v                       v
-   Providers                Tools                  Workflows
+
+   Providers                Planning               Workflows
+
         |                       |                       |
+
+        |                       v                       |
+
+        |                 Tool Selection               |
+
+        |                       |                       |
+
+        |                       v                       |
+
+        |                 Tool Registry                |
+
+        |                       |                       |
+
+        |                       v                       |
+
+        |                     Tools                     |
+
+        |                       |                       |
+
         |                    Memory                     |
+
         |                       |                       |
+
         +-----------------------+-----------------------+
+
                                 |
+
                                 v
+
                           Integrations
+
                                 |
+
                   +-------------+-------------+
+
                   |                           |
+
                   v                           v
+
               Developer                    Users
+
                   |                           |
+
                   v                           v
-                 API                      Workspace
+
+                 API                       Workspace
+
                   |
+
                   v
+
              Marketplace
 ```
 
@@ -3168,15 +4770,29 @@ The Agent layer can eventually connect:
 
 ```text
 Intelligence
+
      +
+
 Memory
+
      +
+
 Tools
+
      +
+
+Tool Selection
+
+     +
+
 Actions
+
      +
+
 Automation
+
      +
+
 Workflows
 ```
 
@@ -3184,67 +4800,115 @@ into a unified execution platform.
 
 ---
 
-# 110. Release Gate
+# 121. Release Gate
 
 Before every release:
 
 ```text
 [ ] Code compiles
+
 [ ] Focused tests pass
+
 [ ] Tool tests pass
+
+[ ] Tool Registry tests pass
+
+[ ] Tool Selector tests pass
+
 [ ] Agent tests pass
+
+[ ] Agent Tool integration tests pass
+
 [ ] Integration tests pass
+
 [ ] Full suite passes
+
 [ ] No credentials are committed
+
 [ ] No temporary files are committed
+
 [ ] Generated logs reviewed
+
 [ ] Git diff reviewed
+
 [ ] Staged diff reviewed
+
 [ ] Commit created
+
 [ ] Push completed
+
 [ ] Working tree clean
 ```
 
 ---
 
-# 111. Current Release Gate
+# 122. Current Release Gate
 
-For v0.38:
+For v0.39:
 
 ```text
-Agent Architecture       PASS
-Agent Tool Architecture  PASS
-Tool Registry             PASS
-Tool Result Architecture  PASS
-AI Architecture           PASS
-Automation Architecture   PASS
-Persistence Architecture  PASS
-Documentation             PASS
+Agent Architecture         PASS
+
+Agent Tool Architecture    PASS
+
+Tool Registry              PASS
+
+Tool Result Architecture   PASS
+
+Tool Selector Architecture PASS
+
+Capability Matching        PASS
+
+Agent Engine Integration   PASS
+
+AI Architecture            PASS
+
+Automation Architecture    PASS
+
+Persistence Architecture   PASS
+
+Documentation              PASS
 ```
 
 Final regression verification should be recorded after running the complete test suite.
 
 ---
 
-# 112. Conclusion
+# 123. Conclusion
 
-Ultron v0.38 extends the Agent Runtime Foundation introduced in v0.37 with a dedicated **Agent Tool System**.
+Ultron v0.39 extends the Agent Tool System introduced in v0.38 with a dedicated **Agent Tool Selection System**.
 
 The architecture now separates:
 
 ```text
 What the user wants
+
         +
+
 How the agent reasons
+
         +
+
 What capability is required
+
         +
+
 How the capability is discovered
+
         +
+
+How the capability is selected
+
+        +
+
 How the capability executes
+
         +
+
 What result it returns
+
         +
+
 How the agent continues
 ```
 
@@ -3252,24 +4916,49 @@ The new architecture introduces:
 
 ```text
 Agent
+
   |
+
   v
-Tool
+
+Required Capability
+
   |
+
   v
+
+Tool Selector
+
+  |
+
+  v
+
 Tool Registry
+
   |
+
   v
+
 Tool Execution
+
   |
+
   v
+
 Tool Result
+
+  |
+
+  v
+
+Agent Observation
 ```
 
 This creates a strong foundation for future:
 
 * AI agents
 * Agent tools
+* Intelligent tool selection
 * Agent memory
 * Web capabilities
 * File capabilities
@@ -3299,6 +4988,8 @@ The objective is to establish reliable execution primitives first.
 >
 > **Give agents controlled capabilities.**
 >
+> **Select capabilities through explicit boundaries.**
+>
 > **Introduce intelligence incrementally.**
 >
 > **Improve one release at a time.**
@@ -3313,26 +5004,53 @@ The architecture can evolve toward:
 
 ```text
 Personal AI
+
      |
+
      v
+
 AI Assistant
+
      |
+
      v
+
 Automation Engine
+
      |
+
      v
+
 AI Agent Runtime
+
      |
+
      v
+
 Agent + Tool Runtime
+
      |
+
      v
+
+Agent + Tool Selection Runtime
+
+     |
+
+     v
+
 Agent Platform
+
      |
+
      v
+
 AI Developer Platform
+
      |
+
      v
+
 AI Operating Layer
 ```
 
@@ -3340,17 +5058,33 @@ The ultimate objective is to build a capable software platform that combines:
 
 ```text
 AI Intelligence
+
       +
+
 Memory
+
       +
+
 Tools
+
       +
+
+Tool Selection
+
+      +
+
 Agents
+
       +
+
 Automation
+
       +
+
 Workflows
+
       +
+
 Integrations
 ```
 
@@ -3368,7 +5102,7 @@ Ultron is an independent software project under active development.
 
 # Project Status
 
-**Current Version:** v0.38
+**Current Version:** v0.39
 
 **AI Integration:** Complete foundation
 
@@ -3376,11 +5110,23 @@ Ultron is an independent software project under active development.
 
 **Agent Runtime Foundation:** Complete
 
-**Agent Tool System:** Introduced
+**Agent Tool System:** Complete foundation
+
+**Tool Registry:** Established
+
+**Tool Result System:** Established
+
+**Agent Tool Selection:** Introduced
+
+**Capability Matching:** Introduced
+
+**Agent Engine Tool Integration:** Introduced
 
 **Automation Testing:** Established
 
 **Agent Testing:** Established
+
+**Tool Testing:** Established
 
 **Regression Baseline:** 124 tests
 
