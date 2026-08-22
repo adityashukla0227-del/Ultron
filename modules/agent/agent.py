@@ -356,6 +356,24 @@ class Agent:
 
         return True
 
+    def assign_tool(
+        self,
+        tool: Union[str, AgentTool],
+    ) -> bool:
+        """
+        Assign a tool to the agent.
+
+        Compatibility alias for add_tool().
+
+        This method keeps agent tool assignment compatible
+        with the Agent Orchestrator layer without duplicating
+        tool-management logic.
+        """
+
+        return self.add_tool(
+            tool
+        )
+
     def remove_tool(
         self,
         tool_name: str,
