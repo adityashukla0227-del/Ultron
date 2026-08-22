@@ -187,10 +187,10 @@ class Agent:
                 "Agent action must be a string."
             )
 
-        if not self.action.strip():
-            raise AgentValidationError(
-                "Agent action is required."
-            )
+        # Action is optional at agent construction time.
+        # Plan-based execution is handled by AgentPlanner
+        # and AgentOrchestrator. Explicit action assignment
+        # is still validated by set_action().
 
         if not isinstance(
             self.parameters,
