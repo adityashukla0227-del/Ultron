@@ -1,24 +1,26 @@
-Haan bhai 🔥 **v0.42 ko current completed milestone** bana dete hain. Tumhare latest test result ke hisaab se **430 tests passed**, aur v0.42 ka main architectural addition **Agent Execution Controller** hai:
-
-* `modules/agent/agent_execution_controller.py`
-* `tests/test_agent_execution_controller.py`
-* `modules/agent/agent.py` updated
-* **430 passed / 0 failed**
-
-Neeche **single ready-to-paste README block** hai. मैंने v0.41 ko preserve karke v0.42 ko next layer ke रूप में add kiya hai.
+Bilkul bhai 🔥
+Neeche **v0.42 → v0.43 complete updated README** hai. Isme v0.42 ka architecture preserve hai aur **v0.43 Orchestrator Execution Control** ko completed milestone ke रूप में properly integrate kiya gaya hai.
 
 ````markdown
 # Ultron
 
 ## A Modular Personal AI Assistant, Automation & Agent Platform
 
-![Version](https://img.shields.io/badge/version-v0.42-blue)
+![Version](https://img.shields.io/badge/version-v0.43-blue)
+
 ![Python](https://img.shields.io/badge/python-3.13%2B-yellow)
+
 ![Tests](https://img.shields.io/badge/tests-430%20passed-brightgreen)
+
 ![Status](https://img.shields.io/badge/status-active%20development-orange)
+
 ![Architecture](https://img.shields.io/badge/architecture-modular-purple)
+
 ![Agent%20Runtime](https://img.shields.io/badge/agent%20runtime-enabled-red)
+
 ![Tool%20System](https://img.shields.io/badge/tool%20system-enabled-green)
+
+![Execution%20Control](https://img.shields.io/badge/execution%20control-enabled-blue)
 
 Ultron is a modular personal AI assistant, agent runtime, automation foundation, and extensible AI platform built with Python.
 
@@ -31,7 +33,7 @@ The project is designed as a layered architecture that progressively combines:
 - AI model integration
 - Agent runtime
 - Agent lifecycle management
-- Tool systems
+- Agent tools
 - Tool registries
 - Capability-based tool selection
 - Agent planning
@@ -39,6 +41,15 @@ The project is designed as a layered architecture that progressively combines:
 - Sequential execution
 - Agent orchestration
 - Agent execution control
+- Execution lifecycle management
+- Pause and resume control
+- Execution cancellation
+- Step retry support
+- Retry limit enforcement
+- Pending step skipping
+- Execution history tracking
+- Execution status tracking
+- Current step tracking
 - Safe execution boundaries
 - Structured execution results
 - Failure handling
@@ -54,15 +65,16 @@ Ultron is being developed incrementally with a strong emphasis on:
 - Maintainability
 - Clear separation of responsibilities
 - Controlled execution
+- Execution lifecycle control
 - Developer experience
 
 ---
 
 # 🚀 Current Status
 
-## Version: v0.42
+## Version: v0.43
 
-Ultron has evolved from a basic personal AI assistant into a modular Agent Runtime with planning, orchestration, and controlled execution capabilities.
+Ultron has evolved from a basic personal AI assistant into a modular Agent Runtime with planning, orchestration, execution control, and execution lifecycle management capabilities.
 
 ### Current platform capabilities
 
@@ -85,12 +97,23 @@ Ultron has evolved from a basic personal AI assistant into a modular Agent Runti
 - 🎮 Agent Execution Controller
 - 🔄 Sequential Plan Execution
 - 📊 Execution Progress Tracking
+- 🔁 Step Retry Support
+- ⏸️ Execution Pause
+- ▶️ Execution Resume
+- 🛑 Execution Cancellation
+- ⏭️ Pending Step Skip
+- 🔢 Retry Limit Enforcement
+- 📚 Execution History Tracking
+- 📈 Execution Status Tracking
+- 🎯 Current Step Tracking
+- 🔄 Execution Lifecycle Management
 - ✅ Plan Validation
 - 🛡️ Safe Execution Boundaries
 - ❌ Failure Handling
 - 📦 Structured Tool Results
 - 🧪 Automated Regression Testing
 - 🔧 Modular Agent Architecture
+- 🔙 Backward-Compatible Direct Step Execution
 
 ### Stability
 
@@ -100,11 +123,10 @@ Ultron currently maintains:
 
 ```text
 430 passed
-
 0 failed
 ````
 
-The v0.42 milestone builds on the Agent Runtime, Tool System, Tool Selector, Agent Planner, and Agent Orchestration architecture while introducing a dedicated Agent Execution Controller and maintaining regression-test stability.
+The v0.43 milestone builds on the Agent Runtime, Tool System, Tool Selector, Agent Planner, Agent Orchestration, and Agent Execution Controller architecture while introducing explicit execution lifecycle control.
 
 ---
 
@@ -136,6 +158,9 @@ Orchestration
 Execution Controller
   │
   ▼
+Execution Lifecycle
+  │
+  ▼
 Tool Selection
   │
   ▼
@@ -148,7 +173,7 @@ Tool Execution
 Structured Results
 ```
 
-The architecture separates intelligence, planning, orchestration, execution control, capability selection, and infrastructure responsibilities.
+The architecture separates intelligence, planning, orchestration, execution control, lifecycle management, capability selection, and infrastructure responsibilities.
 
 This separation allows individual components to evolve without tightly coupling the entire system.
 
@@ -160,7 +185,7 @@ Ultron follows a layered architecture.
 
 ```text
 ┌─────────────────────────────────────────────┐
-│                   USER                      │
+│                    USER                     │
 └──────────────────────┬──────────────────────┘
                        │
                        ▼
@@ -208,7 +233,7 @@ Ultron follows a layered architecture.
                        │
                        ▼
 ┌─────────────────────────────────────────────┐
-│            AGENT ORCHESTRATOR               │
+│           AGENT ORCHESTRATOR                │
 │                                             │
 │  Plan Execution                             │
 │  Sequential Execution                       │
@@ -219,13 +244,17 @@ Ultron follows a layered architecture.
                        │
                        ▼
 ┌─────────────────────────────────────────────┐
-│         AGENT EXECUTION CONTROLLER          │
+│        AGENT EXECUTION CONTROLLER           │
 │                                             │
 │  Execution Coordination                     │
-│  Controlled Runtime Flow                    │
+│  Execution Lifecycle                        │
 │  Execution State                            │
-│  Execution Boundaries                       │
-│  Safe Coordination                          │
+│  Pause / Resume                             │
+│  Cancellation                               │
+│  Retry Control                              │
+│  Skip Control                               │
+│  Retry Limits                               │
+│  Execution History                          │
 └──────────────────────┬──────────────────────┘
                        │
                        ▼
@@ -404,7 +433,7 @@ The orchestrator acts as the execution coordinator between planning and actual t
 
 ## Layer 8 — Agent Execution Control
 
-The Agent Execution Controller provides an additional control boundary around agent execution.
+The Agent Execution Controller provides an execution-control boundary around agent execution.
 
 Responsibilities include:
 
@@ -415,8 +444,13 @@ Responsibilities include:
 * Execution state coordination
 * Safe execution control
 * Integration with the Agent Runtime
-
-The controller creates a dedicated architectural boundary for execution control as Ultron moves toward more complex autonomous behavior.
+* Execution lifecycle management
+* Pause and resume
+* Cancellation
+* Retry control
+* Pending-step skipping
+* Retry limit enforcement
+* Execution history
 
 Conceptually:
 
@@ -433,12 +467,45 @@ Orchestrator
 Execution Controller
      │
      ▼
+Execution Lifecycle
+     │
+     ▼
 Tool / Agent Execution
 ```
 
 ---
 
-## Layer 9 — Tool Selection
+## Layer 9 — Execution Lifecycle
+
+v0.43 introduces explicit lifecycle management around orchestrated execution.
+
+The execution lifecycle can represent:
+
+```text
+RUNNING
+PAUSED
+CANCELLED
+COMPLETED
+FAILED
+```
+
+This creates a clear state model around active agent execution.
+
+The lifecycle layer provides a foundation for:
+
+* State inspection
+* Pause behavior
+* Resume behavior
+* Cancellation
+* Completion detection
+* Failure detection
+* Execution history
+* Retry management
+* Future persistence
+
+---
+
+## Layer 10 — Tool Selection
 
 The Tool Selector determines which registered capability should satisfy an agent requirement.
 
@@ -452,7 +519,7 @@ Responsibilities:
 
 ---
 
-## Layer 10 — Tool Registry
+## Layer 11 — Tool Registry
 
 Provides centralized tool management.
 
@@ -466,7 +533,7 @@ Responsibilities:
 
 ---
 
-## Layer 11 — Tool Execution
+## Layer 12 — Tool Execution
 
 Tools perform controlled operations.
 
@@ -556,13 +623,11 @@ The AI Engine separates AI infrastructure from application logic.
 
 ```text
                 AI ENGINE
-
-                   │
-
-          ┌────────┴────────┐
-          │                 │
-          ▼                 ▼
-     MOCK PROVIDER    ANTHROPIC PROVIDER
+                    │
+          ┌─────────┴─────────┐
+          │                   │
+          ▼                   ▼
+    MOCK PROVIDER       ANTHROPIC PROVIDER
 ```
 
 This architecture makes it possible to introduce additional providers without rewriting the entire application.
@@ -652,15 +717,10 @@ Instead of executing arbitrary actions directly, an agent can operate through a 
 
 ```text
 Goal
-
  │
-
  ▼
-
 Agent Plan
-
  │
-
  ├── Step 1
  ├── Step 2
  ├── Step 3
@@ -688,15 +748,10 @@ Conceptually:
 
 ```text
 Agent Plan
-
     │
-
     ├── Step 1
-
     ├── Step 2
-
     ├── Step 3
-
     └── Step N
 ```
 
@@ -720,6 +775,8 @@ The step-oriented design provides:
 * Failure isolation
 * Completion detection
 * Sequential execution
+* Retry support
+* Skip support
 
 ---
 
@@ -731,27 +788,19 @@ It is responsible for moving an execution through its steps in a controlled mann
 
 ```text
 Agent Plan
-
     │
-
     ▼
-
 Agent Orchestrator
-
     │
-
     ├── Validate Plan
-
     ├── Resolve Next Step
-
     ├── Execute Step
-
     ├── Track Progress
-
     ├── Handle Result
-
     └── Complete / Fail
 ```
+
+The orchestrator is the primary coordination layer for multi-step execution.
 
 ---
 
@@ -763,26 +812,39 @@ The controller is responsible for coordinating execution through a controlled bo
 
 ```text
 Agent
-  │
-  ▼
+ │
+ ▼
 Agent Engine
-  │
-  ▼
+ │
+ ▼
 Planner
-  │
-  ▼
+ │
+ ▼
 Orchestrator
-  │
-  ▼
+ │
+ ▼
 Execution Controller
-  │
-  ▼
+ │
+ ▼
 Controlled Execution
 ```
 
 The purpose of this layer is to keep execution control separated from planning and orchestration responsibilities.
 
-This provides a cleaner foundation for future execution policies, permissions, retries, state management, and advanced automation.
+This provides a cleaner foundation for:
+
+* Execution lifecycle management
+* Pause and resume
+* Cancellation
+* Retry policies
+* Retry limits
+* Pending step skipping
+* Execution history
+* Execution status
+* Current step tracking
+* Future execution permissions
+* Future resource controls
+* Advanced automation
 
 ---
 
@@ -796,10 +858,18 @@ The execution controller architecture provides a foundation for:
 * Execution boundary enforcement
 * Agent execution lifecycle coordination
 * Safe execution
+* Execution status tracking
+* Current step tracking
+* Execution history
+* Pause control
+* Resume control
+* Cancellation
+* Retry control
+* Retry limit enforcement
+* Pending step skipping
 * Future execution policies
 * Future permission systems
-* Future retry strategies
-* Future execution state management
+* Future resource controls
 
 The controller is intentionally kept modular so that future execution capabilities can be added without tightly coupling them to the Planner or Tool Registry.
 
@@ -813,55 +883,186 @@ Conceptually:
 
 ```text
 Step 1
-
-  │
-
-  ▼
-
+ │
+ ▼
 Success?
-
-  │
-
-  ├── No ──► Plan Failed
-
-  │
-
-  └── Yes
-
-       │
-
-       ▼
-
-     Step 2
-
-       │
-
-       ▼
-
-     Success?
-
-       │
-
-       ├── No ──► Plan Failed
-
-       │
-
-       └── Yes
-
-            │
-
-            ▼
-
-          Step N
-
-            │
-
-            ▼
-
-        Plan Complete
+ │
+ ├── No ──► Plan Failed
+ │
+ └── Yes
+      │
+      ▼
+    Step 2
+      │
+      ▼
+    Success?
+      │
+      ├── No ──► Plan Failed
+      │
+      └── Yes
+           │
+           ▼
+         Step N
+           │
+           ▼
+       Plan Complete
 ```
 
 This creates deterministic execution flow and clear failure boundaries.
+
+---
+
+# 🔁 Step Retry Support
+
+v0.43 introduces step-level retry support.
+
+A failed step can be retried when retry conditions permit.
+
+Conceptually:
+
+```text
+Execute Step
+     │
+     ▼
+   Failure
+     │
+     ▼
+Retry Allowed?
+  │        │
+ Yes       No
+  │        │
+  ▼        ▼
+Retry    Failure
+  │
+  ▼
+Success?
+```
+
+Retry support allows transient failures to be handled without immediately terminating the entire execution.
+
+---
+
+# 🔢 Retry Limit Enforcement
+
+Retries must remain bounded.
+
+v0.43 introduces retry limit enforcement to prevent uncontrolled repeated execution.
+
+Conceptually:
+
+```text
+Step Failure
+     │
+     ▼
+Retry Count
+     │
+     ▼
+Limit Reached?
+   │       │
+  No      Yes
+   │       │
+   ▼       ▼
+ Retry   Fail Step
+```
+
+Retry limits create a predictable boundary for repeated execution attempts.
+
+This provides a foundation for future configurable retry policies.
+
+---
+
+# ⏸️ Pause Execution
+
+The execution lifecycle supports pausing active execution.
+
+Conceptually:
+
+```text
+RUNNING
+   │
+   │ pause
+   ▼
+PAUSED
+```
+
+When execution is paused, the execution controller can preserve the current execution state rather than treating the pause as a failure.
+
+The pause model creates a foundation for future:
+
+* User-controlled execution
+* Interactive workflows
+* Approval checkpoints
+* Resource management
+* Human-in-the-loop execution
+
+---
+
+# ▶️ Resume Execution
+
+Paused execution can transition back into active execution.
+
+```text
+PAUSED
+   │
+   │ resume
+   ▼
+RUNNING
+```
+
+Resume behavior allows execution to continue from the appropriate execution state.
+
+This separates temporary interruption from permanent cancellation or failure.
+
+---
+
+# 🛑 Execution Cancellation
+
+v0.43 introduces explicit cancellation control.
+
+Conceptually:
+
+```text
+RUNNING
+   │
+   │ cancel
+   ▼
+CANCELLED
+```
+
+Cancellation represents an intentional termination of execution.
+
+Cancellation is distinct from:
+
+```text
+FAILED
+```
+
+because failure represents an unsuccessful execution outcome, while cancellation represents an explicit termination decision.
+
+---
+
+# ⏭️ Pending Step Skip
+
+v0.43 introduces support for skipping pending execution steps.
+
+Conceptually:
+
+```text
+Step 1
+  │
+  ▼
+Step 2
+  │
+  ▼
+Skip Step 3
+  │
+  ▼
+Step 4
+```
+
+Pending-step skipping provides a foundation for interactive execution and controlled workflow modification.
+
+A skipped step should not be treated as an unexpected execution failure.
 
 ---
 
@@ -875,6 +1076,8 @@ Progress tracking allows the runtime to understand:
 * Completed steps
 * Remaining steps
 * Failed step
+* Skipped steps
+* Retry count
 * Plan completion
 * Execution state
 
@@ -882,43 +1085,199 @@ This foundation can later support richer observability and workflow interfaces.
 
 ---
 
-# ❌ Failure Handling
+# 🎯 Current Step Tracking
 
-Agent execution must not assume that every operation succeeds.
+v0.43 adds explicit current-step tracking to the execution model.
 
-Ultron's orchestration architecture therefore treats execution results explicitly.
+The runtime can conceptually represent:
 
-A failed step can transition the plan into a failed state rather than silently continuing.
+```text
+Plan
+ │
+ ├── Step 1 ✓
+ │
+ ├── Step 2 ✓
+ │
+ ├── Step 3 → CURRENT
+ │
+ ├── Step 4
+ │
+ └── Step 5
+```
+
+Current-step tracking provides useful execution context for:
+
+* Debugging
+* Progress reporting
+* Pause behavior
+* Resume behavior
+* Retry handling
+* Execution history
+* Future UI integration
+
+---
+
+# 📈 Execution Status Tracking
+
+Execution status represents the current lifecycle state.
+
+Supported lifecycle states:
+
+```text
+RUNNING
+PAUSED
+CANCELLED
+COMPLETED
+FAILED
+```
+
+The execution status provides a consistent representation of execution lifecycle.
 
 Conceptually:
 
 ```text
-Execute Step
-
-     │
-
-     ▼
-
-Tool Result
-
-     │
-
- ┌───┴────┐
- │        │
-Success  Failure
- │        │
- ▼        ▼
-Next     Plan
-Step     Failed
+                 ┌─────────────┐
+                 │   RUNNING   │
+                 └──────┬──────┘
+                        │
+             ┌──────────┼──────────┐
+             │          │          │
+             ▼          ▼          ▼
+         PAUSED     CANCELLED    FAILED
+             │
+             │ resume
+             ▼
+          RUNNING
+                        │
+                        ▼
+                    COMPLETED
 ```
-
-This creates predictable behavior for multi-step execution.
 
 ---
 
-# 🛡️ Safe Execution
+# 📚 Execution History
 
-Ultron is designed around controlled execution boundaries.
+v0.43 introduces execution history tracking.
+
+Execution history provides a foundation for retaining information about execution progress and lifecycle transitions.
+
+Conceptually:
+
+```text
+Execution History
+
+1. RUNNING
+2. Step 1 completed
+3. Step 2 completed
+4. Step 3 failed
+5. Step 3 retried
+6. Step 3 completed
+7. Step 4 skipped
+8. COMPLETED
+```
+
+Execution history can later support:
+
+* Debugging
+* Auditing
+* Observability
+* Analytics
+* Execution replay
+* Workflow inspection
+* Performance analysis
+
+---
+
+# 🔄 Execution Lifecycle
+
+The v0.43 lifecycle architecture can be represented as:
+
+```text
+INITIALIZED
+     │
+     ▼
+  RUNNING
+     │
+     ├───────────────┐
+     │               │
+     ▼               ▼
+  PAUSED          CANCELLED
+     │
+     │ resume
+     ▼
+  RUNNING
+     │
+     ├───────────────┐
+     │               │
+     ▼               ▼
+COMPLETED         FAILED
+```
+
+The lifecycle is designed to distinguish:
+
+* Active execution
+* Temporary interruption
+* Intentional cancellation
+* Successful completion
+* Unsuccessful execution
+
+---
+
+# 🧭 Execution Lifecycle Management
+
+The Agent Execution Controller manages lifecycle-aware execution behavior.
+
+Responsibilities include:
+
+* Starting execution
+* Tracking active execution
+* Pausing execution
+* Resuming execution
+* Cancelling execution
+* Tracking completion
+* Tracking failures
+* Tracking current step
+* Tracking retry count
+* Tracking execution history
+
+This provides a centralized execution-control boundary.
+
+---
+
+# 🔙 Backward-Compatible Direct Step Execution
+
+v0.43 preserves compatibility with direct step execution.
+
+Existing execution paths should remain usable while the new controller provides additional lifecycle capabilities.
+
+Conceptually:
+
+```text
+Existing Direct Execution
+          │
+          ▼
+     Step Execution
+```
+
+and:
+
+```text
+Lifecycle-Aware Execution
+          │
+          ▼
+Execution Controller
+          │
+          ▼
+     Step Execution
+```
+
+This allows the architecture to evolve without unnecessarily breaking existing behavior.
+
+---
+
+# 🛡️ Safe Execution Control
+
+Execution control remains subject to the existing safety principles.
 
 Important principles include:
 
@@ -934,6 +1293,9 @@ Important principles include:
 * Explicit failure handling
 * Invalid-input protection
 * Dedicated execution control
+* Bounded retries
+* Explicit cancellation
+* Controlled pause and resume
 
 The goal is to prevent uncontrolled execution paths as the platform becomes more autonomous.
 
@@ -957,9 +1319,7 @@ Core modules:
 
 ```text
 modules/
-
 └── agent/
-
     ├── tool.py
     ├── tool_registry.py
     └── tool_result.py
@@ -973,30 +1333,19 @@ The Tool Selector provides capability-based tool routing.
 
 ```text
 Agent
-
   │
-
   ▼
-
 Tool Selector
-
   │
-
   ├── Discover capabilities
   ├── Match capability
   ├── Resolve tool
   └── Validate selection
-
   │
-
   ▼
-
 Tool Registry
-
   │
-
   ▼
-
 Tool
 ```
 
@@ -1029,17 +1378,11 @@ the architecture can reason in terms of:
 
 ```text
 Required Capability
-
         │
-
         ▼
-
 Tool Selector
-
         │
-
         ▼
-
 Compatible Tool
 ```
 
@@ -1063,9 +1406,7 @@ Conceptually:
 
 ```text
 Tool Registry
-
      │
-
      ├── Tool A
      ├── Tool B
      ├── Tool C
@@ -1085,6 +1426,9 @@ This provides a common interface for:
 * Result data
 * Error information
 * Orchestration handling
+* Retry handling
+* Execution history
+* Lifecycle decisions
 
 Structured results are especially important for multi-step execution.
 
@@ -1098,15 +1442,10 @@ Current architecture:
 
 ```text
 Agent
-
  │
-
  ▼
-
 Agent Engine
-
  │
-
  ├── Tool Selector
  │
  ├── Agent Planner
@@ -1114,21 +1453,15 @@ Agent Engine
  ├── Agent Orchestrator
  │
  └── Execution Controller
-
  │
-
  ▼
-
 Tool Registry
-
  │
-
  ▼
-
 Tool Execution
 ```
 
-This creates a central execution path for future agent capabilities.
+The Agent Engine provides the central integration point between the Agent Runtime and execution infrastructure.
 
 ---
 
@@ -1138,21 +1471,19 @@ Ultron intentionally separates responsibilities.
 
 ```text
 Agent
-
  │
-
  ▼
-
 Agent Engine
-
  │
-
  ├── Planner
  │
  └── Orchestrator
           │
           ▼
    Execution Controller
+          │
+          ▼
+     Lifecycle Control
           │
           ▼
      Tool Selector
@@ -1164,7 +1495,7 @@ Agent Engine
        Agent Tool
           │
           ▼
-      Tool Result
+       Tool Result
 ```
 
 This separation allows each component to evolve independently.
@@ -1176,31 +1507,33 @@ This separation allows each component to evolve independently.
 Ultron's current feature stack can be represented as:
 
 ```text
-┌───────────────────────────────┐
-│       User Interaction        │
-├───────────────────────────────┤
-│      Conversation Engine      │
-├───────────────────────────────┤
-│        Memory System          │
-├───────────────────────────────┤
-│          AI Engine            │
-├───────────────────────────────┤
-│        Agent Runtime          │
-├───────────────────────────────┤
-│       Agent Planning          │
-├───────────────────────────────┤
-│      Agent Orchestration      │
-├───────────────────────────────┤
-│   Execution Controller        │
-├───────────────────────────────┤
-│       Tool Selector           │
-├───────────────────────────────┤
-│       Tool Registry            │
-├───────────────────────────────┤
-│        Tool Execution         │
-├───────────────────────────────┤
-│       Structured Results      │
-└───────────────────────────────┘
+┌────────────────────────────────┐
+│       User Interaction         │
+├────────────────────────────────┤
+│      Conversation Engine       │
+├────────────────────────────────┤
+│        Memory System           │
+├────────────────────────────────┤
+│          AI Engine             │
+├────────────────────────────────┤
+│        Agent Runtime           │
+├────────────────────────────────┤
+│       Agent Planning           │
+├────────────────────────────────┤
+│      Agent Orchestration       │
+├────────────────────────────────┤
+│    Execution Controller        │
+├────────────────────────────────┤
+│     Execution Lifecycle        │
+├────────────────────────────────┤
+│       Tool Selector            │
+├────────────────────────────────┤
+│       Tool Registry             │
+├────────────────────────────────┤
+│       Tool Execution           │
+├────────────────────────────────┤
+│      Structured Results        │
+└────────────────────────────────┘
 ```
 
 ---
@@ -1211,90 +1544,251 @@ A future multi-step agent interaction can conceptually follow:
 
 ```text
 User Request
-
      │
-
      ▼
-
 Conversation Engine
-
      │
-
      ▼
-
 AI Engine
-
      │
-
      ▼
-
 Agent
-
      │
-
      ▼
-
 Planner
-
      │
-
      ▼
-
 Agent Plan
-
      │
-
      ▼
-
 Orchestrator
-
      │
-
      ▼
-
 Execution Controller
-
      │
-
      ▼
-
+Execution Lifecycle
+     │
+     ▼
 Tool Selector
-
      │
-
      ▼
-
 Tool Registry
-
      │
-
      ▼
-
 Tool Execution
-
      │
-
      ▼
-
 Tool Result
-
      │
-
      ▼
-
 Execution Controller
-
      │
-
-     ▼
-
-Orchestrator
-
-     │
-
+     ├── Retry
+     ├── Skip
+     ├── Pause
+     ├── Resume
+     ├── Cancel
      ├── Next Step
      ├── Complete
      └── Fail
+```
+
+---
+
+# 🔁 v0.43 Execution Flow
+
+The v0.43 execution model introduces lifecycle-aware orchestration.
+
+```text
+Agent Plan
+    │
+    ▼
+Orchestrator
+    │
+    ▼
+Execution Controller
+    │
+    ▼
+RUNNING
+    │
+    ├── Execute Current Step
+    │
+    ├── Track Current Step
+    │
+    ├── Track Result
+    │
+    ├── Update History
+    │
+    ├── Retry on Failure
+    │
+    ├── Skip Pending Step
+    │
+    ├── Pause
+    │
+    ├── Resume
+    │
+    └── Cancel
+```
+
+---
+
+# 🔁 Retry Flow
+
+```text
+RUNNING
+   │
+   ▼
+Execute Step
+   │
+   ▼
+Result
+   │
+   ├── Success
+   │      │
+   │      ▼
+   │   Next Step
+   │
+   └── Failure
+          │
+          ▼
+     Retry Allowed?
+        │       │
+       Yes      No
+        │        │
+        ▼        ▼
+      Retry     FAILED
+        │
+        ▼
+    Retry Limit
+        │
+        ├── Within Limit
+        │       │
+        │       ▼
+        │     Retry
+        │
+        └── Limit Reached
+                │
+                ▼
+              FAILED
+```
+
+---
+
+# ⏸️ Pause / Resume Flow
+
+```text
+RUNNING
+   │
+   │ pause
+   ▼
+PAUSED
+   │
+   │ resume
+   ▼
+RUNNING
+```
+
+Pause and resume are lifecycle operations rather than failure conditions.
+
+---
+
+# 🛑 Cancellation Flow
+
+```text
+RUNNING
+   │
+   │ cancel
+   ▼
+CANCELLED
+```
+
+Cancellation provides an explicit termination path.
+
+---
+
+# ⏭️ Skip Flow
+
+```text
+CURRENT STEP
+     │
+     ▼
+Pending Step
+     │
+     │ skip
+     ▼
+Skipped
+     │
+     ▼
+Next Pending Step
+```
+
+This provides controlled modification of execution progress.
+
+---
+
+# 📚 Execution History Model
+
+The execution history architecture can conceptually record:
+
+```text
+Execution Started
+       │
+       ▼
+Step 1 Started
+       │
+       ▼
+Step 1 Completed
+       │
+       ▼
+Step 2 Started
+       │
+       ▼
+Step 2 Failed
+       │
+       ▼
+Step 2 Retried
+       │
+       ▼
+Step 2 Completed
+       │
+       ▼
+Step 3 Skipped
+       │
+       ▼
+Execution Completed
+```
+
+The history model creates a foundation for future observability.
+
+---
+
+# 📊 Execution State Model
+
+The runtime can reason about execution using explicit state.
+
+```text
+┌──────────────┐
+│ INITIALIZED  │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│   RUNNING    │◄─────────────┐
+└──────┬───────┘              │
+       │                      │
+   ┌───┼──────────┐           │
+   │   │          │           │
+   ▼   ▼          ▼           │
+PAUSED CANCELLED FAILED       │
+   │                          │
+   │ resume                   │
+   └──────────────────────────┘
+       
+RUNNING
+   │
+   ▼
+COMPLETED
 ```
 
 ---
@@ -1306,7 +1800,7 @@ Testing is a core part of Ultron's development philosophy.
 Current result:
 
 ```text
-430 passed
+430 passed in 21.12s
 0 failed
 ```
 
@@ -1343,6 +1837,17 @@ The test suite covers multiple architectural layers.
 * Failure handling
 * Progress tracking
 * Agent execution control
+* Execution lifecycle
+* Pause behavior
+* Resume behavior
+* Cancellation behavior
+* Retry behavior
+* Retry limit enforcement
+* Pending step skipping
+* Execution history
+* Execution status
+* Current step tracking
+* Backward compatibility
 * Regression behavior
 * Safe execution
 
@@ -1350,27 +1855,28 @@ The test suite covers multiple architectural layers.
 
 # 🧪 Agent Execution Controller Test Coverage
 
-The v0.42 execution-control layer is covered by dedicated automated tests.
+The execution-control layer is covered by dedicated automated tests.
 
 ```text
 AgentExecutionController
-
 │
-
 ├── Controller Initialization
-
 ├── Agent Execution Coordination
-
 ├── Controlled Execution
-
 ├── Execution Boundary Handling
-
 ├── Runtime Integration
-
 ├── Safe Execution
-
 ├── Invalid Input Handling
-
+├── Lifecycle Management
+├── Status Tracking
+├── Current Step Tracking
+├── Execution History
+├── Pause Control
+├── Resume Control
+├── Cancellation
+├── Retry Control
+├── Retry Limit Enforcement
+├── Pending Step Skip
 └── Regression Compatibility
 ```
 
@@ -1378,43 +1884,66 @@ The objective is to ensure that execution control remains deterministic, modular
 
 ---
 
-# 🧪 Agent Orchestrator Test Coverage
+# 🧪 Orchestrator Test Coverage
 
 The orchestrator architecture is tested across important execution scenarios.
 
 ```text
 AgentOrchestrator
-
 │
-
 ├── Initialization
-
 ├── Plan Validation
-
 ├── Empty Plan Rejection
-
 ├── Next-Step Resolution
-
 ├── Single-Step Execution
-
 ├── Sequential Multi-Step Execution
-
 ├── Successful ToolResult Handling
-
 ├── Failed ToolResult Handling
-
 ├── Plan Completion
-
 ├── Plan Failure
-
 ├── Safe Execution
-
 ├── Progress Tracking
-
 └── Invalid Input Handling
 ```
 
-The objective is to ensure orchestration behavior remains deterministic and regression-safe.
+---
+
+# 🧪 v0.43 Lifecycle Test Coverage
+
+The v0.43 milestone extends testing around execution lifecycle behavior.
+
+```text
+Execution Lifecycle
+│
+├── RUNNING
+├── PAUSED
+├── Resume to RUNNING
+├── CANCELLED
+├── COMPLETED
+├── FAILED
+├── Current Step Tracking
+├── Execution Status Tracking
+├── Execution History
+├── Step Retry
+├── Retry Limit
+├── Pending Step Skip
+└── Backward Compatibility
+```
+
+---
+
+# 🧪 Regression Stability
+
+The purpose of the v0.43 milestone is not only to add execution controls but also to preserve existing functionality.
+
+The release therefore maintains:
+
+```text
+430 passed
+0 failed
+```
+
+This confirms that the existing architecture remains compatible with the newly introduced execution-control behavior.
 
 ---
 
@@ -1455,6 +1984,11 @@ Key principles:
 9. Keep provider credentials outside source code.
 10. Avoid uncontrolled execution.
 11. Maintain automated regression coverage.
+12. Bound retries.
+13. Support explicit cancellation.
+14. Separate pause from failure.
+15. Preserve execution state.
+16. Track execution history.
 
 ---
 
@@ -1483,9 +2017,7 @@ Benefits include:
 
 ```text
 Ultron/
-
 │
-
 ├── main.py
 ├── README.md
 ├── requirements.txt
@@ -1578,7 +2110,7 @@ Defines agent behavior and validation.
 
 ### Agent Execution Controller
 
-Provides a dedicated controlled execution layer for agent execution.
+Provides a dedicated controlled execution layer for agent execution and lifecycle management.
 
 ### Registry
 
@@ -1633,6 +2165,7 @@ Provides capability-based tool selection.
 | Plan                 | Structured execution representation         |
 | Orchestrator         | Plan execution coordination                 |
 | Execution Controller | Controlled agent execution                  |
+| Execution Lifecycle  | Execution state management                  |
 | Tool Selector        | Capability-based tool resolution            |
 | Tool Registry        | Tool management                             |
 | Agent Tool           | Controlled capability                       |
@@ -1646,53 +2179,32 @@ Ultron is designed to keep dependencies moving through controlled architectural 
 
 ```text
 Conversation
-
      │
-
      ▼
-
 AI Engine
-
      │
-
      ▼
-
 Agent Runtime
-
      │
-
      ▼
-
 Planner
-
      │
-
      ▼
-
 Orchestrator
-
      │
-
      ▼
-
 Execution Controller
-
      │
-
      ▼
-
+Execution Lifecycle
+     │
+     ▼
 Tool Selector
-
      │
-
      ▼
-
 Tool Registry
-
      │
-
      ▼
-
 Tool
 ```
 
@@ -1728,6 +2240,12 @@ Orchestration
    ▼
 
 Execution Controller
+
+   │
+
+   ▼
+
+Lifecycle Control
 
    │
 
@@ -1785,53 +2303,155 @@ Which step comes next?
 Responsible for:
 
 ```text
-How should agent execution be controlled?
+How should execution be controlled?
 ```
 
-This creates a clear architectural boundary for future execution policies, permissions, retries, resource controls, and advanced runtime behavior.
+This creates a clear architectural boundary for:
+
+* Pause
+* Resume
+* Cancellation
+* Retry
+* Retry limits
+* Step skipping
+* Lifecycle state
+* Execution history
+* Future permissions
+* Future resource controls
 
 ---
 
-# 🔄 Execution State
+# 🔄 Execution Control vs Execution Lifecycle
 
-The execution architecture can conceptually transition through:
+The v0.43 architecture separates execution coordination from lifecycle state.
+
+The controller manages execution behavior while lifecycle state communicates the current condition of execution.
 
 ```text
-INITIALIZED
-
-     │
-
-     ▼
-
-VALIDATING
-
-     │
-
-     ▼
-
-READY
-
-     │
-
-     ▼
-
-EXECUTING
-
-     │
-
-     ├───────────────┐
-     │               │
-     ▼               ▼
-  SUCCESS          FAILURE
-     │               │
-     ▼               ▼
- NEXT STEP       PLAN FAILED
-     │
-     ▼
-PLAN COMPLETE
+Execution Controller
+        │
+        ▼
+Lifecycle State
+        │
+        ├── RUNNING
+        ├── PAUSED
+        ├── CANCELLED
+        ├── COMPLETED
+        └── FAILED
 ```
 
-The Execution Controller provides a foundation for future richer execution-state management.
+This separation makes the runtime easier to extend.
+
+---
+
+# 📚 Execution History vs Current State
+
+Execution state describes:
+
+```text
+What is happening now?
+```
+
+Execution history describes:
+
+```text
+What has happened?
+```
+
+Together:
+
+```text
+Current State
+     +
+Execution History
+     =
+Execution Observability Foundation
+```
+
+---
+
+# 🔁 Retry vs Failure
+
+A retryable failure does not necessarily mean that the entire plan should fail immediately.
+
+```text
+Step Failure
+     │
+     ▼
+Retry Policy
+     │
+     ├── Retry
+     │
+     └── Fail
+```
+
+The retry limit provides a hard boundary.
+
+---
+
+# ⏸️ Pause vs Cancellation
+
+Pause and cancellation represent different execution decisions.
+
+### Pause
+
+```text
+Temporary interruption
+```
+
+### Cancellation
+
+```text
+Intentional termination
+```
+
+Conceptually:
+
+```text
+RUNNING
+  │
+  ├── pause ──► PAUSED ──► resume ──► RUNNING
+  │
+  └── cancel ───────────────────────► CANCELLED
+```
+
+This distinction is important for future human-in-the-loop workflows.
+
+---
+
+# ❌ Failure Handling
+
+Agent execution must not assume that every operation succeeds.
+
+Ultron's orchestration architecture therefore treats execution results explicitly.
+
+A failed step can:
+
+* Retry
+* Reach retry limit
+* Cause plan failure
+
+Conceptually:
+
+```text
+Execute Step
+     │
+     ▼
+Tool Result
+     │
+ ┌───┴────┐
+ │        │
+Success  Failure
+ │        │
+ ▼        ▼
+Next    Retry?
+Step     │
+         ├── Yes → Retry
+         │
+         └── No → Failed
+```
+
+This creates predictable behavior for multi-step execution.
 
 ---
 
@@ -1848,6 +2468,8 @@ The architecture can be extended with:
 * New planners
 * New orchestration strategies
 * New execution controllers
+* New lifecycle policies
+* New retry strategies
 * New execution policies
 * New workflows
 * New automation engines
@@ -1864,35 +2486,20 @@ Conceptually:
 
 ```text
 New Tool
-
    │
-
    ▼
-
 Tool Registration
-
    │
-
    ▼
-
 Tool Registry
-
    │
-
    ▼
-
 Capability Discovery
-
    │
-
    ▼
-
 Tool Selector
-
    │
-
    ▼
-
 Agent
 ```
 
@@ -1908,41 +2515,23 @@ Conceptually:
 
 ```text
 New Agent
-
    │
-
    ▼
-
 Validation
-
    │
-
    ▼
-
 Agent Registry
-
    │
-
    ▼
-
 Agent Engine
-
    │
-
    ▼
-
 Planner
-
    │
-
    ▼
-
 Orchestrator
-
    │
-
    ▼
-
 Execution Controller
 ```
 
@@ -1956,9 +2545,7 @@ Conceptually:
 
 ```text
                  AI Engine
-
                      │
-
        ┌─────────────┼─────────────┐
        │             │             │
        ▼             ▼             ▼
@@ -1987,6 +2574,7 @@ Development priorities:
 8. AI Capability
 9. Planning
 10. Automation
+11. Controlled Execution
 
 ---
 
@@ -1998,25 +2586,15 @@ The project therefore emphasizes:
 
 ```text
 Implement
-
    ↓
-
 Test
-
    ↓
-
 Integrate
-
    ↓
-
 Regression Test
-
    ↓
-
 Document
-
    ↓
-
 Release
 ```
 
@@ -2032,17 +2610,11 @@ Ultron follows a simple principle:
 
 ```text
 New capability
-
 +
-
 Existing functionality
-
 +
-
 Regression testing
-
 =
-
 Stable architecture
 ```
 
@@ -2188,7 +2760,7 @@ This helps prevent architectural growth from creating hidden regressions.
 
 ---
 
-## v0.41 — Agent Orchestration Stabilization
+# v0.41 — Agent Orchestration Stabilization
 
 The v0.41 milestone completed and stabilized the Agent Planning and Orchestration architecture.
 
@@ -2240,7 +2812,7 @@ The v0.41 milestone completed and stabilized the Agent Planning and Orchestratio
 
 # 🚀 v0.42 — Agent Execution Controller
 
-The v0.42 milestone introduces a dedicated **Agent Execution Controller** layer to strengthen execution control within the Agent Runtime.
+The v0.42 milestone introduced a dedicated **Agent Execution Controller** layer to strengthen execution control within the Agent Runtime.
 
 ### Agent Execution Controller
 
@@ -2271,38 +2843,220 @@ The v0.42 milestone introduces a dedicated **Agent Execution Controller** layer 
 
 ```text
 430 passed
-
 0 failed
 ```
 
-v0.42 establishes a dedicated execution-control boundary that can support future execution policies, permissions, retries, state management, and advanced autonomous execution.
+v0.42 established a dedicated execution-control boundary that could support future execution policies, permissions, retries, state management, and advanced autonomous execution.
 
 ---
 
-# 🧪 v0.42 Test Coverage
+# 🚀 v0.43 — Orchestrator Execution Control
 
-The v0.42 architecture adds dedicated testing around execution control.
+The v0.43 milestone extends the Agent Execution Controller into the Agent Orchestrator execution lifecycle.
+
+The primary goal of v0.43 is to move Ultron from basic controlled execution toward **lifecycle-aware, interruptible, retryable, and observable execution**.
+
+### Orchestrator Execution Control
+
+* AgentExecutionController integration
+* Execution lifecycle management
+* Running execution state
+* Paused execution state
+* Cancelled execution state
+* Completed execution state
+* Failed execution state
+* Pause and Resume execution control
+* Execution cancellation
+* Step retry support
+* Pending step skip support
+* Retry limit enforcement
+* Execution history tracking
+* Execution status tracking
+* Current step tracking
+* Backward-compatible direct step execution
+* Safe execution control integration
+
+### Execution Lifecycle
+
+v0.43 introduces explicit execution lifecycle states:
 
 ```text
-Agent Execution Controller
+RUNNING
+PAUSED
+CANCELLED
+COMPLETED
+FAILED
+```
 
-│
+These states provide a clear model for the current condition of an execution.
 
-├── Initialization
+### Pause and Resume
 
-├── Agent Execution Coordination
+Execution can now conceptually transition:
 
-├── Controlled Execution
+```text
+RUNNING
+   │
+   ▼
+PAUSED
+   │
+   ▼
+RUNNING
+```
 
-├── Execution Boundaries
+This establishes a foundation for interactive execution control.
 
-├── Runtime Integration
+### Cancellation
 
-├── Safe Execution
+Execution can be explicitly cancelled:
 
-├── Invalid Input Handling
+```text
+RUNNING
+   │
+   ▼
+CANCELLED
+```
 
-└── Regression Compatibility
+Cancellation is treated separately from execution failure.
+
+### Step Retry
+
+Failed steps can be retried when retry limits permit.
+
+```text
+Step
+ │
+ ▼
+Failure
+ │
+ ▼
+Retry
+ │
+ ▼
+Success / Failure
+```
+
+### Retry Limit Enforcement
+
+Retries remain bounded to prevent uncontrolled execution.
+
+```text
+Failure
+  │
+  ▼
+Retry Count
+  │
+  ▼
+Limit
+  │
+  ├── Within Limit → Retry
+  │
+  └── Reached → Failed
+```
+
+### Pending Step Skip
+
+Pending execution steps can be skipped when required.
+
+```text
+Step 1
+  │
+  ▼
+Step 2
+  │
+  ▼
+Skip Step 3
+  │
+  ▼
+Step 4
+```
+
+### Execution History
+
+The execution architecture tracks lifecycle and step-level execution history.
+
+This creates a foundation for:
+
+* Debugging
+* Auditing
+* Observability
+* Analytics
+* Execution inspection
+* Future execution replay
+
+### Execution Status
+
+Execution status is tracked using explicit lifecycle states.
+
+### Current Step
+
+The current execution step is tracked independently from completed and pending steps.
+
+### Backward Compatibility
+
+v0.43 preserves direct step execution behavior while adding lifecycle-aware execution control.
+
+### Safety
+
+The execution controller remains integrated with Ultron's existing safe execution boundaries.
+
+### Stability
+
+The v0.43 milestone maintains the full regression suite:
+
+```text
+430 passed in 21.12s
+0 failed
+```
+
+---
+
+# 🧪 v0.43 Test Coverage
+
+The v0.43 milestone adds execution-control coverage across the Agent Orchestrator and Agent Execution Controller.
+
+```text
+v0.43
+ │
+ ├── AgentExecutionController Integration
+ │
+ ├── Execution Lifecycle
+ │
+ ├── RUNNING State
+ │
+ ├── PAUSED State
+ │
+ ├── CANCELLED State
+ │
+ ├── COMPLETED State
+ │
+ ├── FAILED State
+ │
+ ├── Pause Control
+ │
+ ├── Resume Control
+ │
+ ├── Cancellation
+ │
+ ├── Step Retry
+ │
+ ├── Retry Limit Enforcement
+ │
+ ├── Pending Step Skip
+ │
+ ├── Execution History
+ │
+ ├── Execution Status
+ │
+ ├── Current Step Tracking
+ │
+ ├── Direct Step Execution
+ │
+ ├── Backward Compatibility
+ │
+ ├── Safe Execution
+ │
+ └── Regression Compatibility
 ```
 
 ---
@@ -2315,16 +3069,107 @@ Agent Execution Controller
 ╠══════════════════════════════════════╣
 ║ Tests Passed:              430       ║
 ║ Tests Failed:                0       ║
-║ Status:                  PASS       ║
-║ Release:                 v0.42      ║
+║ Status:                   PASS       ║
+║ Release:                 v0.43      ║
 ╚══════════════════════════════════════╝
 ```
+
+Actual test execution:
+
+```text
+430 passed in 21.12s
+```
+
+---
+
+# 🧠 v0.43 Architectural Improvement
+
+The main architectural improvement of v0.43 is the separation between:
+
+```text
+Planning
+```
+
+```text
+Orchestration
+```
+
+```text
+Execution Control
+```
+
+and:
+
+```text
+Execution Lifecycle
+```
+
+The architecture can now be understood as:
+
+```text
+Planner
+   │
+   ▼
+Plan
+   │
+   ▼
+Orchestrator
+   │
+   ▼
+Execution Controller
+   │
+   ▼
+Lifecycle State
+   │
+   ▼
+Step Execution
+```
+
+This makes the execution stack significantly easier to extend.
+
+---
+
+# 🧩 v0.43 Architectural Boundaries
+
+The v0.43 execution architecture establishes several explicit boundaries.
+
+### Planning Boundary
+
+```text
+What should happen?
+```
+
+### Orchestration Boundary
+
+```text
+Which step should happen next?
+```
+
+### Execution Control Boundary
+
+```text
+How should execution be controlled?
+```
+
+### Lifecycle Boundary
+
+```text
+What state is execution currently in?
+```
+
+### Tool Boundary
+
+```text
+Which capability performs the operation?
+```
+
+This separation is a major foundation for future autonomous workflows.
 
 ---
 
 # 🔮 Future Roadmap
 
-## v0.43+
+## v0.44+
 
 Future development may expand the agent architecture with:
 
@@ -2347,6 +3192,10 @@ Future development may expand the agent architecture with:
 * Conditional execution
 * Branching workflows
 * Advanced execution control
+* Human-in-the-loop execution
+* Approval checkpoints
+* Resource management
+* Execution persistence
 
 ---
 
@@ -2358,65 +3207,42 @@ Potential architecture:
 
 ```text
 User Goal
-
    │
-
    ▼
-
 Intent Understanding
-
    │
-
    ▼
-
 Agent Reasoning
-
    │
-
    ▼
-
 Planning
-
    │
-
    ▼
-
 Plan Validation
-
    │
-
    ▼
-
 Orchestration
-
    │
-
    ▼
-
 Execution Controller
-
    │
-
    ▼
-
+Lifecycle Management
+   │
+   ▼
 Tool Selection
-
    │
-
    ▼
-
 Tool Execution
-
    │
-
    ▼
-
 Result Evaluation
-
    │
-
    ├── Continue
    ├── Retry
+   ├── Skip
+   ├── Pause
+   ├── Cancel
    ├── Re-plan
    └── Complete
 ```
@@ -2431,15 +3257,10 @@ A future planning system may support:
 
 ```text
 Goal
-
  │
-
  ▼
-
 Plan
-
  │
-
  ├── Step A
  ├── Step B
  └── Step C
@@ -2468,47 +3289,29 @@ Potential flow:
 
 ```text
 Trigger
-
   │
-
   ▼
-
 Workflow
-
   │
-
   ▼
-
 Plan
-
   │
-
   ▼
-
 Orchestrator
-
   │
-
   ▼
-
 Execution Controller
-
   │
-
   ▼
-
+Lifecycle Management
+  │
+  ▼
 Tool Selection
-
   │
-
   ▼
-
 Execution
-
   │
-
   ▼
-
 Result
 ```
 
@@ -2521,6 +3324,8 @@ Potential future automation features:
 * Retry policies
 * Execution history
 * Persistent workflow state
+* Pause and resume
+* Workflow cancellation
 
 ---
 
@@ -2531,19 +3336,17 @@ Future versions may allow agents to cooperate.
 Conceptually:
 
 ```text
-                 Coordinator Agent
-
-                         │
-
-             ┌───────────┼───────────┐
-             │           │           │
-             ▼           ▼           ▼
-          Agent A     Agent B     Agent C
-             │           │           │
-             └───────────┼───────────┘
-                         │
-                         ▼
-                    Final Result
+                Coordinator Agent
+                        │
+            ┌───────────┼───────────┐
+            │           │           │
+            ▼           ▼           ▼
+         Agent A     Agent B     Agent C
+            │           │           │
+            └───────────┼───────────┘
+                        │
+                        ▼
+                   Final Result
 ```
 
 The current Agent Runtime, Planner, Orchestrator, and Execution Controller architecture provides a foundation for this direction.
@@ -2563,6 +3366,7 @@ Potential capabilities:
 * Tool usage history
 * Long-term agent context
 * Learned preferences
+* Execution state persistence
 
 ---
 
@@ -2577,10 +3381,13 @@ Potential capabilities:
 * Step traces
 * Tool traces
 * Execution Controller traces
+* Lifecycle traces
 * Failure diagnostics
 * Performance metrics
 * Execution history
 * Debugging interfaces
+* Retry analytics
+* Current-step visualization
 
 ---
 
@@ -2603,6 +3410,8 @@ Potential future controls include:
 * Agent isolation
 * Workflow isolation
 * Execution Controller policies
+* Human approval
+* Execution sandboxing
 
 ---
 
@@ -2616,9 +3425,7 @@ Potential platform architecture:
 
 ```text
                          ULTRON PLATFORM
-
                                 │
-
         ┌───────────────────────┼────────────────────────┐
         │                       │                        │
         ▼                       ▼                        ▼
@@ -2627,7 +3434,7 @@ Potential platform architecture:
         │               ┌───────┼────────┐              │
         │               │       │        │              │
         ▼               ▼       ▼        ▼              ▼
-    AI Models         Agents  Tools   Workflows      Triggers
+    AI Models         Agents  Tools  Workflows       Triggers
                                 │
                                 ▼
                          Agent Planner
@@ -2636,10 +3443,13 @@ Potential platform architecture:
                          Orchestrator
                                 │
                                 ▼
-                      Execution Controller
+                       Execution Controller
                                 │
                                 ▼
-                          Tool System
+                       Lifecycle Management
+                                │
+                                ▼
+                           Tool System
 ```
 
 Future platform capabilities may include:
@@ -2665,19 +3475,14 @@ The long-term architecture can grow into an ecosystem where:
 
 ```text
 Users
-
  │
-
  ├── Personal Assistants
  ├── Custom Agents
  ├── Automated Workflows
  ├── AI Tools
  └── Integrations
-
           │
-
           ▼
-
      Ultron Platform
 ```
 
@@ -2693,25 +3498,15 @@ The project aims to evolve from:
 
 ```text
 Personal Assistant
-
        ↓
-
 AI Assistant
-
        ↓
-
 Agent Runtime
-
        ↓
-
 Agent Platform
-
        ↓
-
 Automation Platform
-
        ↓
-
 AI Ecosystem
 ```
 
@@ -2725,83 +3520,47 @@ Ultron's development path can be represented as:
 
 ```text
 v0.x
-
  │
-
  ▼
-
 Core Intelligence
-
  │
-
  ▼
-
 Conversation & Memory
-
  │
-
  ▼
-
 AI Integration
-
  │
-
  ▼
-
 Agent Runtime
-
  │
-
  ▼
-
 Tool System
-
  │
-
  ▼
-
 Capability Selection
-
  │
-
  ▼
-
 Planning
-
  │
-
  ▼
-
 Orchestration
-
  │
-
  ▼
-
 Execution Control
-
  │
-
  ▼
-
+Execution Lifecycle
+ │
+ ▼
 Automation
-
  │
-
  ▼
-
 Advanced Agents
-
  │
-
  ▼
-
 Production Hardening
-
  │
-
  ▼
-
 v1.0
 ```
 
@@ -2817,29 +3576,17 @@ The development process is:
 
 ```text
 Architecture
-
     ↓
-
 Implementation
-
     ↓
-
 Testing
-
     ↓
-
 Integration
-
     ↓
-
 Regression Validation
-
     ↓
-
 Documentation
-
     ↓
-
 Release
 ```
 
@@ -2875,6 +3622,8 @@ v0.40 → Planning & Orchestration Foundation
 v0.41 → Orchestration Stabilization
 
 v0.42 → Agent Execution Controller
+
+v0.43 → Orchestrator Execution Control
 
 v1.0  → Future Stable Platform
 ```
@@ -2921,6 +3670,22 @@ Agents should select capabilities rather than hard-coded tool implementations.
 
 Agent execution should pass through controlled runtime boundaries.
 
+## Lifecycle Awareness
+
+Execution should expose explicit lifecycle states.
+
+## Bounded Retries
+
+Retry behavior should remain controlled and predictable.
+
+## Explicit Cancellation
+
+Cancellation should be represented separately from failure.
+
+## Execution Observability
+
+Execution status, current step, and history should remain trackable.
+
 ## Incremental Development
 
 Large systems should be developed through small, testable milestones.
@@ -2939,49 +3704,31 @@ An agent platform requires significantly more structure:
 
 ```text
 User
-
   ↓
-
 Intent
-
   ↓
-
 Agent
-
   ↓
-
 Plan
-
   ↓
-
 Steps
-
   ↓
-
 Orchestration
-
   ↓
-
 Execution Control
-
   ↓
-
+Lifecycle
+  ↓
 Capability Selection
-
   ↓
-
 Tool
-
   ↓
-
 Result
-
   ↓
-
 Evaluation
-
   ↓
-
+Retry / Skip / Pause / Resume / Cancel
+  ↓
 Next Step
 ```
 
@@ -2995,9 +3742,7 @@ Ultron is designed so that new functionality can be added as modular components.
 
 ```text
                  Core Platform
-
                       │
-
        ┌──────────────┼──────────────┐
        │              │              │
        ▼              ▼              ▼
@@ -3007,17 +3752,20 @@ Ultron is designed so that new functionality can be added as modular components.
    Planning        Registry       AI Engine
        │              │
        ▼              ▼
-  Orchestration    Selection
+ Orchestration    Selection
        │
        ▼
 Execution Control
+       │
+       ▼
+Lifecycle Management
 ```
 
 ---
 
 # 🚀 Project Status
 
-## Ultron v0.42 — Active Development
+## Ultron v0.43 — Active Development
 
 The project currently contains the architectural foundations for:
 
@@ -3039,6 +3787,16 @@ The project currently contains the architectural foundations for:
 * Safe execution
 * Structured tool results
 * Agent execution control
+* Execution lifecycle management
+* Pause and resume
+* Cancellation
+* Step retry
+* Retry limit enforcement
+* Pending step skip
+* Execution history
+* Execution status
+* Current step tracking
+* Backward-compatible execution
 * Automated testing
 
 Current validation:
@@ -3056,25 +3814,18 @@ Before a version is considered stable, Ultron aims to satisfy:
 
 ```text
 [✓] Feature implemented
-
 [✓] Architecture integrated
-
 [✓] Unit tests
-
 [✓] Integration tests
-
 [✓] Regression tests
-
 [✓] Error handling
-
 [✓] Safe execution
-
 [✓] Execution control
-
+[✓] Lifecycle management
+[✓] Retry boundaries
+[✓] Cancellation control
 [✓] Documentation
-
 [✓] Version update
-
 [✓] Release validation
 ```
 
@@ -3086,42 +3837,26 @@ Recommended development workflow:
 
 ```text
 1. Define capability
-
        ↓
-
 2. Design architecture
-
        ↓
-
 3. Implement component
-
        ↓
-
 4. Integrate with runtime
-
        ↓
-
 5. Add tests
-
        ↓
-
 6. Run regression suite
-
        ↓
-
 7. Review changes
-
        ↓
-
 8. Update README
-
        ↓
-
-9. Commit release
-
+9. Update version
        ↓
-
-10. Push repository
+10. Commit release
+       ↓
+11. Push repository
 ```
 
 ---
@@ -3136,6 +3871,7 @@ The README is intended to document:
 * Component responsibilities
 * Testing status
 * Security principles
+* Execution lifecycle
 * Future roadmap
 * Long-term platform direction
 
@@ -3155,10 +3891,12 @@ As the architecture matures, future contribution areas may include:
 * Workflow systems
 * Automation
 * Execution control
+* Lifecycle systems
 * Testing
 * Documentation
 * Developer tooling
 * Safety infrastructure
+* Observability
 
 ---
 
@@ -3183,7 +3921,11 @@ Separate responsibilities.
 
 Integrate carefully.
 
+Control execution.
+
 Improve continuously.
+
+Build the future.
 ```
 
 The project is intentionally growing from a small assistant into a larger agent architecture through incremental milestones.
@@ -3198,70 +3940,119 @@ The project is intentionally growing from a small assistant into a larger agent 
                          └──────┬───────┘
                                 │
                                 ▼
-                   ┌─────────────────────┐
-                   │ Conversation Engine │
-                   └──────────┬──────────┘
-                              │
-                              ▼
-                   ┌─────────────────────┐
-                   │       Memory        │
-                   └──────────┬──────────┘
-                              │
-                              ▼
-                   ┌─────────────────────┐
-                   │      AI Engine      │
-                   └──────────┬──────────┘
-                              │
-                              ▼
-                   ┌─────────────────────┐
-                   │    Agent Runtime    │
-                   └──────────┬──────────┘
-                              │
-                              ▼
-                   ┌─────────────────────┐
-                   │    Agent Planner    │
-                   └──────────┬──────────┘
-                              │
-                              ▼
-                   ┌─────────────────────┐
-                   │  Agent Plan / Steps │
-                   └──────────┬──────────┘
-                              │
-                              ▼
-                   ┌─────────────────────┐
-                   │ Agent Orchestrator  │
-                   └──────────┬──────────┘
-                              │
-                              ▼
-                   ┌─────────────────────┐
-                   │ Execution Controller│
-                   └──────────┬──────────┘
-                              │
-                              ▼
-                   ┌─────────────────────┐
-                   │    Tool Selector    │
-                   └──────────┬──────────┘
-                              │
-                              ▼
-                   ┌─────────────────────┐
-                   │    Tool Registry    │
-                   └──────────┬──────────┘
-                              │
-                              ▼
-                   ┌─────────────────────┐
-                   │     Agent Tool      │
-                   └──────────┬──────────┘
-                              │
-                              ▼
-                   ┌─────────────────────┐
-                   │  Structured Result  │
-                   └──────────┬──────────┘
-                              │
-                              ▼
-                   ┌─────────────────────┐
-                   │ Complete / Fail /   │
-                   │     Next Step       │
-                   └─────────────────────┘
+                    ┌─────────────────────┐
+                    │ Conversation Engine │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │       Memory        │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │      AI Engine      │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │    Agent Runtime    │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │    Agent Planner    │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │  Agent Plan / Steps │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │  Agent Orchestrator │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ Execution Controller│
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ Lifecycle Management│
+                    └──────────┬──────────┘
+                               │
+                ┌──────────────┼──────────────┐
+                │              │              │
+                ▼              ▼              ▼
+             RUNNING        PAUSED       CANCELLED
+                │              │
+                │              │ resume
+                │              │
+                │              ▼
+                │           RUNNING
+                │
+                ▼
+          ┌──────────────┐
+          │ Tool Selector│
+          └──────┬───────┘
+                 │
+                 ▼
+          ┌──────────────┐
+          │ Tool Registry│
+          └──────┬───────┘
+                 │
+                 ▼
+          ┌──────────────┐
+          │  Agent Tool  │
+          └──────┬───────┘
+                 │
+                 ▼
+          ┌──────────────┐
+          │Structured    │
+          │   Result     │
+          └──────┬───────┘
+                 │
+                 ▼
+       ┌─────────────────────────┐
+       │ Retry / Skip / Continue │
+       └────────────┬────────────┘
+                    │
+                    ▼
+            ┌───────────────┐
+            │ Next Step     │
+            └───────┬───────┘
+                    │
+                    ▼
+              ┌───────────┐
+              │ COMPLETED │
+              └───────────┘
+
+Failure path:
+
+Tool Result
+    │
+    ▼
+ Failure
+    │
+    ▼
+Retry Allowed?
+    │
+ ┌──┴────┐
+ │       │
+Yes      No
+ │       │
+ ▼       ▼
+Retry   FAILED
+
+Cancellation path:
+
+RUNNING
+   │
+   ▼
+CANCELLED
 ```
 
 ---
@@ -3270,83 +4061,53 @@ The project is intentionally growing from a small assistant into a larger agent 
 
 ```text
 Personal Assistant
-
         │
-
         ▼
-
 Conversation Engine
-
         │
-
         ▼
-
 Memory System
-
         │
-
         ▼
-
 AI Engine
-
         │
-
         ▼
-
 Agent Runtime
-
         │
-
         ▼
-
 Tool System
-
         │
-
         ▼
-
 Capability Selection
-
         │
-
         ▼
-
 Agent Planning
-
         │
-
         ▼
-
 Agent Orchestration
-
         │
-
         ▼
-
-Execution Control
-
+Execution Controller
         │
-
         ▼
-
+Execution Lifecycle
+        │
+        ▼
+Pause / Resume
+        │
+        ▼
+Retry / Skip / Cancel
+        │
+        ▼
 Multi-Step Execution
-
         │
-
         ▼
-
 Automation
-
         │
-
         ▼
-
 Advanced Agent Platform
-
         │
-
         ▼
-
 v1.0
 ```
 
@@ -3374,6 +4135,11 @@ Future development will focus on:
 * Retry strategies
 * Conditional execution
 * Branching workflows
+* Advanced execution control
+* Human-in-the-loop workflows
+* Approval systems
+* Execution persistence
+* Workflow management
 
 Ultron's architecture is intentionally being built step by step so that future intelligence can be added on top of a stable execution foundation.
 
@@ -3387,37 +4153,23 @@ The journey is:
 
 ```text
 Assistant
-
    ↓
-
 Intelligence
-
    ↓
-
 Agents
-
    ↓
-
 Tools
-
    ↓
-
 Planning
-
    ↓
-
 Orchestration
-
    ↓
-
 Execution Control
-
    ↓
-
+Lifecycle Management
+   ↓
 Automation
-
    ↓
-
 Platform
 ```
 
@@ -3427,34 +4179,45 @@ Platform
 
 ```text
 ╔══════════════════════════════════════════════════════╗
-║                    ULTRON v0.42                     ║
+║                    ULTRON v0.43                     ║
 ╠══════════════════════════════════════════════════════╣
-║ Conversation Engine                     ✓            ║
-║ Smart Memory System                     ✓            ║
-║ User Profile Memory                     ✓            ║
-║ AI Provider Architecture                ✓            ║
-║ Anthropic Integration                   ✓            ║
-║ Mock AI Provider                        ✓            ║
-║ Agent Runtime                           ✓            ║
-║ Agent Tool System                       ✓            ║
-║ Tool Registry                           ✓            ║
-║ Tool Selector                           ✓            ║
-║ Capability-Based Selection               ✓            ║
-║ Agent Planner                           ✓            ║
-║ Agent Plans                             ✓            ║
-║ Agent Plan Steps                        ✓            ║
-║ Agent Orchestrator                      ✓            ║
-║ Sequential Execution                    ✓            ║
-║ Progress Tracking                       ✓            ║
-║ Failure Handling                        ✓            ║
-║ Safe Execution                          ✓            ║
-║ Agent Execution Controller              ✓            ║
-║ Agent Engine Integration                ✓            ║
-║ Automated Regression Testing             ✓            ║
+║ Conversation Engine                       ✓         ║
+║ Smart Memory System                       ✓         ║
+║ User Profile Memory                       ✓         ║
+║ AI Provider Architecture                  ✓         ║
+║ Anthropic Integration                     ✓         ║
+║ Mock AI Provider                          ✓         ║
+║ Agent Runtime                             ✓         ║
+║ Agent Tool System                         ✓         ║
+║ Tool Registry                             ✓         ║
+║ Tool Selector                             ✓         ║
+║ Capability-Based Selection                ✓         ║
+║ Agent Planner                             ✓         ║
+║ Agent Plans                               ✓         ║
+║ Agent Plan Steps                          ✓         ║
+║ Agent Orchestrator                        ✓         ║
+║ Sequential Execution                      ✓         ║
+║ Progress Tracking                         ✓         ║
+║ Failure Handling                          ✓         ║
+║ Safe Execution                            ✓         ║
+║ Agent Execution Controller                ✓         ║
+║ Execution Lifecycle                       ✓         ║
+║ Pause / Resume                            ✓         ║
+║ Execution Cancellation                    ✓         ║
+║ Step Retry Support                        ✓         ║
+║ Retry Limit Enforcement                   ✓         ║
+║ Pending Step Skip                         ✓         ║
+║ Execution History                         ✓         ║
+║ Execution Status Tracking                 ✓         ║
+║ Current Step Tracking                     ✓         ║
+║ Backward-Compatible Execution             ✓         ║
+║ Agent Engine Integration                  ✓         ║
+║ Automated Regression Testing              ✓         ║
 ╠══════════════════════════════════════════════════════╣
-║ Tests: 430 passed                                   ║
-║ Failures: 0                                         ║
-║ Status: Active Development                          ║
+║ Tests: 430 passed                                  ║
+║ Failures: 0                                        ║
+║ Test Time: 21.12s                                  ║
+║ Status: Active Development                         ║
 ╚══════════════════════════════════════════════════════╝
 ```
 
@@ -3462,19 +4225,37 @@ Platform
 
 # 💡 Engineering Principle
 
-> Build small. Test everything. Separate responsibilities. Improve continuously. Build the future.
+> Build small. Test everything. Separate responsibilities. Control execution. Improve continuously. Build the future.
 
 ---
 
-# 🚀 Ultron v0.42
+# 🚀 Ultron v0.43
 
 **Agent Planning.**
 
 **Agent Orchestration.**
 
-**Controlled Execution.**
+**Agent Execution Control.**
 
-**Execution Control.**
+**Execution Lifecycle Management.**
+
+**Pause and Resume.**
+
+**Execution Cancellation.**
+
+**Step Retry.**
+
+**Retry Limit Enforcement.**
+
+**Pending Step Skip.**
+
+**Execution History.**
+
+**Execution Status Tracking.**
+
+**Current Step Tracking.**
+
+**Backward-Compatible Execution.**
 
 **Modular Architecture.**
 
