@@ -1,6 +1,6 @@
 """
 Tests for Ultron Agent Execution Controller
-Version: v0.42
+Version: v0.44
 """
 
 import pytest
@@ -948,3 +948,244 @@ def test_repr():
     assert "AgentExecutionController" in representation
     assert "state='idle'" in representation
     assert "max_retries=2" in representation
+
+
+# ============================================================
+# v0.44 — Structured Execution Observability
+# ============================================================
+
+
+def test_execution_id_created_on_start(
+    controller,
+    plan,
+    agent,
+):
+    assert controller.get_execution_id() is None
+
+    assert controller.start(
+        plan,
+        agent,
+    ) is True
+
+    execution_id = controller.get_execution_id()
+
+    assert execution_id is not None
+    assert isinstance(execution_id, str)
+    assert execution_id.strip()
+
+
+def test_execution_started_structured_event(
+    controller,
+    plan,
+    agent,
+):
+    controller.start(
+        plan,
+        agent,
+    )
+
+    events = controller.get_events()
+
+    assert len(events) == 1
+
+    event = events[0]
+
+    assert event.event_type.value == "execution_started"
+    assert event.execution_id == controller.get_execution_id()
+    assert event.metadata["plan_id"] == plan.id
+    assert event.metadata["agent_id"] == agent.id
+
+
+def test_pause_resume_structured_events(
+    controller,
+    plan,
+    agent,
+):
+    controller.start(
+        plan,
+        agent,
+    )
+
+    assert controller.pause() is True
+    assert controller.resume() is True
+
+    events = controller.get_events()
+
+    assert [
+        event.event_type.value
+        for event in events
+    ] == [
+        "execution_started",
+        "execution_paused",
+        "execution_resumed",
+    ]
+
+
+def test_step_started_structured_event(
+    controller,
+    plan,
+    agent,
+    step,
+):
+    controller.start(
+        plan,
+        agent,
+    )
+
+    assert controller.set_current_step(
+        step
+    ) is True
+
+    events = controller.get_step_events(
+        step.id
+    )
+
+    assert len(events) == 1
+
+    event = events[0]
+
+    assert event.event_type.value == "step_started"
+    assert event.execution_id == controller.get_execution_id()
+    assert event.step_id == step.id
+
+
+def test_retry_structured_event(
+    controller,
+    plan,
+    agent,
+    step,
+):
+    controller.start(
+        plan,
+        agent,
+    )
+
+    controller.set_current_step(
+        step
+    )
+
+    step.fail(
+        "Failure."
+    )
+
+    assert controller.retry_step(
+        step
+    ) is True
+
+    events = controller.get_step_events(
+        step.id
+    )
+
+    assert [
+        event.event_type.value
+        for event in events
+    ] == [
+        "step_started",
+        "step_retried",
+    ]
+
+    assert events[-1].metadata["retry_count"] == 1
+
+
+def test_skip_structured_event(
+    controller,
+    plan,
+    agent,
+    step,
+):
+    controller.start(
+        plan,
+        agent,
+    )
+
+    assert controller.skip_step(
+        step
+    ) is True
+
+    events = controller.get_step_events(
+        step.id
+    )
+
+    assert len(events) == 1
+
+    assert events[0].event_type.value == "step_skipped"
+
+
+def test_latest_event(
+    controller,
+    plan,
+    agent,
+):
+    controller.start(
+        plan,
+        agent,
+    )
+
+    controller.pause()
+
+    latest = controller.get_latest_event()
+
+    assert latest is not None
+    assert latest.event_type.value == "execution_paused"
+
+
+def test_event_count(
+    controller,
+    plan,
+    agent,
+):
+    controller.start(
+        plan,
+        agent,
+    )
+
+    assert controller.get_event_count() == 1
+
+    controller.pause()
+
+    assert controller.get_event_count() == 2
+
+    controller.resume()
+
+    assert controller.get_event_count() == 3
+
+
+def test_status_contains_observability_data(
+    controller,
+    plan,
+    agent,
+):
+    controller.start(
+        plan,
+        agent,
+    )
+
+    status = controller.get_status()
+
+    assert status["execution_id"] == controller.get_execution_id()
+    assert status["event_count"] == 1
+
+
+def test_reset_clears_structured_events(
+    controller,
+    plan,
+    agent,
+):
+    controller.start(
+        plan,
+        agent,
+    )
+
+    execution_id = controller.get_execution_id()
+
+    assert controller.get_event_count() == 1
+
+    assert controller.reset() is True
+
+    assert controller.get_execution_id() is None
+    assert controller.get_events() == []
+    assert controller.get_event_count() == 0
+
+    assert controller.event_store.get_events(
+        execution_id
+    ) == []
