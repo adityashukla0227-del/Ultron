@@ -1,16 +1,16 @@
-# 🚀 v0.45 — Execution Observability
+# 🚀 v0.46 — Execution Metrics
 
-The v0.45 milestone extends Ultron's Agent Execution architecture with a dedicated **Execution Observability Layer**.
+The v0.46 milestone extends Ultron's Agent Execution architecture with a dedicated **Execution Metrics Layer** built on top of the existing Execution Observability architecture.
 
-The goal of v0.45 is to make agent execution more observable, traceable, queryable, and inspectable while preserving the existing execution-control architecture and backward compatibility.
+The goal of v0.46 is to transform structured execution events into immutable, aggregated execution metrics while preserving the existing execution-control and observability boundaries.
 
-v0.45 builds directly on the structured execution-event architecture introduced in v0.44.
+v0.46 builds directly on the Execution Event Store and Execution Observability architecture introduced in v0.44 and v0.45.
 
 ---
 
-# 🔍 Agent Execution Observability
+# 📊 Agent Execution Metrics
 
-v0.45 introduces a dedicated `ExecutionObservability` layer over the existing `ExecutionEventStore`.
+v0.46 introduces a dedicated `ExecutionMetricsCollector` that collects analytics from the existing `ExecutionObservability` layer.
 
 The architecture now follows:
 
@@ -43,499 +43,370 @@ Execution Observability
       ├── Latest Event Inspection
       ├── Event Counting
       └── Step-Level Inspection
+
+      │
+      ▼
+
+Execution Metrics
+
+      │
+      ├── Total Events
+      ├── Total Steps
+      ├── Completed Steps
+      ├── Failed Steps
+      ├── Retried Steps
+      ├── Skipped Steps
+      ├── Completion Status
+      ├── Failure Status
+      ├── Cancellation Status
+      ├── Pause Status
+      └── Resume Status
 ```
 
-This separates execution control from execution inspection.
+This creates a clean separation between:
 
-The observability layer is read-only and does not create, modify, or delete execution events.
+```text
+Execution Control
+        ↓
+Execution Events
+        ↓
+Execution Observability
+        ↓
+Execution Metrics
+```
 
 ---
 
-# 🧩 Execution Observability Layer
+# 🧩 Execution Metrics Layer
 
-The new `ExecutionObservability` component provides a dedicated inspection interface over `ExecutionEventStore`.
+The new `ExecutionMetrics` component represents an immutable aggregated snapshot for a single execution.
+
+The `ExecutionMetricsCollector` is responsible for calculating that snapshot from structured execution events.
 
 Responsibilities include:
 
 ```text
-ExecutionObservability
+ExecutionMetricsCollector
 
-├── Query Execution Events
-├── Filter Events
-├── Inspect Execution Timeline
-├── Inspect Latest Event
-├── Count Execution Events
-└── Inspect Step-Specific Events
+├── Aggregate Event Counts
+├── Calculate Unique Steps
+├── Count Completed Steps
+├── Count Failed Steps
+├── Count Retried Steps
+├── Count Skipped Steps
+├── Detect Completion
+├── Detect Failure
+├── Detect Cancellation
+├── Detect Pause
+└── Detect Resume
 ```
 
-This provides a clean abstraction for future dashboards, diagnostics, analytics, debugging, and monitoring systems.
-
----
-
-# 🔎 Event Query System
-
-v0.45 introduces structured event querying through:
+The collector remains read-only and does not modify:
 
 ```text
-query_events()
-```
+Execution Events
 
-The query system supports optional filtering by:
-
-```text
-Execution ID
-Event Type
-Step ID
-```
-
-Conceptually:
-
-```text
-ExecutionObservability
-
-        │
-        ▼
-
-   query_events()
-
-        │
-        ├── execution_id
-        │
-        ├── event_type
-        │
-        └── step_id
-```
-
-This allows callers to retrieve either all events or a specific subset of execution events.
-
-Examples of supported queries include:
-
-```text
-All events for execution
-
-Events of type STEP_FAILED
-
-Events belonging to step-1
-
-STEP_STARTED events for step-2
-```
-
-Filtering preserves the original event-store ordering.
-
----
-
-# 🧠 Event Query Validation
-
-The observability layer validates query parameters before accessing execution events.
-
-Validation includes:
-
-```text
-Execution ID
-│
-├── Must be a string
-└── Must not be empty
-
-Event Type
-│
-├── Optional
-└── Must be ExecutionEventType when provided
-
-Step ID
-│
-├── Optional
-├── Must be a string when provided
-└── Must not be empty
-```
-
-Invalid query parameters raise:
-
-```text
-ExecutionObservabilityError
-```
-
-This keeps the observability API predictable and safe.
-
----
-
-# 🕒 Execution Timeline
-
-v0.45 introduces execution timeline inspection.
-
-The observability layer can construct a chronological view of execution events through:
-
-```text
-get_timeline()
-```
-
-Conceptually:
-
-```text
 Execution Event Store
 
-        │
-        ▼
+Execution Observability
 
-Stored Events
-
-        │
-        ▼
-
-Chronological Ordering
-
-        │
-        ▼
-
-Execution Timeline
-```
-
-A timeline can therefore represent:
-
-```text
-EXECUTION_STARTED
-
-        │
-        ▼
-
-STEP_STARTED
-
-        │
-        ▼
-
-STEP_COMPLETED
-
-        │
-        ▼
-
-STEP_STARTED
-
-        │
-        ▼
-
-STEP_FAILED
-
-        │
-        ▼
-
-STEP_RETRIED
-
-        │
-        ▼
-
-STEP_COMPLETED
-
-        │
-        ▼
-
-EXECUTION_COMPLETED
-```
-
-This creates a deterministic view of execution progression.
-
----
-
-# ⚖️ Timeline Stability
-
-The timeline implementation preserves the original event-store ordering.
-
-The observability layer does not mutate stored events.
-
-Conceptually:
-
-```text
-Event Store
-
-Original Order
-      │
-      ▼
-ExecutionObservability
-      │
-      ▼
-Sorted Timeline
-      │
-      ▼
-Original Store
-Remains Unchanged
-```
-
-This prevents inspection operations from accidentally modifying execution history.
-
----
-
-# ⏱️ Stable Ordering for Equal Timestamps
-
-When multiple execution events have identical timestamps, v0.45 preserves their original relative ordering.
-
-Conceptually:
-
-```text
-Timestamp: T
-
-STEP A
-STEP B
-STEP C
-
-        │
-        ▼
-
-Timeline
-
-STEP A
-STEP B
-STEP C
-```
-
-This provides stable and deterministic timeline behavior even when timestamps are equal.
-
----
-
-# 📋 Existing Observability APIs
-
-v0.45 retains the existing execution inspection APIs introduced around the observability architecture.
-
-Supported operations include:
-
-```text
-get_events()
-
-get_latest_event()
-
-get_event_count()
-
-get_step_events()
-
-query_events()
-
-get_timeline()
-```
-
-These APIs provide different levels of execution inspection.
-
----
-
-# 📊 Execution Inspection Model
-
-The observability layer now provides:
-
-```text
-Execution
-
-│
-├── All Events
-│
-├── Latest Event
-│
-├── Event Count
-│
-├── Step Events
-│
-├── Filtered Events
-│
-└── Chronological Timeline
-```
-
-This allows higher-level systems to inspect execution without directly interacting with the underlying event-store implementation.
-
----
-
-# 🧱 Execution Observability Architecture
-
-The complete execution architecture now follows:
-
-```text
-Agent
-  │
-  ▼
-Planner
-  │
-  ▼
-Plan
-  │
-  ▼
-Orchestrator
-  │
-  ▼
 Execution Controller
-  │
-  ├──────────────────────┐
-  │                      │
-  ▼                      ▼
-Execution State      Execution Events
-  │                      │
-  ▼                      ▼
-Lifecycle             Event Store
-  │                      │
-  │                      ▼
-  │               Observability Layer
-  │                      │
-  │          ┌───────────┼───────────┐
-  │          ▼           ▼           ▼
-  │       Queries     Timeline    Inspection
-  │
-  ▼
-Controlled Execution
-```
 
-This separation allows execution control and execution observability to evolve independently.
+Execution State
+```
 
 ---
 
-# 🧩 Execution Events
+# 🧠 ExecutionMetrics Model
 
-The execution controller records structured events for important execution transitions.
+`ExecutionMetrics` provides an immutable representation of execution analytics.
 
-Supported event categories include:
+Conceptually:
+
+```text
+ExecutionMetrics
+
+├── execution_id
+├── total_events
+├── total_steps
+├── completed_steps
+├── failed_steps
+├── retried_steps
+├── skipped_steps
+├── execution_completed
+├── execution_failed
+├── execution_cancelled
+├── execution_paused
+└── execution_resumed
+```
+
+The metrics object is implemented as a frozen dataclass, providing an immutable metric snapshot.
+
+---
+
+# 📈 Execution Metrics Collection
+
+Metrics are collected through:
+
+```text
+ExecutionMetricsCollector.collect()
+```
+
+The collector receives an execution ID and queries the existing observability layer.
+
+Conceptually:
+
+```text
+Execution ID
+
+     │
+     ▼
+
+ExecutionMetricsCollector
+
+     │
+     ▼
+
+ExecutionObservability
+
+     │
+     ▼
+
+Execution Events
+
+     │
+     ▼
+
+Metric Aggregation
+
+     │
+     ▼
+
+ExecutionMetrics
+```
+
+This keeps metrics logic independent from the underlying event-store implementation.
+
+---
+
+# 🔢 Event Metrics
+
+v0.46 calculates:
+
+```text
+Total Events
+```
+
+This represents the total number of structured execution events associated with the requested execution.
+
+For example:
 
 ```text
 EXECUTION_STARTED
-
-EXECUTION_COMPLETED
-
-EXECUTION_FAILED
-
-EXECUTION_PAUSED
-
-EXECUTION_RESUMED
-
-EXECUTION_CANCELLED
-
 STEP_STARTED
-
 STEP_COMPLETED
-
+STEP_STARTED
 STEP_FAILED
-
 STEP_RETRIED
+STEP_COMPLETED
+EXECUTION_COMPLETED
+```
 
+produces:
+
+```text
+total_events = 8
+```
+
+---
+
+# 🧮 Step Metrics
+
+v0.46 calculates unique execution steps using their `step_id`.
+
+The metric:
+
+```text
+total_steps
+```
+
+represents the number of unique step IDs present in the execution events.
+
+Repeated events for the same step do not create duplicate step counts.
+
+For example:
+
+```text
+step-1 → STEP_STARTED
+step-1 → STEP_COMPLETED
+
+step-2 → STEP_STARTED
+step-2 → STEP_FAILED
+step-2 → STEP_RETRIED
+step-2 → STEP_COMPLETED
+```
+
+produces:
+
+```text
+total_steps = 2
+```
+
+---
+
+# ✅ Completed Step Metrics
+
+The collector counts:
+
+```text
+STEP_COMPLETED
+```
+
+events to calculate:
+
+```text
+completed_steps
+```
+
+This provides a direct measurement of successful step completion events.
+
+---
+
+# ❌ Failed Step Metrics
+
+The collector counts:
+
+```text
+STEP_FAILED
+```
+
+events to calculate:
+
+```text
+failed_steps
+```
+
+This provides a direct execution failure metric at the step level.
+
+---
+
+# 🔄 Retried Step Metrics
+
+The collector counts:
+
+```text
+STEP_RETRIED
+```
+
+events to calculate:
+
+```text
+retried_steps
+```
+
+This allows future execution analytics to measure retry behavior.
+
+---
+
+# ⏭️ Skipped Step Metrics
+
+The collector counts:
+
+```text
 STEP_SKIPPED
 ```
 
-This provides a consistent event model for observing execution behavior.
+events to calculate:
+
+```text
+skipped_steps
+```
+
+This provides visibility into steps that were intentionally bypassed during execution.
 
 ---
 
-# 🧠 Execution Event Model
+# 🏁 Execution Lifecycle Metrics
 
-The `ExecutionEvent` component represents a structured execution transition.
+v0.46 detects execution lifecycle states directly from structured execution events.
+
+Supported lifecycle metrics include:
+
+```text
+execution_completed
+execution_failed
+execution_cancelled
+execution_paused
+execution_resumed
+```
+
+These values are represented as boolean metrics.
 
 Conceptually:
 
 ```text
-ExecutionEvent
-
-│
-├── execution_id
-├── agent_id
-├── plan_id
-├── step_id
-├── event_type
-├── timestamp
-└── metadata
-```
-
-This allows execution transitions to be represented independently from controller state.
-
----
-
-# 🗄️ Execution Event Store
-
-The `ExecutionEventStore` provides the dedicated storage layer for execution events.
-
-Conceptually:
-
-```text
-Execution Controller
-
-        │
-        ▼
-
-Execution Event
-
-        │
-        ▼
-
-Execution Event Store
-
-        │
-        ├── Record Event
-        ├── Record Multiple Events
-        ├── Retrieve Events
-        ├── Retrieve Latest Event
-        ├── Count Events
-        └── Retrieve Step Events
-```
-
-The event store forms the persistence boundary for the current in-memory execution-event architecture and provides the foundation for future persistent event storage.
-
----
-
-# 🆔 Execution Identity
-
-v0.45 continues to use explicit execution identity through:
-
-```text
-execution_id
-```
-
-This allows individual executions to be distinguished from one another.
-
-```text
-Agent
- │
- ▼
-Plan
- │
- ▼
-Execution ID
- │
- ▼
 Execution Events
- │
- ▼
-Event Store
- │
- ▼
-Observability
- │
- ▼
-Execution History
+
+      │
+      ├── EXECUTION_COMPLETED
+      │          ↓
+      │   execution_completed = True
+      │
+      ├── EXECUTION_FAILED
+      │          ↓
+      │   execution_failed = True
+      │
+      ├── EXECUTION_CANCELLED
+      │          ↓
+      │   execution_cancelled = True
+      │
+      ├── EXECUTION_PAUSED
+      │          ↓
+      │   execution_paused = True
+      │
+      └── EXECUTION_RESUMED
+                 ↓
+          execution_resumed = True
 ```
 
-This provides a foundation for future execution persistence, replay, analytics, debugging, and distributed tracing.
+This allows higher-level systems to inspect execution outcomes without directly accessing controller state.
 
 ---
 
-# 🔄 Controller Integration
+# 🔎 Metrics and Observability Separation
 
-The `AgentExecutionController` integrates execution lifecycle behavior with structured execution events.
-
-The controller maintains concepts including:
+The architecture now separates event inspection from event analytics.
 
 ```text
-Execution State
-
-Current Agent
-
-Current Plan
-
-Current Step
-
-Retry Counts
-
-Execution History
-
-Execution ID
-
 Execution Event Store
+        │
+        ▼
+Execution Observability
+        │
+        ├── Query
+        ├── Filter
+        ├── Timeline
+        └── Inspection
+        │
+        ▼
+Execution Metrics Collector
+        │
+        ├── Aggregate
+        ├── Count
+        ├── Calculate
+        └── Detect
+        │
+        ▼
+Execution Metrics
 ```
 
-The event store and observability layer remain additional architectural layers rather than replacements for existing execution-control behavior.
+This separation allows both layers to evolve independently.
 
 ---
 
-# 🔐 Read-Only Observability
+# 🔐 Read-Only Metrics
 
-The observability layer intentionally remains read-only.
+The metrics layer intentionally remains read-only.
 
 ```text
 Execution Controller
@@ -546,142 +417,145 @@ Execution Event Store
         ▼
 Execution Observability
         │
-        ├── Read
-        ├── Query
-        ├── Filter
-        └── Inspect
+        ▼
+Execution Metrics
 ```
 
-Observability does not:
+Metrics collection does not:
 
 ```text
 Create events
+
 Modify events
+
 Delete events
+
+Modify execution state
+
 Control execution
-Bypass execution policies
+
+Trigger retries
+
+Cancel execution
+
+Pause execution
+
+Resume execution
 ```
 
-This keeps execution control and execution inspection clearly separated.
+This preserves the architectural boundary between execution control and execution analytics.
 
 ---
 
-# 🔗 Execution History vs Structured Events
+# 🧱 Complete Execution Observability Architecture
 
-Execution history answers:
+The execution architecture now follows:
 
 ```text
-What has happened during execution?
+Agent
+
+ │
+
+ ▼
+
+Planner
+
+ │
+
+ ▼
+
+Plan
+
+ │
+
+ ▼
+
+Orchestrator
+
+ │
+
+ ▼
+
+Execution Controller
+
+ │
+ ├──────────────────────────┐
+ │                          │
+ ▼                          ▼
+
+Execution State       Execution Events
+
+ │                          │
+
+ ▼                          ▼
+
+Lifecycle              Event Store
+
+                            │
+                            ▼
+
+                     Observability
+
+                            │
+                 ┌──────────┼──────────┐
+                 ▼          ▼          ▼
+
+              Queries    Timeline   Inspection
+
+                            │
+                            ▼
+
+                    Metrics Collector
+
+                            │
+                            ▼
+
+                    Execution Metrics
 ```
 
-Structured execution events answer:
+This provides three distinct layers:
 
 ```text
-What specific execution transition occurred?
-```
+Execution Control
 
-Observability adds:
+Execution Observability
 
-```text
-How can those transitions be inspected and queried?
-```
-
-Together:
-
-```text
-Current State
-
-      +
-
-Execution History
-
-      +
-
-Structured Events
-
-      +
-
-Observability Queries
-
-      +
-
-Execution Timeline
-
-      =
-
-Execution Observability Foundation
+Execution Analytics
 ```
 
 ---
 
-# 🧪 v0.45 Test Coverage
+# 🧪 v0.46 Test Coverage
 
-The v0.45 milestone expands automated testing around execution observability.
+The v0.46 milestone expands automated testing around execution metrics.
 
 ```text
-v0.45
+v0.46
 
-│
-├── Execution Event Model
-│
-├── Execution Event Types
-│
-├── Execution Event Validation
-│
-├── Execution Event Store
-│
-├── Event Recording
-│
-├── Event Retrieval
-│
-├── Execution Identity
-│
-├── Controller Event Integration
-│
-├── Execution Lifecycle Events
-│
-├── Step-Level Events
-│
-├── Retry Events
-│
-├── Skip Events
-│
-├── Pause Events
-│
-├── Resume Events
-│
-├── Cancellation Events
-│
-├── Completion Events
-│
-├── Failure Events
-│
-├── Observability Layer
-│
-├── Event Querying
-│
-├── Event Filtering
-│
-├── Event Type Filtering
-│
-├── Step Filtering
-│
-├── Combined Filtering
-│
-├── Query Validation
-│
-├── Timeline Generation
-│
-├── Chronological Ordering
-│
-├── Stable Timestamp Ordering
-│
-├── Store Order Preservation
-│
+├── Execution Metrics Model
+├── Metrics Collector
+├── Execution ID Validation
+├── Total Event Counting
+├── Unique Step Counting
+├── Completed Step Counting
+├── Failed Step Counting
+├── Retried Step Counting
+├── Skipped Step Counting
+├── Execution Completion Detection
+├── Execution Failure Detection
+├── Execution Cancellation Detection
+├── Execution Pause Detection
+├── Execution Resume Detection
+├── Unknown Execution Handling
+├── Invalid Execution ID Handling
+├── Metrics Immutability
+├── Read-Only Metrics Collection
+├── Event Store Preservation
+├── Event Order Independence
+├── Execution Event Exclusion From Step Counts
+├── Step ID Validation
+├── Observability Integration
 ├── Backward Compatibility
-│
-├── Safe Execution
-│
 └── Full Regression Testing
 ```
 
@@ -690,240 +564,175 @@ v0.45
 # 📊 Current Test Status
 
 ```text
-530 passed
+553 passed
 0 failed
 ```
 
-The full regression suite passes after introducing the extended execution observability architecture.
+The full regression suite passes after introducing the Execution Metrics architecture.
 
 ```text
-Tests Passed: 530
+Tests Passed: 553
 
 Tests Failed: 0
 
 Status: PASS
 
-Release: v0.45
+Release: v0.46
 ```
 
-This confirms that the observability layer integrates with the existing Agent Runtime without breaking previous functionality.
+This confirms that the metrics layer integrates with the existing Agent Runtime and Execution Observability architecture without breaking previous functionality.
 
 ---
 
-# 🧪 v0.45 Observability Validation
+# 🧪 v0.46 Metrics Validation
 
-The v0.45 test suite validates:
+The v0.46 test suite validates:
 
 ```text
-[✓] Event retrieval
+[✓] Execution metrics creation
 
-[✓] Latest event inspection
+[✓] Total event counting
 
-[✓] Event counting
+[✓] Unique step counting
 
-[✓] Step event inspection
+[✓] Completed step counting
 
-[✓] Event querying
+[✓] Failed step counting
 
-[✓] Event type filtering
+[✓] Retried step counting
 
-[✓] Step filtering
+[✓] Skipped step counting
 
-[✓] Combined filtering
+[✓] Execution completion detection
 
-[✓] Invalid execution ID handling
+[✓] Execution failure detection
 
-[✓] Invalid event type handling
+[✓] Execution cancellation detection
 
-[✓] Invalid step ID handling
+[✓] Execution pause detection
+
+[✓] Execution resume detection
 
 [✓] Unknown execution handling
 
-[✓] Timeline generation
+[✓] Invalid execution ID handling
 
-[✓] Chronological ordering
+[✓] Event store preservation
 
-[✓] Stable equal-timestamp ordering
+[✓] Event order independence
 
-[✓] Store-order preservation
+[✓] Execution event exclusion from step counts
+
+[✓] Step ID based counting
+
+[✓] Read-only metrics collection
 
 [✓] Backward compatibility
 
-[✓] Regression stability
+[✓] Full regression stability
 ```
 
 ---
 
-# 🧭 Execution Timeline Inspection
+# 📊 Execution Analytics Model
 
-The observability layer now makes execution timelines directly inspectable.
-
-Conceptually:
+The execution architecture now provides:
 
 ```text
-Execution ID
-     │
-     ▼
-Event Store
-     │
-     ▼
-Observability
-     │
-     ▼
-Timeline
-     │
-     ├── Event 1
-     ├── Event 2
-     ├── Event 3
-     ├── Event 4
-     └── Event N
+Execution
+
+│
+
+├── Current State
+
+├── Execution History
+
+├── Structured Events
+
+├── Event Queries
+
+├── Event Timeline
+
+└── Execution Metrics
 ```
 
-This provides a foundation for future visual execution timelines and monitoring dashboards.
-
----
-
-# 🔎 Event Query Architecture
-
-The query layer now supports:
+This creates a foundation for future:
 
 ```text
-                    query_events()
+Execution Analytics
 
-                          │
+Performance Monitoring
 
-              ┌───────────┼───────────┐
-              │           │           │
-              ▼           ▼           ▼
+Failure Analysis
 
-        execution_id  event_type   step_id
+Retry Analysis
 
-              │           │           │
-              └───────────┼───────────┘
-                          ▼
-                    Event Filtering
-                          │
-                          ▼
-                   Matching Events
-```
+Workflow Monitoring
 
-Queries can therefore be broad or highly specific.
+Agent Dashboards
 
-Examples:
-
-```text
-All execution events
-
-        ↓
-
-Only STEP_FAILED events
-
-        ↓
-
-Only events for step-2
-
-        ↓
-
-STEP_STARTED events for step-2
+Execution Reporting
 ```
 
 ---
 
-# 🛡️ Safety and Observability
+# 🔗 Updated Dependency Direction
 
-Execution observability remains integrated with Ultron's existing safe execution boundaries.
+Ultron's execution architecture now follows:
 
 ```text
-Execution Policy
+Conversation
 
-      │
-      ▼
+     │
+     ▼
+
+AI Engine
+
+     │
+     ▼
+
+Agent Runtime
+
+     │
+     ▼
+
+Planner
+
+     │
+     ▼
+
+Orchestrator
+
+     │
+     ▼
 
 Execution Controller
 
-      │
-      ├── Lifecycle Control
-      ├── Retry Control
-      ├── Cancellation
-      ├── Safe Execution
-      └── Event Recording
+     │
+     ├────────────────────┐
+     │                    │
+     ▼                    ▼
 
-                     │
-                     ▼
-
-              Observability
-
-                     │
-                     ├── Query
-                     ├── Filter
-                     └── Inspect
+Lifecycle            Event Store
+                         │
+                         ▼
+                   Execution Events
+                         │
+                         ▼
+                   Observability
+                         │
+                         ▼
+                  Metrics Collector
+                         │
+                         ▼
+                  Execution Metrics
 ```
 
-Observability therefore remains subordinate to controlled execution.
+The metrics layer depends on observability rather than directly coupling analytics logic to the event-store implementation.
 
 ---
 
-# 🧱 Updated Project Structure
-
-```text
-Ultron/
-
-│
-├── main.py
-├── README.md
-├── requirements.txt
-├── .env
-├── .gitignore
-│
-├── core/
-│   ├── conversation.py
-│   ├── commands.py
-│   ├── config.py
-│   ├── natural_language.py
-│   ├── session_state.py
-│   ├── ai_engine.py
-│   └── ai_client.py
-│
-├── modules/
-│   └── agent/
-│       ├── agent.py
-│       ├── agent_execution_controller.py
-│       ├── execution_event.py
-│       ├── execution_event_store.py
-│       ├── execution_observability.py
-│       ├── registry.py
-│       ├── engine.py
-│       ├── planner.py
-│       ├── plan.py
-│       ├── orchestrator.py
-│       ├── tool.py
-│       ├── tool_registry.py
-│       ├── tool_result.py
-│       └── tool_selector.py
-│
-├── data/
-│   ├── memory.txt
-│   └── profile.txt
-│
-├── tests/
-│   ├── test_agent_engine_tools.py
-│   ├── test_agent_tool_selector_integration.py
-│   ├── test_tool_registry.py
-│   ├── test_tool_selector.py
-│   ├── test_agent_planner.py
-│   ├── test_agent_plan.py
-│   ├── test_agent_orchestrator.py
-│   ├── test_agent_execution_controller.py
-│   ├── test_execution_event.py
-│   ├── test_execution_event_store.py
-│   └── test_execution_observability.py
-│
-└── assets/
-```
-
----
-
-# 🧠 Component Responsibilities
+# 🧩 Component Responsibilities
 
 | Component               | Responsibility                              |
 | ----------------------- | ------------------------------------------- |
@@ -942,6 +751,8 @@ Ultron/
 | Execution Event         | Structured execution transition             |
 | Execution Event Store   | Execution event storage and retrieval       |
 | Execution Observability | Execution inspection and querying           |
+| Execution Metrics       | Immutable execution analytics snapshot      |
+| Metrics Collector       | Execution metric aggregation                |
 | Tool Selector           | Capability-based tool resolution            |
 | Tool Registry           | Tool management                             |
 | Agent Tool              | Controlled capability                       |
@@ -949,64 +760,35 @@ Ultron/
 
 ---
 
-# 🔗 Updated Dependency Direction
+# 📜 Version History
 
-Ultron's execution architecture now follows:
+## v0.46 — Execution Metrics
 
-```text
-Conversation
-
-     │
-
-     ▼
-
-AI Engine
-
-     │
-
-     ▼
-
-Agent Runtime
-
-     │
-
-     ▼
-
-Planner
-
-     │
-
-     ▼
-
-Orchestrator
-
-     │
-
-     ▼
-
-Execution Controller
-
-     │
-     ├──────────────────┐
-     │                  │
-     ▼                  ▼
-Lifecycle          Event Store
-     │                  │
-     ▼                  ▼
-Tool Selector    Execution Events
-     │                  │
-     ▼                  ▼
-Tool Registry    Observability
-     │
-     ▼
-Tool
-```
-
-The event and observability layers provide execution inspection without creating direct dependencies from higher-level components to individual tool implementations.
+* Dedicated Execution Metrics layer
+* ExecutionMetrics immutable snapshot
+* ExecutionMetricsCollector
+* Total event metrics
+* Unique step metrics
+* Completed step metrics
+* Failed step metrics
+* Retried step metrics
+* Skipped step metrics
+* Execution completion detection
+* Execution failure detection
+* Execution cancellation detection
+* Execution pause detection
+* Execution resume detection
+* Read-only metric collection
+* Execution ID validation
+* Unknown execution handling
+* Observability-based metric collection
+* Event-store independence
+* Metrics test coverage
+* Backward-compatible execution architecture
+* Full regression stability
+* 553 automated tests passing
 
 ---
-
-# 📜 Version History
 
 ## v0.45 — Execution Observability
 
@@ -1109,6 +891,11 @@ v0.45 → Execution Observability
         │
         ▼
 
+v0.46 → Execution Metrics
+
+        │
+        ▼
+
 Future → Persistent Execution / Automation
 
         │
@@ -1121,7 +908,7 @@ v1.0 → Stable Platform
 
 # 🧭 Path Toward v1.0
 
-The architecture is progressing toward a more complete execution platform.
+The architecture is progressing toward a complete execution platform.
 
 ```text
 Core Intelligence
@@ -1184,6 +971,11 @@ Execution Observability
       │
       ▼
 
+Execution Metrics
+
+      │
+      ▼
+
 Persistent Execution
 
       │
@@ -1209,105 +1001,27 @@ v1.0
 
 ---
 
-# 🚀 Future Execution Observability
+# 🚀 Future Execution Analytics
 
-The v0.45 observability architecture creates a foundation for future capabilities such as:
+The v0.46 metrics architecture creates a foundation for future capabilities such as:
 
-* Persistent execution logs
-* Execution timeline visualization
-* Advanced event filtering
-* Advanced event querying
-* Execution replay
-* Execution analytics
-* Failure diagnostics
-* Performance metrics
-* Step-level tracing
-* Tool-level tracing
-* Agent execution dashboards
-* Persistent event storage
-* Distributed execution tracing
-* Workflow observability
-* Automation monitoring
-* Human-in-the-loop execution inspection
-* Execution performance profiling
-* Real-time execution monitoring
+* Persistent execution analytics
+* Execution performance metrics
+* Failure-rate analysis
+* Retry-rate analysis
+* Step success rates
+* Execution duration analysis
+* Agent performance dashboards
+* Tool performance analytics
+* Execution cost tracking
+* Workflow analytics
+* Execution reporting
+* Real-time monitoring
+* Execution anomaly detection
+* Persistent metrics storage
+* Distributed execution analytics
 
 These capabilities can be added without fundamentally changing the existing execution-control architecture.
-
----
-
-# 🔮 Future Automation Architecture
-
-The execution system can eventually evolve toward:
-
-```text
-Trigger
-
-  │
-
-  ▼
-
-Workflow
-
-  │
-
-  ▼
-
-Planner
-
-  │
-
-  ▼
-
-Plan
-
-  │
-
-  ▼
-
-Orchestrator
-
-  │
-
-  ▼
-
-Execution Controller
-
-  │
-
-  ├── Lifecycle
-  ├── Retry
-  ├── Cancellation
-  └── Observability
-          │
-          ▼
-      Event Store
-          │
-          ▼
-       Execution
-          │
-          ▼
-        Result
-```
-
-Potential future automation capabilities include:
-
-* Scheduled workflows
-* Event-driven workflows
-* Conditional execution
-* Branching workflows
-* Multi-step workflows
-* Persistent workflow state
-* Retry policies
-* Execution history
-* Execution events
-* Event querying
-* Event filtering
-* Execution timelines
-* Pause and resume
-* Workflow cancellation
-* Human approval
-* Workflow observability
 
 ---
 
@@ -1354,6 +1068,10 @@ Execution Observability
 
        ↓
 
+Execution Metrics
+
+       ↓
+
 Automation Platform
 
        ↓
@@ -1361,7 +1079,25 @@ Automation Platform
 AI Ecosystem
 ```
 
-The project is being built incrementally with an emphasis on modularity, reliability, testability, safety, observability, and long-term extensibility.
+The project continues to be built incrementally with an emphasis on:
+
+```text
+Modularity
+
+Reliability
+
+Testability
+
+Safety
+
+Observability
+
+Analytics
+
+Controlled Execution
+
+Long-Term Extensibility
+```
 
 ---
 
@@ -1369,7 +1105,7 @@ The project is being built incrementally with an emphasis on modularity, reliabi
 
 ```text
 ╔══════════════════════════════════════════════════════╗
-║                    ULTRON v0.45                     ║
+║                    ULTRON v0.46                     ║
 ╠══════════════════════════════════════════════════════╣
 ║ Conversation Engine                       ✓         ║
 ║ Smart Memory System                       ✓         ║
@@ -1390,34 +1126,41 @@ The project is being built incrementally with an emphasis on modularity, reliabi
 ║ Progress Tracking                         ✓         ║
 ║ Failure Handling                          ✓         ║
 ║ Safe Execution                            ✓         ║
-║ Agent Execution Controller                ✓         ║
-║ Execution Lifecycle                       ✓         ║
-║ Pause / Resume                            ✓         ║
-║ Execution Cancellation                    ✓         ║
-║ Step Retry Support                        ✓         ║
-║ Retry Limit Enforcement                   ✓         ║
-║ Pending Step Skip                         ✓         ║
-║ Execution History                         ✓         ║
-║ Execution Status Tracking                 ✓         ║
-║ Current Step Tracking                     ✓         ║
-║ Execution Events                          ✓         ║
-║ Execution Event Store                     ✓         ║
-║ Execution Identity                        ✓         ║
-║ Execution Observability                   ✓         ║
-║ Event Querying                            ✓         ║
-║ Event Filtering                           ✓         ║
-║ Step-Level Filtering                      ✓         ║
-║ Combined Event Filtering                  ✓         ║
-║ Query Validation                          ✓         ║
-║ Execution Timeline                        ✓         ║
-║ Chronological Ordering                    ✓         ║
-║ Stable Timeline Ordering                  ✓         ║
-║ Store Order Preservation                  ✓         ║
-║ Backward-Compatible Execution              ✓         ║
-║ Agent Engine Integration                  ✓         ║
-║ Automated Regression Testing              ✓         ║
+║ Agent Execution Controller                 ✓         ║
+║ Execution Lifecycle                        ✓         ║
+║ Pause / Resume                             ✓         ║
+║ Execution Cancellation                     ✓         ║
+║ Step Retry Support                         ✓         ║
+║ Retry Limit Enforcement                    ✓         ║
+║ Pending Step Skip                          ✓         ║
+║ Execution History                          ✓         ║
+║ Execution Status Tracking                  ✓         ║
+║ Current Step Tracking                      ✓         ║
+║ Execution Events                           ✓         ║
+║ Execution Event Store                      ✓         ║
+║ Execution Identity                         ✓         ║
+║ Execution Observability                    ✓         ║
+║ Event Querying                             ✓         ║
+║ Event Filtering                            ✓         ║
+║ Step-Level Filtering                       ✓         ║
+║ Combined Event Filtering                   ✓         ║
+║ Query Validation                           ✓         ║
+║ Execution Timeline                         ✓         ║
+║ Chronological Ordering                     ✓         ║
+║ Stable Timeline Ordering                   ✓         ║
+║ Store Order Preservation                   ✓         ║
+║ Execution Metrics                          ✓         ║
+║ Unique Step Metrics                        ✓         ║
+║ Completed Step Metrics                     ✓         ║
+║ Failed Step Metrics                        ✓         ║
+║ Retried Step Metrics                       ✓         ║
+║ Skipped Step Metrics                       ✓         ║
+║ Lifecycle Metrics                          ✓         ║
+║ Read-Only Metrics Collection               ✓         ║
+║ Agent Engine Integration                   ✓         ║
+║ Automated Regression Testing               ✓         ║
 ╠══════════════════════════════════════════════════════╣
-║ Tests: 530 passed                                   ║
+║ Tests: 553 passed                                   ║
 ║ Failures: 0                                         ║
 ║ Status: Active Development                          ║
 ╚══════════════════════════════════════════════════════╝
@@ -1425,7 +1168,7 @@ The project is being built incrementally with an emphasis on modularity, reliabi
 
 ---
 
-# 🧪 v0.45 Quality Gate
+# 🧪 v0.46 Quality Gate
 
 ```text
 [✓] Feature implemented
@@ -1468,6 +1211,14 @@ The project is being built incrementally with an emphasis on modularity, reliabi
 
 [✓] Store-order preservation
 
+[✓] Execution metrics
+
+[✓] Step metrics
+
+[✓] Lifecycle metrics
+
+[✓] Read-only analytics
+
 [✓] Backward compatibility
 
 [✓] Documentation
@@ -1480,7 +1231,8 @@ The project is being built incrementally with an emphasis on modularity, reliabi
 Current validation:
 
 ```text
-530 passed
+553 passed
+
 0 failed
 ```
 
@@ -1511,6 +1263,10 @@ Observability
 
       +
 
+Execution Analytics
+
+      +
+
 Controlled Execution
 
       =
@@ -1518,19 +1274,19 @@ Controlled Execution
 Stable Architecture
 ```
 
-The v0.45 milestone strengthens this principle by making execution events directly queryable and execution timelines inspectable without modifying the underlying execution-control architecture.
+The v0.46 milestone strengthens this principle by converting structured execution events into immutable execution metrics while preserving the existing execution-control and observability boundaries.
 
 ---
 
-# 🏁 v0.45 Status
+# 🏁 v0.46 Status
 
 ```text
-ULTRON v0.45
+ULTRON v0.46
 
 │
-├── Agent Runtime                 ✓
-├── Tool System                  ✓
-├── Tool Selection               ✓
+├── Agent Runtime                  ✓
+├── Tool System                   ✓
+├── Tool Selection                ✓
 ├── Planning                     ✓
 ├── Orchestration                ✓
 ├── Execution Control             ✓
@@ -1547,13 +1303,17 @@ ULTRON v0.45
 ├── Timeline Inspection           ✓
 ├── Stable Timeline Ordering      ✓
 ├── Store Order Preservation      ✓
+├── Execution Metrics             ✓
+├── Step Metrics                  ✓
+├── Lifecycle Metrics             ✓
+├── Read-Only Analytics           ✓
 ├── Backward Compatibility        ✓
 └── Regression Stability          ✓
 
-530 passed
+553 passed
 0 failed
 ```
 
-Ultron v0.45 establishes **Execution Observability** as a dedicated architectural layer above structured execution events, providing event querying, filtering, timeline inspection, and read-only execution analysis while preserving controlled execution and backward compatibility.
+Ultron v0.46 establishes **Execution Metrics** as a dedicated analytics layer above Execution Observability, providing immutable event-derived metrics for steps and execution lifecycle states while preserving controlled execution, read-only inspection, and backward compatibility.
 
-This creates a stronger foundation for persistent execution, debugging, analytics, monitoring, automation, workflow observability, and increasingly capable agent systems.
+This creates a stronger foundation for persistent execution analytics, performance monitoring, failure diagnostics, workflow analytics, agent dashboards, automation monitoring, and increasingly capable agent systems.
