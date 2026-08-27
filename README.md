@@ -1,27 +1,68 @@
-Haan bhai ❤️ Ab **v0.47 — Persistent Execution History** add karna hai, aur README ko exactly isi detailed style mein rakhte hue **v0.46 ka content preserve + v0.47 ka complete architecture** add karenge.
+Bhai ❤️ Bilkul. **v0.47 ka existing content preserve** rakha hai aur uske upar **v0.48 — Execution Recovery & State Restoration** ka content add kiya hai. Current validation ke according **v0.48 snapshot tests = 48 passed** aur **full suite = 645 passed** rakha hai.
 
-Bas ek important correction: tumhare current implementation ke according v0.47 **SQLite-backed Execution Event Persistence** hai. Isliye README mein wahi claims rakhenge jo actual architecture mein hain—persistent event storage, execution ID tracking, history retrieval, ordering, clearing, atomic batch persistence, etc.
-
-Main tujhe **ek hi block, ready-to-paste** format mein de raha hoon:
+Ek important architectural point bhi correctly maintain kiya hai: **v0.48 ka `ExecutionStateSnapshot` recovery/state-restoration foundation hai; snapshot khud execution ko resume/pause/retry nahi karta.**
 
 ````markdown
-# 🚀 v0.47 — Persistent Execution History
+# 🚀 v0.48 — Execution Recovery & State Restoration
 
-The v0.47 milestone extends Ultron's Agent Execution architecture with a dedicated **Persistent Execution History Layer** backed by SQLite.
+The v0.48 milestone extends Ultron's durable execution architecture with a dedicated **Execution Recovery & State Restoration Layer**.
 
-The goal of v0.47 is to make execution events survive beyond the lifetime of an in-memory process while preserving the existing separation between execution control, observability, metrics, and persistence.
+v0.48 introduces an immutable:
 
-v0.47 builds directly on the Execution Event Store, Execution Observability, and Execution Metrics architecture introduced in v0.44, v0.45, and v0.46.
+`ExecutionStateSnapshot`
+
+that represents a point-in-time description of recoverable execution state.
+
+The snapshot provides a stable representation of:
+
+```text
+Execution Identity
+Execution Status
+Current Step
+Current Step Index
+Completed Steps
+Failed Steps
+Pending Steps
+Retry Count
+Snapshot Timestamp
+````
+
+The v0.48 architecture builds directly on the persistent execution history and event infrastructure introduced in v0.44, v0.45, v0.46, and v0.47.
+
+The goal is to establish a clean foundation for future:
+
+```text
+Crash Recovery
+Execution Restoration
+Execution Resumption
+Persistent Workflow Recovery
+Long-Running Automation
+Execution Replay
+Failure Recovery
+Durable Agent Execution
+```
+
+The snapshot itself remains descriptive only.
+
+It does not:
+
+```text
+Execute
+Resume
+Pause
+Cancel
+Retry
+Modify
+Control
+```
+
+an execution.
 
 ---
 
-# 💾 Persistent Execution History
+# 🔄 Execution Recovery & State Restoration
 
-v0.47 introduces a dedicated:
-
-`SQLiteExecutionEventPersistence`
-
-component responsible for persisting immutable `ExecutionEvent` instances into a SQLite database.
+v0.48 introduces the concept of a recoverable execution state snapshot.
 
 The architecture now follows:
 
@@ -29,518 +70,146 @@ The architecture now follows:
 Agent Execution
 
       │
-
       ▼
 
 Execution Controller
 
       │
+      ├───────────────────────┐
+      │                       │
+      ▼                       ▼
 
-      ▼
+Execution State        Execution Events
 
-Execution Events
+      │                       │
+      ▼                       ▼
 
+State Snapshot          Event Store
+
+      │                       │
+      │                       ▼
+      │                 Persistent Storage
+      │                       │
+      │                       ▼
+      │              Execution History
       │
-
-      ├───────────────┐
-      │               │
-      ▼               ▼
-Event Store      Persistent
-                 Event Storage
-                     │
-                     ▼
-                  SQLite
-                     │
-                     ▼
-              Execution History
-                     │
-                     ▼
-              Observability
-                     │
-                     ▼
-                 Metrics
-````
+      └───────────────┬───────────────┘
+                      │
+                      ▼
+             Recovery Infrastructure
+                      │
+                      ▼
+             State Restoration
+```
 
 This creates a clear separation between:
 
 ```text
 Execution Control
-        ↓
+
 Execution Events
-        ↓
-Event Storage
-        ↓
+
 Persistent Execution History
-        ↓
-Execution Observability
-        ↓
-Execution Analytics
+
+Execution State Snapshot
+
+Recovery Infrastructure
+
+State Restoration
 ```
 
 ---
 
-# 🧩 SQLite Execution Event Persistence
+# 🧩 ExecutionStateSnapshot
 
-The new `SQLiteExecutionEventPersistence` component implements the existing:
+The core v0.48 component is:
 
-`ExecutionEventPersistence`
+`ExecutionStateSnapshot`
 
-contract.
-
-Its responsibilities include:
-
-```text
-SQLiteExecutionEventPersistence
-
-├── Persist Execution Events
-├── Persist Multiple Events
-├── Retrieve Execution History
-├── Retrieve Latest Event
-├── Count Execution Events
-├── Track Execution IDs
-├── Clear Execution History
-├── Preserve Event Ordering
-├── Serialize Event Metadata
-├── Deserialize Stored Events
-├── Maintain SQLite Connection
-└── Provide Safe Persistence Boundaries
-```
-
-The persistence layer remains independent from:
-
-```text
-AgentExecutionController
-AgentOrchestrator
-AgentPlanner
-ExecutionMetricsCollector
-ExecutionObservability
-```
-
-This keeps persistence focused only on durable execution-event storage.
-
----
-
-# 🗄️ SQLite Storage Architecture
-
-v0.47 introduces a SQLite-backed execution event table.
+It is implemented as an immutable dataclass.
 
 Conceptually:
 
 ```text
-SQLite Database
+ExecutionStateSnapshot
 
-└── execution_events
-      │
-      ├── id
-      ├── event_type
-      ├── execution_id
-      ├── timestamp
-      ├── step_id
-      ├── step_index
-      ├── message
-      └── metadata
+├── execution_id
+├── status
+├── current_step_id
+├── current_step_index
+├── completed_steps
+├── failed_steps
+├── pending_steps
+├── retry_count
+└── timestamp
 ```
 
-The database uses an auto-incrementing event identifier:
+The snapshot captures the recoverable state of an execution at a specific point in time.
 
-```text
-id INTEGER PRIMARY KEY AUTOINCREMENT
-```
+It does not own execution behavior.
 
-This provides a stable persistence ordering for stored execution events.
+Its responsibility is state representation.
 
 ---
 
-# 🆔 Execution Identity Tracking
+# 🔒 Immutable Execution State
 
-Persistent execution history is organized around:
+The snapshot is created using:
+
+```text
+@dataclass(frozen=True)
+```
+
+This makes the snapshot immutable after creation.
+
+Conceptually:
+
+```text
+Execution State
+
+      │
+      ▼
+
+Create Snapshot
+
+      │
+      ▼
+
+Immutable State Representation
+
+      │
+      ├── Cannot modify execution_id
+      ├── Cannot modify status
+      ├── Cannot modify current step
+      ├── Cannot modify counters
+      └── Cannot modify timestamp
+```
+
+This prevents accidental mutation of previously captured execution state.
+
+The snapshot therefore behaves as a stable point-in-time representation.
+
+---
+
+# 🆔 Execution Identity
+
+Every snapshot is associated with:
 
 ```text
 execution_id
 ```
 
-Every persisted event contains its associated execution ID.
+The execution ID uniquely identifies the execution represented by the snapshot.
 
-Conceptually:
-
-```text
-Execution
-
-execution_id = exec-001
-
-        │
-        ├── EXECUTION_STARTED
-        ├── STEP_STARTED
-        ├── STEP_COMPLETED
-        ├── STEP_STARTED
-        ├── STEP_COMPLETED
-        └── EXECUTION_COMPLETED
-```
-
-Multiple executions can coexist inside the same SQLite database:
+Valid execution IDs must be:
 
 ```text
-SQLite Database
-
-├── exec-001
-│     ├── event
-│     ├── event
-│     └── event
-│
-├── exec-002
-│     ├── event
-│     └── event
-│
-└── exec-003
-      ├── event
-      ├── event
-      └── event
+String
+Non-empty
+Non-whitespace
 ```
 
-This establishes persistent execution identity across process lifetimes.
-
----
-
-# 💾 Event Persistence
-
-Individual execution events can be persisted through:
-
-```text
-SQLiteExecutionEventPersistence.save()
-```
-
-The event is serialized into SQLite storage while preserving:
-
-```text
-event_type
-execution_id
-timestamp
-step_id
-step_index
-message
-metadata
-```
-
-The original `ExecutionEvent` remains immutable.
-
-Persistence therefore stores a durable representation of the event without modifying the event object itself.
-
----
-
-# 📦 Batch Event Persistence
-
-v0.47 also provides:
-
-```text
-SQLiteExecutionEventPersistence.save_many()
-```
-
-This allows multiple execution events to be persisted as a batch.
-
-Conceptually:
-
-```text
-Execution Events
-
-Event 1
-Event 2
-Event 3
-Event 4
-
-      │
-      ▼
-
-save_many()
-
-      │
-      ▼
-
-SQLite Transaction
-
-      │
-      ▼
-
-Persistent Event History
-```
-
-Batch persistence is performed using SQLite's `executemany()` mechanism and committed as a single persistence operation.
-
-This provides a foundation for efficient execution-history recording.
-
----
-
-# 🔎 Execution History Retrieval
-
-Persisted execution history can be retrieved through:
-
-```text
-get_events(execution_id)
-```
-
-The persistence layer returns all stored events associated with the requested execution.
-
-Events are retrieved using their persistent database order:
-
-```text
-ORDER BY id ASC
-```
-
-Conceptually:
-
-```text
-SQLite
-
-exec-001
-
-id 1 → EXECUTION_STARTED
-id 2 → STEP_STARTED
-id 3 → STEP_COMPLETED
-id 4 → STEP_STARTED
-id 5 → STEP_COMPLETED
-id 6 → EXECUTION_COMPLETED
-
-             │
-             ▼
-
-get_events("exec-001")
-
-             │
-             ▼
-
-Ordered Execution History
-```
-
-This preserves the event sequence stored in the database.
-
----
-
-# 🕒 Persistent Event Ordering
-
-v0.47 preserves event ordering through the SQLite row identifier.
-
-Each persisted event receives an automatically generated:
-
-```text
-id
-```
-
-Events are retrieved using:
-
-```text
-ORDER BY id ASC
-```
-
-Therefore:
-
-```text
-Persisted Order
-
-Event A
-   ↓
-Event B
-   ↓
-Event C
-   ↓
-Event D
-
-Retrieved Order
-
-Event A
-   ↓
-Event B
-   ↓
-Event C
-   ↓
-Event D
-```
-
-This provides deterministic persistence-level ordering.
-
----
-
-# 🧾 Latest Event Inspection
-
-v0.47 supports:
-
-```text
-get_latest(execution_id)
-```
-
-This retrieves the latest persisted event for an execution.
-
-Conceptually:
-
-```text
-Execution History
-
-Event 1
-Event 2
-Event 3
-Event 4
-   │
-   ▼
-Latest Event
-```
-
-If no events exist for the requested execution:
-
-```text
-get_latest()
-
-      ↓
-
-None
-```
-
-This allows higher-level observability layers to inspect the latest persisted execution transition.
-
----
-
-# 🔢 Persistent Event Counting
-
-v0.47 provides:
-
-```text
-count(execution_id)
-```
-
-This returns the number of persisted events associated with an execution.
-
-For example:
-
-```text
-exec-001
-
-EXECUTION_STARTED
-STEP_STARTED
-STEP_COMPLETED
-STEP_STARTED
-STEP_COMPLETED
-EXECUTION_COMPLETED
-```
-
-produces:
-
-```text
-count = 6
-```
-
-This provides a persistence-level event count without loading the complete history into memory.
-
----
-
-# 🆔 Execution ID Enumeration
-
-v0.47 introduces persistent execution ID tracking through:
-
-```text
-execution_ids()
-```
-
-This returns all execution IDs currently represented in the SQLite event history.
-
-Conceptually:
-
-```text
-SQLite Event History
-
-exec-001
-exec-002
-exec-003
-exec-004
-
-        │
-        ▼
-
-execution_ids()
-
-        │
-        ▼
-
-[
-    "exec-001",
-    "exec-002",
-    "exec-003",
-    "exec-004"
-]
-```
-
-Execution IDs are returned according to their first persistent appearance in the event history.
-
-This allows higher-level systems to discover persisted executions without directly querying SQLite.
-
----
-
-# 🧹 Persistent History Clearing
-
-v0.47 provides controlled history deletion through:
-
-```text
-clear()
-```
-
-Two clearing modes are supported.
-
-### Clear Complete History
-
-```text
-clear()
-```
-
-removes all persisted execution events.
-
-Conceptually:
-
-```text
-SQLite
-
-exec-001
-exec-002
-exec-003
-
-      │
-      ▼
-
-clear()
-
-      │
-      ▼
-
-Empty Execution History
-```
-
-### Clear Specific Execution
-
-```text
-clear("exec-001")
-```
-
-removes only the events associated with the specified execution.
-
-```text
-Before
-
-exec-001 → events
-exec-002 → events
-exec-003 → events
-
-After
-
-exec-002 → events
-exec-003 → events
-```
-
-Clearing an unknown execution is safe and does not affect other executions.
-
----
-
-# 🔐 Execution ID Validation
-
-The persistence layer validates execution identifiers before performing execution-specific operations.
-
-Invalid identifiers are rejected.
-
-Examples:
+Invalid examples include:
 
 ```text
 None
@@ -549,416 +218,556 @@ None
 123
 ```
 
-Valid execution IDs must be non-empty strings.
+Invalid execution identities are rejected during snapshot creation.
 
-This prevents invalid persistence queries from entering the execution-history layer.
+This prevents malformed execution state from entering the recovery layer.
 
 ---
 
-# 🧱 Event Validation
+# 📊 Execution Status
 
-Only valid:
+The snapshot stores the current execution lifecycle status through:
 
 ```text
-ExecutionEvent
+status
 ```
 
-instances can be persisted.
+Supported statuses are:
 
-Invalid objects are rejected before database insertion.
+```text
+pending
+running
+paused
+completed
+failed
+cancelled
+```
+
+This allows a snapshot to describe the execution lifecycle state at the time it was captured.
 
 Conceptually:
 
 ```text
-Input
+Execution
 
       │
       ▼
 
-Event Validation
+State Snapshot
 
       │
-      ├── Valid ──────► SQLite
-      │
-      └── Invalid ────► Persistence Error
+      ├── pending
+      ├── running
+      ├── paused
+      ├── completed
+      ├── failed
+      └── cancelled
 ```
 
-This ensures that the persistent event history remains structurally consistent.
+Unsupported statuses are rejected.
 
 ---
 
-# 🧬 Event Serialization
+# 📍 Current Step Tracking
 
-Execution event metadata may contain structured Python values.
+The snapshot can preserve the current execution step through:
 
-v0.47 serializes metadata into JSON before storing it in SQLite.
+```text
+current_step_id
+```
+
+The value may be:
+
+```text
+String
+None
+```
+
+A non-empty string identifies the current step.
+
+This provides a recovery layer with information about the execution position.
 
 Conceptually:
 
 ```text
-ExecutionEvent
+Execution
 
-metadata = {
-    "tool": "calculator",
-    "result": 42
-}
+Step 1
+  ↓
+Step 2
+  ↓
+Step 3
+  ↓
+Step 4
 
-        │
-        ▼
+Snapshot
 
-JSON Serialization
-
-        │
-        ▼
-
-SQLite TEXT
+current_step_id = step-3
 ```
 
-When events are retrieved, the metadata is deserialized back into a Python dictionary.
+The snapshot does not execute the step.
 
-```text
-SQLite TEXT
-
-      │
-      ▼
-
-JSON Deserialization
-
-      │
-      ▼
-
-ExecutionEvent
-```
-
-This allows structured metadata to survive process restarts.
+It only records the execution position.
 
 ---
 
-# 🔄 Event Reconstruction
+# 🔢 Current Step Index
 
-Persisted database rows are converted back into immutable `ExecutionEvent` objects.
+v0.48 also stores:
+
+```text
+current_step_index
+```
+
+This represents the numerical position of the current step.
+
+Valid values are:
+
+```text
+0
+1
+2
+3
+...
+```
+
+Negative values are rejected.
+
+The field may also be:
+
+```text
+None
+```
 
 Conceptually:
 
 ```text
-SQLite Row
-
-      │
-      ▼
-
-Row Deserialization
-
-      │
-      ▼
-
-ExecutionEvent.from_dict()
-
-      │
-      ▼
-
-Immutable ExecutionEvent
+Step 0
+Step 1
+Step 2
+Step 3
+  ↑
+Current Position
 ```
 
-The reconstructed event preserves:
+This provides a deterministic numerical representation of execution progress.
+
+---
+
+# 📈 Execution Progress Counters
+
+The snapshot records execution progress through:
 
 ```text
-event_type
-execution_id
+completed_steps
+failed_steps
+pending_steps
+retry_count
+```
+
+These values provide a compact representation of execution progress.
+
+Conceptually:
+
+```text
+Execution State
+
+Completed Steps = 4
+
+Failed Steps = 1
+
+Pending Steps = 2
+
+Retry Count = 3
+```
+
+All counters must be non-negative integers.
+
+Invalid values such as:
+
+```text
+-1
+-5
+1.5
+"5"
+```
+
+are rejected.
+
+---
+
+# ✅ Completed Step Tracking
+
+The snapshot stores:
+
+```text
+completed_steps
+```
+
+This represents the number of completed execution steps at the time of snapshot creation.
+
+Example:
+
+```text
+Step 1 → completed
+Step 2 → completed
+Step 3 → completed
+
+completed_steps = 3
+```
+
+This information can later be used by recovery infrastructure to understand execution progress.
+
+---
+
+# ❌ Failed Step Tracking
+
+The snapshot stores:
+
+```text
+failed_steps
+```
+
+This represents the number of failed steps recorded at snapshot creation time.
+
+Example:
+
+```text
+Step 1 → completed
+Step 2 → failed
+Step 3 → pending
+
+failed_steps = 1
+```
+
+The snapshot records this information without performing failure handling itself.
+
+---
+
+# ⏳ Pending Step Tracking
+
+The snapshot stores:
+
+```text
+pending_steps
+```
+
+This represents the number of steps that were still pending when the snapshot was created.
+
+Example:
+
+```text
+Step 1 → completed
+Step 2 → completed
+Step 3 → pending
+Step 4 → pending
+
+pending_steps = 2
+```
+
+This provides recovery infrastructure with a compact view of remaining execution work.
+
+---
+
+# 🔁 Retry State Tracking
+
+The snapshot stores:
+
+```text
+retry_count
+```
+
+This records retry activity associated with the execution at the snapshot point.
+
+Example:
+
+```text
+Step 1 → completed
+Step 2 → failed
+Step 2 → retry
+Step 2 → retry
+
+retry_count = 2
+```
+
+The snapshot records retry state but does not initiate retries.
+
+---
+
+# 🕒 Snapshot Timestamp
+
+Every snapshot contains:
+
+```text
 timestamp
-step_id
-step_index
-message
-metadata
 ```
 
-This allows the rest of Ultron's execution architecture to work with the same event model regardless of whether events originated from memory or persistent storage.
-
----
-
-# 🔗 Persistence Contract
-
-v0.47 uses the existing:
+The default timestamp is generated using UTC time:
 
 ```text
-ExecutionEventPersistence
+datetime.now(timezone.utc)
 ```
 
-abstraction.
-
-The dependency direction becomes:
-
-```text
-Execution Architecture
-
-        │
-        ▼
-
-ExecutionEventPersistence
-        │
-        ├── In-Memory Persistence
-        │
-        └── SQLite Persistence
-```
-
-This means higher-level components do not need to depend directly on SQLite.
-
-Future persistence implementations can therefore be introduced without changing execution-control logic.
-
-Possible future implementations include:
-
-```text
-SQLite
-PostgreSQL
-Cloud Database
-Distributed Event Store
-Remote Execution Store
-```
-
----
-
-# 🧠 Persistence and Observability Separation
-
-The architecture now separates:
-
-```text
-Persistence
-
-      ↓
-
-Observability
-
-      ↓
-
-Metrics
-```
-
-Persistence is responsible for storing events.
-
-Observability is responsible for inspecting events.
-
-Metrics are responsible for aggregating execution analytics.
+This provides a consistent temporal reference for the captured state.
 
 Conceptually:
 
 ```text
-Execution Events
+Execution
+
       │
-      ├───────────────┐
-      │               │
-      ▼               ▼
-Event Store       Persistent
-                  Event Store
-      │               │
-      └───────┬───────┘
-              │
-              ▼
-       Execution History
-              │
-              ▼
-       Execution Observability
-              │
-              ▼
-       Execution Metrics
+      ▼
+
+State Captured
+
+      │
+      ▼
+
+UTC Timestamp
+
+      │
+      ▼
+
+Immutable Snapshot
 ```
 
-Each layer has a dedicated responsibility.
+The timestamp itself is validated to ensure it is a `datetime` instance.
 
 ---
 
-# 📊 Persistent Execution Analytics
+# 🧠 Derived Execution State
 
-With v0.47, execution metrics can conceptually be built on top of persistent execution history.
+v0.48 provides convenient read-only state properties.
+
+The snapshot exposes:
 
 ```text
-Persistent Execution History
-
-        │
-
-        ▼
-
-Execution Observability
-
-        │
-
-        ▼
-
-Execution Metrics
-
-        │
-
-        ├── Total Events
-        ├── Total Steps
-        ├── Completed Steps
-        ├── Failed Steps
-        ├── Retried Steps
-        ├── Skipped Steps
-        └── Lifecycle Status
+is_pending
+is_running
+is_paused
+is_completed
+is_failed
+is_cancelled
 ```
 
-This creates a foundation for execution analytics that can survive process restarts.
+These properties derive their values directly from:
+
+```text
+status
+```
+
+For example:
+
+```text
+status = "running"
+
+is_running = True
+is_completed = False
+is_failed = False
+is_paused = False
+```
+
+This avoids duplicating lifecycle state inside the snapshot.
 
 ---
 
-# 🔁 Process Restart Persistence
+# 📦 Snapshot Serialization
 
-One of the major capabilities introduced by v0.47 is persistence across process lifetimes.
-
-Without persistent storage:
+v0.48 provides:
 
 ```text
-Process Start
-     ↓
-Execution
-     ↓
-Events
-     ↓
-Process Exit
-     ↓
-History Lost
+to_dict()
 ```
 
-With v0.47:
+for serializing the snapshot into a JSON-compatible dictionary.
+
+Conceptually:
 
 ```text
-Process Start
-     ↓
-Execution
-     ↓
-Events
-     ↓
-SQLite
-     ↓
-Process Exit
-     ↓
-Process Restart
-     ↓
-SQLite
-     ↓
-Execution History Available
+ExecutionStateSnapshot
+
+      │
+      ▼
+
+to_dict()
+
+      │
+      ▼
+
+Dictionary
+
+{
+    execution_id,
+    status,
+    current_step_id,
+    current_step_index,
+    completed_steps,
+    failed_steps,
+    pending_steps,
+    retry_count,
+    timestamp
+}
 ```
 
-This moves Ultron from temporary execution tracking toward durable execution infrastructure.
+The timestamp is serialized using:
+
+```text
+datetime.isoformat()
+```
+
+This allows snapshots to be persisted or transported through standard structured data formats.
 
 ---
 
-# 🧱 Complete Execution Architecture
+# 🔄 Snapshot Deserialization
 
-The execution architecture now follows:
+v0.48 also provides:
 
 ```text
-Agent
-
-  │
-
-  ▼
-
-Planner
-
-  │
-
-  ▼
-
-Plan
-
-  │
-
-  ▼
-
-Orchestrator
-
-  │
-
-  ▼
-
-Execution Controller
-
-  │
-
-  ├──────────────────────────────┐
-  │                              │
-  ▼                              ▼
-Execution State             Execution Events
-  │                              │
-  ▼                              ├───────────────┐
-Lifecycle                        │               │
-                                 ▼               ▼
-                            Event Store      Persistent
-                                            Event Storage
-                                                │
-                                                ▼
-                                              SQLite
-                                                │
-                                                ▼
-                                        Execution History
-                                                │
-                                                ▼
-                                         Observability
-                                                │
-                                                ▼
-                                      Metrics / Analytics
+from_dict()
 ```
 
-The execution architecture now contains four major concerns:
+for reconstructing an `ExecutionStateSnapshot` from serialized data.
+
+Conceptually:
 
 ```text
-Execution Control
+Serialized Dictionary
 
-Execution Event Infrastructure
+      │
+      ▼
 
-Persistent Execution History
+from_dict()
 
-Execution Analytics
+      │
+      ▼
+
+ExecutionStateSnapshot
+
+      │
+      ▼
+
+Immutable Recoverable State
+```
+
+This enables state snapshots to survive serialization boundaries.
+
+---
+
+# 🕒 Timestamp Restoration
+
+When reconstructing a snapshot from serialized data, ISO-formatted timestamps are converted back into Python `datetime` objects.
+
+Conceptually:
+
+```text
+ISO Timestamp
+
+"2026-08-27T..."
+
+      │
+      ▼
+
+datetime.fromisoformat()
+
+      │
+      ▼
+
+datetime
+
+      │
+      ▼
+
+ExecutionStateSnapshot
+```
+
+Invalid timestamps are rejected through:
+
+```text
+ExecutionStateSnapshotError
 ```
 
 ---
 
-# 🧩 Execution Infrastructure Layers
+# 🧱 Snapshot Validation
 
-Ultron's execution infrastructure can now be represented as:
+v0.48 performs validation during snapshot creation.
+
+Validation covers:
 
 ```text
-Layer 1
-Execution Control
-        │
-        ▼
-Layer 2
-Execution Events
-        │
-        ▼
-Layer 3
-Event Storage
-        │
-        ▼
-Layer 4
-Persistent Execution History
-        │
-        ▼
-Layer 5
-Execution Observability
-        │
-        ▼
-Layer 6
-Execution Metrics
+Execution ID
+Status
+Current Step ID
+Current Step Index
+Step Counters
+Retry Count
+Timestamp
 ```
 
-Each layer builds on the previous layer without directly coupling unrelated responsibilities.
+Conceptually:
+
+```text
+Snapshot Input
+
+      │
+      ▼
+
+Validation
+
+      │
+      ├── Valid ───────► Immutable Snapshot
+      │
+      └── Invalid ─────► Snapshot Error
+```
+
+This ensures that invalid recovery state cannot silently enter the execution infrastructure.
 
 ---
 
-# 🛡️ Persistence Safety Boundaries
+# 🛡️ Dedicated Snapshot Error
 
-The SQLite persistence layer does not:
+v0.48 introduces:
+
+```text
+ExecutionStateSnapshotError
+```
+
+This exception acts as the base error for execution-state snapshot validation failures.
+
+Examples include:
+
+```text
+Invalid execution ID
+Empty execution ID
+Invalid status
+Unsupported status
+Invalid step ID
+Invalid step index
+Negative counters
+Invalid retry count
+Invalid timestamp
+Invalid serialized timestamp
+```
+
+This provides a dedicated error boundary for the snapshot layer.
+
+---
+
+# 🔐 Snapshot Safety Boundary
+
+The snapshot layer does not:
 
 ```text
 Execute agents
 
+Execute tools
+
+Create plans
+
+Select tools
+
 Modify execution state
-
-Control execution
-
-Trigger tools
-
-Trigger retries
 
 Pause execution
 
@@ -966,193 +775,550 @@ Resume execution
 
 Cancel execution
 
-Create execution plans
+Retry steps
 
-Select tools
+Trigger workflows
+
+Control orchestration
+
 ```
 
 Its responsibility is limited to:
 
 ```text
-Persist
+Capture State
 
-Retrieve
+Validate State
 
-Count
+Represent State
 
-Enumerate
+Serialize State
 
-Clear
+Deserialize State
 
-Serialize
-
-Deserialize
+Inspect State
 ```
 
-This preserves Ultron's controlled execution architecture.
+This maintains a strict separation between state representation and execution control.
 
 ---
 
-# 🔒 Thread-Safe SQLite Access
+# 🔗 Recovery Architecture
 
-v0.47 uses a re-entrant lock around SQLite operations.
+With v0.48, Ultron's execution infrastructure now conceptually follows:
+
+```text
+Agent
+
+  │
+  ▼
+
+Planner
+
+  │
+  ▼
+
+Plan
+
+  │
+  ▼
+
+Orchestrator
+
+  │
+  ▼
+
+Execution Controller
+
+  │
+  ├───────────────────────────┐
+  │                           │
+  ▼                           ▼
+
+Execution State          Execution Events
+
+  │                           │
+  ▼                           ▼
+
+State Snapshot             Event Store
+
+  │                           │
+  │                           ▼
+  │                    Persistent Storage
+  │                           │
+  │                           ▼
+  │                   Execution History
+  │                           │
+  └───────────────┬───────────┘
+                  │
+                  ▼
+          Recovery Infrastructure
+                  │
+                  ▼
+         State Restoration
+                  │
+                  ▼
+          Future Resumption
+```
+
+The important architectural boundary is:
+
+```text
+Snapshot
+    ≠
+Recovery Controller
+```
+
+The snapshot provides the state representation required by future recovery components.
+
+---
+
+# 💾 Persistent State Foundation
+
+v0.47 introduced persistent execution event history.
+
+v0.48 adds a structured execution state representation.
+
+The combined architecture becomes:
+
+```text
+Execution Events
+       │
+       ▼
+Persistent History
+       │
+       ├───────────────┐
+       │               │
+       ▼               ▼
+Event Timeline    State Snapshot
+       │               │
+       └───────┬───────┘
+               │
+               ▼
+       Recovery Foundation
+```
+
+This provides two complementary representations:
+
+```text
+Execution History
+```
+
+for what happened,
+
+and:
+
+```text
+Execution State Snapshot
+```
+
+for the state of the execution at a specific point in time.
+
+---
+
+# 🧬 Event History + State Snapshot
+
+The architecture now provides:
+
+```text
+Execution History
+
+Event 1
+Event 2
+Event 3
+Event 4
+Event 5
+
+        +
+
+State Snapshot
+
+status = running
+current_step = step-3
+completed = 2
+pending = 3
+retry_count = 1
+```
+
+Together these provide a stronger foundation for recovery infrastructure.
 
 Conceptually:
 
 ```text
-Persistence Request
+What Happened?
 
-      │
-      ▼
+      ↓
 
-RLock
+Execution Events
 
-      │
-      ▼
+      +
 
-SQLite Operation
+Where Was Execution?
 
-      │
-      ▼
+      ↓
 
-Commit / Read
+Execution State Snapshot
 
-      │
-      ▼
+      ↓
 
-Release Lock
+Recovery Decision
 ```
-
-The SQLite connection is configured for the execution architecture using:
-
-```text
-check_same_thread=False
-```
-
-while access is protected through the persistence layer's lock.
-
-This provides a foundation for safe concurrent access to the persistence component.
 
 ---
 
-# 📦 Database Lifecycle
+# 🔄 State Restoration Foundation
 
-The SQLite persistence component manages its own database connection lifecycle.
-
-Supported operations include:
+A future recovery system can conceptually use:
 
 ```text
-Initialize
-   ↓
-Create Database Directory
-   ↓
-Open SQLite Connection
-   ↓
-Create execution_events Table
-   ↓
-Persist / Retrieve Events
-   ↓
-Close Connection
+Persistent Execution History
+
+        +
+
+Latest Execution State Snapshot
+
+        │
+
+        ▼
+
+Recovery Manager
+
+        │
+
+        ▼
+
+Validate Recoverable State
+
+        │
+
+        ▼
+
+Restore Execution Context
+
+        │
+
+        ▼
+
+Resume / Recover Execution
 ```
 
-The component also supports context-manager usage:
+v0.48 intentionally does not implement the recovery manager itself.
 
-```text
-with SQLiteExecutionEventPersistence(path) as persistence:
-
-    persistence.save(event)
-```
-
-This provides deterministic connection cleanup.
+It establishes the state representation required for that future layer.
 
 ---
 
-# 🧪 v0.47 Test Coverage
+# 🧱 Immutable Recovery Boundary
 
-The v0.47 milestone expands automated testing around persistent execution history.
+Because `ExecutionStateSnapshot` is immutable:
 
 ```text
-v0.47
+Stored Snapshot
 
-├── SQLite Persistence Initialization
-├── Database Creation
-├── Execution Event Persistence
-├── Batch Event Persistence
-├── Event Retrieval
-├── Latest Event Retrieval
-├── Event Counting
-├── Execution ID Tracking
-├── Execution ID Enumeration
-├── Persistent Event Ordering
-├── Metadata Serialization
-├── Metadata Deserialization
-├── Event Reconstruction
-├── Execution History Clearing
-├── Individual Execution Clearing
-├── Clear-All History
-├── Unknown Execution Clearing
-├── Invalid Execution ID Handling
-├── Invalid Event Handling
-├── Persistence Error Handling
-├── SQLite Lifecycle
-├── Context Manager Support
-├── Persistence Contract Compatibility
-├── Observability Compatibility
-├── Metrics Compatibility
+      │
+      ▼
+
+Read Snapshot
+
+      │
+      ▼
+
+Inspect Snapshot
+
+      │
+      ▼
+
+Create New State
+
+      │
+      ▼
+
+New Snapshot
+```
+
+Recovery logic cannot silently mutate historical snapshots.
+
+This creates a safer model for future:
+
+```text
+Checkpointing
+
+Recovery
+
+Replay
+
+Auditing
+
+State Comparison
+```
+
+---
+
+# 📊 Snapshot State Model
+
+The complete snapshot model can be represented as:
+
+```text
+ExecutionStateSnapshot
+
+│
+├── Identity
+│     └── execution_id
+│
+├── Lifecycle
+│     └── status
+│
+├── Position
+│     ├── current_step_id
+│     └── current_step_index
+│
+├── Progress
+│     ├── completed_steps
+│     ├── failed_steps
+│     └── pending_steps
+│
+├── Retry State
+│     └── retry_count
+│
+└── Temporal State
+      └── timestamp
+```
+
+This provides a compact representation of recoverable execution state.
+
+---
+
+# 🔎 Snapshot Inspection
+
+The snapshot supports read-only inspection through:
+
+```text
+execution_id
+status
+current_step_id
+current_step_index
+completed_steps
+failed_steps
+pending_steps
+retry_count
+timestamp
+```
+
+and derived lifecycle properties:
+
+```text
+is_pending
+is_running
+is_paused
+is_completed
+is_failed
+is_cancelled
+```
+
+This allows higher-level systems to inspect state without directly mutating execution control.
+
+---
+
+# 🔄 Snapshot Round Trip
+
+v0.48 supports a complete serialization round trip:
+
+```text
+ExecutionStateSnapshot
+
+      │
+      ▼
+
+to_dict()
+
+      │
+      ▼
+
+Serialized State
+
+      │
+      ▼
+
+from_dict()
+
+      │
+      ▼
+
+ExecutionStateSnapshot
+```
+
+The reconstructed object preserves the original recoverable state.
+
+Conceptually:
+
+```text
+Original Snapshot
+
+       ↓
+
+Serialization
+
+       ↓
+
+Storage / Transport
+
+       ↓
+
+Deserialization
+
+       ↓
+
+Equivalent Snapshot State
+```
+
+---
+
+# 🧪 v0.48 Test Coverage
+
+The v0.48 milestone expands automated testing around execution state snapshots.
+
+```text
+v0.48
+
+├── Snapshot Creation
+
+├── Immutable Snapshot Behavior
+
+├── Execution ID Validation
+
+├── Empty Execution ID Validation
+
+├── Status Validation
+
+├── Supported Status Validation
+
+├── Unsupported Status Handling
+
+├── Current Step ID Validation
+
+├── Current Step Index Validation
+
+├── Negative Step Index Handling
+
+├── Completed Step Validation
+
+├── Failed Step Validation
+
+├── Pending Step Validation
+
+├── Retry Count Validation
+
+├── Negative Counter Handling
+
+├── Timestamp Validation
+
+├── UTC Timestamp Generation
+
+├── Derived Lifecycle Properties
+
+├── Pending State Detection
+
+├── Running State Detection
+
+├── Paused State Detection
+
+├── Completed State Detection
+
+├── Failed State Detection
+
+├── Cancelled State Detection
+
+├── Snapshot Serialization
+
+├── Snapshot Deserialization
+
+├── Timestamp Serialization
+
+├── Timestamp Reconstruction
+
+├── Invalid Timestamp Handling
+
+├── Missing Execution ID Handling
+
+├── Missing Status Handling
+
+├── Default Counter Handling
+
+├── State Round-Trip Validation
+
+├── Snapshot Error Handling
+
+├── JSON-Compatible Representation
+
+├── Recovery State Representation
+
 ├── Backward Compatibility
+
 └── Full Regression Testing
 ```
 
 ---
 
-# 🧪 v0.47 Persistence Validation
+# 🧪 v0.48 Snapshot Validation
 
-The v0.47 persistence test suite validates:
+The v0.48 snapshot test suite validates:
 
 ```text
-[✓] SQLite database initialization
+[✓] Snapshot creation
 
-[✓] Execution event persistence
+[✓] Immutable snapshot behavior
 
-[✓] Multiple event persistence
+[✓] Execution ID validation
 
-[✓] Event retrieval
+[✓] Status validation
 
-[✓] Latest event retrieval
+[✓] Supported lifecycle statuses
 
-[✓] Event counting
+[✓] Unsupported status rejection
 
-[✓] Execution ID tracking
+[✓] Current step ID validation
 
-[✓] Persistent execution ordering
+[✓] Current step index validation
 
-[✓] Metadata serialization
+[✓] Negative step index rejection
 
-[✓] Metadata deserialization
+[✓] Completed step validation
 
-[✓] Event reconstruction
+[✓] Failed step validation
 
-[✓] Execution history clearing
+[✓] Pending step validation
 
-[✓] Individual execution clearing
+[✓] Retry count validation
 
-[✓] Clear-all history
+[✓] Negative counter rejection
 
-[✓] Unknown execution handling
+[✓] Timestamp validation
 
-[✓] Invalid execution ID handling
+[✓] UTC timestamp generation
 
-[✓] Invalid event handling
+[✓] Lifecycle state properties
 
-[✓] Persistence contract integration
+[✓] Snapshot serialization
 
-[✓] Context manager lifecycle
+[✓] Snapshot deserialization
 
-[✓] SQLite connection lifecycle
+[✓] Timestamp serialization
 
-[✓] Observability compatibility
+[✓] Timestamp reconstruction
 
-[✓] Metrics compatibility
+[✓] Invalid timestamp handling
+
+[✓] Required field validation
+
+[✓] Default values
+
+[✓] State round-trip behavior
+
+[✓] Dedicated snapshot errors
+
+[✓] JSON-compatible state representation
+
+[✓] Recovery state foundation
 
 [✓] Backward compatibility
 
@@ -1163,65 +1329,216 @@ The v0.47 persistence test suite validates:
 
 # 📊 Current Test Status
 
-The v0.47 implementation has been validated through:
+The v0.48 implementation has been validated through:
 
 ```text
-SQLite Persistence Tests
+Execution State Snapshot Tests
 
-44 passed
+48 passed
+
 0 failed
 ```
 
 Full project regression:
 
 ```text
-597 passed
+645 passed
+
 0 failed
 ```
 
 Current validation:
 
 ```text
-Tests Passed: 597
-
+Snapshot Tests: 48 passed
+Full Tests: 645 passed
 Tests Failed: 0
-
 Status: PASS
-
-Release: v0.47
+Release: v0.48
 ```
 
-This confirms that persistent execution history integrates with the existing execution architecture without breaking previous functionality.
+This confirms that the execution state snapshot layer integrates with the existing execution architecture without breaking previous functionality.
 
 ---
 
-# 📈 Execution History Model
+# 🧠 Execution Recovery Model
 
-The execution architecture now provides:
+The v0.48 recovery model can be represented as:
 
 ```text
 Execution
 
-│
+    │
+    ▼
 
-├── Execution Identity
-│
-├── Current State
-│
-├── Execution History
-│
-├── Structured Events
-│
-├── Persistent Events
-│
-├── Event Queries
-│
-├── Event Timeline
-│
-└── Execution Metrics
+Execution Events
+
+    │
+    ▼
+
+Persistent History
+
+    │
+    ▼
+
+State Snapshot
+
+    │
+    ▼
+
+Recoverable State
+
+    │
+    ▼
+
+Future Recovery Manager
+
+    │
+    ▼
+
+State Restoration
+
+    │
+    ▼
+
+Future Execution Resumption
 ```
 
-This creates the foundation for durable execution infrastructure.
+The snapshot is therefore a foundational recovery primitive rather than a recovery controller.
+
+---
+
+# 🧩 Execution Infrastructure Layers
+
+Ultron's execution infrastructure can now be represented as:
+
+```text
+Layer 1
+
+Execution Control
+
+        │
+        ▼
+
+Layer 2
+
+Execution Events
+
+        │
+        ▼
+
+Layer 3
+
+Event Storage
+
+        │
+        ▼
+
+Layer 4
+
+Persistent Execution History
+
+        │
+        ▼
+
+Layer 5
+
+Execution State Snapshot
+
+        │
+        ▼
+
+Layer 6
+
+Recovery Infrastructure
+
+        │
+        ▼
+
+Layer 7
+
+Execution Observability
+
+        │
+        ▼
+
+Layer 8
+
+Execution Metrics
+```
+
+The state snapshot layer provides a bridge between durable execution history and future recovery infrastructure.
+
+---
+
+# 🛡️ Recovery Safety Boundaries
+
+The v0.48 snapshot layer does not directly perform recovery actions.
+
+It does not:
+
+```text
+Resume execution
+
+Restart execution
+
+Retry execution
+
+Modify execution
+
+Trigger tools
+
+Trigger agents
+
+Modify plans
+
+Change orchestration
+
+Delete history
+
+```
+
+Instead it provides:
+
+```text
+Validated State
+
+Immutable State
+
+Serializable State
+
+Restorable State Representation
+```
+
+This keeps recovery state separate from recovery behavior.
+
+---
+
+# 🔐 State Integrity
+
+The snapshot architecture validates state before it is accepted.
+
+Conceptually:
+
+```text
+Raw State
+
+    │
+    ▼
+
+Validation
+
+    │
+    ├── Invalid
+    │      ↓
+    │   Error
+    │
+    └── Valid
+           ↓
+    Immutable Snapshot
+```
+
+This prevents malformed execution state from being treated as recoverable state.
 
 ---
 
@@ -1233,61 +1550,65 @@ Ultron's execution architecture now follows:
 Conversation
 
      │
-
      ▼
 
 AI Engine
 
      │
-
      ▼
 
 Agent Runtime
 
      │
-
      ▼
 
 Planner
 
      │
-
      ▼
 
 Orchestrator
 
      │
-
      ▼
 
 Execution Controller
 
      │
-     ├───────────────────────┐
-     │                       │
-     ▼                       ▼
-Lifecycle              Execution Events
-                             │
-                  ┌──────────┴──────────┐
-                  │                     │
-                  ▼                     ▼
-             Event Store        Persistence Contract
-                                        │
-                                        ▼
-                                SQLite Persistence
-                                        │
-                                        ▼
-                              Persistent Execution
-                                   History
-                                        │
-                                        ▼
-                                  Observability
-                                        │
-                                        ▼
-                                    Metrics
+     ├──────────────────────────────┐
+     │                              │
+     ▼                              ▼
+
+Execution Lifecycle          Execution Events
+
+     │                              │
+     ▼                              ├───────────────┐
+Execution State                    │               │
+     │                             ▼               ▼
+     ▼                        Event Store    Persistence Contract
+State Snapshot                       │               │
+     │                               │               ▼
+     │                               │       SQLite Persistence
+     │                               │               │
+     │                               ▼               ▼
+     │                       Execution History
+     │                               │
+     └───────────────┬───────────────┘
+                     │
+                     ▼
+             Recovery Foundation
+                     │
+                     ▼
+             State Restoration
+                     │
+                     ▼
+              Observability
+                     │
+                     ▼
+                  Metrics
 ```
 
-The architecture keeps execution control independent from the persistence implementation.
+The architecture keeps execution control, event persistence, state representation, recovery, observability, and metrics independently structured.
 
 ---
 
@@ -1311,6 +1632,8 @@ The architecture keeps execution control independent from the persistence implem
 | Execution Event Store       | In-memory execution event storage           |
 | Execution Event Persistence | Persistence abstraction                     |
 | SQLite Persistence          | Durable SQLite execution event storage      |
+| Execution State Snapshot    | Immutable recoverable execution state       |
+| Recovery Infrastructure     | Future execution state restoration          |
 | Execution Observability     | Execution inspection and querying           |
 | Execution Metrics           | Immutable execution analytics snapshot      |
 | Metrics Collector           | Execution metric aggregation                |
@@ -1322,6 +1645,78 @@ The architecture keeps execution control independent from the persistence implem
 ---
 
 # 📜 Version History
+
+## v0.48 — Execution Recovery & State Restoration
+
+* Dedicated Execution Recovery & State Restoration foundation
+
+* Immutable ExecutionStateSnapshot
+
+* Recoverable execution state representation
+
+* Execution identity snapshot
+
+* Execution lifecycle status snapshot
+
+* Current step tracking
+
+* Current step index tracking
+
+* Completed step tracking
+
+* Failed step tracking
+
+* Pending step tracking
+
+* Retry state tracking
+
+* UTC snapshot timestamps
+
+* Immutable snapshot architecture
+
+* Derived lifecycle state properties
+
+* Snapshot serialization
+
+* Snapshot deserialization
+
+* Timestamp serialization
+
+* Timestamp reconstruction
+
+* State round-trip support
+
+* Snapshot validation
+
+* Execution ID validation
+
+* Status validation
+
+* Step validation
+
+* Counter validation
+
+* Retry count validation
+
+* Timestamp validation
+
+* Dedicated ExecutionStateSnapshotError
+
+* JSON-compatible state representation
+
+* Recovery state foundation
+
+* State restoration foundation
+
+* Separation between state representation and recovery control
+
+* Backward-compatible execution architecture
+
+* 48 snapshot tests passing
+
+* 645 full regression tests passing
+
+---
 
 ## v0.47 — Persistent Execution History
 
@@ -1600,7 +1995,13 @@ v0.47 → Persistent Execution History
 
         ▼
 
-Future → Durable Automation & Advanced Execution
+v0.48 → Execution Recovery & State Restoration
+
+        │
+
+        ▼
+
+Future → Durable Automation & Advanced Recovery
 
         │
 
@@ -1700,6 +2101,24 @@ Persistent Execution History
 
       ▼
 
+Execution State Snapshots
+
+      │
+
+      ▼
+
+State Restoration
+
+      │
+
+      ▼
+
+Crash Recovery
+
+      │
+
+      ▼
+
 Durable Automation
 
       │
@@ -1729,55 +2148,51 @@ v1.0
 
 ---
 
-# 🚀 Future Persistent Execution Capabilities
+# 🚀 Future Execution Recovery Capabilities
 
-The v0.47 architecture creates a foundation for future capabilities such as:
+The v0.48 architecture creates a foundation for future capabilities such as:
 
-* Persistent execution dashboards
-
-* Long-term execution history
-
-* Execution replay
-
-* Execution recovery
+* Persistent execution checkpoints
 
 * Crash recovery
 
-* Persistent workflow state
+* Execution state restoration
 
 * Execution resumption
 
-* Historical analytics
+* Workflow recovery
 
-* Agent performance tracking
+* Execution replay
 
-* Tool performance analytics
+* Checkpoint-based recovery
 
-* Execution duration analysis
+* Long-running workflow recovery
 
-* Failure-rate analysis
+* Persistent workflow state
 
-* Retry-rate analysis
+* Historical state comparison
 
-* Execution cost tracking
+* Recovery diagnostics
 
-* Workflow analytics
+* Execution rollback strategies
 
-* Execution reporting
+* Agent execution recovery
 
-* Real-time monitoring
+* Multi-step workflow recovery
 
-* Execution anomaly detection
+* Durable automation
 
-* Distributed execution storage
+* Distributed execution recovery
 
-* Remote execution history
+* Multi-agent execution recovery
 
-* Multi-agent execution history
+* Recovery dashboards
 
-* Durable automation workflows
+* Historical execution inspection
 
-These capabilities can be added incrementally without fundamentally changing the existing execution-control architecture.
+* State-aware automation
+
+These capabilities can be introduced incrementally without coupling the snapshot representation directly to execution-control logic.
 
 ---
 
@@ -1820,16 +2235,42 @@ Persist
 
       ↓
 
+Snapshot
+
+      ↓
+
 Recover
+
+      ↓
+
+Restore
 
       ↓
 
 Automate
 ```
 
-The v0.47 milestone introduces the **Persist** layer required for long-running and durable agent execution.
+The v0.47 milestone introduced the **Persist** layer.
 
-This is an important step toward making Ultron's agent runtime capable of maintaining execution history beyond a single process lifetime.
+The v0.48 milestone introduces the **Snapshot** foundation required for durable state restoration.
+
+This creates a path toward:
+
+```text
+Persistent Execution
+
+        ↓
+
+Recoverable Execution
+
+        ↓
+
+Restorable Execution
+
+        ↓
+
+Resumable Execution
+```
 
 ---
 
@@ -1884,6 +2325,14 @@ Persistent Execution History
 
        ↓
 
+Execution State Snapshots
+
+       ↓
+
+State Restoration
+
+       ↓
+
 Durable Automation
 
        ↓
@@ -1912,6 +2361,10 @@ Analytics
 
 Persistence
 
+State Integrity
+
+Recovery
+
 Controlled Execution
 
 Durability
@@ -1925,134 +2378,162 @@ Long-Term Extensibility
 
 ```text
 ╔══════════════════════════════════════════════════════╗
-║                    ULTRON v0.47                      ║
+║                    ULTRON v0.48                     ║
 ╠══════════════════════════════════════════════════════╣
-║ Conversation Engine                         ✓        ║
-║ Smart Memory System                         ✓        ║
-║ User Profile Memory                         ✓        ║
-║ AI Provider Architecture                    ✓        ║
-║ Anthropic Integration                       ✓        ║
-║ Mock AI Provider                            ✓        ║
-║ Agent Runtime                               ✓        ║
-║ Agent Tool System                           ✓        ║
-║ Tool Registry                               ✓        ║
-║ Tool Selector                               ✓        ║
-║ Capability-Based Selection                  ✓        ║
-║ Agent Planner                               ✓        ║
-║ Agent Plans                                 ✓        ║
-║ Agent Plan Steps                            ✓        ║
-║ Agent Orchestrator                          ✓        ║
-║ Sequential Execution                        ✓        ║
-║ Progress Tracking                            ✓        ║
-║ Failure Handling                             ✓        ║
-║ Safe Execution                               ✓        ║
-║ Agent Execution Controller                   ✓        ║
-║ Execution Lifecycle                          ✓        ║
-║ Pause / Resume                               ✓        ║
-║ Execution Cancellation                       ✓        ║
-║ Step Retry Support                           ✓        ║
-║ Retry Limit Enforcement                      ✓        ║
-║ Pending Step Skip                            ✓        ║
-║ Execution History                            ✓        ║
-║ Execution Status Tracking                    ✓        ║
-║ Current Step Tracking                        ✓        ║
-║ Execution Events                             ✓        ║
-║ Execution Event Store                        ✓        ║
-║ Execution Identity                           ✓        ║
-║ Execution Observability                      ✓        ║
-║ Event Querying                               ✓        ║
-║ Event Filtering                              ✓        ║
-║ Step-Level Filtering                         ✓        ║
-║ Combined Event Filtering                     ✓        ║
-║ Query Validation                             ✓        ║
-║ Execution Timeline                           ✓        ║
-║ Chronological Ordering                       ✓        ║
-║ Stable Timeline Ordering                     ✓        ║
-║ Store Order Preservation                     ✓        ║
-║ Execution Metrics                            ✓        ║
-║ Unique Step Metrics                          ✓        ║
-║ Completed Step Metrics                       ✓        ║
-║ Failed Step Metrics                          ✓        ║
-║ Retried Step Metrics                         ✓        ║
-║ Skipped Step Metrics                         ✓        ║
-║ Lifecycle Metrics                            ✓        ║
-║ Read-Only Metrics Collection                 ✓        ║
-║ Execution Event Persistence                  ✓        ║
-║ SQLite Persistence                           ✓        ║
-║ Persistent Execution History                 ✓        ║
-║ Execution ID Tracking                        ✓        ║
-║ Persistent Event Counting                    ✓        ║
-║ Persistent Event Ordering                    ✓        ║
-║ Latest Persistent Event                      ✓        ║
-║ Event Metadata Serialization                 ✓        ║
-║ Event Reconstruction                         ✓        ║
-║ History Clearing                             ✓        ║
-║ Batch Event Persistence                      ✓        ║
-║ Persistence Contract                         ✓        ║
-║ Agent Engine Integration                     ✓        ║
-║ Automated Regression Testing                 ✓        ║
+║ Conversation Engine                         ✓       ║
+║ Smart Memory System                         ✓       ║
+║ User Profile Memory                         ✓       ║
+║ AI Provider Architecture                    ✓       ║
+║ Anthropic Integration                       ✓       ║
+║ Mock AI Provider                            ✓       ║
+║ Agent Runtime                               ✓       ║
+║ Agent Tool System                           ✓       ║
+║ Tool Registry                               ✓       ║
+║ Tool Selector                               ✓       ║
+║ Capability-Based Selection                  ✓       ║
+║ Agent Planner                               ✓       ║
+║ Agent Plans                                 ✓       ║
+║ Agent Plan Steps                            ✓       ║
+║ Agent Orchestrator                          ✓       ║
+║ Sequential Execution                        ✓       ║
+║ Progress Tracking                           ✓       ║
+║ Failure Handling                            ✓       ║
+║ Safe Execution                              ✓       ║
+║ Agent Execution Controller                  ✓       ║
+║ Execution Lifecycle                         ✓       ║
+║ Pause / Resume                              ✓       ║
+║ Execution Cancellation                      ✓       ║
+║ Step Retry Support                          ✓       ║
+║ Retry Limit Enforcement                     ✓       ║
+║ Pending Step Skip                           ✓       ║
+║ Execution History                           ✓       ║
+║ Execution Status Tracking                   ✓       ║
+║ Current Step Tracking                       ✓       ║
+║ Execution Events                            ✓       ║
+║ Execution Event Store                       ✓       ║
+║ Execution Identity                          ✓       ║
+║ Execution Observability                     ✓       ║
+║ Event Querying                              ✓       ║
+║ Event Filtering                             ✓       ║
+║ Step-Level Filtering                        ✓       ║
+║ Combined Event Filtering                    ✓       ║
+║ Query Validation                            ✓       ║
+║ Execution Timeline                          ✓       ║
+║ Chronological Ordering                      ✓       ║
+║ Stable Timeline Ordering                    ✓       ║
+║ Store Order Preservation                    ✓       ║
+║ Execution Metrics                           ✓       ║
+║ Unique Step Metrics                         ✓       ║
+║ Completed Step Metrics                      ✓       ║
+║ Failed Step Metrics                         ✓       ║
+║ Retried Step Metrics                        ✓       ║
+║ Skipped Step Metrics                        ✓       ║
+║ Lifecycle Metrics                           ✓       ║
+║ Read-Only Metrics Collection                ✓       ║
+║ Execution Event Persistence                 ✓       ║
+║ SQLite Persistence                          ✓       ║
+║ Persistent Execution History                ✓       ║
+║ Execution ID Tracking                       ✓       ║
+║ Persistent Event Counting                   ✓       ║
+║ Persistent Event Ordering                   ✓       ║
+║ Latest Persistent Event                     ✓       ║
+║ Event Metadata Serialization                ✓       ║
+║ Event Reconstruction                        ✓       ║
+║ History Clearing                            ✓       ║
+║ Batch Event Persistence                     ✓       ║
+║ Persistence Contract                        ✓       ║
+║ Execution State Snapshot                    ✓       ║
+║ Immutable State Snapshot                    ✓       ║
+║ Current Step State                          ✓       ║
+║ Step Progress State                         ✓       ║
+║ Retry State Snapshot                        ✓       ║
+║ Lifecycle State Snapshot                    ✓       ║
+║ Snapshot Serialization                      ✓       ║
+║ Snapshot Deserialization                    ✓       ║
+║ Snapshot Validation                         ✓       ║
+║ State Round-Trip Support                    ✓       ║
+║ Recovery State Foundation                   ✓       ║
+║ State Restoration Foundation                ✓       ║
+║ Agent Engine Integration                    ✓       ║
+║ Automated Regression Testing                ✓       ║
 ╠══════════════════════════════════════════════════════╣
-║ SQLite Tests: 44 passed                            ║
-║ Full Tests: 597 passed                             ║
-║ Failures: 0                                        ║
-║ Status: Active Development                         ║
+║ Snapshot Tests: 48 passed                           ║
+║ Full Tests: 645 passed                              ║
+║ Failures: 0                                         ║
+║ Status: Active Development                          ║
 ╚══════════════════════════════════════════════════════╝
 ```
 
 ---
 
-# 🧪 v0.47 Quality Gate
+# 🧪 v0.48 Quality Gate
 
 ```text
 [✓] Feature implemented
 
 [✓] Architecture integrated
 
-[✓] SQLite persistence
+[✓] Immutable state snapshot
 
-[✓] Event persistence
+[✓] Execution state representation
 
-[✓] Batch persistence
+[✓] Execution identity tracking
 
-[✓] Execution history retrieval
+[✓] Lifecycle status tracking
 
-[✓] Execution ID tracking
+[✓] Current step tracking
 
-[✓] Event counting
+[✓] Current step index tracking
 
-[✓] Latest event retrieval
+[✓] Completed step tracking
 
-[✓] Persistent event ordering
+[✓] Failed step tracking
 
-[✓] Metadata serialization
+[✓] Pending step tracking
 
-[✓] Metadata deserialization
+[✓] Retry state tracking
 
-[✓] Event reconstruction
+[✓] Snapshot timestamp
 
-[✓] Individual history clearing
+[✓] Snapshot validation
 
-[✓] Complete history clearing
+[✓] Execution ID validation
 
-[✓] Invalid input handling
+[✓] Status validation
 
-[✓] Persistence error handling
+[✓] Step validation
 
-[✓] Thread-safe persistence access
+[✓] Counter validation
 
-[✓] SQLite lifecycle
+[✓] Retry validation
 
-[✓] Context manager support
+[✓] Timestamp validation
 
-[✓] Persistence contract
+[✓] Derived lifecycle properties
 
-[✓] Observability integration
+[✓] Snapshot serialization
+
+[✓] Snapshot deserialization
+
+[✓] Timestamp reconstruction
+
+[✓] State round-trip support
+
+[✓] Dedicated snapshot error handling
+
+[✓] Recovery state foundation
+
+[✓] State restoration foundation
+
+[✓] Persistence architecture compatibility
+
+[✓] Observability compatibility
 
 [✓] Metrics compatibility
 
 [✓] Unit tests
 
-[✓] Integration tests
+[✓] Integration compatibility
 
 [✓] Regression tests
 
@@ -2068,14 +2549,14 @@ Long-Term Extensibility
 Current validation:
 
 ```text
-SQLite Persistence Tests
+Execution State Snapshot Tests
 
-44 passed
+48 passed
 0 failed
 
 Full Regression
 
-597 passed
+645 passed
 0 failed
 ```
 
@@ -2114,6 +2595,14 @@ Persistent History
 
       +
 
+State Snapshots
+
+      +
+
+Recovery Foundation
+
+      +
+
 Controlled Execution
 
       +
@@ -2125,64 +2614,127 @@ Architectural Separation
 Stable AI Operating System Foundation
 ```
 
-The v0.47 milestone strengthens this principle by adding durable execution history without coupling persistence to execution control.
+The v0.48 milestone strengthens this principle by introducing immutable execution state snapshots without coupling state representation to execution control or recovery behavior.
 
 ---
 
-# 🏁 v0.47 Status
+# 🏁 v0.48 Status
 
 ```text
-ULTRON v0.47
+ULTRON v0.48
 
 │
-├── Agent Runtime                  ✓
-├── Tool System                   ✓
-├── Tool Selection                ✓
-├── Planning                     ✓
-├── Orchestration                ✓
-├── Execution Control             ✓
-├── Execution Lifecycle           ✓
-├── Pause / Resume                ✓
-├── Cancellation                  ✓
-├── Retry / Skip                  ✓
-├── Execution History              ✓
-├── Execution Events               ✓
-├── Execution Event Store          ✓
-├── Execution Identity             ✓
-├── Execution Observability        ✓
-├── Event Querying                 ✓
-├── Event Filtering                ✓
-├── Timeline Inspection            ✓
-├── Stable Timeline Ordering       ✓
-├── Store Order Preservation       ✓
-├── Execution Metrics              ✓
-├── Step Metrics                   ✓
-├── Lifecycle Metrics              ✓
-├── Read-Only Analytics            ✓
-├── SQLite Persistence              ✓
-├── Persistent Execution History    ✓
-├── Execution ID Tracking           ✓
-├── Persistent Event Counting       ✓
-├── Latest Event Retrieval          ✓
-├── Persistent Event Ordering       ✓
-├── Metadata Serialization          ✓
-├── Event Reconstruction            ✓
-├── Batch Event Persistence         ✓
-├── History Clearing                ✓
-├── Persistence Contract            ✓
-├── Backward Compatibility          ✓
-└── Regression Stability            ✓
+├── Agent Runtime                    ✓
+├── Tool System                      ✓
+├── Tool Selection                   ✓
+├── Planning                         ✓
+├── Orchestration                    ✓
+├── Execution Control                ✓
+├── Execution Lifecycle              ✓
+├── Pause / Resume                   ✓
+├── Cancellation                     ✓
+├── Retry / Skip                     ✓
+├── Execution History                ✓
+├── Execution Events                 ✓
+├── Execution Event Store            ✓
+├── Execution Identity               ✓
+├── Execution Observability          ✓
+├── Event Querying                   ✓
+├── Event Filtering                  ✓
+├── Timeline Inspection              ✓
+├── Stable Timeline Ordering         ✓
+├── Store Order Preservation         ✓
+├── Execution Metrics                ✓
+├── Step Metrics                     ✓
+├── Lifecycle Metrics                ✓
+├── Read-Only Analytics              ✓
+├── SQLite Persistence               ✓
+├── Persistent Execution History     ✓
+├── Execution ID Tracking            ✓
+├── Persistent Event Counting        ✓
+├── Latest Event Retrieval           ✓
+├── Persistent Event Ordering        ✓
+├── Metadata Serialization           ✓
+├── Event Reconstruction             ✓
+├── Batch Event Persistence          ✓
+├── History Clearing                 ✓
+├── Persistence Contract             ✓
+├── Execution State Snapshot         ✓
+├── Immutable State Snapshot         ✓
+├── Lifecycle State                  ✓
+├── Current Step State               ✓
+├── Step Progress State              ✓
+├── Retry State                      ✓
+├── Snapshot Validation              ✓
+├── Snapshot Serialization           ✓
+├── Snapshot Deserialization         ✓
+├── State Round-Trip                 ✓
+├── Recovery State Foundation        ✓
+├── State Restoration Foundation     ✓
+├── Backward Compatibility           ✓
+└── Regression Stability             ✓
 
-SQLite Tests: 44 passed
-Full Tests: 597 passed
+Snapshot Tests: 48 passed
+Full Tests: 645 passed
 Failures: 0
 ```
 
-Ultron v0.47 establishes **Persistent Execution History** as a dedicated durability layer above the execution event infrastructure.
+Ultron v0.48 establishes **Execution Recovery & State Restoration** as the next architectural layer above persistent execution history.
 
-With SQLite-backed event persistence, execution identity tracking, durable event storage, ordered history retrieval, event counting, latest-event inspection, metadata serialization, batch persistence, and controlled history clearing, Ultron moves from process-local execution tracking toward **durable agent execution infrastructure**.
+With the introduction of the immutable `ExecutionStateSnapshot`, Ultron can now represent execution identity, lifecycle status, current execution position, progress counters, retry activity, and snapshot time in a validated and serializable form.
 
-This creates a stronger foundation for crash recovery, execution replay, persistent workflows, historical analytics, long-running automation, multi-agent coordination, and the long-term vision of Ultron as an **AI Operating System**.
+The v0.48 architecture deliberately keeps state representation separate from recovery behavior. The snapshot does not execute, resume, pause, cancel, or retry an execution. Instead, it provides the durable state representation required by future recovery and restoration infrastructure.
+
+The combined evolution from v0.44 through v0.48 is now:
+
+```text
+v0.44
+Execution Events
+
+      ↓
+
+v0.45
+Execution Observability
+
+      ↓
+
+v0.46
+Execution Metrics
+
+      ↓
+
+v0.47
+Persistent Execution History
+
+      ↓
+
+v0.48
+Execution State Snapshot
+
+      ↓
+
+Future
+State Restoration
+
+      ↓
+
+Future
+Crash Recovery
+
+      ↓
+
+Future
+Execution Resumption
+
+      ↓
+
+Future
+Durable Automation
+```
+
+This moves Ultron from process-local execution tracking toward **durable, observable, measurable, snapshot-aware, and recoverable agent execution infrastructure**.
+
+The v0.48 milestone strengthens the long-term vision of Ultron as an **AI Operating System** capable of understanding, planning, orchestrating, executing, observing, measuring, persisting, snapshotting, recovering, and eventually restoring long-running agent workflows.
 
 ```
 ```
