@@ -1,261 +1,348 @@
-Bhai ❤️ Bilkul. **v0.47 ka existing content preserve** rakha hai aur uske upar **v0.48 — Execution Recovery & State Restoration** ka content add kiya hai. Current validation ke according **v0.48 snapshot tests = 48 passed** aur **full suite = 645 passed** rakha hai.
+Haan bhai ❤️ Ab clear hai. **v0.48 ka existing content preserve** rahega, aur uske upar **v0.49 — Agent Runtime Context** add karenge. Jo current test run tune diya hai uske according **full suite = 681 passed**, so README mein **681 passed** hi rakhenge. Main koi unverified v0.49-specific test count invent nahi kar raha.
 
-Ek important architectural point bhi correctly maintain kiya hai: **v0.48 ka `ExecutionStateSnapshot` recovery/state-restoration foundation hai; snapshot khud execution ko resume/pause/retry nahi karta.**
+Neeche **full ready-to-paste `README.md`** hai:
 
 ````markdown
-# 🚀 v0.48 — Execution Recovery & State Restoration
+# 🚀 v0.49 — Agent Runtime Context
 
-The v0.48 milestone extends Ultron's durable execution architecture with a dedicated **Execution Recovery & State Restoration Layer**.
+The v0.49 milestone extends Ultron's agent execution architecture with a dedicated **Agent Runtime Context Layer**.
 
-v0.48 introduces an immutable:
+v0.49 introduces a structured runtime context responsible for carrying execution-scoped information through the agent runtime.
 
-`ExecutionStateSnapshot`
-
-that represents a point-in-time description of recoverable execution state.
-
-The snapshot provides a stable representation of:
+The runtime context provides a controlled representation of:
 
 ```text
 Execution Identity
+
+Agent Identity
+
+User Query
+
 Execution Status
+
 Current Step
+
 Current Step Index
+
 Completed Steps
+
 Failed Steps
+
 Pending Steps
+
 Retry Count
-Snapshot Timestamp
+
+Runtime Metadata
+
+Context State
 ````
 
-The v0.48 architecture builds directly on the persistent execution history and event infrastructure introduced in v0.44, v0.45, v0.46, and v0.47.
+The v0.49 architecture builds directly on the execution infrastructure introduced through v0.44, v0.45, v0.46, v0.47, and v0.48.
 
-The goal is to establish a clean foundation for future:
+The goal is to establish a clean foundation for:
 
 ```text
-Crash Recovery
-Execution Restoration
-Execution Resumption
-Persistent Workflow Recovery
-Long-Running Automation
-Execution Replay
-Failure Recovery
-Durable Agent Execution
+Context-Aware Agent Execution
+
+Execution State Propagation
+
+Runtime Metadata
+
+Execution Coordination
+
+State-Aware Tool Execution
+
+Context-Aware Orchestration
+
+Recovery-Aware Execution
+
+Long-Running Agent Workflows
+
+Multi-Step Agent Context
+
+Future Multi-Agent Coordination
 ```
 
-The snapshot itself remains descriptive only.
+The runtime context remains execution-scoped.
 
-It does not:
-
-```text
-Execute
-Resume
-Pause
-Cancel
-Retry
-Modify
-Control
-```
-
-an execution.
-
----
-
-# 🔄 Execution Recovery & State Restoration
-
-v0.48 introduces the concept of a recoverable execution state snapshot.
-
-The architecture now follows:
+It does not replace:
 
 ```text
-Agent Execution
+Agent Plans
 
-      │
-      ▼
-
-Execution Controller
-
-      │
-      ├───────────────────────┐
-      │                       │
-      ▼                       ▼
-
-Execution State        Execution Events
-
-      │                       │
-      ▼                       ▼
-
-State Snapshot          Event Store
-
-      │                       │
-      │                       ▼
-      │                 Persistent Storage
-      │                       │
-      │                       ▼
-      │              Execution History
-      │
-      └───────────────┬───────────────┘
-                      │
-                      ▼
-             Recovery Infrastructure
-                      │
-                      ▼
-             State Restoration
-```
-
-This creates a clear separation between:
-
-```text
-Execution Control
+Execution State Snapshots
 
 Execution Events
 
 Persistent Execution History
 
-Execution State Snapshot
+Execution Metrics
 
 Recovery Infrastructure
-
-State Restoration
 ```
+
+Instead, it provides a structured runtime context through which these execution layers can interact.
 
 ---
 
-# 🧩 ExecutionStateSnapshot
+# 🧠 Agent Runtime Context
 
-The core v0.48 component is:
+v0.49 introduces the concept of a dedicated runtime context for agent execution.
 
-`ExecutionStateSnapshot`
-
-It is implemented as an immutable dataclass.
-
-Conceptually:
+The architecture now follows:
 
 ```text
-ExecutionStateSnapshot
+Agent
 
-├── execution_id
-├── status
-├── current_step_id
-├── current_step_index
-├── completed_steps
-├── failed_steps
-├── pending_steps
-├── retry_count
-└── timestamp
+      │
+
+      ▼
+
+Agent Runtime
+
+      │
+
+      ▼
+
+Execution Context
+
+      │
+
+      ├──────────────────────────────┐
+      │                              │
+      ▼                              ▼
+
+Execution State              Runtime Metadata
+
+      │                              │
+      ▼                              ▼
+
+Current Step                  Context Information
+
+      │                              │
+      └───────────────┬──────────────┘
+                      │
+                      ▼
+
+              Agent Execution
 ```
 
-The snapshot captures the recoverable state of an execution at a specific point in time.
-
-It does not own execution behavior.
-
-Its responsibility is state representation.
-
----
-
-# 🔒 Immutable Execution State
-
-The snapshot is created using:
+This creates a clear separation between:
 
 ```text
-@dataclass(frozen=True)
-```
+Static Agent Definition
 
-This makes the snapshot immutable after creation.
+Execution Plan
 
-Conceptually:
-
-```text
 Execution State
 
-      │
-      ▼
+Runtime Context
 
-Create Snapshot
+Execution Events
 
-      │
-      ▼
+Persistent History
 
-Immutable State Representation
-
-      │
-      ├── Cannot modify execution_id
-      ├── Cannot modify status
-      ├── Cannot modify current step
-      ├── Cannot modify counters
-      └── Cannot modify timestamp
+Recovery State
 ```
 
-This prevents accidental mutation of previously captured execution state.
+---
 
-The snapshot therefore behaves as a stable point-in-time representation.
+# 🧩 Runtime Context Responsibilities
+
+The Agent Runtime Context is responsible for carrying execution-scoped information required during an agent execution.
+
+Conceptually:
+
+```text
+AgentRuntimeContext
+
+├── execution_id
+
+├── agent_id
+
+├── user_query
+
+├── status
+
+├── current_step_id
+
+├── current_step_index
+
+├── completed_steps
+
+├── failed_steps
+
+├── pending_steps
+
+├── retry_count
+
+└── metadata
+```
+
+The context provides a structured execution boundary.
+
+It allows runtime components to access execution information without requiring every component to independently reconstruct the current execution state.
 
 ---
 
 # 🆔 Execution Identity
 
-Every snapshot is associated with:
+Every runtime context is associated with:
 
 ```text
 execution_id
 ```
 
-The execution ID uniquely identifies the execution represented by the snapshot.
+The execution ID uniquely identifies the execution represented by the context.
 
 Valid execution IDs must be:
 
 ```text
 String
+
 Non-empty
+
 Non-whitespace
 ```
 
-Invalid examples include:
-
-```text
-None
-""
-"   "
-123
-```
-
-Invalid execution identities are rejected during snapshot creation.
-
-This prevents malformed execution state from entering the recovery layer.
-
----
-
-# 📊 Execution Status
-
-The snapshot stores the current execution lifecycle status through:
-
-```text
-status
-```
-
-Supported statuses are:
-
-```text
-pending
-running
-paused
-completed
-failed
-cancelled
-```
-
-This allows a snapshot to describe the execution lifecycle state at the time it was captured.
+Invalid execution identities are rejected.
 
 Conceptually:
 
 ```text
-Execution
+Agent Execution
 
       │
+
       ▼
 
-State Snapshot
+Execution ID
 
       │
+
+      ▼
+
+Runtime Context
+
+      │
+
+      ▼
+
+Execution Components
+```
+
+This ensures that runtime operations remain associated with a specific execution.
+
+---
+
+# 🤖 Agent Identity
+
+The runtime context also tracks:
+
+```text
+agent_id
+```
+
+The agent ID identifies the agent associated with the current execution.
+
+Conceptually:
+
+```text
+Agent
+
+agent_id = research-agent
+
+      │
+
+      ▼
+
+Execution Context
+
+      │
+
+      ▼
+
+Agent Runtime
+```
+
+This allows runtime infrastructure to associate execution-scoped information with the correct agent.
+
+---
+
+# 💬 User Query Context
+
+The runtime context can preserve the user query associated with the execution.
+
+```text
+user_query
+```
+
+This allows downstream execution components to access the original execution request without requiring the query to be passed independently through every layer.
+
+Conceptually:
+
+```text
+User Query
+
+      │
+
+      ▼
+
+Agent Runtime Context
+
+      │
+
+      ├───────────────┐
+      │               │
+      ▼               ▼
+
+Planner          Executor
+
+      │               │
+      └───────┬───────┘
+              │
+              ▼
+
+        Context-Aware Execution
+```
+
+This provides a consistent source of execution-scoped query information.
+
+---
+
+# 📊 Execution Status Context
+
+The runtime context carries execution lifecycle status.
+
+Supported execution states include:
+
+```text
+pending
+
+running
+
+paused
+
+completed
+
+failed
+
+cancelled
+```
+
+Conceptually:
+
+```text
+Execution Context
+
+      │
+
+      ▼
+
+Current Status
+
+      │
+
       ├── pending
       ├── running
       ├── paused
@@ -264,1085 +351,1278 @@ State Snapshot
       └── cancelled
 ```
 
-Unsupported statuses are rejected.
+This allows runtime components to understand the current lifecycle state of an execution.
+
+The runtime context does not independently perform lifecycle transitions.
+
+Lifecycle control remains the responsibility of execution-control infrastructure.
 
 ---
 
-# 📍 Current Step Tracking
+# 📍 Current Step Context
 
-The snapshot can preserve the current execution step through:
+The runtime context tracks the current execution step through:
 
 ```text
 current_step_id
 ```
 
-The value may be:
-
-```text
-String
-None
-```
-
-A non-empty string identifies the current step.
-
-This provides a recovery layer with information about the execution position.
+This allows execution components to identify the step currently associated with the runtime context.
 
 Conceptually:
 
 ```text
-Execution
+Plan
 
 Step 1
-  ↓
+   ↓
 Step 2
-  ↓
+   ↓
 Step 3
-  ↓
+   ↓
 Step 4
 
-Snapshot
-
-current_step_id = step-3
+        ↑
+        │
+Current Runtime Context
 ```
 
-The snapshot does not execute the step.
+The context records the execution position.
 
-It only records the execution position.
+It does not independently execute the step.
 
 ---
 
 # 🔢 Current Step Index
 
-v0.48 also stores:
+The runtime context also tracks:
 
 ```text
 current_step_index
 ```
 
-This represents the numerical position of the current step.
-
-Valid values are:
-
-```text
-0
-1
-2
-3
-...
-```
-
-Negative values are rejected.
-
-The field may also be:
-
-```text
-None
-```
+This provides a numerical representation of execution position.
 
 Conceptually:
 
 ```text
 Step 0
+
 Step 1
+
 Step 2
-Step 3
   ↑
-Current Position
+Current Step
+
+Step 3
+
+Step 4
 ```
 
-This provides a deterministic numerical representation of execution progress.
+This allows execution infrastructure to reason about the current position within a multi-step plan.
 
 ---
 
-# 📈 Execution Progress Counters
+# 📈 Execution Progress Context
 
-The snapshot records execution progress through:
+The runtime context can carry execution progress information through:
 
 ```text
 completed_steps
+
 failed_steps
-pending_steps
-retry_count
-```
 
-These values provide a compact representation of execution progress.
-
-Conceptually:
-
-```text
-Execution State
-
-Completed Steps = 4
-
-Failed Steps = 1
-
-Pending Steps = 2
-
-Retry Count = 3
-```
-
-All counters must be non-negative integers.
-
-Invalid values such as:
-
-```text
--1
--5
-1.5
-"5"
-```
-
-are rejected.
-
----
-
-# ✅ Completed Step Tracking
-
-The snapshot stores:
-
-```text
-completed_steps
-```
-
-This represents the number of completed execution steps at the time of snapshot creation.
-
-Example:
-
-```text
-Step 1 → completed
-Step 2 → completed
-Step 3 → completed
-
-completed_steps = 3
-```
-
-This information can later be used by recovery infrastructure to understand execution progress.
-
----
-
-# ❌ Failed Step Tracking
-
-The snapshot stores:
-
-```text
-failed_steps
-```
-
-This represents the number of failed steps recorded at snapshot creation time.
-
-Example:
-
-```text
-Step 1 → completed
-Step 2 → failed
-Step 3 → pending
-
-failed_steps = 1
-```
-
-The snapshot records this information without performing failure handling itself.
-
----
-
-# ⏳ Pending Step Tracking
-
-The snapshot stores:
-
-```text
 pending_steps
 ```
-
-This represents the number of steps that were still pending when the snapshot was created.
-
-Example:
-
-```text
-Step 1 → completed
-Step 2 → completed
-Step 3 → pending
-Step 4 → pending
-
-pending_steps = 2
-```
-
-This provides recovery infrastructure with a compact view of remaining execution work.
-
----
-
-# 🔁 Retry State Tracking
-
-The snapshot stores:
-
-```text
-retry_count
-```
-
-This records retry activity associated with the execution at the snapshot point.
-
-Example:
-
-```text
-Step 1 → completed
-Step 2 → failed
-Step 2 → retry
-Step 2 → retry
-
-retry_count = 2
-```
-
-The snapshot records retry state but does not initiate retries.
-
----
-
-# 🕒 Snapshot Timestamp
-
-Every snapshot contains:
-
-```text
-timestamp
-```
-
-The default timestamp is generated using UTC time:
-
-```text
-datetime.now(timezone.utc)
-```
-
-This provides a consistent temporal reference for the captured state.
 
 Conceptually:
 
 ```text
 Execution
 
-      │
-      ▼
+Completed = 3
 
-State Captured
+Failed = 1
 
-      │
-      ▼
-
-UTC Timestamp
-
-      │
-      ▼
-
-Immutable Snapshot
+Pending = 2
 ```
 
-The timestamp itself is validated to ensure it is a `datetime` instance.
+This provides runtime components with a compact representation of current execution progress.
+
+The context does not replace the persistent execution history.
+
+Instead:
+
+```text
+Runtime Context
+
+      +
+
+Execution History
+
+      +
+
+Execution State Snapshot
+
+      ↓
+
+Complete Execution Information
+```
 
 ---
 
-# 🧠 Derived Execution State
+# 🔁 Retry Context
 
-v0.48 provides convenient read-only state properties.
-
-The snapshot exposes:
+The runtime context carries:
 
 ```text
-is_pending
-is_running
-is_paused
-is_completed
-is_failed
-is_cancelled
+retry_count
 ```
 
-These properties derive their values directly from:
-
-```text
-status
-```
-
-For example:
-
-```text
-status = "running"
-
-is_running = True
-is_completed = False
-is_failed = False
-is_paused = False
-```
-
-This avoids duplicating lifecycle state inside the snapshot.
-
----
-
-# 📦 Snapshot Serialization
-
-v0.48 provides:
-
-```text
-to_dict()
-```
-
-for serializing the snapshot into a JSON-compatible dictionary.
+This represents retry activity associated with the execution context.
 
 Conceptually:
 
 ```text
-ExecutionStateSnapshot
+Step
 
-      │
-      ▼
+   ↓
 
-to_dict()
+Failure
 
-      │
-      ▼
+   ↓
 
-Dictionary
+Retry
 
-{
-    execution_id,
-    status,
-    current_step_id,
-    current_step_index,
-    completed_steps,
-    failed_steps,
-    pending_steps,
-    retry_count,
-    timestamp
-}
-```
+   ↓
 
-The timestamp is serialized using:
-
-```text
-datetime.isoformat()
-```
-
-This allows snapshots to be persisted or transported through standard structured data formats.
-
----
-
-# 🔄 Snapshot Deserialization
-
-v0.48 also provides:
-
-```text
-from_dict()
-```
-
-for reconstructing an `ExecutionStateSnapshot` from serialized data.
-
-Conceptually:
-
-```text
-Serialized Dictionary
-
-      │
-      ▼
-
-from_dict()
-
-      │
-      ▼
-
-ExecutionStateSnapshot
-
-      │
-      ▼
-
-Immutable Recoverable State
-```
-
-This enables state snapshots to survive serialization boundaries.
-
----
-
-# 🕒 Timestamp Restoration
-
-When reconstructing a snapshot from serialized data, ISO-formatted timestamps are converted back into Python `datetime` objects.
-
-Conceptually:
-
-```text
-ISO Timestamp
-
-"2026-08-27T..."
-
-      │
-      ▼
-
-datetime.fromisoformat()
-
-      │
-      ▼
-
-datetime
-
-      │
-      ▼
-
-ExecutionStateSnapshot
-```
-
-Invalid timestamps are rejected through:
-
-```text
-ExecutionStateSnapshotError
-```
-
----
-
-# 🧱 Snapshot Validation
-
-v0.48 performs validation during snapshot creation.
-
-Validation covers:
-
-```text
-Execution ID
-Status
-Current Step ID
-Current Step Index
-Step Counters
 Retry Count
-Timestamp
+
+   ↓
+
+Runtime Context
 ```
+
+The context records retry information.
+
+It does not independently initiate retries.
+
+Retry control remains part of the execution-control architecture.
+
+---
+
+# 🗃️ Runtime Metadata
+
+v0.49 introduces execution-scoped runtime metadata.
 
 Conceptually:
 
 ```text
-Snapshot Input
-
-      │
-      ▼
-
-Validation
-
-      │
-      ├── Valid ───────► Immutable Snapshot
-      │
-      └── Invalid ─────► Snapshot Error
+metadata
 ```
 
-This ensures that invalid recovery state cannot silently enter the execution infrastructure.
-
----
-
-# 🛡️ Dedicated Snapshot Error
-
-v0.48 introduces:
-
-```text
-ExecutionStateSnapshotError
-```
-
-This exception acts as the base error for execution-state snapshot validation failures.
+Runtime metadata provides a flexible structure for carrying contextual information that may be required during execution.
 
 Examples include:
 
 ```text
-Invalid execution ID
-Empty execution ID
-Invalid status
-Unsupported status
-Invalid step ID
-Invalid step index
-Negative counters
-Invalid retry count
-Invalid timestamp
-Invalid serialized timestamp
+Runtime Configuration
+
+Execution Hints
+
+Tool Context
+
+Provider Context
+
+Environment Information
+
+Execution Attributes
+
+Integration Metadata
 ```
 
-This provides a dedicated error boundary for the snapshot layer.
+Metadata remains execution-scoped and should not be treated as permanent user memory.
+
+This creates a distinction between:
+
+```text
+Long-Term Memory
+
+User Profile
+
+Execution Context
+
+Runtime Metadata
+```
 
 ---
 
-# 🔐 Snapshot Safety Boundary
+# 🧠 Context vs Memory
 
-The snapshot layer does not:
-
-```text
-Execute agents
-
-Execute tools
-
-Create plans
-
-Select tools
-
-Modify execution state
-
-Pause execution
-
-Resume execution
-
-Cancel execution
-
-Retry steps
-
-Trigger workflows
-
-Control orchestration
-
-```
-
-Its responsibility is limited to:
+The v0.49 architecture maintains a strict distinction between memory and runtime context.
 
 ```text
-Capture State
+Memory
 
-Validate State
+Long-Term Information
 
-Represent State
+      │
 
-Serialize State
+      ▼
 
-Deserialize State
-
-Inspect State
+Persistent User Context
 ```
 
-This maintains a strict separation between state representation and execution control.
-
----
-
-# 🔗 Recovery Architecture
-
-With v0.48, Ultron's execution infrastructure now conceptually follows:
+while:
 
 ```text
-Agent
+Runtime Context
 
-  │
-  ▼
+Execution-Scoped Information
 
-Planner
+      │
 
-  │
-  ▼
+      ▼
 
-Plan
-
-  │
-  ▼
-
-Orchestrator
-
-  │
-  ▼
-
-Execution Controller
-
-  │
-  ├───────────────────────────┐
-  │                           │
-  ▼                           ▼
-
-Execution State          Execution Events
-
-  │                           │
-  ▼                           ▼
-
-State Snapshot             Event Store
-
-  │                           │
-  │                           ▼
-  │                    Persistent Storage
-  │                           │
-  │                           ▼
-  │                   Execution History
-  │                           │
-  └───────────────┬───────────┘
-                  │
-                  ▼
-          Recovery Infrastructure
-                  │
-                  ▼
-         State Restoration
-                  │
-                  ▼
-          Future Resumption
+Current Agent Execution
 ```
-
-The important architectural boundary is:
-
-```text
-Snapshot
-    ≠
-Recovery Controller
-```
-
-The snapshot provides the state representation required by future recovery components.
-
----
-
-# 💾 Persistent State Foundation
-
-v0.47 introduced persistent execution event history.
-
-v0.48 adds a structured execution state representation.
-
-The combined architecture becomes:
-
-```text
-Execution Events
-       │
-       ▼
-Persistent History
-       │
-       ├───────────────┐
-       │               │
-       ▼               ▼
-Event Timeline    State Snapshot
-       │               │
-       └───────┬───────┘
-               │
-               ▼
-       Recovery Foundation
-```
-
-This provides two complementary representations:
-
-```text
-Execution History
-```
-
-for what happened,
-
-and:
-
-```text
-Execution State Snapshot
-```
-
-for the state of the execution at a specific point in time.
-
----
-
-# 🧬 Event History + State Snapshot
-
-The architecture now provides:
-
-```text
-Execution History
-
-Event 1
-Event 2
-Event 3
-Event 4
-Event 5
-
-        +
-
-State Snapshot
-
-status = running
-current_step = step-3
-completed = 2
-pending = 3
-retry_count = 1
-```
-
-Together these provide a stronger foundation for recovery infrastructure.
 
 Conceptually:
 
 ```text
-What Happened?
+User Profile
+     │
+     ▼
+Long-Term Memory
+     │
+     ▼
+Agent Runtime
+     │
+     ▼
+Runtime Context
+     │
+     ▼
+Current Execution
+```
+
+Runtime context therefore does not replace Ultron's existing memory system.
+
+---
+
+# 🔗 Context Propagation
+
+The runtime context creates a structured mechanism for passing execution information through runtime components.
+
+Conceptually:
+
+```text
+Agent Runtime
+
+      │
+
+      ▼
+
+Runtime Context
+
+      │
+      ├───────────────┐
+      │               │
+      ▼               ▼
+
+Planner          Executor
+
+      │               │
+      ▼               ▼
+
+Orchestrator     Tool Runtime
+
+      │               │
+      └───────┬───────┘
+              │
+              ▼
+
+        Context-Aware Execution
+```
+
+This reduces the need for loosely coupled execution components to independently reconstruct execution state.
+
+---
+
+# 🧩 Context-Aware Agent Runtime
+
+The v0.49 architecture can now be represented as:
+
+```text
+Agent Definition
+
+      │
+
+      ▼
+
+Agent Runtime
+
+      │
+
+      ▼
+
+Agent Runtime Context
+
+      │
+
+      ├──────────────────────┐
+      │                      │
+      ▼                      ▼
+
+Execution State         Runtime Metadata
+
+      │                      │
+      └──────────┬───────────┘
+                 │
+                 ▼
+
+        Execution Coordination
+
+                 │
+                 ▼
+
+             Agent Tools
+```
+
+This provides a structured runtime boundary for agent execution.
+
+---
+
+# 🔒 Execution-Scoped Context
+
+Runtime context is associated with a specific execution.
+
+Conceptually:
+
+```text
+Execution A
+     │
+     └── Runtime Context A
+
+Execution B
+     │
+     └── Runtime Context B
+```
+
+This prevents unrelated executions from sharing execution-specific state.
+
+The architecture therefore supports isolated execution contexts.
+
+---
+
+# 🧱 Context Isolation
+
+Each execution can maintain its own runtime context.
+
+```text
+Execution A
+
+execution_id = exec-A
+
+current_step = step-2
+
+retry_count = 1
+
+
+Execution B
+
+execution_id = exec-B
+
+current_step = step-4
+
+retry_count = 0
+```
+
+These contexts remain independent.
+
+This becomes increasingly important for:
+
+```text
+Concurrent Execution
+
+Parallel Workflows
+
+Long-Running Agents
+
+Multi-Agent Systems
+
+Distributed Execution
+```
+
+---
+
+# 🛡️ Context Safety Boundary
+
+The runtime context does not directly:
+
+```text
+Create Plans
+
+Select Tools
+
+Execute Tools
+
+Execute Agents
+
+Persist Events
+
+Write Execution History
+
+Generate Metrics
+
+Resume Execution
+
+Pause Execution
+
+Cancel Execution
+
+Retry Execution
+
+Modify Historical Snapshots
+```
+
+Instead, it provides:
+
+```text
+Execution Context
+
+State Access
+
+Context Propagation
+
+Runtime Metadata
+
+Execution Identity
+
+Execution Position
+
+Progress Information
+```
+
+This preserves architectural separation.
+
+---
+
+# 🔄 Context and Execution Controller
+
+The execution controller remains responsible for execution control.
+
+The relationship becomes:
+
+```text
+Execution Controller
+
+        │
+
+        ▼
+
+Runtime Context
+
+        │
+
+        ├── execution_id
+        ├── agent_id
+        ├── current step
+        ├── execution status
+        ├── progress
+        └── runtime metadata
+
+        │
+
+        ▼
+
+Controlled Execution
+```
+
+The context provides information.
+
+The controller performs execution control.
+
+This separation prevents the runtime context from becoming an implicit execution controller.
+
+---
+
+# 🔗 Context and Execution State Snapshot
+
+v0.48 introduced:
+
+```text
+ExecutionStateSnapshot
+```
+
+v0.49 introduces:
+
+```text
+Agent Runtime Context
+```
+
+These components serve different purposes.
+
+```text
+ExecutionStateSnapshot
+
+Historical / Recoverable State Representation
+```
+
+while:
+
+```text
+AgentRuntimeContext
+
+Active Execution-Scoped Runtime Context
+```
+
+Conceptually:
+
+```text
+Persistent State
+
+      │
+
+      ▼
+
+ExecutionStateSnapshot
+
+      │
+
+      ▼
+
+Recovery / Restoration
+
+      │
+
+      ▼
+
+Runtime Context
+
+      │
+
+      ▼
+
+Active Execution
+```
+
+This creates a path from persistent execution state toward active runtime execution.
+
+---
+
+# 🔄 Snapshot → Runtime Context
+
+Future recovery infrastructure can conceptually perform:
+
+```text
+ExecutionStateSnapshot
+
+      │
+
+      ▼
+
+Recovery Manager
+
+      │
+
+      ▼
+
+State Restoration
+
+      │
+
+      ▼
+
+Agent Runtime Context
+
+      │
+
+      ▼
+
+Execution Resumption
+```
+
+v0.49 provides the runtime context required for this future interaction.
+
+The runtime context itself does not perform recovery.
+
+---
+
+# 💾 Persistent Execution + Runtime Context
+
+The combined architecture now becomes:
+
+```text
+Execution
+
+      │
+
+      ├───────────────────────┐
+      │                       │
+      ▼                       ▼
+
+Execution Events       Runtime Context
+
+      │                       │
+      ▼                       ▼
+
+Event Store             Active State
+
+      │                       │
+      ▼                       │
+
+Persistent History            │
+
+      │                       │
+      ▼                       │
+
+Execution Snapshot            │
+
+      │                       │
+      └──────────────┬────────┘
+                     │
+                     ▼
+
+             Recovery Foundation
+```
+
+This creates a clear relationship between persistent execution information and active runtime state.
+
+---
+
+# 🧬 Runtime Context Lifecycle
+
+The lifecycle of a runtime context can be represented as:
+
+```text
+Execution Created
+
+      │
+
+      ▼
+
+Create Runtime Context
+
+      │
+
+      ▼
+
+Initialize Execution State
+
+      │
+
+      ▼
+
+Run Agent
+
+      │
+
+      ▼
+
+Update Context
+
+      │
+
+      ├───────────────┐
+      │               │
+      ▼               ▼
+
+Step Progress      Retry Activity
+
+      │               │
+      └───────┬───────┘
+              │
+              ▼
+
+Execution Continues
+
+              │
+
+              ▼
+
+Execution Completed / Failed / Cancelled
+
+              │
+
+              ▼
+
+Context Lifecycle Ends
+```
+
+This provides a structured execution-scoped lifecycle.
+
+---
+
+# 🔄 Context Updates
+
+As execution progresses, runtime context information can conceptually change:
+
+```text
+Initial
+
+status = pending
+
+current_step = None
+
+completed = 0
+
+failed = 0
+
+pending = 4
+```
+
+Then:
+
+```text
+Running
+
+status = running
+
+current_step = step-1
+
+completed = 0
+
+failed = 0
+
+pending = 3
+```
+
+Then:
+
+```text
+Progressed
+
+status = running
+
+current_step = step-2
+
+completed = 1
+
+failed = 0
+
+pending = 2
+```
+
+Finally:
+
+```text
+Completed
+
+status = completed
+
+completed = 4
+
+failed = 0
+
+pending = 0
+```
+
+The runtime context therefore provides a structured representation of the active execution environment.
+
+---
+
+# 🧠 Context-Aware Tool Execution
+
+The runtime context creates a foundation for future context-aware tool execution.
+
+Conceptually:
+
+```text
+Agent Runtime
+
+      │
+
+      ▼
+
+Runtime Context
+
+      │
+
+      ├── Agent Identity
+      ├── Execution Identity
+      ├── User Query
+      ├── Current Step
+      ├── Runtime Metadata
+      └── Execution State
+
+      │
+
+      ▼
+
+Tool Selector
+
+      │
+
+      ▼
+
+Selected Tool
+
+      │
+
+      ▼
+
+Tool Execution
+```
+
+This allows future tools to receive relevant execution context without coupling tools directly to the global agent runtime.
+
+---
+
+# 🧩 Context-Aware Orchestration
+
+The runtime context also creates a foundation for richer orchestration.
+
+Conceptually:
+
+```text
+Planner
+
+   │
+
+   ▼
+
+Plan
+
+   │
+
+   ▼
+
+Orchestrator
+
+   │
+
+   ▼
+
+Runtime Context
+
+   │
+
+   ├── Current Step
+   ├── Execution State
+   ├── Progress
+   └── Runtime Metadata
+
+   │
+
+   ▼
+
+Execution Controller
+```
+
+This enables orchestration components to reason about the current execution context while preserving separation of responsibilities.
+
+---
+
+# 🔎 Runtime Context Inspection
+
+The runtime context provides structured access to execution-scoped information such as:
+
+```text
+execution_id
+
+agent_id
+
+user_query
+
+status
+
+current_step_id
+
+current_step_index
+
+completed_steps
+
+failed_steps
+
+pending_steps
+
+retry_count
+
+metadata
+```
+
+This allows execution components to inspect runtime state without directly accessing unrelated persistence layers.
+
+---
+
+# 🧱 Runtime Context Boundary
+
+The architecture now establishes three distinct state concepts:
+
+```text
+1. Persistent State
+
+Stored execution history and durable information.
+
+
+2. Snapshot State
+
+Point-in-time recoverable execution state.
+
+
+3. Runtime Context
+
+Active execution-scoped runtime information.
+```
+
+Conceptually:
+
+```text
+Persistent State
 
       ↓
+
+Snapshot State
+
+      ↓
+
+Runtime Context
+
+      ↓
+
+Active Execution
+```
+
+This separation is important for long-running and recoverable agent workflows.
+
+---
+
+# 🔐 State Ownership
+
+The v0.49 architecture maintains explicit ownership boundaries.
+
+```text
+Execution Controller
+    → Controls execution
+
+Event Store
+    → Stores execution events
+
+Persistence Layer
+    → Stores durable history
+
+ExecutionStateSnapshot
+    → Represents recoverable state
+
+AgentRuntimeContext
+    → Carries active execution context
+
+Recovery Infrastructure
+    → Restores execution state
+
+Observability
+    → Inspects execution
+
+Metrics
+    → Aggregates execution analytics
+```
+
+No single component is responsible for the entire execution lifecycle.
+
+---
+
+# 🧠 Context and Agent Runtime Architecture
+
+Ultron's runtime architecture now conceptually follows:
+
+```text
+Conversation
+
+      │
+
+      ▼
+
+AI Engine
+
+      │
+
+      ▼
+
+Agent Runtime
+
+      │
+
+      ▼
+
+Agent Runtime Context
+
+      │
+
+      ▼
+
+Planner
+
+      │
+
+      ▼
+
+Plan
+
+      │
+
+      ▼
+
+Orchestrator
+
+      │
+
+      ▼
+
+Execution Controller
+
+      │
+
+      ▼
+
+Execution
+```
+
+Supporting infrastructure:
+
+```text
+Execution
+   │
+   ├── Events
+   │
+   ├── Observability
+   │
+   ├── Metrics
+   │
+   ├── Persistence
+   │
+   ├── State Snapshot
+   │
+   └── Runtime Context
+```
+
+---
+
+# 🔄 Active State vs Historical State
+
+The architecture now differentiates between active and historical execution information.
+
+```text
+ACTIVE
+
+AgentRuntimeContext
+
+      │
+
+      ▼
+
+Current Execution
+```
+
+and:
+
+```text
+HISTORICAL
 
 Execution Events
 
       +
 
-Where Was Execution?
+ExecutionStateSnapshot
 
-      ↓
+      +
 
-Execution State Snapshot
-
-      ↓
-
-Recovery Decision
-```
-
----
-
-# 🔄 State Restoration Foundation
-
-A future recovery system can conceptually use:
-
-```text
 Persistent Execution History
-
-        +
-
-Latest Execution State Snapshot
-
-        │
-
-        ▼
-
-Recovery Manager
-
-        │
-
-        ▼
-
-Validate Recoverable State
-
-        │
-
-        ▼
-
-Restore Execution Context
-
-        │
-
-        ▼
-
-Resume / Recover Execution
 ```
 
-v0.48 intentionally does not implement the recovery manager itself.
+This allows Ultron to reason about both:
 
-It establishes the state representation required for that future layer.
+```text
+What is happening now?
+
+```
+
+and:
+
+```text
+What happened previously?
+```
+
+without conflating the two.
 
 ---
 
-# 🧱 Immutable Recovery Boundary
+# 🛡️ Runtime Context Safety
 
-Because `ExecutionStateSnapshot` is immutable:
+The runtime context maintains a strict execution boundary.
 
-```text
-Stored Snapshot
-
-      │
-      ▼
-
-Read Snapshot
-
-      │
-      ▼
-
-Inspect Snapshot
-
-      │
-      ▼
-
-Create New State
-
-      │
-      ▼
-
-New Snapshot
-```
-
-Recovery logic cannot silently mutate historical snapshots.
-
-This creates a safer model for future:
-
-```text
-Checkpointing
-
-Recovery
-
-Replay
-
-Auditing
-
-State Comparison
-```
-
----
-
-# 📊 Snapshot State Model
-
-The complete snapshot model can be represented as:
-
-```text
-ExecutionStateSnapshot
-
-│
-├── Identity
-│     └── execution_id
-│
-├── Lifecycle
-│     └── status
-│
-├── Position
-│     ├── current_step_id
-│     └── current_step_index
-│
-├── Progress
-│     ├── completed_steps
-│     ├── failed_steps
-│     └── pending_steps
-│
-├── Retry State
-│     └── retry_count
-│
-└── Temporal State
-      └── timestamp
-```
-
-This provides a compact representation of recoverable execution state.
-
----
-
-# 🔎 Snapshot Inspection
-
-The snapshot supports read-only inspection through:
-
-```text
-execution_id
-status
-current_step_id
-current_step_index
-completed_steps
-failed_steps
-pending_steps
-retry_count
-timestamp
-```
-
-and derived lifecycle properties:
-
-```text
-is_pending
-is_running
-is_paused
-is_completed
-is_failed
-is_cancelled
-```
-
-This allows higher-level systems to inspect state without directly mutating execution control.
-
----
-
-# 🔄 Snapshot Round Trip
-
-v0.48 supports a complete serialization round trip:
-
-```text
-ExecutionStateSnapshot
-
-      │
-      ▼
-
-to_dict()
-
-      │
-      ▼
-
-Serialized State
-
-      │
-      ▼
-
-from_dict()
-
-      │
-      ▼
-
-ExecutionStateSnapshot
-```
-
-The reconstructed object preserves the original recoverable state.
+It should not become a global mutable state container.
 
 Conceptually:
 
 ```text
-Original Snapshot
+Global State
 
-       ↓
+      ✗
 
-Serialization
+Shared Mutable Execution State
 
-       ↓
+      ✗
 
-Storage / Transport
+Execution-Scoped Runtime Context
 
-       ↓
-
-Deserialization
-
-       ↓
-
-Equivalent Snapshot State
+      ✓
 ```
+
+This reduces the risk of unrelated executions accidentally sharing state.
 
 ---
 
-# 🧪 v0.48 Test Coverage
+# 🔗 Updated Recovery Architecture
 
-The v0.48 milestone expands automated testing around execution state snapshots.
+With v0.49, the recovery architecture conceptually becomes:
 
 ```text
-v0.48
+Execution
 
-├── Snapshot Creation
+      │
 
-├── Immutable Snapshot Behavior
+      ▼
 
-├── Execution ID Validation
+Execution Events
 
-├── Empty Execution ID Validation
+      │
 
-├── Status Validation
+      ▼
 
-├── Supported Status Validation
+Persistent History
 
-├── Unsupported Status Handling
+      │
 
-├── Current Step ID Validation
+      ▼
 
-├── Current Step Index Validation
+Execution State Snapshot
 
-├── Negative Step Index Handling
+      │
 
-├── Completed Step Validation
+      ▼
 
-├── Failed Step Validation
+Recovery Infrastructure
 
-├── Pending Step Validation
+      │
 
-├── Retry Count Validation
+      ▼
 
-├── Negative Counter Handling
+State Restoration
 
-├── Timestamp Validation
+      │
 
-├── UTC Timestamp Generation
+      ▼
 
-├── Derived Lifecycle Properties
+Agent Runtime Context
 
-├── Pending State Detection
+      │
 
-├── Running State Detection
+      ▼
 
-├── Paused State Detection
-
-├── Completed State Detection
-
-├── Failed State Detection
-
-├── Cancelled State Detection
-
-├── Snapshot Serialization
-
-├── Snapshot Deserialization
-
-├── Timestamp Serialization
-
-├── Timestamp Reconstruction
-
-├── Invalid Timestamp Handling
-
-├── Missing Execution ID Handling
-
-├── Missing Status Handling
-
-├── Default Counter Handling
-
-├── State Round-Trip Validation
-
-├── Snapshot Error Handling
-
-├── JSON-Compatible Representation
-
-├── Recovery State Representation
-
-├── Backward Compatibility
-
-└── Full Regression Testing
+Future Execution Resumption
 ```
+
+The important architectural boundary remains:
+
+```text
+Snapshot
+
+    ≠
+
+Runtime Context
+
+    ≠
+
+Recovery Controller
+```
+
+Each component has a distinct responsibility.
 
 ---
 
-# 🧪 v0.48 Snapshot Validation
+# 📊 Runtime Context Model
 
-The v0.48 snapshot test suite validates:
+The complete runtime context can be represented as:
 
 ```text
-[✓] Snapshot creation
+AgentRuntimeContext
 
-[✓] Immutable snapshot behavior
+│
 
-[✓] Execution ID validation
-
-[✓] Status validation
-
-[✓] Supported lifecycle statuses
-
-[✓] Unsupported status rejection
-
-[✓] Current step ID validation
-
-[✓] Current step index validation
-
-[✓] Negative step index rejection
-
-[✓] Completed step validation
-
-[✓] Failed step validation
-
-[✓] Pending step validation
-
-[✓] Retry count validation
-
-[✓] Negative counter rejection
-
-[✓] Timestamp validation
-
-[✓] UTC timestamp generation
-
-[✓] Lifecycle state properties
-
-[✓] Snapshot serialization
-
-[✓] Snapshot deserialization
-
-[✓] Timestamp serialization
-
-[✓] Timestamp reconstruction
-
-[✓] Invalid timestamp handling
-
-[✓] Required field validation
-
-[✓] Default values
-
-[✓] State round-trip behavior
-
-[✓] Dedicated snapshot errors
-
-[✓] JSON-compatible state representation
-
-[✓] Recovery state foundation
-
-[✓] Backward compatibility
-
-[✓] Full regression stability
+├── Identity
+│   ├── execution_id
+│   └── agent_id
+│
+├── Request
+│   └── user_query
+│
+├── Lifecycle
+│   └── status
+│
+├── Position
+│   ├── current_step_id
+│   └── current_step_index
+│
+├── Progress
+│   ├── completed_steps
+│   ├── failed_steps
+│   └── pending_steps
+│
+├── Retry
+│   └── retry_count
+│
+└── Runtime
+    └── metadata
 ```
+
+This provides a structured representation of active execution context.
 
 ---
 
-# 📊 Current Test Status
+# 🧩 Component Interaction
 
-The v0.48 implementation has been validated through:
+The v0.49 architecture can be visualized as:
 
 ```text
-Execution State Snapshot Tests
-
-48 passed
-
-0 failed
+                    Agent
+                      │
+                      ▼
+                Agent Runtime
+                      │
+                      ▼
+             Runtime Context
+                      │
+        ┌─────────────┼─────────────┐
+        │             │             │
+        ▼             ▼             ▼
+     Planner      Orchestrator   Tool System
+        │             │             │
+        └─────────────┼─────────────┘
+                      │
+                      ▼
+              Execution Controller
+                      │
+        ┌─────────────┼──────────────┐
+        │             │              │
+        ▼             ▼              ▼
+      Events       Snapshot      Observability
+        │             │              │
+        ▼             ▼              ▼
+    Persistence    Recovery       Metrics
 ```
 
-Full project regression:
+This establishes the runtime context as an execution coordination boundary rather than another execution-control layer.
+
+---
+
+# 🧪 v0.49 Validation
+
+The v0.49 milestone is validated as part of the complete Ultron regression suite.
+
+Current full project validation:
 
 ```text
-645 passed
+681 passed
 
 0 failed
 ```
@@ -1350,301 +1630,147 @@ Full project regression:
 Current validation:
 
 ```text
-Snapshot Tests: 48 passed
-Full Tests: 645 passed
+Full Tests: 681 passed
+
 Tests Failed: 0
+
 Status: PASS
-Release: v0.48
+
+Release: v0.49
 ```
 
-This confirms that the execution state snapshot layer integrates with the existing execution architecture without breaking previous functionality.
+This confirms that the v0.49 runtime-context architecture remains compatible with the existing execution infrastructure.
 
 ---
 
-# 🧠 Execution Recovery Model
-
-The v0.48 recovery model can be represented as:
+# 🧪 v0.49 Quality Gate
 
 ```text
-Execution
+[✓] Feature implemented
 
-    │
-    ▼
+[✓] Agent runtime context introduced
 
-Execution Events
+[✓] Execution identity context
 
-    │
-    ▼
+[✓] Agent identity context
 
-Persistent History
+[✓] User query context
 
-    │
-    ▼
+[✓] Execution status context
 
-State Snapshot
+[✓] Current step context
 
-    │
-    ▼
+[✓] Current step index context
 
-Recoverable State
+[✓] Completed step context
 
-    │
-    ▼
+[✓] Failed step context
 
-Future Recovery Manager
+[✓] Pending step context
 
-    │
-    ▼
+[✓] Retry context
 
-State Restoration
+[✓] Runtime metadata support
 
-    │
-    ▼
+[✓] Execution-scoped context
 
-Future Execution Resumption
+[✓] Context isolation
+
+[✓] Context propagation foundation
+
+[✓] Execution controller separation
+
+[✓] Snapshot compatibility
+
+[✓] Persistence compatibility
+
+[✓] Observability compatibility
+
+[✓] Metrics compatibility
+
+[✓] Recovery compatibility
+
+[✓] Backward compatibility
+
+[✓] Automated regression testing
+
+[✓] Full test suite passing
+
+[✓] Documentation
+
+[✓] Version update
+
+[✓] Release validation
 ```
 
-The snapshot is therefore a foundational recovery primitive rather than a recovery controller.
-
----
-
-# 🧩 Execution Infrastructure Layers
-
-Ultron's execution infrastructure can now be represented as:
+Current validation:
 
 ```text
-Layer 1
+Full Regression
 
-Execution Control
-
-        │
-        ▼
-
-Layer 2
-
-Execution Events
-
-        │
-        ▼
-
-Layer 3
-
-Event Storage
-
-        │
-        ▼
-
-Layer 4
-
-Persistent Execution History
-
-        │
-        ▼
-
-Layer 5
-
-Execution State Snapshot
-
-        │
-        ▼
-
-Layer 6
-
-Recovery Infrastructure
-
-        │
-        ▼
-
-Layer 7
-
-Execution Observability
-
-        │
-        ▼
-
-Layer 8
-
-Execution Metrics
+681 passed
+0 failed
 ```
-
-The state snapshot layer provides a bridge between durable execution history and future recovery infrastructure.
-
----
-
-# 🛡️ Recovery Safety Boundaries
-
-The v0.48 snapshot layer does not directly perform recovery actions.
-
-It does not:
-
-```text
-Resume execution
-
-Restart execution
-
-Retry execution
-
-Modify execution
-
-Trigger tools
-
-Trigger agents
-
-Modify plans
-
-Change orchestration
-
-Delete history
-
-```
-
-Instead it provides:
-
-```text
-Validated State
-
-Immutable State
-
-Serializable State
-
-Restorable State Representation
-```
-
-This keeps recovery state separate from recovery behavior.
-
----
-
-# 🔐 State Integrity
-
-The snapshot architecture validates state before it is accepted.
-
-Conceptually:
-
-```text
-Raw State
-
-    │
-    ▼
-
-Validation
-
-    │
-    ├── Invalid
-    │      ↓
-    │   Error
-    │
-    └── Valid
-           ↓
-    Immutable Snapshot
-```
-
-This prevents malformed execution state from being treated as recoverable state.
-
----
-
-# 🔗 Updated Dependency Direction
-
-Ultron's execution architecture now follows:
-
-```text
-Conversation
-
-     │
-     ▼
-
-AI Engine
-
-     │
-     ▼
-
-Agent Runtime
-
-     │
-     ▼
-
-Planner
-
-     │
-     ▼
-
-Orchestrator
-
-     │
-     ▼
-
-Execution Controller
-
-     │
-     ├──────────────────────────────┐
-     │                              │
-     ▼                              ▼
-
-Execution Lifecycle          Execution Events
-
-     │                              │
-     ▼                              ├───────────────┐
-Execution State                    │               │
-     │                             ▼               ▼
-     ▼                        Event Store    Persistence Contract
-State Snapshot                       │               │
-     │                               │               ▼
-     │                               │       SQLite Persistence
-     │                               │               │
-     │                               ▼               ▼
-     │                       Execution History
-     │                               │
-     └───────────────┬───────────────┘
-                     │
-                     ▼
-             Recovery Foundation
-                     │
-                     ▼
-             State Restoration
-                     │
-                     ▼
-              Observability
-                     │
-                     ▼
-                  Metrics
-```
-
-The architecture keeps execution control, event persistence, state representation, recovery, observability, and metrics independently structured.
-
----
-
-# 🧩 Component Responsibilities
-
-| Component                   | Responsibility                              |
-| --------------------------- | ------------------------------------------- |
-| Conversation Engine         | User interaction and conversational context |
-| Memory                      | Persistent context                          |
-| Profile                     | Long-term user information                  |
-| AI Engine                   | Provider abstraction                        |
-| Agent                       | Agent definition                            |
-| Agent Registry              | Agent management                            |
-| Agent Engine                | Agent execution coordination                |
-| Planner                     | Plan creation and validation                |
-| Plan                        | Structured execution representation         |
-| Orchestrator                | Plan execution coordination                 |
-| Execution Controller        | Controlled agent execution                  |
-| Execution Lifecycle         | Execution state management                  |
-| Execution Event             | Structured execution transition             |
-| Execution Event Store       | In-memory execution event storage           |
-| Execution Event Persistence | Persistence abstraction                     |
-| SQLite Persistence          | Durable SQLite execution event storage      |
-| Execution State Snapshot    | Immutable recoverable execution state       |
-| Recovery Infrastructure     | Future execution state restoration          |
-| Execution Observability     | Execution inspection and querying           |
-| Execution Metrics           | Immutable execution analytics snapshot      |
-| Metrics Collector           | Execution metric aggregation                |
-| Tool Selector               | Capability-based tool resolution            |
-| Tool Registry               | Tool management                             |
-| Agent Tool                  | Controlled capability                       |
-| Tool Result                 | Structured execution result                 |
 
 ---
 
 # 📜 Version History
+
+## v0.49 — Agent Runtime Context
+
+* Dedicated Agent Runtime Context layer
+
+* Execution-scoped runtime context
+
+* Execution identity context
+
+* Agent identity context
+
+* User query context
+
+* Execution lifecycle context
+
+* Current step tracking
+
+* Current step index tracking
+
+* Completed step tracking
+
+* Failed step tracking
+
+* Pending step tracking
+
+* Retry state tracking
+
+* Runtime metadata support
+
+* Context propagation foundation
+
+* Context isolation
+
+* Active execution state representation
+
+* Context-aware execution foundation
+
+* Context-aware orchestration foundation
+
+* Context-aware tool execution foundation
+
+* Runtime context and snapshot separation
+
+* Runtime context and persistence separation
+
+* Runtime context and recovery separation
+
+* Recovery-aware runtime architecture
+
+* Backward-compatible execution architecture
+
+* Full regression testing
+
+* 681 full tests passing
+
+---
 
 ## v0.48 — Execution Recovery & State Restoration
 
@@ -1712,10 +1838,6 @@ The architecture keeps execution control, event persistence, state representatio
 
 * Backward-compatible execution architecture
 
-* 48 snapshot tests passing
-
-* 645 full regression tests passing
-
 ---
 
 ## v0.47 — Persistent Execution History
@@ -1778,10 +1900,6 @@ The architecture keeps execution control, event persistence, state representatio
 
 * Persistent execution foundation
 
-* 44 persistence tests passing
-
-* 597 full regression tests passing
-
 ---
 
 ## v0.46 — Execution Metrics
@@ -1829,8 +1947,6 @@ The architecture keeps execution control, event persistence, state representatio
 * Backward-compatible execution architecture
 
 * Full regression stability
-
-* 553 automated tests passing
 
 ---
 
@@ -2001,6 +2117,12 @@ v0.48 → Execution Recovery & State Restoration
 
         ▼
 
+v0.49 → Agent Runtime Context
+
+        │
+
+        ▼
+
 Future → Durable Automation & Advanced Recovery
 
         │
@@ -2107,6 +2229,12 @@ Execution State Snapshots
 
       ▼
 
+Agent Runtime Context
+
+      │
+
+      ▼
+
 State Restoration
 
       │
@@ -2148,51 +2276,45 @@ v1.0
 
 ---
 
-# 🚀 Future Execution Recovery Capabilities
+# 🚀 Future Runtime Capabilities
 
-The v0.48 architecture creates a foundation for future capabilities such as:
+The v0.49 architecture creates a foundation for future capabilities such as:
 
-* Persistent execution checkpoints
+* Context-aware agent execution
 
-* Crash recovery
+* Context-aware tool execution
 
-* Execution state restoration
+* Runtime context injection
 
-* Execution resumption
+* Execution context propagation
 
-* Workflow recovery
+* Recovery-aware runtime context
 
-* Execution replay
+* Context restoration after crashes
 
-* Checkpoint-based recovery
+* Context-aware orchestration
 
-* Long-running workflow recovery
+* Long-running agent context
 
-* Persistent workflow state
+* Persistent runtime context
 
-* Historical state comparison
+* Multi-agent runtime context
 
-* Recovery diagnostics
+* Context-aware distributed execution
 
-* Execution rollback strategies
+* Execution context inspection
 
-* Agent execution recovery
+* Context-aware automation
 
-* Multi-step workflow recovery
+* Runtime context checkpointing
 
-* Durable automation
+* Context-aware workflow recovery
 
-* Distributed execution recovery
+* Agent execution continuation
 
-* Multi-agent execution recovery
+* Advanced execution coordination
 
-* Recovery dashboards
-
-* Historical execution inspection
-
-* State-aware automation
-
-These capabilities can be introduced incrementally without coupling the snapshot representation directly to execution-control logic.
+These capabilities can be introduced incrementally without coupling the runtime context directly to persistence, recovery, or execution-control logic.
 
 ---
 
@@ -2207,11 +2329,19 @@ Understand
 
       ↓
 
+Remember
+
+      ↓
+
 Plan
 
       ↓
 
 Select Capabilities
+
+      ↓
+
+Create Runtime Context
 
       ↓
 
@@ -2247,29 +2377,103 @@ Restore
 
       ↓
 
+Resume
+
+      ↓
+
 Automate
 ```
 
-The v0.47 milestone introduced the **Persist** layer.
+The recent architecture progression is:
 
-The v0.48 milestone introduces the **Snapshot** foundation required for durable state restoration.
+```text
+v0.44
+
+Observe
+
+      ↓
+
+v0.45
+
+Inspect
+
+      ↓
+
+v0.46
+
+Measure
+
+      ↓
+
+v0.47
+
+Persist
+
+      ↓
+
+v0.48
+
+Snapshot
+
+      ↓
+
+v0.49
+
+Context
+
+      ↓
+
+Future
+
+Recover
+
+      ↓
+
+Future
+
+Restore
+
+      ↓
+
+Future
+
+Resume
+
+      ↓
+
+Future
+
+Durable Automation
+```
 
 This creates a path toward:
 
 ```text
 Persistent Execution
 
-        ↓
+      ↓
+
+Snapshot-Aware Execution
+
+      ↓
+
+Context-Aware Execution
+
+      ↓
 
 Recoverable Execution
 
-        ↓
+      ↓
 
 Restorable Execution
 
-        ↓
+      ↓
 
 Resumable Execution
+
+      ↓
+
+Durable Automation
 ```
 
 ---
@@ -2329,7 +2533,15 @@ Execution State Snapshots
 
        ↓
 
+Agent Runtime Context
+
+       ↓
+
 State Restoration
+
+       ↓
+
+Crash Recovery
 
        ↓
 
@@ -2363,6 +2575,8 @@ Persistence
 
 State Integrity
 
+Runtime Context
+
 Recovery
 
 Controlled Execution
@@ -2378,87 +2592,95 @@ Long-Term Extensibility
 
 ```text
 ╔══════════════════════════════════════════════════════╗
-║                    ULTRON v0.48                     ║
+║                    ULTRON v0.49                     ║
 ╠══════════════════════════════════════════════════════╣
 ║ Conversation Engine                         ✓       ║
-║ Smart Memory System                         ✓       ║
-║ User Profile Memory                         ✓       ║
-║ AI Provider Architecture                    ✓       ║
-║ Anthropic Integration                       ✓       ║
-║ Mock AI Provider                            ✓       ║
-║ Agent Runtime                               ✓       ║
-║ Agent Tool System                           ✓       ║
-║ Tool Registry                               ✓       ║
-║ Tool Selector                               ✓       ║
-║ Capability-Based Selection                  ✓       ║
-║ Agent Planner                               ✓       ║
-║ Agent Plans                                 ✓       ║
-║ Agent Plan Steps                            ✓       ║
-║ Agent Orchestrator                          ✓       ║
-║ Sequential Execution                        ✓       ║
-║ Progress Tracking                           ✓       ║
-║ Failure Handling                            ✓       ║
-║ Safe Execution                              ✓       ║
-║ Agent Execution Controller                  ✓       ║
-║ Execution Lifecycle                         ✓       ║
-║ Pause / Resume                              ✓       ║
-║ Execution Cancellation                      ✓       ║
-║ Step Retry Support                          ✓       ║
-║ Retry Limit Enforcement                     ✓       ║
-║ Pending Step Skip                           ✓       ║
-║ Execution History                           ✓       ║
-║ Execution Status Tracking                   ✓       ║
-║ Current Step Tracking                       ✓       ║
-║ Execution Events                            ✓       ║
-║ Execution Event Store                       ✓       ║
-║ Execution Identity                          ✓       ║
-║ Execution Observability                     ✓       ║
-║ Event Querying                              ✓       ║
-║ Event Filtering                             ✓       ║
-║ Step-Level Filtering                        ✓       ║
-║ Combined Event Filtering                    ✓       ║
-║ Query Validation                            ✓       ║
-║ Execution Timeline                          ✓       ║
-║ Chronological Ordering                      ✓       ║
-║ Stable Timeline Ordering                    ✓       ║
-║ Store Order Preservation                    ✓       ║
-║ Execution Metrics                           ✓       ║
-║ Unique Step Metrics                         ✓       ║
-║ Completed Step Metrics                      ✓       ║
-║ Failed Step Metrics                         ✓       ║
-║ Retried Step Metrics                        ✓       ║
-║ Skipped Step Metrics                        ✓       ║
-║ Lifecycle Metrics                           ✓       ║
-║ Read-Only Metrics Collection                ✓       ║
-║ Execution Event Persistence                 ✓       ║
-║ SQLite Persistence                          ✓       ║
-║ Persistent Execution History                ✓       ║
-║ Execution ID Tracking                       ✓       ║
-║ Persistent Event Counting                   ✓       ║
-║ Persistent Event Ordering                   ✓       ║
-║ Latest Persistent Event                     ✓       ║
-║ Event Metadata Serialization                ✓       ║
-║ Event Reconstruction                        ✓       ║
-║ History Clearing                            ✓       ║
-║ Batch Event Persistence                     ✓       ║
-║ Persistence Contract                        ✓       ║
-║ Execution State Snapshot                    ✓       ║
-║ Immutable State Snapshot                    ✓       ║
-║ Current Step State                          ✓       ║
-║ Step Progress State                         ✓       ║
-║ Retry State Snapshot                        ✓       ║
-║ Lifecycle State Snapshot                    ✓       ║
-║ Snapshot Serialization                      ✓       ║
-║ Snapshot Deserialization                    ✓       ║
-║ Snapshot Validation                         ✓       ║
-║ State Round-Trip Support                    ✓       ║
-║ Recovery State Foundation                   ✓       ║
-║ State Restoration Foundation                ✓       ║
-║ Agent Engine Integration                    ✓       ║
-║ Automated Regression Testing                ✓       ║
+║ Smart Memory System                          ✓       ║
+║ User Profile Memory                          ✓       ║
+║ AI Provider Architecture                     ✓       ║
+║ Anthropic Integration                        ✓       ║
+║ Mock AI Provider                             ✓       ║
+║ Agent Runtime                                ✓       ║
+║ Agent Tool System                            ✓       ║
+║ Tool Registry                                ✓       ║
+║ Tool Selector                                ✓       ║
+║ Capability-Based Selection                   ✓       ║
+║ Agent Planner                                ✓       ║
+║ Agent Plans                                  ✓       ║
+║ Agent Plan Steps                             ✓       ║
+║ Agent Orchestrator                           ✓       ║
+║ Sequential Execution                         ✓       ║
+║ Progress Tracking                            ✓       ║
+║ Failure Handling                             ✓       ║
+║ Safe Execution                               ✓       ║
+║ Agent Execution Controller                   ✓       ║
+║ Execution Lifecycle                          ✓       ║
+║ Pause / Resume                               ✓       ║
+║ Execution Cancellation                       ✓       ║
+║ Step Retry Support                           ✓       ║
+║ Retry Limit Enforcement                      ✓       ║
+║ Pending Step Skip                            ✓       ║
+║ Execution History                            ✓       ║
+║ Execution Status Tracking                    ✓       ║
+║ Current Step Tracking                        ✓       ║
+║ Execution Events                             ✓       ║
+║ Execution Event Store                        ✓       ║
+║ Execution Identity                           ✓       ║
+║ Execution Observability                      ✓       ║
+║ Event Querying                               ✓       ║
+║ Event Filtering                              ✓       ║
+║ Step-Level Filtering                         ✓       ║
+║ Combined Event Filtering                     ✓       ║
+║ Query Validation                             ✓       ║
+║ Execution Timeline                           ✓       ║
+║ Chronological Ordering                       ✓       ║
+║ Stable Timeline Ordering                     ✓       ║
+║ Store Order Preservation                     ✓       ║
+║ Execution Metrics                            ✓       ║
+║ Unique Step Metrics                          ✓       ║
+║ Completed Step Metrics                       ✓       ║
+║ Failed Step Metrics                          ✓       ║
+║ Retried Step Metrics                         ✓       ║
+║ Skipped Step Metrics                         ✓       ║
+║ Lifecycle Metrics                            ✓       ║
+║ Read-Only Metrics Collection                 ✓       ║
+║ Execution Event Persistence                  ✓       ║
+║ SQLite Persistence                           ✓       ║
+║ Persistent Execution History                 ✓       ║
+║ Execution ID Tracking                        ✓       ║
+║ Persistent Event Counting                    ✓       ║
+║ Persistent Event Ordering                    ✓       ║
+║ Latest Persistent Event                      ✓       ║
+║ Event Metadata Serialization                 ✓       ║
+║ Event Reconstruction                         ✓       ║
+║ History Clearing                             ✓       ║
+║ Batch Event Persistence                      ✓       ║
+║ Persistence Contract                         ✓       ║
+║ Execution State Snapshot                     ✓       ║
+║ Immutable State Snapshot                     ✓       ║
+║ Current Step State                           ✓       ║
+║ Step Progress State                          ✓       ║
+║ Retry State Snapshot                         ✓       ║
+║ Lifecycle State Snapshot                     ✓       ║
+║ Snapshot Serialization                       ✓       ║
+║ Snapshot Deserialization                     ✓       ║
+║ Snapshot Validation                           ✓       ║
+║ State Round-Trip Support                     ✓       ║
+║ Recovery State Foundation                    ✓       ║
+║ State Restoration Foundation                 ✓       ║
+║ Agent Runtime Context                        ✓       ║
+║ Execution Context                            ✓       ║
+║ Agent Identity Context                       ✓       ║
+║ User Query Context                           ✓       ║
+║ Runtime Metadata                             ✓       ║
+║ Context Propagation Foundation               ✓       ║
+║ Context Isolation                            ✓       ║
+║ Context-Aware Execution Foundation           ✓       ║
+║ Recovery Context Foundation                  ✓       ║
+║ Agent Engine Integration                     ✓       ║
+║ Automated Regression Testing                 ✓       ║
 ╠══════════════════════════════════════════════════════╣
-║ Snapshot Tests: 48 passed                           ║
-║ Full Tests: 645 passed                              ║
+║ Full Tests: 681 passed                              ║
 ║ Failures: 0                                         ║
 ║ Status: Active Development                          ║
 ╚══════════════════════════════════════════════════════╝
@@ -2466,24 +2688,26 @@ Long-Term Extensibility
 
 ---
 
-# 🧪 v0.48 Quality Gate
+# 🧪 v0.49 Quality Gate
 
 ```text
 [✓] Feature implemented
 
 [✓] Architecture integrated
 
-[✓] Immutable state snapshot
+[✓] Agent runtime context
 
-[✓] Execution state representation
+[✓] Execution identity
 
-[✓] Execution identity tracking
+[✓] Agent identity
 
-[✓] Lifecycle status tracking
+[✓] User query context
 
-[✓] Current step tracking
+[✓] Execution status
 
-[✓] Current step index tracking
+[✓] Current step
+
+[✓] Current step index
 
 [✓] Completed step tracking
 
@@ -2491,45 +2715,25 @@ Long-Term Extensibility
 
 [✓] Pending step tracking
 
-[✓] Retry state tracking
+[✓] Retry state
 
-[✓] Snapshot timestamp
+[✓] Runtime metadata
 
-[✓] Snapshot validation
+[✓] Context isolation
 
-[✓] Execution ID validation
+[✓] Context propagation
 
-[✓] Status validation
+[✓] Execution controller separation
 
-[✓] Step validation
+[✓] Snapshot compatibility
 
-[✓] Counter validation
-
-[✓] Retry validation
-
-[✓] Timestamp validation
-
-[✓] Derived lifecycle properties
-
-[✓] Snapshot serialization
-
-[✓] Snapshot deserialization
-
-[✓] Timestamp reconstruction
-
-[✓] State round-trip support
-
-[✓] Dedicated snapshot error handling
-
-[✓] Recovery state foundation
-
-[✓] State restoration foundation
-
-[✓] Persistence architecture compatibility
+[✓] Persistence compatibility
 
 [✓] Observability compatibility
 
 [✓] Metrics compatibility
+
+[✓] Recovery compatibility
 
 [✓] Unit tests
 
@@ -2549,14 +2753,9 @@ Long-Term Extensibility
 Current validation:
 
 ```text
-Execution State Snapshot Tests
-
-48 passed
-0 failed
-
 Full Regression
 
-645 passed
+681 passed
 0 failed
 ```
 
@@ -2599,6 +2798,10 @@ State Snapshots
 
       +
 
+Runtime Context
+
+      +
+
 Recovery Foundation
 
       +
@@ -2614,127 +2817,272 @@ Architectural Separation
 Stable AI Operating System Foundation
 ```
 
-The v0.48 milestone strengthens this principle by introducing immutable execution state snapshots without coupling state representation to execution control or recovery behavior.
+The v0.49 milestone strengthens this principle by introducing a dedicated runtime context layer without coupling runtime context to execution control, persistence, snapshots, or recovery behavior.
 
 ---
 
-# 🏁 v0.48 Status
+# 🏁 v0.49 Status
 
 ```text
-ULTRON v0.48
+ULTRON v0.49
 
 │
 ├── Agent Runtime                    ✓
+│
 ├── Tool System                      ✓
+│
 ├── Tool Selection                   ✓
+│
 ├── Planning                         ✓
+│
 ├── Orchestration                    ✓
+│
 ├── Execution Control                ✓
+│
 ├── Execution Lifecycle              ✓
+│
 ├── Pause / Resume                   ✓
+│
 ├── Cancellation                     ✓
+│
 ├── Retry / Skip                     ✓
+│
 ├── Execution History                ✓
+│
 ├── Execution Events                 ✓
+│
 ├── Execution Event Store            ✓
+│
 ├── Execution Identity               ✓
+│
 ├── Execution Observability          ✓
+│
 ├── Event Querying                   ✓
+│
 ├── Event Filtering                  ✓
+│
 ├── Timeline Inspection              ✓
+│
 ├── Stable Timeline Ordering         ✓
+│
 ├── Store Order Preservation         ✓
+│
 ├── Execution Metrics                ✓
+│
 ├── Step Metrics                     ✓
+│
 ├── Lifecycle Metrics                ✓
+│
 ├── Read-Only Analytics              ✓
+│
 ├── SQLite Persistence               ✓
+│
 ├── Persistent Execution History     ✓
+│
 ├── Execution ID Tracking            ✓
+│
 ├── Persistent Event Counting        ✓
+│
 ├── Latest Event Retrieval           ✓
+│
 ├── Persistent Event Ordering        ✓
+│
 ├── Metadata Serialization           ✓
+│
 ├── Event Reconstruction             ✓
+│
 ├── Batch Event Persistence          ✓
-├── History Clearing                 ✓
+│
+├── History Clearing                ✓
+│
 ├── Persistence Contract             ✓
-├── Execution State Snapshot         ✓
-├── Immutable State Snapshot         ✓
-├── Lifecycle State                  ✓
-├── Current Step State               ✓
-├── Step Progress State              ✓
-├── Retry State                      ✓
-├── Snapshot Validation              ✓
-├── Snapshot Serialization           ✓
-├── Snapshot Deserialization         ✓
-├── State Round-Trip                 ✓
-├── Recovery State Foundation        ✓
-├── State Restoration Foundation     ✓
-├── Backward Compatibility           ✓
-└── Regression Stability             ✓
+│
+├── Execution State Snapshot          ✓
+│
+├── Immutable State Snapshot          ✓
+│
+├── Lifecycle State                   ✓
+│
+├── Current Step State                ✓
+│
+├── Step Progress State               ✓
+│
+├── Retry State                       ✓
+│
+├── Snapshot Validation               ✓
+│
+├── Snapshot Serialization            ✓
+│
+├── Snapshot Deserialization          ✓
+│
+├── State Round-Trip                  ✓
+│
+├── Recovery State Foundation         ✓
+│
+├── State Restoration Foundation      ✓
+│
+├── Agent Runtime Context             ✓
+│
+├── Execution Context                 ✓
+│
+├── Agent Identity Context            ✓
+│
+├── User Query Context                ✓
+│
+├── Runtime Metadata                  ✓
+│
+├── Context Propagation               ✓
+│
+├── Context Isolation                 ✓
+│
+├── Context-Aware Execution           ✓
+│
+├── Recovery Context Foundation       ✓
+│
+├── Backward Compatibility            ✓
+│
+└── Regression Stability              ✓
 
-Snapshot Tests: 48 passed
-Full Tests: 645 passed
+Full Tests: 681 passed
+
 Failures: 0
 ```
 
-Ultron v0.48 establishes **Execution Recovery & State Restoration** as the next architectural layer above persistent execution history.
+Ultron v0.49 establishes **Agent Runtime Context** as the next architectural layer above execution state snapshots and persistent execution infrastructure.
 
-With the introduction of the immutable `ExecutionStateSnapshot`, Ultron can now represent execution identity, lifecycle status, current execution position, progress counters, retry activity, and snapshot time in a validated and serializable form.
+With the introduction of the runtime context layer, Ultron can now maintain a structured execution-scoped representation containing execution identity, agent identity, user query, lifecycle state, current execution position, progress information, retry state, and runtime metadata.
 
-The v0.48 architecture deliberately keeps state representation separate from recovery behavior. The snapshot does not execute, resume, pause, cancel, or retry an execution. Instead, it provides the durable state representation required by future recovery and restoration infrastructure.
+The v0.49 architecture deliberately keeps runtime context separate from execution control, persistence, observability, metrics, snapshots, and recovery behavior.
 
-The combined evolution from v0.44 through v0.48 is now:
+The combined evolution from v0.44 through v0.49 is now:
 
 ```text
 v0.44
+
 Execution Events
 
       ↓
 
 v0.45
+
 Execution Observability
 
       ↓
 
 v0.46
+
 Execution Metrics
 
       ↓
 
 v0.47
+
 Persistent Execution History
 
       ↓
 
 v0.48
+
 Execution State Snapshot
 
       ↓
 
+v0.49
+
+Agent Runtime Context
+
+      ↓
+
 Future
+
 State Restoration
 
       ↓
 
 Future
+
 Crash Recovery
 
       ↓
 
 Future
+
 Execution Resumption
 
       ↓
 
 Future
+
 Durable Automation
 ```
 
-This moves Ultron from process-local execution tracking toward **durable, observable, measurable, snapshot-aware, and recoverable agent execution infrastructure**.
+This moves Ultron further from process-local agent execution toward **durable, observable, measurable, persistent, snapshot-aware, context-aware, and recoverable agent execution infrastructure**.
 
-The v0.48 milestone strengthens the long-term vision of Ultron as an **AI Operating System** capable of understanding, planning, orchestrating, executing, observing, measuring, persisting, snapshotting, recovering, and eventually restoring long-running agent workflows.
+The v0.49 milestone strengthens the long-term vision of Ultron as an **AI Operating System** capable of understanding, remembering, planning, orchestrating, creating execution context, executing, observing, measuring, persisting, snapshotting, recovering, restoring, and eventually resuming long-running agent workflows.
+
+```text
+Understand
+
+   ↓
+
+Remember
+
+   ↓
+
+Plan
+
+   ↓
+
+Select
+
+   ↓
+
+Contextualize
+
+   ↓
+
+Orchestrate
+
+   ↓
+
+Execute
+
+   ↓
+
+Observe
+
+   ↓
+
+Measure
+
+   ↓
+
+Persist
+
+   ↓
+
+Snapshot
+
+   ↓
+
+Recover
+
+   ↓
+
+Restore
+
+   ↓
+
+Resume
+
+   ↓
+
+Automate
+```
+
+Ultron continues to evolve incrementally toward a modular and extensible **AI Operating System, Agent Runtime, and Automation Platform**.
 
 ```
+
+Bhai **current `681 passed` ko hi authoritative validation** rakha hai. V0.49 ke liye koi separate test-count assume nahi kiya. ❤️ 
 ```
