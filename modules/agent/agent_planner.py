@@ -742,6 +742,22 @@ class AgentPlan:
             for step in self.steps
         )
 
+    def is_finished(self) -> bool:
+        """
+        Return True when the plan has reached a terminal state.
+
+        Terminal plan states are:
+        - completed
+        - failed
+        - cancelled
+        """
+
+        return self.status in {
+            "completed",
+            "failed",
+            "cancelled",
+        }
+
     # ========================================================
     # Lifecycle
     # ========================================================
