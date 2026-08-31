@@ -1,15 +1,8 @@
-Haan bhai ❤️ **ab exact requirement clear hai** — existing **v0.49 ka pura content preserve** rahega, usko remove/replace nahi karna. Uske baad **v0.50 ka completed work** properly add hoga.
-
-Aur is baar validation **873 passed / 0 failed** rahegi.
-Main v0.50 mein jo abhi actually complete hua hai wahi mark kar raha hoon — **future Step 3–5 ko completed nahi dikhayenge**.
-
-Neeche **full ready-to-paste README.md** hai:
-
 # 🚀 Ultron
 
 ## A Modular Personal AI Assistant, Automation & Agent Platform
 
-Ultron is evolving from a personal AI assistant into a modular **AI Operating System, Agent Runtime, Automation Platform, and Execution Infrastructure**.
+Ultron is evolving from a personal AI assistant into a modular **AI Operating System, Agent Runtime, Automation Platform, Multimodal Interface, and Execution Infrastructure**.
 
 The project is designed around clear architectural boundaries between:
 
@@ -31,9 +24,12 @@ Runtime Context
 Context Queries
 Recovery
 Automation
+Multimodal Input
+Input Routing
+Input Results
 ```
 
-The long-term objective is to create a reliable, extensible, observable, persistent, context-aware, and recoverable agent execution platform.
+The long-term objective is to create a reliable, extensible, observable, persistent, context-aware, recoverable, and multimodal agent execution platform.
 
 ---
 
@@ -43,61 +39,74 @@ Ultron's architecture progressively evolves through independent execution layers
 
 ```text
 User
- │
- ▼
+  │
+  ▼
+Multimodal Input
+  │
+  ├── Text
+  ├── Voice
+  ├── Vision
+  └── Gesture
+  │
+  ▼
+Input Router
+  │
+  ▼
 Conversation Engine
- │
- ▼
+  │
+  ▼
 AI Engine
- │
- ▼
+  │
+  ▼
 Agent Runtime
- │
- ▼
+  │
+  ▼
 Tool System
- │
- ▼
+  │
+  ▼
 Tool Selector
- │
- ▼
+  │
+  ▼
 Agent Planner
- │
- ▼
+  │
+  ▼
 Agent Plan
- │
- ▼
+  │
+  ▼
 Agent Orchestrator
- │
- ▼
+  │
+  ▼
 Execution Controller
- │
- ▼
+  │
+  ▼
 Execution Context
- │
- ├── Context Queries
- ├── Execution State
- ├── Step State
- ├── Results
- ├── Retry State
- └── Runtime Metadata
- │
- ▼
+  │
+  ├── Context Queries
+  ├── Execution State
+  ├── Step State
+  ├── Results
+  ├── Retry State
+  └── Runtime Metadata
+  │
+  ▼
 Execution
- │
- ├── Events
- ├── Observability
- ├── Metrics
- ├── Persistence
- └── State Snapshots
- │
- ▼
+  │
+  ├── Events
+  ├── Observability
+  ├── Metrics
+  ├── Persistence
+  └── State Snapshots
+  │
+  ▼
 Recovery Infrastructure
- │
- ▼
+  │
+  ▼
 Future Durable Automation
 ```
 
 Each layer has a dedicated responsibility.
+
+The v0.51 milestone introduces the first dedicated **multimodal input architecture** while preserving the existing execution and orchestration layers.
 
 ---
 
@@ -105,1394 +114,1189 @@ Each layer has a dedicated responsibility.
 
 ```text
 v0.37 → Agent Runtime
+
         ↓
+
 v0.38 → Agent Tool System
+
         ↓
+
 v0.39 → Tool Selector
+
         ↓
+
 v0.40 → Agent Planning
+
         ↓
+
 v0.41 → Agent Execution & Plan Orchestration
+
         ↓
+
 v0.42 → Agent Execution Controller
+
         ↓
+
 v0.43 → Orchestrator Execution Control
+
         ↓
+
 v0.44 → Execution Events & Event Store
+
         ↓
+
 v0.45 → Execution Observability
+
         ↓
+
 v0.46 → Execution Metrics
+
         ↓
+
 v0.47 → Persistent Execution History
+
         ↓
+
 v0.48 → Execution Recovery & State Restoration
+
         ↓
+
 v0.49 → Agent Runtime Context
+
         ↓
+
 v0.50 → Execution Context Query & Orchestration Integration
+
         ↓
-Future → Advanced Context-Aware Execution
+
+v0.51 → Multimodal Input Foundation
+
         ↓
-Future → Crash Recovery & Resumable Execution
+
+Future → Multimodal Processing
+
         ↓
+
+Future → Voice / Vision / Gesture Intelligence
+
+        ↓
+
+Future → Context-Aware Multimodal Agents
+
+        ↓
+
 Future → Durable Automation
+
         ↓
+
 v1.0 → Stable AI Operating System Platform
 ```
 
 ---
 
-# 🚀 v0.50 — Execution Context Query & Orchestration Integration
+# 🚀 v0.51 — Multimodal Input Foundation
 
-The v0.50 milestone extends the Agent Runtime Context architecture introduced in v0.49.
+The v0.51 milestone introduces the foundational architecture required for Ultron to accept and route multiple forms of user input.
 
-While v0.49 established the runtime context as an execution-scoped representation of active execution state, v0.50 introduces a structured **ExecutionContext Query Layer** and integrates that context directly with the **AgentOrchestrator**.
-
-The goal is to make runtime context not only a container of execution information, but also a reliable interface through which execution components can inspect the current state of an agent execution.
-
-The v0.50 architecture therefore moves from:
+The milestone establishes a clean separation between:
 
 ```text
-Context Exists
+Input Representation
+        ↓
+Input Type
+        ↓
+Input Routing
+        ↓
+Input Processing
+        ↓
+Structured Input Result
 ```
 
-toward:
+The architecture is designed to support multiple input modalities without coupling the core runtime to individual modality implementations.
+
+The initial foundation supports:
 
 ```text
-Context Exists
-      ↓
-Context Tracks Execution
-      ↓
-Context Can Be Queried
-      ↓
-Orchestrator Synchronizes Context
-      ↓
-Runtime Components Can Inspect Execution State
+Text
+Voice
+Vision
+Gesture
+Unknown
 ```
+
+The v0.51 milestone focuses on **input abstraction and routing**, not on implementing complete speech recognition, computer vision, or gesture-recognition engines.
 
 ---
 
-# 🧩 v0.50 Core Components
+# 🧩 v0.51 Core Components
 
-The v0.50 implementation introduces two major architectural areas:
+The multimodal foundation introduces the following architectural components:
 
 ```text
-1. ExecutionContext Query Layer
-
-2. AgentOrchestrator Context Integration
+modules/
+└── multimodal/
+    ├── input.py
+    ├── input_result.py
+    ├── input_router.py
+    └── input_type.py
 ```
 
 Conceptually:
 
 ```text
+Multimodal Input
+      │
+      ▼
+InputType
+      │
+      ▼
+InputRouter
+      │
+      ▼
+Registered Handler
+      │
+      ▼
+InputResult
+```
+
+Each component has a focused responsibility.
+
+---
+
+# 🎛️ InputType
+
+`InputType` defines the supported categories of multimodal input.
+
+The architecture currently distinguishes between:
+
+```text
+TEXT
+VOICE
+VISION
+GESTURE
+UNKNOWN
+```
+
+This provides a stable type boundary between incoming user input and the routing layer.
+
+Conceptually:
+
+```text
+Incoming Input
+      │
+      ▼
+InputType
+      │
+ ┌────┼────────┬────────┐
+ ▼    ▼        ▼        ▼
+Text Voice   Vision   Gesture
+```
+
+The type system prevents routing logic from depending on arbitrary string values.
+
+---
+
+# 📥 MultimodalInput
+
+`MultimodalInput` represents an individual incoming input.
+
+A multimodal input contains execution-relevant input information such as:
+
+```text
+Input ID
+Input Type
+Input Data
+Source
+```
+
+Conceptually:
+
+```text
+MultimodalInput
+      │
+      ├── id
+      ├── input_type
+      ├── data
+      └── source
+```
+
+This provides a normalized representation regardless of where the input originated.
+
+For example:
+
+```text
+Text
+    ↓
+"hello"
+
+Voice
+    ↓
+audio data
+
+Vision
+    ↓
+image data
+
+Gesture
+    ↓
+gesture metadata
+```
+
+The router can therefore operate on a common input abstraction.
+
+---
+
+# 📦 InputResult
+
+`InputResult` provides a structured representation of the result produced after input processing.
+
+Conceptually:
+
+```text
+InputResult
+    │
+    ├── Input ID
+    ├── Input Type
+    ├── Success
+    ├── Data
+    └── Error
+```
+
+A successful result can be represented as:
+
+```text
+Input
+  │
+  ▼
+Handler
+  │
+  ▼
+InputResult
+  │
+  ├── success = True
+  └── data = processed result
+```
+
+A failed result can be represented as:
+
+```text
+Input
+  │
+  ▼
+Handler
+  │
+  ▼
+InputResult
+  │
+  ├── success = False
+  └── error = processing error
+```
+
+This creates a consistent result boundary between multimodal processing and the rest of the runtime.
+
+---
+
+# 🔀 InputRouter
+
+`InputRouter` is the central routing layer introduced in v0.51.
+
+Its responsibility is to map an input type to the appropriate processing handler.
+
+Conceptually:
+
+```text
+MultimodalInput
+      │
+      ▼
+InputRouter
+      │
+      ▼
+InputType
+      │
+      ▼
+Registered Handler
+      │
+      ▼
+InputResult
+```
+
+The router maintains a registry of handlers.
+
+Example:
+
+```text
+TEXT    → Text Handler
+VOICE   → Voice Handler
+VISION  → Vision Handler
+GESTURE → Gesture Handler
+```
+
+This allows modality-specific processing to remain outside the router itself.
+
+---
+
+# 🧩 Handler Registration
+
+Handlers can be registered dynamically.
+
+Conceptually:
+
+```text
+InputRouter
+     │
+     ├── TEXT    → handler
+     ├── VOICE   → handler
+     ├── VISION  → handler
+     └── GESTURE → handler
+```
+
+The router supports:
+
+```text
+Register Handler
+Replace Handler
+Lookup Handler
+Check Handler
+Unregister Handler
+Clear Handlers
+```
+
+This provides a flexible foundation for future modality implementations.
+
+---
+
+# 🔍 Handler Lookup
+
+The router exposes handler lookup behavior.
+
+Conceptually:
+
+```text
+InputType
+    │
+    ▼
+InputRouter
+    │
+    ▼
+Handler Registry
+    │
+    ├── Found
+    │
+    └── Not Found
+```
+
+A missing handler does not require the router to execute arbitrary fallback logic.
+
+Instead, the routing layer can return a structured failed `InputResult`.
+
+---
+
+# 🔄 Handler Replacement
+
+Registering another handler for an existing input type replaces the previous handler.
+
+Conceptually:
+
+```text
+TEXT
+ │
+ ▼
+Old Handler
+ │
+ ▼
+New Handler
+```
+
+This allows runtime configuration and future plugin-style multimodal processing.
+
+---
+
+# 🧹 Handler Removal
+
+Handlers can be explicitly removed.
+
+Conceptually:
+
+```text
+Registered Handler
+       │
+       ▼
+unregister_handler()
+       │
+       ▼
+Handler Removed
+```
+
+The router also supports clearing all registered handlers.
+
+```text
+InputRouter
+     │
+     ▼
+clear_handlers()
+     │
+     ▼
+Empty Handler Registry
+```
+
+---
+
+# 🛡️ Input Validation
+
+The v0.51 router validates incoming inputs before routing.
+
+The router rejects invalid routing inputs such as:
+
+```text
+None
+Invalid Input Objects
+Invalid Input Types
+Unknown Input Types
+Non-callable Handlers
+```
+
+Validation failures are represented through:
+
+```text
+InputRouterError
+```
+
+This prevents invalid data from silently entering the multimodal execution path.
+
+---
+
+# ❌ Missing Handler Behavior
+
+If an input is valid but no handler is registered for its type, routing does not crash.
+
+Instead:
+
+```text
+Input
+  │
+  ▼
+InputRouter
+  │
+  ▼
+No Handler
+  │
+  ▼
+Failed InputResult
+```
+
+This creates a predictable failure boundary.
+
+The caller can inspect:
+
+```text
+result.success
+result.error
+```
+
+without depending on router internals.
+
+---
+
+# ⚠️ Handler Exception Isolation
+
+Handler exceptions are isolated by the router.
+
+Conceptually:
+
+```text
+Input
+  │
+  ▼
+Handler
+  │
+  ▼
+Exception
+  │
+  ▼
+InputRouter
+  │
+  ▼
+Failed InputResult
+```
+
+Handler exceptions do not escape the routing boundary as uncontrolled exceptions.
+
+This provides a safer foundation for integrating external modality processors.
+
+---
+
+# 🔒 Routing Isolation
+
+Each input type is routed only to its corresponding handler.
+
+For example:
+
+```text
+TEXT Input
+    │
+    ▼
+TEXT Handler
+```
+
+A text handler does not automatically process:
+
+```text
+VOICE
+VISION
+GESTURE
+```
+
+Likewise:
+
+```text
+VOICE Handler
+```
+
+does not automatically process:
+
+```text
+VISION
+```
+
+This maintains strong modality boundaries.
+
+---
+
+# 📤 Input Data Propagation
+
+The router passes the actual input data to the registered handler.
+
+Conceptually:
+
+```text
+MultimodalInput
+      │
+      ├── input_type
+      └── data
+             │
+             ▼
+         InputRouter
+             │
+             ▼
+          Handler
+             │
+             ▼
+       Processed Result
+```
+
+The router therefore acts as a routing boundary rather than a data transformation engine.
+
+---
+
+# 🆔 Input Identity Preservation
+
+When routing an input, the resulting `InputResult` preserves the identity of the original input.
+
+Conceptually:
+
+```text
+Input
+ │
+ ├── ID
+ └── Type
+ │
+ ▼
+Router
+ │
+ ▼
+InputResult
+ │
+ ├── Input ID
+ └── Input Type
+```
+
+This allows future multimodal processing layers to correlate input and output.
+
+---
+
+# 🔗 Input Type Preservation
+
+The resulting `InputResult` also preserves the original input type.
+
+For example:
+
+```text
+TEXT Input
+    ↓
+InputRouter
+    ↓
+InputResult(TEXT)
+```
+
+Similarly:
+
+```text
+VOICE Input
+    ↓
+InputRouter
+    ↓
+InputResult(VOICE)
+```
+
+This creates a consistent modality-aware result boundary.
+
+---
+
+# 🧠 Multimodal Routing Architecture
+
+The complete v0.51 foundation can be represented as:
+
+```text
+                    User
+                      │
+                      ▼
+             Multimodal Input
+                      │
+          ┌───────────┼───────────┐
+          │           │           │
+          ▼           ▼           ▼
+        Text        Voice       Vision
+          │           │           │
+          └───────────┼───────────┘
+                      │
+                   Gesture
+                      │
+                      ▼
+                 InputType
+                      │
+                      ▼
+                 InputRouter
+                      │
+          ┌───────────┼───────────┐
+          │           │           │
+          ▼           ▼           ▼
+       Handler      Handler     Handler
+          │           │           │
+          └───────────┼───────────┘
+                      │
+                      ▼
+                 InputResult
+                      │
+                      ▼
+             Conversation / Agent
+                      │
+                      ▼
+                Agent Runtime
+```
+
+This establishes the first clean multimodal entry boundary into Ultron.
+
+---
+
+# 🔗 Relationship With Conversation Engine
+
+The multimodal foundation is designed to sit before the existing conversation architecture.
+
+Conceptually:
+
+```text
+User
+ │
+ ▼
+Multimodal Input
+ │
+ ▼
+Input Router
+ │
+ ▼
+Processed Input
+ │
+ ▼
+Conversation Engine
+```
+
+The existing conversation engine does not need to understand how the original input was physically captured.
+
+It can receive a normalized result from the multimodal layer.
+
+---
+
+# 🔗 Relationship With Agent Runtime
+
+The multimodal layer is also designed to provide a clean entry point into the agent runtime.
+
+Conceptually:
+
+```text
+Multimodal Input
+       │
+       ▼
+Input Router
+       │
+       ▼
+Input Result
+       │
+       ▼
 Agent Runtime
-      │
-      ▼
-Execution Context
-      │
-      ├── State
-      ├── Results
-      ├── Steps
-      ├── Failures
-      ├── Retries
-      └── Skips
-      │
-      ▼
-Execution Context Query Layer
-      │
-      ▼
-Agent Orchestrator
-      │
-      ▼
-Execution
 ```
+
+This creates a future foundation where agents can react to different input modalities without requiring separate runtime architectures.
 
 ---
 
-# 🔎 ExecutionContext Query Layer
+# 🔗 Relationship With Execution Context
 
-The v0.50 milestone introduces a dedicated query interface over execution context.
+The v0.51 multimodal layer remains separate from the execution context architecture introduced in earlier versions.
 
-The purpose is to allow runtime components to ask structured questions about the current execution without directly depending on internal state representation.
-
-The query layer currently provides:
+The architectural separation is:
 
 ```text
-has_result()
-
-has_failed_steps()
-
-has_completed_steps()
-
-has_skipped_steps()
-
-is_finished()
-
-get_last_result()
-
-get_processed_steps()
-
-get_remaining_steps()
-```
-
-These methods create a clean read-oriented interface over execution state.
-
----
-
-# ✅ has_result()
-
-The `has_result()` query determines whether the execution context currently contains a result.
-
-Conceptually:
-
-```text
-Execution Context
-      │
-      ▼
-Has Result?
-      │
- ┌────┴────┐
- │         │
-Yes       No
- │         │
- ▼         ▼
-Result    No Result
-```
-
-This allows the orchestrator and future runtime components to determine whether meaningful execution output has been produced.
-
-It avoids requiring callers to directly inspect internal result storage.
-
----
-
-# ❌ has_failed_steps()
-
-The `has_failed_steps()` query determines whether one or more execution steps have failed.
-
-Conceptually:
-
-```text
-Execution
-   │
-   ▼
-Step Results
-   │
-   ├── Success
-   ├── Success
-   ├── Failure
-   └── Pending
-          │
-          ▼
-has_failed_steps()
-          │
-          ▼
-        True
-```
-
-This provides a simple execution-state query for failure-aware orchestration.
-
----
-
-# ✅ has_completed_steps()
-
-The `has_completed_steps()` query determines whether completed execution steps exist.
-
-Conceptually:
-
-```text
-Execution
-
-Step 1 → Completed
-Step 2 → Completed
-Step 3 → Pending
-
-        │
-        ▼
-
-has_completed_steps()
-
-        │
-        ▼
-
-True
-```
-
-This allows execution components to inspect progress without directly accessing the underlying step collection.
-
----
-
-# ⏭️ has_skipped_steps()
-
-The `has_skipped_steps()` query determines whether execution contains skipped steps.
-
-Conceptually:
-
-```text
-Step 1 → Completed
-Step 2 → Skipped
-Step 3 → Pending
-
-        │
-        ▼
-
-has_skipped_steps()
-
-        │
-        ▼
-
-True
-```
-
-This becomes useful for execution flows involving:
-
-```text
-Conditional Execution
-Failure Handling
-Retry Limits
-Cancellation
-Partial Execution
-Orchestration Decisions
-```
-
----
-
-# 🏁 is_finished()
-
-The `is_finished()` query provides a high-level determination of whether execution has reached a terminal state.
-
-Conceptually:
-
-```text
-Execution
-    │
-    ▼
-Current Context
-    │
-    ▼
-Is Finished?
-    │
- ┌──┴───────────────┐
- │                  │
-Yes                No
- │                  │
- ▼                  ▼
-Terminal           Continue
-State              Execution
-```
-
-This creates a clean abstraction for future orchestration and execution-control logic.
-
-The query layer does not itself perform execution termination.
-
-It only exposes the current state.
-
----
-
-# 📦 get_last_result()
-
-The `get_last_result()` query provides access to the most recent execution result tracked by the context.
-
-Conceptually:
-
-```text
-Execution Steps
-
-Step 1 → Result A
-Step 2 → Result B
-Step 3 → Result C
-
-              │
-              ▼
-
-      get_last_result()
-
-              │
-              ▼
-
-           Result C
-```
-
-This provides a structured way for future runtime components to consume the latest execution output.
-
----
-
-# 📊 get_processed_steps()
-
-The `get_processed_steps()` query provides information about steps that have already been processed.
-
-Conceptually:
-
-```text
-Plan
-
-Step 1 → Processed
-Step 2 → Processed
-Step 3 → Pending
-Step 4 → Pending
-
-        │
-        ▼
-
-get_processed_steps()
-
-        │
-        ▼
-
-Step 1
-Step 2
-```
-
-This creates a clear representation of execution progress.
-
----
-
-# ⏳ get_remaining_steps()
-
-The `get_remaining_steps()` query provides information about steps that have not yet been processed.
-
-Conceptually:
-
-```text
-Plan
-
-Step 1 → Processed
-Step 2 → Processed
-Step 3 → Pending
-Step 4 → Pending
-
-        │
-        ▼
-
-get_remaining_steps()
-
-        │
-        ▼
-
-Step 3
-Step 4
-```
-
-This creates a foundation for future:
-
-```text
-Continuation
-Planning Decisions
-Execution Resumption
-Dynamic Orchestration
-Recovery
-Long-Running Workflows
-```
-
----
-
-# 🧠 Query Layer Design
-
-The query layer intentionally separates:
-
-```text
-State Storage
+MultimodalInput
       ≠
-State Query
+InputRouter
       ≠
-Execution Control
+InputResult
+      ≠
+ExecutionContext
 ```
 
-Conceptually:
+The multimodal layer represents and routes incoming input.
 
-```text
-Execution Context
-      │
-      ▼
-Internal State
-      │
-      ▼
-Query Interface
-      │
-      ├── has_result()
-      ├── has_failed_steps()
-      ├── has_completed_steps()
-      ├── has_skipped_steps()
-      ├── is_finished()
-      ├── get_last_result()
-      ├── get_processed_steps()
-      └── get_remaining_steps()
-```
+The execution context represents active execution state.
 
-This prevents callers from becoming tightly coupled to the internal representation of execution context.
+Future integration can connect the two without collapsing their responsibilities.
 
 ---
 
-# 🔗 AgentOrchestrator Integration
+# 🔗 Relationship With Execution Control
 
-The second major v0.50 component is the integration of the runtime context with the AgentOrchestrator.
+Input routing does not perform execution control.
 
-The orchestrator now works with an execution context throughout the execution lifecycle.
-
-Conceptually:
+The router does not:
 
 ```text
-Agent
- │
- ▼
-Planner
- │
- ▼
-Plan
- │
- ▼
-AgentOrchestrator
- │
- ▼
-Create Execution Context
- │
- ▼
-Execute Steps
- │
- ▼
-Synchronize Context
- │
- ▼
-Update Results / State
- │
- ▼
-Execution Completion
-```
-
----
-
-# 🏗️ Context Creation
-
-The orchestrator creates and manages execution context for an execution.
-
-Conceptually:
-
-```text
-Execution Started
-      │
-      ▼
-Create Context
-      │
-      ├── Execution Identity
-      ├── Agent Identity
-      ├── User Query
-      ├── Execution Status
-      ├── Current Step
-      ├── Progress
-      ├── Results
-      ├── Retry State
-      └── Runtime Metadata
-```
-
-This gives every orchestration flow a dedicated execution-scoped context.
-
----
-
-# 🔄 Lifecycle Synchronization
-
-The orchestrator synchronizes context with execution lifecycle changes.
-
-Conceptually:
-
-```text
-Pending
-   │
-   ▼
-Running
-   │
-   ▼
-Step Execution
-   │
-   ▼
-Context Update
-   │
-   ▼
-Next Step
-   │
-   ▼
-Context Update
-   │
-   ▼
-Completed / Failed / Cancelled
-```
-
-The context therefore reflects the current execution state as orchestration progresses.
-
----
-
-# 📍 Step Tracking Integration
-
-The orchestrator updates context as execution moves between steps.
-
-Conceptually:
-
-```text
-Plan
-
-Step 1
-  ↓
-Step 2
-  ↓
-Step 3
-  ↓
-Step 4
-
-      │
-      ▼
-
-Runtime Context
-
-current_step
-current_step_index
-processed_steps
-remaining_steps
-```
-
-This provides a consistent execution position representation.
-
----
-
-# 📦 Result Tracking
-
-Execution results are synchronized with the context.
-
-Conceptually:
-
-```text
-Step Execution
-      │
-      ▼
-Step Result
-      │
-      ▼
-Execution Context
-      │
-      ├── Result State
-      └── Last Result
-```
-
-This allows:
-
-```text
-has_result()
-get_last_result()
-```
-
-to provide useful runtime information.
-
----
-
-# ❌ Failure Tracking
-
-When a step fails, the execution context is updated accordingly.
-
-Conceptually:
-
-```text
-Step
- │
- ▼
-Execution
- │
- ▼
-Failure
- │
- ▼
-Context Update
- │
- └── Failed Step Tracking
-```
-
-The context can then expose:
-
-```text
-has_failed_steps()
-```
-
-without requiring callers to inspect internal execution structures.
-
----
-
-# 🔁 Retry Tracking
-
-The v0.50 integration maintains retry-related execution state inside the runtime context.
-
-Conceptually:
-
-```text
-Step
- │
- ▼
-Failure
- │
- ▼
-Retry
- │
- ▼
-Context Synchronization
- │
- ▼
-Retry State
-```
-
-The context records the execution state associated with retries.
-
-The context itself does not independently initiate retry behavior.
-
-Retry control remains part of execution/orchestration infrastructure.
-
----
-
-# ⏭️ Skip Tracking
-
-Skipped steps are also reflected in the execution context.
-
-Conceptually:
-
-```text
-Execution
-    │
-    ▼
-Step Decision
-    │
-    ├── Execute
-    ├── Retry
-    └── Skip
-           │
-           ▼
-      Context Update
-           │
-           ▼
-    Skipped Step State
-```
-
-This allows:
-
-```text
-has_skipped_steps()
-```
-
-to expose the current execution state.
-
----
-
-# 📈 Processed vs Remaining Execution
-
-One of the important v0.50 improvements is the ability to distinguish processed and remaining execution work.
-
-Conceptually:
-
-```text
-Plan
-
-┌───────────────┐
-│ Processed     │
-├───────────────┤
-│ Step 1        │
-│ Step 2        │
-└───────────────┘
-
-┌───────────────┐
-│ Remaining     │
-├───────────────┤
-│ Step 3        │
-│ Step 4        │
-└───────────────┘
-```
-
-The query layer exposes this through:
-
-```text
-get_processed_steps()
-get_remaining_steps()
-```
-
-This establishes a foundation for future context-aware continuation.
-
----
-
-# 🔄 Context Synchronization Model
-
-The complete v0.50 synchronization flow can be represented as:
-
-```text
-AgentOrchestrator
-      │
-      ▼
-Execution Context
-      │
-      ├── Current Step
-      ├── Step Index
-      ├── Completed Steps
-      ├── Failed Steps
-      ├── Skipped Steps
-      ├── Remaining Steps
-      ├── Results
-      ├── Retry State
-      └── Lifecycle State
-      │
-      ▼
-Execution
-      │
-      ▼
-State Change
-      │
-      ▼
-Context Synchronization
-      │
-      ▼
-Updated Runtime Context
-```
-
----
-
-# 📸 Context Snapshots
-
-The v0.50 integration also maintains context snapshot behavior.
-
-Conceptually:
-
-```text
-Execution
-   │
-   ▼
-Runtime Context
-   │
-   ▼
-Context Snapshot
-   │
-   ▼
-Execution Progress
-```
-
-Snapshots provide a representation of the context at a particular point in execution.
-
-This is important for future:
-
-```text
-Debugging
-Observability
-Recovery
-Execution Inspection
-State Restoration
-Long-Running Execution
-```
-
-The runtime context remains distinct from the persistent `ExecutionStateSnapshot` architecture introduced earlier.
-
----
-
-# ♻️ Context Reset
-
-The orchestrator integration also supports resetting the execution context.
-
-Conceptually:
-
-```text
-Existing Context
-      │
-      ▼
-Reset
-      │
-      ▼
-Clean Execution Context
-```
-
-Reset behavior is important for preventing stale execution information from leaking into subsequent execution flows.
-
-This reinforces the execution-scoped nature of the context.
-
----
-
-# 🔒 Context Isolation
-
-The v0.50 architecture maintains execution isolation.
-
-Conceptually:
-
-```text
-Execution A
-    │
-    └── Context A
-
-
-Execution B
-    │
-    └── Context B
-```
-
-Context information from one execution must not become accidental state for another execution.
-
-This is important for:
-
-```text
-Sequential Execution
-Concurrent Execution
-Multiple Agents
-Parallel Workflows
-Long-Running Tasks
-Future Distributed Execution
-```
-
----
-
-# 🧠 Context Query Architecture
-
-The v0.50 runtime architecture can now be represented as:
-
-```text
-                  Agent
-                    │
-                    ▼
-              Agent Runtime
-                    │
-                    ▼
-            Agent Orchestrator
-                    │
-                    ▼
-            Execution Context
-                    │
-          ┌─────────┴─────────┐
-          │                   │
-          ▼                   ▼
-     Context State       Context Queries
-                              │
-              ┌───────────────┼────────────────┐
-              │               │                │
-              ▼               ▼                ▼
-          Progress          Results         Lifecycle
-              │               │                │
-              ▼               ▼                ▼
-       Processed Steps    Last Result       Finished
-       Remaining Steps    Has Result        State
-              │
-              ▼
-        Runtime Decisions
-```
-
----
-
-# 🧩 Context Query Responsibility
-
-The query layer is intentionally read-oriented.
-
-It does not:
-
-```text
-Create Agent Plans
+Create Plans
 Select Tools
-Execute Tools
+Execute Agent Plans
 Start Execution
 Stop Execution
 Retry Execution
 Persist Events
-Write Persistent History
 Generate Metrics
 Perform Recovery
-Restore Snapshots
+Restore State
 ```
 
-Instead, it provides:
+Instead, it performs:
 
 ```text
-Execution State Inspection
-Result Inspection
-Progress Inspection
-Failure Inspection
-Skip Inspection
-Completion Inspection
-Processed Step Inspection
-Remaining Step Inspection
+Input Validation
+Input Classification
+Handler Lookup
+Handler Dispatch
+Result Construction
+Handler Error Isolation
 ```
 
-This preserves architectural separation.
+This preserves the architecture's separation of concerns.
 
 ---
 
-# 🔗 v0.49 → v0.50 Evolution
+# 🧱 Architectural Boundary
 
-The architectural evolution between the two milestones is:
+The v0.51 architecture can therefore be summarized as:
 
 ```text
-v0.49
-
-Agent Runtime Context
+Input Representation
         │
-        ├── Execution Identity
-        ├── Agent Identity
-        ├── User Query
-        ├── Lifecycle State
-        ├── Current Step
-        ├── Progress
-        ├── Retry State
-        └── Metadata
+        ▼
+Input Classification
+        │
+        ▼
+Input Routing
+        │
+        ▼
+Input Processing
+        │
+        ▼
+Structured Input Result
+        │
+        ▼
+Existing Runtime Architecture
+```
 
-        ↓
+This prevents multimodal functionality from becoming tightly coupled to the execution engine.
 
+---
+
+# 🧪 v0.51 Testing
+
+The v0.51 multimodal foundation includes dedicated tests covering the input routing architecture.
+
+The test coverage includes:
+
+```text
+InputRouter Creation
+Handler Registration
+Multiple Handler Registration
+Handler Replacement
+Invalid Input Type Validation
+Unknown Input Type Validation
+Non-Callable Handler Validation
+Handler Lookup
+Missing Handler Lookup
+Handler Existence Checks
+Handler Unregistration
+Registered Type Retrieval
+Defensive Handler Registry Access
+Text Routing
+Voice Routing
+Vision Routing
+Gesture Routing
+Input Data Propagation
+Input ID Preservation
+Input Type Preservation
+Missing Handler Failure
+Handler Exception Handling
+Invalid Input Validation
+Routing Isolation
+Handler Clearing
+Router Representation
+Exported Symbols
+```
+
+The tests verify that the router behaves consistently across supported input modalities.
+
+---
+
+# 🛡️ v0.51 Quality Gate
+
+```text
+[✓] Multimodal Input Foundation
+
+[✓] InputType architecture
+
+[✓] MultimodalInput model
+
+[✓] InputResult model
+
+[✓] InputRouter
+
+[✓] Handler registration
+
+[✓] Handler replacement
+
+[✓] Handler lookup
+
+[✓] Handler existence checks
+
+[✓] Handler unregistration
+
+[✓] Handler clearing
+
+[✓] Input validation
+
+[✓] Missing handler handling
+
+[✓] Handler exception isolation
+
+[✓] Text routing
+
+[✓] Voice routing
+
+[✓] Vision routing
+
+[✓] Gesture routing
+
+[✓] Input data propagation
+
+[✓] Input identity preservation
+
+[✓] Input type preservation
+
+[✓] Routing isolation
+
+[✓] Defensive registry behavior
+
+[✓] Router error handling
+
+[✓] Exported symbols
+
+[✓] Multimodal regression testing
+```
+
+---
+
+# 🧭 v0.50 → v0.51 Evolution
+
+The architectural progression is:
+
+```text
 v0.50
 
-Execution Context Query Layer
+Execution Context
         │
-        ├── Result Queries
-        ├── Failure Queries
-        ├── Completion Queries
-        ├── Skip Queries
-        ├── Progress Queries
-        ├── Last Result
-        ├── Processed Steps
-        └── Remaining Steps
+        ├── State
+        ├── Results
+        ├── Progress
+        ├── Failures
+        ├── Retries
+        └── Queries
+        │
+        ▼
+Queryable Execution Architecture
+
+
+v0.51
+
+Multimodal Input Foundation
+        │
+        ├── InputType
+        ├── MultimodalInput
+        ├── InputRouter
+        └── InputResult
+        │
+        ▼
+Structured Multimodal Input Architecture
+```
+
+The two milestones address different architectural concerns:
+
+```text
+v0.50
+Execution State Intelligence
 
         +
 
-AgentOrchestrator Integration
-        │
-        ├── Context Creation
-        ├── Lifecycle Synchronization
-        ├── Step Tracking
-        ├── Result Tracking
-        ├── Failure Tracking
-        ├── Retry Tracking
-        ├── Skip Tracking
-        ├── Snapshot Support
-        └── Context Reset
+v0.51
+Input Intelligence Foundation
 ```
 
-This turns runtime context into a more useful execution interface.
-
----
-
-# 🏗️ Complete Execution Architecture
-
-With v0.50, Ultron's execution architecture can be represented as:
+Together they move Ultron toward a runtime capable of understanding both:
 
 ```text
-                    User
-                     │
-                     ▼
-             Conversation Engine
-                     │
-                     ▼
-                  AI Engine
-                     │
-                     ▼
-               Agent Runtime
-                     │
-                     ▼
-              Tool Selector
-                     │
-                     ▼
-                Planner
-                     │
-                     ▼
-                  Plan
-                     │
-                     ▼
-             Agent Orchestrator
-                     │
-                     ▼
-             Execution Context
-                     │
-          ┌──────────┼──────────┐
-          │          │          │
-          ▼          ▼          ▼
-       Queries    Results    Progress
-          │          │          │
-          └──────────┼──────────┘
-                     │
-                     ▼
-            Execution Controller
-                     │
-                     ▼
-                 Execution
-                     │
-        ┌────────────┼─────────────┐
-        │            │             │
-        ▼            ▼             ▼
-      Events    Observability    Metrics
-        │
-        ▼
-    Persistence
-        │
-        ▼
- State Snapshots
-        │
-        ▼
- Recovery Foundation
+What is happening?
+
+and
+
+What kind of input is arriving?
 ```
 
 ---
 
-# 🧠 Context-Aware Execution Foundation
+# 🧠 Multimodal AI Foundation
 
-v0.50 establishes the foundation for execution components to make decisions based on structured runtime context.
+The v0.51 milestone does not claim complete multimodal intelligence.
 
-Conceptually:
-
-```text
-Current Execution
-       │
-       ▼
-Execution Context
-       │
-       ▼
-Context Query
-       │
-       ▼
-Runtime Information
-       │
-       ▼
-Future Execution Decision
-```
-
-Examples of future decisions include:
+Instead, it establishes the infrastructure required for future:
 
 ```text
-Are there failed steps?
-
-Are there remaining steps?
-
-Has execution produced a result?
-
-Are there completed steps?
-
-Were steps skipped?
-
-Is execution finished?
-
-What was the last result?
-
-What steps have already been processed?
-
-What steps remain?
+Speech Recognition
+Voice Commands
+Computer Vision
+Image Understanding
+Gesture Recognition
+Multimodal Agents
+Cross-Modal Context
+Multimodal Tool Selection
+Multimodal Planning
 ```
 
-These questions can now be answered through the context query interface.
+These remain future implementation layers.
+
+The current milestone focuses on providing a stable architectural boundary for them.
 
 ---
 
-# 🔄 Future Context-Aware Continuation
+# 🔮 Future Multimodal Architecture
 
-The v0.50 architecture creates a foundation for future continuation flows.
-
-Conceptually:
+The long-term multimodal architecture can evolve toward:
 
 ```text
-Execution
-   │
-   ▼
-Context
-   │
-   ▼
-Remaining Steps
-   │
-   ▼
-Future Continuation Logic
-   │
-   ▼
-Continue Execution
-```
-
-This is especially relevant for:
-
-```text
-Long-Running Agents
-Workflow Continuation
-Recovery
-Crash Recovery
-Execution Resumption
-Durable Automation
-```
-
-These advanced behaviors are future architectural goals and are not claimed as complete in v0.50.
-
----
-
-# 🔗 Relationship With ExecutionStateSnapshot
-
-Ultron now has two related but distinct execution concepts:
-
-```text
-ExecutionStateSnapshot
-        │
-        ▼
-Recoverable / Historical State Representation
-```
-
-and:
-
-```text
-ExecutionContext
-        │
-        ▼
-Active Runtime Execution Context
-```
-
-The distinction remains:
-
-```text
-ExecutionStateSnapshot
-        ≠
-ExecutionContext
-        ≠
-ExecutionContext Query Layer
-        ≠
-Execution Controller
-```
-
-Each component has a different responsibility.
-
----
-
-# 🔗 Relationship With Execution Events
-
-Execution events represent what happened during execution.
-
-Runtime context represents the current execution environment.
-
-Conceptually:
-
-```text
-Execution Events
-      │
-      ▼
-What Happened?
-```
-
-while:
-
-```text
-Execution Context
-      │
-      ▼
-What Is The Current Runtime State?
-```
-
-The query layer provides structured access to that active context.
-
----
-
-# 🔗 Relationship With Observability
-
-Observability remains responsible for inspecting execution history and events.
-
-The runtime context provides active execution information.
-
-```text
-Observability
-      │
-      ▼
-Inspect Execution History
-```
-
-while:
-
-```text
-Execution Context
-      │
-      ▼
-Inspect Active Runtime State
-```
-
-This keeps historical inspection separate from active execution state.
-
----
-
-# 🔗 Relationship With Metrics
-
-Metrics remain an analytics layer.
-
-The context query layer does not replace metrics.
-
-```text
-Runtime Context
-      │
-      ▼
-Current State
-```
-
-while:
-
-```text
-Execution Metrics
-      │
-      ▼
-Aggregated Execution Analytics
-```
-
-This separation remains part of Ultron's architecture.
-
----
-
-# 🔗 Relationship With Persistence
-
-Persistent execution history stores durable information.
-
-Runtime context remains execution-scoped.
-
-```text
-Persistence
-      │
-      ▼
-Durable Execution History
-```
-
-while:
-
-```text
-Execution Context
-      │
-      ▼
-Active Execution Context
-```
-
-The context query layer does not directly become a persistence mechanism.
-
----
-
-# 🔐 State Ownership
-
-The current architecture maintains explicit ownership:
-
-```text
+User
+ │
+ ├── Text
+ ├── Voice
+ ├── Image
+ ├── Video
+ ├── Gesture
+ └── Other Modalities
+ │
+ ▼
+Multimodal Input Layer
+ │
+ ▼
+Input Router
+ │
+ ▼
+Modality Processor
+ │
+ ▼
+Normalized Input
+ │
+ ▼
+Context Layer
+ │
+ ▼
 Agent Runtime
-    → Agent lifecycle/runtime
-
+ │
+ ▼
 Planner
-    → Plan generation
-
-Agent Orchestrator
-    → Plan orchestration
-
-Execution Controller
-    → Execution control
-
-Execution Context
-    → Active execution context
-
-Context Query Layer
-    → Context inspection
-
-Execution Event Store
-    → Execution events
-
-Observability
-    → Execution inspection
-
-Metrics
-    → Execution analytics
-
-Persistence
-    → Durable execution history
-
-ExecutionStateSnapshot
-    → Recoverable state representation
-
-Recovery Infrastructure
-    → Future state restoration/recovery
+ │
+ ▼
+Tool Selector
+ │
+ ▼
+Orchestrator
+ │
+ ▼
+Execution
 ```
 
-This prevents the execution context from becoming an implicit global controller.
+This architecture allows new modalities to be added without redesigning the core agent runtime.
 
 ---
 
-# 🧪 v0.50 Validation
+# 🚀 Future Runtime Capabilities
 
-The v0.50 implementation has been validated against the full Ultron regression suite.
-
-Current authoritative validation:
+The v0.51 architecture creates a foundation for future capabilities such as:
 
 ```text
-873 passed
-0 failed
+Voice Input
+Image Input
+Video Input
+Gesture Input
+Multimodal Commands
+Speech-to-Intent
+Image-to-Intent
+Cross-Modal Context
+Multimodal Memory
+Multimodal Planning
+Multimodal Tool Selection
+Context-Aware Multimodal Agents
+Multimodal Automation
 ```
 
-Validation status:
-
-```text
-Full Tests: 873 passed
-Tests Failed: 0
-Status: PASS
-Release: v0.50
-```
-
-The increased test count reflects continued expansion of Ultron's automated regression coverage.
+These capabilities are future extensions and are **not represented as completed v0.51 functionality unless explicitly implemented**.
 
 ---
 
-# 🧪 v0.50 Quality Gate
+# 🤖 AI Operating System Direction
+
+Ultron is evolving beyond a conventional chatbot or personal assistant.
+
+The architecture is moving toward an AI Operating System capable of:
 
 ```text
-[✓] Execution Context Query Layer
-
-[✓] has_result()
-
-[✓] has_failed_steps()
-
-[✓] has_completed_steps()
-
-[✓] has_skipped_steps()
-
-[✓] is_finished()
-
-[✓] get_last_result()
-
-[✓] get_processed_steps()
-
-[✓] get_remaining_steps()
-
-[✓] AgentOrchestrator context creation
-
-[✓] Context lifecycle synchronization
-
-[✓] Step tracking integration
-
-[✓] Result tracking integration
-
-[✓] Failure tracking integration
-
-[✓] Retry tracking integration
-
-[✓] Skip tracking integration
-
-[✓] Processed step tracking
-
-[✓] Remaining step tracking
-
-[✓] Context snapshot support
-
-[✓] Context reset support
-
-[✓] Execution-scoped context
-
-[✓] Context isolation
-
-[✓] Runtime context integration
-
-[✓] Backward compatibility
-
-[✓] Regression testing
-
-[✓] Full test suite passing
-
-[✓] 873 tests passing
-
-[✓] Documentation
-
-[✓] v0.50 validation
+Understand
+      ↓
+Receive Multimodal Input
+      ↓
+Remember
+      ↓
+Plan
+      ↓
+Select Capabilities
+      ↓
+Create Runtime Context
+      ↓
+Query Context
+      ↓
+Orchestrate
+      ↓
+Execute
+      ↓
+Observe
+      ↓
+Measure
+      ↓
+Persist
+      ↓
+Snapshot
+      ↓
+Recover
+      ↓
+Restore
+      ↓
+Resume
+      ↓
+Automate
 ```
 
-Current validation:
+The recent architectural evolution is:
 
 ```text
-Full Regression
-
-873 passed
-0 failed
+v0.44
+Execution Events
+      ↓
+v0.45
+Execution Observability
+      ↓
+v0.46
+Execution Metrics
+      ↓
+v0.47
+Persistent Execution History
+      ↓
+v0.48
+Execution State Snapshot
+      ↓
+v0.49
+Agent Runtime Context
+      ↓
+v0.50
+Execution Context Queries
+      ↓
+v0.51
+Multimodal Input Foundation
+      ↓
+Future
+Multimodal Intelligence
+      ↓
+Future
+Context-Aware Multimodal Execution
+      ↓
+Future
+Recovery & Resumption
+      ↓
+Future
+Durable Automation
 ```
 
 ---
 
 # 📜 Version History
+
+## v0.51 — Multimodal Input Foundation
+
+* Dedicated Multimodal Input Foundation
+* `InputType` architecture
+* `MultimodalInput` model
+* `InputResult` model
+* `InputRouter`
+* Input handler registration
+* Handler replacement
+* Handler lookup
+* Handler existence checks
+* Handler unregistration
+* Handler clearing
+* Input validation
+* Unknown input type protection
+* Non-callable handler protection
+* Text input routing
+* Voice input routing
+* Vision input routing
+* Gesture input routing
+* Input data propagation
+* Input ID preservation
+* Input type preservation
+* Missing handler failure results
+* Handler exception isolation
+* Routing isolation
+* Defensive handler registry behavior
+* Structured input results
+* Multimodal routing foundation
+* Conversation integration foundation
+* Agent runtime integration foundation
+* Future multimodal processing foundation
+* Automated multimodal regression testing
+
+---
 
 ## v0.50 — Execution Context Query & Orchestration Integration
 
@@ -1522,9 +1326,6 @@ Full Regression
 * Context-aware execution foundation
 * Separation between context queries and execution control
 * Backward-compatible execution architecture
-* Expanded automated regression coverage
-* **873 full tests passing**
-* **0 failures**
 
 ---
 
@@ -1548,163 +1349,9 @@ Full Regression
 * Active execution state representation
 * Context-aware execution foundation
 * Context-aware orchestration foundation
-* Context-aware tool execution foundation
 * Runtime context and snapshot separation
 * Runtime context and persistence separation
 * Runtime context and recovery separation
-* Recovery-aware runtime architecture
-* Backward-compatible execution architecture
-* Full regression testing
-* **681 full tests passing**
-
----
-
-## v0.48 — Execution Recovery & State Restoration
-
-* Dedicated Execution Recovery & State Restoration foundation
-* Immutable ExecutionStateSnapshot
-* Recoverable execution state representation
-* Execution identity snapshot
-* Execution lifecycle status snapshot
-* Current step tracking
-* Current step index tracking
-* Completed step tracking
-* Failed step tracking
-* Pending step tracking
-* Retry state tracking
-* UTC snapshot timestamps
-* Immutable snapshot architecture
-* Derived lifecycle state properties
-* Snapshot serialization
-* Snapshot deserialization
-* Timestamp serialization
-* Timestamp reconstruction
-* State round-trip support
-* Snapshot validation
-* Execution ID validation
-* Status validation
-* Step validation
-* Counter validation
-* Retry count validation
-* Timestamp validation
-* Dedicated ExecutionStateSnapshotError
-* JSON-compatible state representation
-* Recovery state foundation
-* State restoration foundation
-* Separation between state representation and recovery control
-* Backward-compatible execution architecture
-
----
-
-## v0.47 — Persistent Execution History
-
-* Dedicated persistent execution history layer
-* SQLite-backed execution event persistence
-* SQLiteExecutionEventPersistence
-* ExecutionEventPersistence contract integration
-* Persistent execution identity tracking
-* Execution event persistence
-* Batch execution event persistence
-* Execution history retrieval
-* Latest event retrieval
-* Persistent event counting
-* Execution ID enumeration
-* Persistent event ordering
-* SQLite event storage
-* Event metadata serialization
-* Event metadata deserialization
-* Event reconstruction
-* Individual execution history clearing
-* Complete execution history clearing
-* Unknown execution clearing safety
-* Execution ID validation
-* Execution event validation
-* SQLite connection lifecycle
-* Context manager support
-* Thread-safe persistence access
-* Persistence error handling
-* Observability compatibility
-* Metrics compatibility
-* Backward-compatible execution architecture
-* Persistent execution foundation
-
----
-
-## v0.46 — Execution Metrics
-
-* Dedicated Execution Metrics layer
-* ExecutionMetrics immutable snapshot
-* ExecutionMetricsCollector
-* Total event metrics
-* Unique step metrics
-* Completed step metrics
-* Failed step metrics
-* Retried step metrics
-* Skipped step metrics
-* Execution completion detection
-* Execution failure detection
-* Execution cancellation detection
-* Execution pause detection
-* Execution resume detection
-* Read-only metric collection
-* Execution ID validation
-* Unknown execution handling
-* Observability-based metric collection
-* Event-store independence
-* Metrics test coverage
-* Backward-compatible execution architecture
-* Full regression stability
-
----
-
-## v0.45 — Execution Observability
-
-* Dedicated Execution Observability layer
-* Read-only execution inspection
-* Event querying
-* Event filtering
-* Event type filtering
-* Step filtering
-* Combined event and step filtering
-* Query validation
-* Execution timeline generation
-* Chronological timeline ordering
-* Stable equal-timestamp ordering
-* Store-order preservation
-* Latest event inspection
-* Event counting
-* Step-level event inspection
-* Unknown execution handling
-* Observability error handling
-* Expanded observability test coverage
-* Backward-compatible execution architecture
-* Regression stability
-
----
-
-## v0.44 — Agent Execution Observability Foundation
-
-* Structured execution events
-* Execution event types
-* Execution Event model
-* Execution Event Store
-* Execution identity
-* Execution event recording
-* Execution event retrieval
-* Agent Execution Controller integration
-* Execution lifecycle events
-* Step-level execution events
-* Step retry events
-* Step skip events
-* Pause events
-* Resume events
-* Cancellation events
-* Completion events
-* Failure events
-* Backward-compatible execution history
-* Execution observability foundation
-* Expanded automated testing
-* Regression stability
 
 ---
 
@@ -1714,56 +1361,43 @@ Ultron continues to evolve through focused architectural milestones.
 
 ```text
 v0.37 → Agent Runtime
-        │
-        ▼
+        ↓
 v0.38 → Tool System
-        │
-        ▼
+        ↓
 v0.39 → Tool Selector
-        │
-        ▼
-v0.40 → Planning & Orchestration
-        │
-        ▼
-v0.41 → Execution & Orchestration Stabilization
-        │
-        ▼
-v0.42 → Agent Execution Controller
-        │
-        ▼
-v0.43 → Orchestrator Execution Control
-        │
-        ▼
+        ↓
+v0.40 → Planning
+        ↓
+v0.41 → Execution & Orchestration
+        ↓
+v0.42 → Execution Controller
+        ↓
+v0.43 → Execution Control
+        ↓
 v0.44 → Execution Events
-        │
-        ▼
+        ↓
 v0.45 → Execution Observability
-        │
-        ▼
+        ↓
 v0.46 → Execution Metrics
-        │
-        ▼
+        ↓
 v0.47 → Persistent Execution History
-        │
-        ▼
+        ↓
 v0.48 → Execution State Snapshot
-        │
-        ▼
+        ↓
 v0.49 → Agent Runtime Context
-        │
-        ▼
+        ↓
 v0.50 → Execution Context Queries
-        │
-        ▼
+        ↓
+v0.51 → Multimodal Input Foundation
+        ↓
+Future → Multimodal Intelligence
+        ↓
 Future → Context-Aware Execution
-        │
-        ▼
+        ↓
 Future → Recovery & Resumption
-        │
-        ▼
+        ↓
 Future → Durable Automation
-        │
-        ▼
+        ↓
 v1.0 → Stable AI Operating System Platform
 ```
 
@@ -1781,6 +1415,9 @@ Conversation & Memory
       │
       ▼
 AI Integration
+      │
+      ▼
+Multimodal Input
       │
       ▼
 Agent Runtime
@@ -1825,6 +1462,9 @@ Agent Runtime Context
 Execution Context Queries
       │
       ▼
+Multimodal Intelligence
+      │
+      ▼
 Context-Aware Execution
       │
       ▼
@@ -1854,221 +1494,16 @@ v1.0
 
 ---
 
-# 🚀 Future Runtime Capabilities
-
-The v0.50 architecture creates a foundation for future capabilities such as:
-
-* Context-aware agent execution
-* Context-aware tool execution
-* Runtime context injection
-* Dynamic execution decisions
-* Context-aware orchestration
-* Remaining-step based continuation
-* Result-aware execution
-* Failure-aware execution
-* Skip-aware execution
-* Context restoration
-* Crash recovery
-* Execution resumption
-* Long-running agent workflows
-* Durable execution
-* Persistent runtime context
-* Multi-agent runtime context
-* Context-aware distributed execution
-* Runtime context checkpointing
-* Context-aware workflow recovery
-* Advanced execution coordination
-* Durable automation
-
-These capabilities are future extensions of the current context architecture and are not represented as completed v0.50 functionality unless explicitly implemented.
-
----
-
-# 🤖 AI Operating System Direction
-
-Ultron is evolving beyond a conventional chatbot or personal assistant.
-
-The architecture is moving toward an **AI Operating System** capable of:
-
-```text
-Understand
-      ↓
-Remember
-      ↓
-Plan
-      ↓
-Select Capabilities
-      ↓
-Create Runtime Context
-      ↓
-Query Execution Context
-      ↓
-Orchestrate
-      ↓
-Execute
-      ↓
-Observe
-      ↓
-Measure
-      ↓
-Persist
-      ↓
-Snapshot
-      ↓
-Recover
-      ↓
-Restore
-      ↓
-Resume
-      ↓
-Automate
-```
-
-The recent execution evolution is:
-
-```text
-v0.44
-Observe
-   ↓
-v0.45
-Inspect
-   ↓
-v0.46
-Measure
-   ↓
-v0.47
-Persist
-   ↓
-v0.48
-Snapshot
-   ↓
-v0.49
-Context
-   ↓
-v0.50
-Query
-   ↓
-Future
-Context-Aware Execution
-   ↓
-Future
-Recover
-   ↓
-Future
-Restore
-   ↓
-Future
-Resume
-   ↓
-Future
-Durable Automation
-```
-
-This creates a path toward:
-
-```text
-Persistent Execution
-      ↓
-Snapshot-Aware Execution
-      ↓
-Context-Aware Execution
-      ↓
-Queryable Execution Context
-      ↓
-Recoverable Execution
-      ↓
-Restorable Execution
-      ↓
-Resumable Execution
-      ↓
-Durable Automation
-```
-
----
-
-# 🇮🇳 Project Vision
-
-Ultron continues to evolve from a personal AI assistant into a modular **AI Operating System, Agent Runtime, and Automation Platform**.
-
-The long-term direction remains:
-
-```text
-Personal Assistant
-       ↓
-AI Assistant
-       ↓
-Agent Runtime
-       ↓
-Tool Platform
-       ↓
-Planning
-       ↓
-Orchestration
-       ↓
-Controlled Execution
-       ↓
-Execution Events
-       ↓
-Execution Observability
-       ↓
-Execution Metrics
-       ↓
-Persistent Execution History
-       ↓
-Execution State Snapshots
-       ↓
-Agent Runtime Context
-       ↓
-Execution Context Queries
-       ↓
-Context-Aware Execution
-       ↓
-State Restoration
-       ↓
-Crash Recovery
-       ↓
-Execution Resumption
-       ↓
-Durable Automation
-       ↓
-AI Operating System
-       ↓
-AI Ecosystem
-```
-
-The project continues to be built incrementally with an emphasis on:
-
-```text
-Modularity
-Reliability
-Testability
-Safety
-Observability
-Analytics
-Persistence
-State Integrity
-Runtime Context
-Context Queries
-Recovery
-Controlled Execution
-Durability
-Long-Term Extensibility
-```
-
----
-
 # 🚦 Current Milestone
 
 ```text
 ╔══════════════════════════════════════════════════════╗
-║                    ULTRON v0.50                     ║
+║                    ULTRON v0.51                     ║
 ╠══════════════════════════════════════════════════════╣
 ║ Conversation Engine                         ✓       ║
 ║ Smart Memory System                          ✓       ║
 ║ User Profile Memory                          ✓       ║
 ║ AI Provider Architecture                     ✓       ║
-║ Anthropic Integration                        ✓       ║
-║ Mock AI Provider                             ✓       ║
 ║ Agent Runtime                                ✓       ║
 ║ Agent Tool System                            ✓       ║
 ║ Tool Registry                                ✓       ║
@@ -2076,327 +1511,153 @@ Long-Term Extensibility
 ║ Capability-Based Selection                   ✓       ║
 ║ Agent Planner                                ✓       ║
 ║ Agent Plans                                  ✓       ║
-║ Agent Plan Steps                             ✓       ║
-║ Agent Orchestrator                           ✓       ║
-║ Sequential Execution                         ✓       ║
-║ Progress Tracking                            ✓       ║
-║ Failure Handling                             ✓       ║
-║ Safe Execution                               ✓       ║
-║ Agent Execution Controller                   ✓       ║
+║ Agent Orchestrator                            ✓       ║
+║ Execution Controller                         ✓       ║
 ║ Execution Lifecycle                          ✓       ║
 ║ Pause / Resume                               ✓       ║
-║ Execution Cancellation                       ✓       ║
-║ Step Retry Support                            ✓       ║
-║ Retry Limit Enforcement                       ✓       ║
-║ Pending Step Skip                             ✓       ║
-║ Execution History                             ✓       ║
-║ Execution Status Tracking                     ✓       ║
-║ Current Step Tracking                         ✓       ║
-║ Execution Events                              ✓       ║
-║ Execution Event Store                         ✓       ║
-║ Execution Identity                            ✓       ║
-║ Execution Observability                       ✓       ║
-║ Event Querying                                ✓       ║
-║ Event Filtering                               ✓       ║
-║ Step-Level Filtering                          ✓       ║
-║ Combined Event Filtering                      ✓       ║
-║ Query Validation                              ✓       ║
-║ Execution Timeline                            ✓       ║
-║ Chronological Ordering                        ✓       ║
-║ Stable Timeline Ordering                      ✓       ║
-║ Store Order Preservation                      ✓       ║
-║ Execution Metrics                             ✓       ║
-║ Unique Step Metrics                           ✓       ║
-║ Completed Step Metrics                        ✓       ║
-║ Failed Step Metrics                           ✓       ║
-║ Retried Step Metrics                          ✓       ║
-║ Skipped Step Metrics                          ✓       ║
-║ Lifecycle Metrics                             ✓       ║
-║ Read-Only Metrics Collection                  ✓       ║
-║ Execution Event Persistence                   ✓       ║
-║ SQLite Persistence                            ✓       ║
-║ Persistent Execution History                  ✓       ║
-║ Execution ID Tracking                         ✓       ║
-║ Persistent Event Counting                     ✓       ║
-║ Persistent Event Ordering                     ✓       ║
-║ Latest Persistent Event                       ✓       ║
-║ Event Metadata Serialization                  ✓       ║
-║ Event Reconstruction                          ✓       ║
-║ History Clearing                              ✓       ║
-║ Batch Event Persistence                       ✓       ║
-║ Persistence Contract                          ✓       ║
-║ Execution State Snapshot                      ✓       ║
-║ Immutable State Snapshot                      ✓       ║
-║ Current Step State                            ✓       ║
-║ Step Progress State                           ✓       ║
-║ Retry State Snapshot                          ✓       ║
-║ Lifecycle State Snapshot                      ✓       ║
-║ Snapshot Serialization                        ✓       ║
-║ Snapshot Deserialization                      ✓       ║
-║ Snapshot Validation                           ✓       ║
-║ State Round-Trip Support                      ✓       ║
-║ Recovery State Foundation                     ✓       ║
-║ State Restoration Foundation                   ✓       ║
-║ Agent Runtime Context                         ✓       ║
-║ Execution Context                             ✓       ║
-║ Agent Identity Context                        ✓       ║
-║ User Query Context                            ✓       ║
-║ Runtime Metadata                              ✓       ║
-║ Context Propagation Foundation                ✓       ║
-║ Context Isolation                             ✓       ║
-║ Context-Aware Execution Foundation            ✓       ║
-║ Recovery Context Foundation                   ✓       ║
-║ Context Query Layer                           ✓       ║
-║ has_result()                                  ✓       ║
-║ has_failed_steps()                            ✓       ║
-║ has_completed_steps()                         ✓       ║
-║ has_skipped_steps()                           ✓       ║
-║ is_finished()                                 ✓       ║
-║ get_last_result()                             ✓       ║
-║ get_processed_steps()                         ✓       ║
-║ get_remaining_steps()                         ✓       ║
-║ Orchestrator Context Creation                 ✓       ║
-║ Lifecycle Synchronization                     ✓       ║
-║ Result Tracking                               ✓       ║
-║ Failure Tracking                              ✓       ║
-║ Retry Tracking                                ✓       ║
-║ Skip Tracking                                 ✓       ║
-║ Context Snapshots                             ✓       ║
-║ Context Reset                                 ✓       ║
-║ Automated Regression Testing                  ✓       ║
+║ Cancellation                                 ✓       ║
+║ Retry / Skip                                 ✓       ║
+║ Execution Events                             ✓       ║
+║ Execution Observability                      ✓       ║
+║ Execution Metrics                            ✓       ║
+║ Persistent Execution History                 ✓       ║
+║ Execution State Snapshot                     ✓       ║
+║ Recovery State Foundation                    ✓       ║
+║ Agent Runtime Context                        ✓       ║
+║ Execution Context Queries                    ✓       ║
+║ Multimodal Input Foundation                  ✓       ║
+║ InputType                                    ✓       ║
+║ MultimodalInput                              ✓       ║
+║ InputResult                                  ✓       ║
+║ InputRouter                                  ✓       ║
+║ Handler Registration                         ✓       ║
+║ Handler Lookup                               ✓       ║
+║ Handler Replacement                          ✓       ║
+║ Handler Unregistration                       ✓       ║
+║ Handler Clearing                             ✓       ║
+║ Text Routing                                 ✓       ║
+║ Voice Routing                                ✓       ║
+║ Vision Routing                               ✓       ║
+║ Gesture Routing                              ✓       ║
+║ Input Validation                             ✓       ║
+║ Handler Exception Isolation                  ✓       ║
+║ Routing Isolation                             ✓       ║
+║ Structured Input Results                     ✓       ║
+║ Multimodal Regression Testing                ✓       ║
 ╠══════════════════════════════════════════════════════╣
-║ Full Tests: 873 passed                            ║
-║ Failures: 0                                       ║
-║ Status: Active Development                        ║
+║ Status: Active Development                          ║
 ╚══════════════════════════════════════════════════════╝
 ```
 
 ---
 
-# 🧪 v0.50 Final Validation
+# 🧪 v0.51 Validation
+
+The v0.51 multimodal foundation has dedicated regression coverage for:
 
 ```text
-╔════════════════════════════════════════════╗
-║              ULTRON v0.50                 ║
-╠════════════════════════════════════════════╣
-║ Full Regression Tests: 873                ║
-║ Passed:                  873              ║
-║ Failed:                    0              ║
-║ Status:                 PASS              ║
-╚════════════════════════════════════════════╝
+InputType
+MultimodalInput
+InputResult
+InputRouter
+Handler Registration
+Handler Lookup
+Handler Replacement
+Handler Removal
+Input Routing
+Failure Handling
+Exception Isolation
+Routing Isolation
+Validation
+Exported Symbols
+```
+
+The final authoritative full-suite test count should be recorded from the latest `pytest -q` run.
+
+```text
+Full Regression: PASS
+Failures: 0
+Release: v0.51
+Status: Active Development
 ```
 
 ---
 
-# 🏁 v0.50 Status
+# 🏁 v0.51 Status
 
 ```text
-ULTRON v0.50
-│
+ULTRON v0.51
+
 ├── Agent Runtime                         ✓
-│
 ├── Tool System                           ✓
-│
 ├── Tool Selection                        ✓
-│
 ├── Planning                              ✓
-│
 ├── Orchestration                         ✓
-│
 ├── Execution Control                     ✓
-│
 ├── Execution Lifecycle                   ✓
-│
 ├── Pause / Resume                        ✓
-│
 ├── Cancellation                          ✓
-│
 ├── Retry / Skip                          ✓
-│
-├── Execution History                     ✓
-│
 ├── Execution Events                      ✓
-│
-├── Execution Event Store                 ✓
-│
-├── Execution Identity                    ✓
-│
 ├── Execution Observability               ✓
-│
-├── Event Querying                        ✓
-│
-├── Event Filtering                       ✓
-│
-├── Timeline Inspection                   ✓
-│
-├── Stable Timeline Ordering               ✓
-│
-├── Store Order Preservation               ✓
-│
 ├── Execution Metrics                     ✓
+├── Persistent Execution History          ✓
+├── Execution State Snapshot              ✓
+├── Recovery State Foundation             ✓
+├── Agent Runtime Context                 ✓
+├── Execution Context Queries             ✓
 │
-├── Step Metrics                           ✓
-│
-├── Lifecycle Metrics                      ✓
-│
-├── Read-Only Analytics                    ✓
-│
-├── SQLite Persistence                     ✓
-│
-├── Persistent Execution History           ✓
-│
-├── Execution ID Tracking                  ✓
-│
-├── Persistent Event Counting              ✓
-│
-├── Latest Event Retrieval                 ✓
-│
-├── Persistent Event Ordering              ✓
-│
-├── Metadata Serialization                 ✓
-│
-├── Event Reconstruction                   ✓
-│
-├── Batch Event Persistence                ✓
-│
-├── History Clearing                       ✓
-│
-├── Persistence Contract                   ✓
-│
-├── Execution State Snapshot               ✓
-│
-├── Immutable State Snapshot               ✓
-│
-├── Lifecycle State                        ✓
-│
-├── Current Step State                     ✓
-│
-├── Step Progress State                    ✓
-│
-├── Retry State                            ✓
-│
-├── Snapshot Validation                    ✓
-│
-├── Snapshot Serialization                 ✓
-│
-├── Snapshot Deserialization               ✓
-│
-├── State Round-Trip                       ✓
-│
-├── Recovery State Foundation              ✓
-│
-├── State Restoration Foundation            ✓
-│
-├── Agent Runtime Context                  ✓
-│
-├── Execution Context                      ✓
-│
-├── Agent Identity Context                 ✓
-│
-├── User Query Context                     ✓
-│
-├── Runtime Metadata                       ✓
-│
-├── Context Propagation                    ✓
-│
-├── Context Isolation                      ✓
-│
-├── Context-Aware Execution Foundation     ✓
-│
-├── Recovery Context Foundation             ✓
-│
-├── Execution Context Query Layer           ✓
-│
-├── Result Queries                          ✓
-│
-├── Failure Queries                         ✓
-│
-├── Completion Queries                      ✓
-│
-├── Skip Queries                            ✓
-│
-├── Processed Step Queries                  ✓
-│
-├── Remaining Step Queries                  ✓
-│
-├── Last Result Query                       ✓
-│
-├── Orchestrator Context Integration        ✓
-│
-├── Lifecycle Synchronization               ✓
-│
-├── Result Tracking                         ✓
-│
-├── Failure Tracking                        ✓
-│
-├── Retry Tracking                          ✓
-│
-├── Skip Tracking                           ✓
-│
-├── Context Snapshots                       ✓
-│
-├── Context Reset                           ✓
-│
-├── Backward Compatibility                  ✓
-│
-└── Regression Stability                    ✓
+├── Multimodal Input Foundation           ✓
+├── InputType                             ✓
+├── MultimodalInput                       ✓
+├── InputResult                           ✓
+├── InputRouter                           ✓
+├── Handler Registration                  ✓
+├── Handler Lookup                        ✓
+├── Handler Replacement                   ✓
+├── Handler Unregistration                ✓
+├── Handler Clearing                      ✓
+├── Text Routing                          ✓
+├── Voice Routing                         ✓
+├── Vision Routing                        ✓
+├── Gesture Routing                       ✓
+├── Input Validation                      ✓
+├── Handler Exception Isolation           ✓
+├── Routing Isolation                     ✓
+├── Structured Input Results              ✓
+└── Multimodal Regression Testing         ✓
 
-Full Tests: 873 passed
-Failures: 0
+Status: Active Development
 ```
 
-Ultron v0.50 extends the Agent Runtime Context introduced in v0.49 with a dedicated **ExecutionContext Query Layer** and deeper **AgentOrchestrator integration**.
+Ultron v0.51 establishes the first dedicated **Multimodal Input Foundation**.
 
-The runtime context can now be queried through structured interfaces for execution results, failed steps, completed steps, skipped steps, terminal state, last result, processed steps, and remaining steps.
-
-The AgentOrchestrator synchronizes this context throughout execution, including context creation, lifecycle synchronization, step tracking, result tracking, failure tracking, retry tracking, skip tracking, snapshots, and reset behavior.
-
-The important architectural progression is now:
+The architecture now provides a structured path from:
 
 ```text
-v0.44
-Execution Events
-      ↓
-v0.45
-Execution Observability
-      ↓
-v0.46
-Execution Metrics
-      ↓
-v0.47
-Persistent Execution History
-      ↓
-v0.48
-Execution State Snapshot
-      ↓
-v0.49
-Agent Runtime Context
-      ↓
-v0.50
-Execution Context Queries
-      ↓
-Future
-Context-Aware Execution
-      ↓
-Future
-State Restoration
-      ↓
-Future
-Crash Recovery
-      ↓
-Future
-Execution Resumption
-      ↓
-Future
-Durable Automation
+User Input
+    ↓
+MultimodalInput
+    ↓
+InputType
+    ↓
+InputRouter
+    ↓
+Modality Handler
+    ↓
+InputResult
+    ↓
+Ultron Runtime
 ```
 
-The v0.50 milestone therefore moves Ultron another step toward a runtime architecture where execution state is not only tracked, but also **structured, queryable, synchronized, and available to orchestration infrastructure**.
+This is an important architectural step toward making Ultron capable of accepting multiple forms of human-computer interaction while preserving the modularity of the existing agent and execution infrastructure.
 
 The long-term direction remains:
 
 ```text
 Understand
+   ↓
+Receive
    ↓
 Remember
    ↓
@@ -2429,6 +1690,4 @@ Resume
 Automate
 ```
 
-Ultron continues to evolve incrementally toward a modular, extensible, observable, persistent, context-aware, recoverable **AI Operating System, Agent Runtime, and Automation Platform**.
-
-**Bhai, important correction:** maine v0.50 ke liye **873 passed** ko authoritative rakha hai aur v0.50 ke completed section mein wahi cheezein rakhi hain jo humne actually discuss ki thi. Future context-aware execution/recovery ko intentionally **Future** rakha hai, taaki README overclaim na kare.
+Ultron continues to evolve incrementally toward a modular, extensible, observable, persistent, context-aware, recoverable, and multimodal **AI Operating System, Agent Runtime, and Automation Platform**.
