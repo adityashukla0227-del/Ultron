@@ -8,25 +8,46 @@ The project is designed around clear architectural boundaries between:
 
 ```text
 Conversation
+
 Memory
+
 AI Providers
+
 Agents
+
 Tools
+
 Planning
+
 Orchestration
+
 Execution Control
+
 Execution Events
+
 Observability
+
 Metrics
+
 Persistence
+
 State Snapshots
+
 Runtime Context
+
 Context Queries
+
 Recovery
+
 Automation
+
 Multimodal Input
+
 Input Routing
+
 Input Results
+
+Voice Input
 ```
 
 The long-term objective is to create a reliable, extensible, observable, persistent, context-aware, recoverable, and multimodal agent execution platform.
@@ -39,74 +60,140 @@ Ultron's architecture progressively evolves through independent execution layers
 
 ```text
 User
+
   │
+
   ▼
+
 Multimodal Input
+
   │
+
   ├── Text
   ├── Voice
   ├── Vision
   └── Gesture
+
   │
+
   ▼
+
 Input Router
+
   │
+
+  ├── Text Handler
+  ├── Voice Handler
+  ├── Vision Handler
+  └── Gesture Handler
+
+  │
+
   ▼
+
+Normalized Input Result
+
+  │
+
+  ▼
+
 Conversation Engine
+
   │
+
   ▼
+
 AI Engine
+
   │
+
   ▼
+
 Agent Runtime
+
   │
+
   ▼
+
 Tool System
+
   │
+
   ▼
+
 Tool Selector
+
   │
+
   ▼
+
 Agent Planner
+
   │
+
   ▼
+
 Agent Plan
+
   │
+
   ▼
+
 Agent Orchestrator
+
   │
+
   ▼
+
 Execution Controller
+
   │
+
   ▼
+
 Execution Context
+
   │
+
   ├── Context Queries
   ├── Execution State
   ├── Step State
   ├── Results
   ├── Retry State
   └── Runtime Metadata
+
   │
+
   ▼
+
 Execution
+
   │
+
   ├── Events
   ├── Observability
   ├── Metrics
   ├── Persistence
   └── State Snapshots
+
   │
+
   ▼
+
 Recovery Infrastructure
+
   │
+
   ▼
+
 Future Durable Automation
 ```
 
 Each layer has a dedicated responsibility.
 
-The v0.51 milestone introduces the first dedicated **multimodal input architecture** while preserving the existing execution and orchestration layers.
+The **v0.51 milestone** introduced the first dedicated multimodal input architecture.
+
+The **v0.52 milestone** extends that foundation with a dedicated voice input layer while keeping voice capture and processing separate from the core runtime.
 
 ---
 
@@ -173,11 +260,19 @@ v0.51 → Multimodal Input Foundation
 
         ↓
 
-Future → Multimodal Processing
+v0.52 → Voice Input Foundation
 
         ↓
 
-Future → Voice / Vision / Gesture Intelligence
+Future → Advanced Voice Processing
+
+        ↓
+
+Future → Speech-to-Text Intelligence
+
+        ↓
+
+Future → Vision / Gesture Intelligence
 
         ↓
 
@@ -194,583 +289,757 @@ v1.0 → Stable AI Operating System Platform
 
 ---
 
-# 🚀 v0.51 — Multimodal Input Foundation
+# 🚀 v0.52 — Voice Input Foundation
 
-The v0.51 milestone introduces the foundational architecture required for Ultron to accept and route multiple forms of user input.
+The v0.52 milestone extends Ultron's multimodal architecture with a dedicated **Voice Input Foundation**.
 
-The milestone establishes a clean separation between:
+The milestone establishes a clean architectural boundary for voice input without coupling microphone handling directly to the agent runtime.
+
+The architecture now supports:
 
 ```text
-Input Representation
-        ↓
-Input Type
-        ↓
+Voice Input
+
+    ↓
+
+Voice Input Layer
+
+    ↓
+
+MultimodalInput
+
+    ↓
+
+InputRouter
+
+    ↓
+
+Voice Handler
+
+    ↓
+
+InputResult
+
+    ↓
+
+Ultron Runtime
+```
+
+The v0.52 milestone focuses on the **voice input abstraction and integration boundary**, rather than claiming complete conversational voice intelligence.
+
+The architecture is prepared for future integration with:
+
+```text
+Microphone Capture
+
+Audio Processing
+
+Speech-to-Text
+
+Voice Commands
+
+Voice Activity Detection
+
+Speech Understanding
+
+Voice Agent Interaction
+```
+
+These remain future processing layers unless explicitly implemented.
+
+---
+
+# 🎙️ v0.52 Voice Input Architecture
+
+The new voice layer sits on top of the multimodal foundation introduced in v0.51.
+
+Conceptually:
+
+```text
+User
+
+  │
+
+  ▼
+
+Voice
+
+  │
+
+  ▼
+
+Voice Input
+
+  │
+
+  ▼
+
+MultimodalInput
+
+  │
+
+  ▼
+
+InputType.VOICE
+
+  │
+
+  ▼
+
+InputRouter
+
+  │
+
+  ▼
+
+Voice Handler
+
+  │
+
+  ▼
+
+InputResult
+
+  │
+
+  ▼
+
+Conversation / Agent Runtime
+```
+
+This architecture keeps voice-specific behavior outside the core routing system.
+
+---
+
+# 🎤 VoiceInput
+
+`VoiceInput` provides the dedicated voice input abstraction introduced in v0.52.
+
+Its responsibility is to represent voice input before it enters the broader multimodal processing pipeline.
+
+Conceptually:
+
+```text
+VoiceInput
+
+    │
+
+    ├── Voice Data
+    ├── Input Identity
+    ├── Source Information
+    └── Voice Metadata
+
+    │
+
+    ▼
+
+Multimodal Input Architecture
+```
+
+The voice layer can therefore evolve independently from the execution engine.
+
+---
+
+# 🔗 Voice Input and MultimodalInput
+
+The voice layer integrates with the existing multimodal input architecture.
+
+Conceptually:
+
+```text
+Voice Input
+
+    ↓
+
+VoiceInput
+
+    ↓
+
+MultimodalInput
+
+    ↓
+
+InputType.VOICE
+
+    ↓
+
+InputRouter
+```
+
+This preserves the architectural boundary established in v0.51.
+
+Voice input does not create a separate execution architecture.
+
+Instead, it becomes another modality entering the existing pipeline.
+
+---
+
+# 🔀 Voice Routing
+
+Voice inputs can be routed through the existing `InputRouter`.
+
+Conceptually:
+
+```text
+VoiceInput
+
+    │
+
+    ▼
+
+MultimodalInput
+
+    │
+
+    ▼
+
+InputRouter
+
+    │
+
+    ▼
+
+VOICE Handler
+
+    │
+
+    ▼
+
+InputResult
+```
+
+The router remains responsible only for dispatching the input to the appropriate handler.
+
+Voice-specific processing remains outside the router.
+
+---
+
+# 🧩 Voice Handler Boundary
+
+The voice architecture maintains a dedicated processing boundary:
+
+```text
+VOICE
+
+  │
+
+  ▼
+
+Voice Handler
+
+  │
+
+  ▼
+
+Voice Processing
+
+  │
+
+  ▼
+
+Normalized Result
+```
+
+This makes it possible to later connect different voice-processing implementations without modifying the core routing architecture.
+
+Potential future implementations may include:
+
+```text
+Local Speech Recognition
+
+Cloud Speech Recognition
+
+Streaming Speech Recognition
+
+Speech-to-Text Engines
+
+Voice Command Parsers
+
+Voice Activity Detection
+```
+
+---
+
+# 🧠 Voice Processing Separation
+
+The v0.52 architecture intentionally separates:
+
+```text
+Voice Input Capture
+
+        ≠
+
+Voice Processing
+
+        ≠
+
 Input Routing
-        ↓
-Input Processing
-        ↓
+
+        ≠
+
+Conversation Processing
+
+        ≠
+
+Agent Execution
+```
+
+This separation prevents microphone or audio-specific implementation details from leaking into the agent runtime.
+
+---
+
+# 🔗 Relationship With InputRouter
+
+The existing `InputRouter` remains the central multimodal dispatch mechanism.
+
+The relationship is:
+
+```text
+VoiceInput
+
+    ↓
+
+MultimodalInput
+
+    ↓
+
+InputRouter
+
+    ↓
+
+VOICE Handler
+
+    ↓
+
+InputResult
+```
+
+The router does not need to understand microphone APIs, audio drivers, speech-recognition engines, or voice models.
+
+It only needs to recognize:
+
+```text
+InputType.VOICE
+```
+
+and dispatch the corresponding handler.
+
+---
+
+# 📦 Voice Input Result
+
+Voice processing continues to use the existing structured `InputResult` architecture.
+
+Conceptually:
+
+```text
+Voice Input
+
+    │
+
+    ▼
+
+Voice Handler
+
+    │
+
+    ▼
+
+InputResult
+
+    │
+
+    ├── Input ID
+    ├── Input Type
+    ├── Status
+    ├── Success
+    ├── Data
+    ├── Error
+    └── Confidence
+```
+
+This allows voice processing results to remain compatible with the broader multimodal runtime.
+
+---
+
+# 🆔 Voice Input Identity
+
+Voice input preserves the identity of the original multimodal input.
+
+Conceptually:
+
+```text
+Voice Input
+
+    │
+
+    ├── Input ID
+    └── Input Type = VOICE
+
+    │
+
+    ▼
+
+Voice Handler
+
+    │
+
+    ▼
+
+InputResult
+
+    │
+
+    ├── Input ID
+    └── Input Type = VOICE
+```
+
+This allows future execution layers to correlate voice input with downstream processing and agent execution.
+
+---
+
+# 📊 Voice Input Metadata
+
+The voice architecture provides a foundation for future voice-specific metadata.
+
+Potential metadata may include:
+
+```text
+Audio Format
+
+Sample Rate
+
+Channel Count
+
+Duration
+
+Source
+
+Language
+
+Transcription Confidence
+
+Processing Metadata
+```
+
+These fields can evolve independently as actual voice-processing implementations are introduced.
+
+---
+
+# 🛡️ Voice Input Validation
+
+The v0.52 voice layer introduces dedicated validation boundaries for voice input.
+
+The architecture is designed to prevent invalid voice input objects from entering the multimodal processing pipeline.
+
+Validation remains separated from:
+
+```text
+Voice Processing
+
+Input Routing
+
+Agent Execution
+
+Execution Control
+```
+
+This preserves predictable error handling.
+
+---
+
+# ⚠️ Voice Error Handling
+
+Voice input failures are intended to remain inside the multimodal result boundary.
+
+Conceptually:
+
+```text
+Voice Input
+
+    ↓
+
+Voice Handler
+
+    ↓
+
+Processing Failure
+
+    ↓
+
+InputResult
+
+    ├── success = False
+    └── error = processing error
+```
+
+This allows downstream components to inspect structured failures rather than depending on implementation-specific exceptions.
+
+---
+
+# 🔒 Voice Architecture Isolation
+
+The voice layer does not directly control:
+
+```text
+Agent Plans
+
+Tool Selection
+
+Execution
+
+Execution Lifecycle
+
+Retries
+
+Persistence
+
+Metrics
+
+Recovery
+
+State Restoration
+```
+
+Instead, its responsibility is limited to the input side of the architecture:
+
+```text
+Voice Input
+
+    ↓
+
+Voice Representation
+
+    ↓
+
+Voice Routing
+
+    ↓
+
+Voice Processing Boundary
+
+    ↓
+
 Structured Input Result
 ```
 
-The architecture is designed to support multiple input modalities without coupling the core runtime to individual modality implementations.
+---
 
-The initial foundation supports:
+# 🧱 v0.51 → v0.52 Evolution
+
+The architectural progression is:
 
 ```text
-Text
-Voice
-Vision
-Gesture
-Unknown
+v0.51
+
+Multimodal Input Foundation
+
+    │
+
+    ├── InputType
+    ├── MultimodalInput
+    ├── InputRouter
+    └── InputResult
+
+    │
+
+    ▼
+
+Structured Multimodal Input Architecture
+
+
+v0.52
+
+Voice Input Foundation
+
+    │
+
+    ├── Voice Input Layer
+    ├── Voice Input Representation
+    ├── Voice Routing Integration
+    ├── Voice Processing Boundary
+    └── Voice Input Testing
+
+    │
+
+    ▼
+
+Structured Voice Input Architecture
 ```
 
-The v0.51 milestone focuses on **input abstraction and routing**, not on implementing complete speech recognition, computer vision, or gesture-recognition engines.
+Together:
+
+```text
+v0.51
+
+Multimodal Input Foundation
+
+        +
+
+v0.52
+
+Voice Input Foundation
+
+        ↓
+
+Multimodal Voice Entry Architecture
+```
 
 ---
 
-# 🧩 v0.51 Core Components
+# 🧠 Multimodal AI Foundation
 
-The multimodal foundation introduces the following architectural components:
+The v0.52 milestone does not claim complete voice intelligence.
+
+Instead, it establishes the infrastructure required for future:
 
 ```text
-modules/
-└── multimodal/
-    ├── input.py
-    ├── input_result.py
-    ├── input_router.py
-    └── input_type.py
+Speech Recognition
+
+Speech-to-Text
+
+Voice Commands
+
+Voice Activity Detection
+
+Natural Language Voice Understanding
+
+Voice Intent Detection
+
+Conversational Voice Agents
+
+Voice-Based Tool Selection
+
+Voice-Based Planning
+
+Multimodal Voice Context
 ```
 
-Conceptually:
+These remain future implementation layers unless explicitly implemented.
+
+---
+
+# 🔮 Future Voice Architecture
+
+The long-term voice architecture can evolve toward:
 
 ```text
+User
+
+  │
+
+  ▼
+
+Microphone
+
+  │
+
+  ▼
+
+Voice Capture
+
+  │
+
+  ▼
+
+Voice Input
+
+  │
+
+  ▼
+
 Multimodal Input
-      │
-      ▼
-InputType
-      │
-      ▼
-InputRouter
-      │
-      ▼
-Registered Handler
-      │
-      ▼
-InputResult
-```
 
-Each component has a focused responsibility.
-
----
-
-# 🎛️ InputType
-
-`InputType` defines the supported categories of multimodal input.
-
-The architecture currently distinguishes between:
-
-```text
-TEXT
-VOICE
-VISION
-GESTURE
-UNKNOWN
-```
-
-This provides a stable type boundary between incoming user input and the routing layer.
-
-Conceptually:
-
-```text
-Incoming Input
-      │
-      ▼
-InputType
-      │
- ┌────┼────────┬────────┐
- ▼    ▼        ▼        ▼
-Text Voice   Vision   Gesture
-```
-
-The type system prevents routing logic from depending on arbitrary string values.
-
----
-
-# 📥 MultimodalInput
-
-`MultimodalInput` represents an individual incoming input.
-
-A multimodal input contains execution-relevant input information such as:
-
-```text
-Input ID
-Input Type
-Input Data
-Source
-```
-
-Conceptually:
-
-```text
-MultimodalInput
-      │
-      ├── id
-      ├── input_type
-      ├── data
-      └── source
-```
-
-This provides a normalized representation regardless of where the input originated.
-
-For example:
-
-```text
-Text
-    ↓
-"hello"
-
-Voice
-    ↓
-audio data
-
-Vision
-    ↓
-image data
-
-Gesture
-    ↓
-gesture metadata
-```
-
-The router can therefore operate on a common input abstraction.
-
----
-
-# 📦 InputResult
-
-`InputResult` provides a structured representation of the result produced after input processing.
-
-Conceptually:
-
-```text
-InputResult
-    │
-    ├── Input ID
-    ├── Input Type
-    ├── Success
-    ├── Data
-    └── Error
-```
-
-A successful result can be represented as:
-
-```text
-Input
   │
+
   ▼
-Handler
+
+Input Router
+
   │
+
   ▼
-InputResult
-  │
-  ├── success = True
-  └── data = processed result
-```
 
-A failed result can be represented as:
+Voice Processor
 
-```text
-Input
   │
+
   ▼
-Handler
+
+Speech-to-Text
+
   │
+
   ▼
-InputResult
+
+Normalized Text / Intent
+
   │
-  ├── success = False
-  └── error = processing error
-```
 
-This creates a consistent result boundary between multimodal processing and the rest of the runtime.
-
----
-
-# 🔀 InputRouter
-
-`InputRouter` is the central routing layer introduced in v0.51.
-
-Its responsibility is to map an input type to the appropriate processing handler.
-
-Conceptually:
-
-```text
-MultimodalInput
-      │
-      ▼
-InputRouter
-      │
-      ▼
-InputType
-      │
-      ▼
-Registered Handler
-      │
-      ▼
-InputResult
-```
-
-The router maintains a registry of handlers.
-
-Example:
-
-```text
-TEXT    → Text Handler
-VOICE   → Voice Handler
-VISION  → Vision Handler
-GESTURE → Gesture Handler
-```
-
-This allows modality-specific processing to remain outside the router itself.
-
----
-
-# 🧩 Handler Registration
-
-Handlers can be registered dynamically.
-
-Conceptually:
-
-```text
-InputRouter
-     │
-     ├── TEXT    → handler
-     ├── VOICE   → handler
-     ├── VISION  → handler
-     └── GESTURE → handler
-```
-
-The router supports:
-
-```text
-Register Handler
-Replace Handler
-Lookup Handler
-Check Handler
-Unregister Handler
-Clear Handlers
-```
-
-This provides a flexible foundation for future modality implementations.
-
----
-
-# 🔍 Handler Lookup
-
-The router exposes handler lookup behavior.
-
-Conceptually:
-
-```text
-InputType
-    │
-    ▼
-InputRouter
-    │
-    ▼
-Handler Registry
-    │
-    ├── Found
-    │
-    └── Not Found
-```
-
-A missing handler does not require the router to execute arbitrary fallback logic.
-
-Instead, the routing layer can return a structured failed `InputResult`.
-
----
-
-# 🔄 Handler Replacement
-
-Registering another handler for an existing input type replaces the previous handler.
-
-Conceptually:
-
-```text
-TEXT
- │
- ▼
-Old Handler
- │
- ▼
-New Handler
-```
-
-This allows runtime configuration and future plugin-style multimodal processing.
-
----
-
-# 🧹 Handler Removal
-
-Handlers can be explicitly removed.
-
-Conceptually:
-
-```text
-Registered Handler
-       │
-       ▼
-unregister_handler()
-       │
-       ▼
-Handler Removed
-```
-
-The router also supports clearing all registered handlers.
-
-```text
-InputRouter
-     │
-     ▼
-clear_handlers()
-     │
-     ▼
-Empty Handler Registry
-```
-
----
-
-# 🛡️ Input Validation
-
-The v0.51 router validates incoming inputs before routing.
-
-The router rejects invalid routing inputs such as:
-
-```text
-None
-Invalid Input Objects
-Invalid Input Types
-Unknown Input Types
-Non-callable Handlers
-```
-
-Validation failures are represented through:
-
-```text
-InputRouterError
-```
-
-This prevents invalid data from silently entering the multimodal execution path.
-
----
-
-# ❌ Missing Handler Behavior
-
-If an input is valid but no handler is registered for its type, routing does not crash.
-
-Instead:
-
-```text
-Input
-  │
   ▼
-InputRouter
+
+Context Layer
+
   │
+
   ▼
-No Handler
+
+Agent Runtime
+
   │
+
   ▼
-Failed InputResult
+
+Planner
+
+  │
+
+  ▼
+
+Tool Selector
+
+  │
+
+  ▼
+
+Orchestrator
+
+  │
+
+  ▼
+
+Execution
 ```
 
-This creates a predictable failure boundary.
-
-The caller can inspect:
-
-```text
-result.success
-result.error
-```
-
-without depending on router internals.
+This architecture allows advanced voice intelligence to be introduced without redesigning the core runtime.
 
 ---
 
-# ⚠️ Handler Exception Isolation
+# 🧩 Multimodal Architecture After v0.52
 
-Handler exceptions are isolated by the router.
-
-Conceptually:
-
-```text
-Input
-  │
-  ▼
-Handler
-  │
-  ▼
-Exception
-  │
-  ▼
-InputRouter
-  │
-  ▼
-Failed InputResult
-```
-
-Handler exceptions do not escape the routing boundary as uncontrolled exceptions.
-
-This provides a safer foundation for integrating external modality processors.
-
----
-
-# 🔒 Routing Isolation
-
-Each input type is routed only to its corresponding handler.
-
-For example:
-
-```text
-TEXT Input
-    │
-    ▼
-TEXT Handler
-```
-
-A text handler does not automatically process:
-
-```text
-VOICE
-VISION
-GESTURE
-```
-
-Likewise:
-
-```text
-VOICE Handler
-```
-
-does not automatically process:
-
-```text
-VISION
-```
-
-This maintains strong modality boundaries.
-
----
-
-# 📤 Input Data Propagation
-
-The router passes the actual input data to the registered handler.
-
-Conceptually:
-
-```text
-MultimodalInput
-      │
-      ├── input_type
-      └── data
-             │
-             ▼
-         InputRouter
-             │
-             ▼
-          Handler
-             │
-             ▼
-       Processed Result
-```
-
-The router therefore acts as a routing boundary rather than a data transformation engine.
-
----
-
-# 🆔 Input Identity Preservation
-
-When routing an input, the resulting `InputResult` preserves the identity of the original input.
-
-Conceptually:
-
-```text
-Input
- │
- ├── ID
- └── Type
- │
- ▼
-Router
- │
- ▼
-InputResult
- │
- ├── Input ID
- └── Input Type
-```
-
-This allows future multimodal processing layers to correlate input and output.
-
----
-
-# 🔗 Input Type Preservation
-
-The resulting `InputResult` also preserves the original input type.
-
-For example:
-
-```text
-TEXT Input
-    ↓
-InputRouter
-    ↓
-InputResult(TEXT)
-```
-
-Similarly:
-
-```text
-VOICE Input
-    ↓
-InputRouter
-    ↓
-InputResult(VOICE)
-```
-
-This creates a consistent modality-aware result boundary.
-
----
-
-# 🧠 Multimodal Routing Architecture
-
-The complete v0.51 foundation can be represented as:
+The multimodal entry architecture now evolves toward:
 
 ```text
                     User
                       │
                       ▼
-             Multimodal Input
+              Multimodal Input
                       │
           ┌───────────┼───────────┐
           │           │           │
           ▼           ▼           ▼
         Text        Voice       Vision
-          │           │           │
-          └───────────┼───────────┘
-                      │
-                   Gesture
                       │
                       ▼
-                 InputType
+                 VoiceInput
                       │
                       ▼
-                 InputRouter
+                InputType.VOICE
                       │
           ┌───────────┼───────────┐
           │           │           │
           ▼           ▼           ▼
-       Handler      Handler     Handler
+       Handler     Handler      Handler
           │           │           │
           └───────────┼───────────┘
                       │
@@ -784,187 +1053,107 @@ The complete v0.51 foundation can be represented as:
                 Agent Runtime
 ```
 
-This establishes the first clean multimodal entry boundary into Ultron.
+Gesture input remains part of the multimodal foundation and can receive dedicated processing layers in future milestones.
 
 ---
 
-# 🔗 Relationship With Conversation Engine
+# 🚀 Future Runtime Capabilities
 
-The multimodal foundation is designed to sit before the existing conversation architecture.
-
-Conceptually:
+The v0.51 and v0.52 architecture creates a foundation for future capabilities such as:
 
 ```text
-User
- │
- ▼
-Multimodal Input
- │
- ▼
-Input Router
- │
- ▼
-Processed Input
- │
- ▼
-Conversation Engine
+Voice Input
+
+Microphone Integration
+
+Speech-to-Text
+
+Voice Commands
+
+Streaming Voice
+
+Voice Activity Detection
+
+Image Input
+
+Video Input
+
+Gesture Input
+
+Multimodal Commands
+
+Speech-to-Intent
+
+Image-to-Intent
+
+Cross-Modal Context
+
+Multimodal Memory
+
+Multimodal Planning
+
+Multimodal Tool Selection
+
+Context-Aware Multimodal Agents
+
+Multimodal Automation
 ```
 
-The existing conversation engine does not need to understand how the original input was physically captured.
-
-It can receive a normalized result from the multimodal layer.
+These capabilities are future extensions and are **not represented as completed functionality unless explicitly implemented**.
 
 ---
 
-# 🔗 Relationship With Agent Runtime
+# 🧪 v0.52 Testing
 
-The multimodal layer is also designed to provide a clean entry point into the agent runtime.
+The v0.52 milestone includes dedicated regression tests for the voice input layer.
 
-Conceptually:
+Voice-specific test coverage includes:
 
 ```text
-Multimodal Input
-       │
-       ▼
-Input Router
-       │
-       ▼
-Input Result
-       │
-       ▼
-Agent Runtime
+Voice Input Creation
+
+Voice Input Validation
+
+Voice Input Data Handling
+
+Voice Input Metadata
+
+Voice Input Identity
+
+Voice Input Type
+
+Voice Input Routing
+
+Voice Handler Integration
+
+Voice Input Result Handling
+
+Voice Input Failure Handling
+
+Voice Input Edge Cases
+
+Voice Input Exported Symbols
 ```
 
-This creates a future foundation where agents can react to different input modalities without requiring separate runtime architectures.
+The dedicated voice-input test suite currently reports:
+
+```text
+68 passed
+0 failed
+```
+
+The complete project regression suite reports:
+
+```text
+1085 passed
+0 failed
+```
+
+This confirms that the new voice-input foundation integrates without breaking the existing architecture.
 
 ---
 
-# 🔗 Relationship With Execution Context
-
-The v0.51 multimodal layer remains separate from the execution context architecture introduced in earlier versions.
-
-The architectural separation is:
-
-```text
-MultimodalInput
-      ≠
-InputRouter
-      ≠
-InputResult
-      ≠
-ExecutionContext
-```
-
-The multimodal layer represents and routes incoming input.
-
-The execution context represents active execution state.
-
-Future integration can connect the two without collapsing their responsibilities.
-
----
-
-# 🔗 Relationship With Execution Control
-
-Input routing does not perform execution control.
-
-The router does not:
-
-```text
-Create Plans
-Select Tools
-Execute Agent Plans
-Start Execution
-Stop Execution
-Retry Execution
-Persist Events
-Generate Metrics
-Perform Recovery
-Restore State
-```
-
-Instead, it performs:
-
-```text
-Input Validation
-Input Classification
-Handler Lookup
-Handler Dispatch
-Result Construction
-Handler Error Isolation
-```
-
-This preserves the architecture's separation of concerns.
-
----
-
-# 🧱 Architectural Boundary
-
-The v0.51 architecture can therefore be summarized as:
-
-```text
-Input Representation
-        │
-        ▼
-Input Classification
-        │
-        ▼
-Input Routing
-        │
-        ▼
-Input Processing
-        │
-        ▼
-Structured Input Result
-        │
-        ▼
-Existing Runtime Architecture
-```
-
-This prevents multimodal functionality from becoming tightly coupled to the execution engine.
-
----
-
-# 🧪 v0.51 Testing
-
-The v0.51 multimodal foundation includes dedicated tests covering the input routing architecture.
-
-The test coverage includes:
-
-```text
-InputRouter Creation
-Handler Registration
-Multiple Handler Registration
-Handler Replacement
-Invalid Input Type Validation
-Unknown Input Type Validation
-Non-Callable Handler Validation
-Handler Lookup
-Missing Handler Lookup
-Handler Existence Checks
-Handler Unregistration
-Registered Type Retrieval
-Defensive Handler Registry Access
-Text Routing
-Voice Routing
-Vision Routing
-Gesture Routing
-Input Data Propagation
-Input ID Preservation
-Input Type Preservation
-Missing Handler Failure
-Handler Exception Handling
-Invalid Input Validation
-Routing Isolation
-Handler Clearing
-Router Representation
-Exported Symbols
-```
-
-The tests verify that the router behaves consistently across supported input modalities.
-
----
-
-# 🛡️ v0.51 Quality Gate
+# 🛡️ v0.52 Quality Gate
 
 ```text
 [✓] Multimodal Input Foundation
@@ -977,202 +1166,66 @@ The tests verify that the router behaves consistently across supported input mod
 
 [✓] InputRouter
 
-[✓] Handler registration
+[✓] Voice Input Foundation
 
-[✓] Handler replacement
+[✓] Voice Input Layer
 
-[✓] Handler lookup
+[✓] Voice Input Validation
 
-[✓] Handler existence checks
+[✓] Voice Input Routing
 
-[✓] Handler unregistration
+[✓] Voice Handler Boundary
 
-[✓] Handler clearing
+[✓] Voice Input Result Integration
 
-[✓] Input validation
+[✓] Voice Input Error Handling
 
-[✓] Missing handler handling
+[✓] Voice Input Testing
 
-[✓] Handler exception isolation
+[✓] Text Routing
 
-[✓] Text routing
+[✓] Voice Routing
 
-[✓] Voice routing
+[✓] Vision Routing
 
-[✓] Vision routing
+[✓] Gesture Routing
 
-[✓] Gesture routing
+[✓] Input Validation
 
-[✓] Input data propagation
+[✓] Handler Exception Isolation
 
-[✓] Input identity preservation
+[✓] Routing Isolation
 
-[✓] Input type preservation
+[✓] Structured Input Results
 
-[✓] Routing isolation
+[✓] Multimodal Regression Testing
 
-[✓] Defensive registry behavior
-
-[✓] Router error handling
-
-[✓] Exported symbols
-
-[✓] Multimodal regression testing
+[✓] Full Regression Testing
 ```
 
 ---
 
-# 🧭 v0.50 → v0.51 Evolution
-
-The architectural progression is:
+# 📊 Current Test Status
 
 ```text
-v0.50
+Dedicated Voice Tests
 
-Execution Context
-        │
-        ├── State
-        ├── Results
-        ├── Progress
-        ├── Failures
-        ├── Retries
-        └── Queries
-        │
-        ▼
-Queryable Execution Architecture
+68 passed
+0 failed
 
 
-v0.51
+Full Ultron Regression
 
-Multimodal Input Foundation
-        │
-        ├── InputType
-        ├── MultimodalInput
-        ├── InputRouter
-        └── InputResult
-        │
-        ▼
-Structured Multimodal Input Architecture
+1085 passed
+0 failed
+
+
+Status
+
+PASS
 ```
 
-The two milestones address different architectural concerns:
-
-```text
-v0.50
-Execution State Intelligence
-
-        +
-
-v0.51
-Input Intelligence Foundation
-```
-
-Together they move Ultron toward a runtime capable of understanding both:
-
-```text
-What is happening?
-
-and
-
-What kind of input is arriving?
-```
-
----
-
-# 🧠 Multimodal AI Foundation
-
-The v0.51 milestone does not claim complete multimodal intelligence.
-
-Instead, it establishes the infrastructure required for future:
-
-```text
-Speech Recognition
-Voice Commands
-Computer Vision
-Image Understanding
-Gesture Recognition
-Multimodal Agents
-Cross-Modal Context
-Multimodal Tool Selection
-Multimodal Planning
-```
-
-These remain future implementation layers.
-
-The current milestone focuses on providing a stable architectural boundary for them.
-
----
-
-# 🔮 Future Multimodal Architecture
-
-The long-term multimodal architecture can evolve toward:
-
-```text
-User
- │
- ├── Text
- ├── Voice
- ├── Image
- ├── Video
- ├── Gesture
- └── Other Modalities
- │
- ▼
-Multimodal Input Layer
- │
- ▼
-Input Router
- │
- ▼
-Modality Processor
- │
- ▼
-Normalized Input
- │
- ▼
-Context Layer
- │
- ▼
-Agent Runtime
- │
- ▼
-Planner
- │
- ▼
-Tool Selector
- │
- ▼
-Orchestrator
- │
- ▼
-Execution
-```
-
-This architecture allows new modalities to be added without redesigning the core agent runtime.
-
----
-
-# 🚀 Future Runtime Capabilities
-
-The v0.51 architecture creates a foundation for future capabilities such as:
-
-```text
-Voice Input
-Image Input
-Video Input
-Gesture Input
-Multimodal Commands
-Speech-to-Intent
-Image-to-Intent
-Cross-Modal Context
-Multimodal Memory
-Multimodal Planning
-Multimodal Tool Selection
-Context-Aware Multimodal Agents
-Multimodal Automation
-```
-
-These capabilities are future extensions and are **not represented as completed v0.51 functionality unless explicitly implemented**.
+The full regression suite remains the authoritative project-wide validation gate.
 
 ---
 
@@ -1184,37 +1237,73 @@ The architecture is moving toward an AI Operating System capable of:
 
 ```text
 Understand
+
       ↓
+
 Receive Multimodal Input
+
       ↓
+
+Receive Voice Input
+
+      ↓
+
 Remember
+
       ↓
+
 Plan
+
       ↓
+
 Select Capabilities
+
       ↓
+
 Create Runtime Context
+
       ↓
+
 Query Context
+
       ↓
+
 Orchestrate
+
       ↓
+
 Execute
+
       ↓
+
 Observe
+
       ↓
+
 Measure
+
       ↓
+
 Persist
+
       ↓
+
 Snapshot
+
       ↓
+
 Recover
+
       ↓
+
 Restore
+
       ↓
+
 Resume
+
       ↓
+
 Automate
 ```
 
@@ -1222,45 +1311,113 @@ The recent architectural evolution is:
 
 ```text
 v0.44
+
 Execution Events
+
       ↓
+
 v0.45
+
 Execution Observability
+
       ↓
+
 v0.46
+
 Execution Metrics
+
       ↓
+
 v0.47
+
 Persistent Execution History
+
       ↓
+
 v0.48
+
 Execution State Snapshot
+
       ↓
+
 v0.49
+
 Agent Runtime Context
+
       ↓
+
 v0.50
+
 Execution Context Queries
+
       ↓
+
 v0.51
+
 Multimodal Input Foundation
+
       ↓
+
+v0.52
+
+Voice Input Foundation
+
+      ↓
+
 Future
+
+Advanced Voice Processing
+
+      ↓
+
+Future
+
 Multimodal Intelligence
+
       ↓
+
 Future
+
 Context-Aware Multimodal Execution
+
       ↓
+
 Future
+
 Recovery & Resumption
+
       ↓
+
 Future
+
 Durable Automation
 ```
 
 ---
 
 # 📜 Version History
+
+## v0.52 — Voice Input Foundation
+
+* Dedicated Voice Input Foundation
+* Voice input layer
+* Voice input representation
+* Voice input validation
+* Voice input routing integration
+* Voice handler boundary
+* Voice input result integration
+* Voice input error handling
+* Voice input identity preservation
+* Voice input type preservation
+* Voice input metadata foundation
+* Voice input testing
+* Voice routing integration
+* Multimodal voice-entry foundation
+* Full regression compatibility
+* 68 dedicated voice tests
+* 1085 full-suite regression tests
+
+---
 
 ## v0.51 — Multimodal Input Foundation
 
@@ -1361,43 +1518,89 @@ Ultron continues to evolve through focused architectural milestones.
 
 ```text
 v0.37 → Agent Runtime
+
         ↓
+
 v0.38 → Tool System
+
         ↓
+
 v0.39 → Tool Selector
+
         ↓
+
 v0.40 → Planning
+
         ↓
+
 v0.41 → Execution & Orchestration
+
         ↓
+
 v0.42 → Execution Controller
+
         ↓
+
 v0.43 → Execution Control
+
         ↓
+
 v0.44 → Execution Events
+
         ↓
+
 v0.45 → Execution Observability
+
         ↓
+
 v0.46 → Execution Metrics
+
         ↓
+
 v0.47 → Persistent Execution History
+
         ↓
+
 v0.48 → Execution State Snapshot
+
         ↓
+
 v0.49 → Agent Runtime Context
+
         ↓
+
 v0.50 → Execution Context Queries
+
         ↓
+
 v0.51 → Multimodal Input Foundation
+
         ↓
+
+v0.52 → Voice Input Foundation
+
+        ↓
+
+Future → Advanced Voice Processing
+
+        ↓
+
 Future → Multimodal Intelligence
+
         ↓
+
 Future → Context-Aware Execution
+
         ↓
+
 Future → Recovery & Resumption
+
         ↓
+
 Future → Durable Automation
+
         ↓
+
 v1.0 → Stable AI Operating System Platform
 ```
 
@@ -1409,86 +1612,179 @@ The architecture is progressing toward a complete AI Operating System platform.
 
 ```text
 Core Intelligence
+
       │
+
       ▼
+
 Conversation & Memory
+
       │
+
       ▼
+
 AI Integration
+
       │
+
       ▼
+
 Multimodal Input
+
       │
+
       ▼
+
+Voice Input
+
+      │
+
+      ▼
+
 Agent Runtime
+
       │
+
       ▼
+
 Tool System
+
       │
+
       ▼
+
 Capability Selection
+
       │
+
       ▼
+
 Planning
+
       │
+
       ▼
+
 Orchestration
+
       │
+
       ▼
+
 Execution Control
+
       │
+
       ▼
+
 Execution Lifecycle
+
       │
+
       ▼
+
 Execution Events
+
       │
+
       ▼
+
 Execution Observability
+
       │
+
       ▼
+
 Execution Metrics
+
       │
+
       ▼
+
 Persistent Execution History
+
       │
+
       ▼
+
 Execution State Snapshots
+
       │
+
       ▼
+
 Agent Runtime Context
+
       │
+
       ▼
+
 Execution Context Queries
+
       │
+
       ▼
+
+Advanced Voice Processing
+
+      │
+
+      ▼
+
 Multimodal Intelligence
+
       │
+
       ▼
+
 Context-Aware Execution
+
       │
+
       ▼
+
 State Restoration
+
       │
+
       ▼
+
 Crash Recovery
+
       │
+
       ▼
+
 Execution Resumption
+
       │
+
       ▼
+
 Durable Automation
+
       │
+
       ▼
+
 Advanced Agents
+
       │
+
       ▼
+
 System Integration
+
       │
+
       ▼
+
 Production Hardening
+
       │
+
       ▼
+
 v1.0
 ```
 
@@ -1498,95 +1794,132 @@ v1.0
 
 ```text
 ╔══════════════════════════════════════════════════════╗
-║                    ULTRON v0.51                     ║
+║                    ULTRON v0.52                     ║
 ╠══════════════════════════════════════════════════════╣
-║ Conversation Engine                         ✓       ║
-║ Smart Memory System                          ✓       ║
-║ User Profile Memory                          ✓       ║
-║ AI Provider Architecture                     ✓       ║
-║ Agent Runtime                                ✓       ║
-║ Agent Tool System                            ✓       ║
-║ Tool Registry                                ✓       ║
-║ Tool Selector                                ✓       ║
-║ Capability-Based Selection                   ✓       ║
-║ Agent Planner                                ✓       ║
-║ Agent Plans                                  ✓       ║
+║ Conversation Engine                          ✓       ║
+║ Smart Memory System                           ✓       ║
+║ User Profile Memory                           ✓       ║
+║ AI Provider Architecture                      ✓       ║
+║ Agent Runtime                                 ✓       ║
+║ Agent Tool System                             ✓       ║
+║ Tool Registry                                 ✓       ║
+║ Tool Selector                                 ✓       ║
+║ Capability-Based Selection                    ✓       ║
+║ Agent Planner                                 ✓       ║
+║ Agent Plans                                   ✓       ║
 ║ Agent Orchestrator                            ✓       ║
-║ Execution Controller                         ✓       ║
-║ Execution Lifecycle                          ✓       ║
-║ Pause / Resume                               ✓       ║
-║ Cancellation                                 ✓       ║
-║ Retry / Skip                                 ✓       ║
-║ Execution Events                             ✓       ║
-║ Execution Observability                      ✓       ║
-║ Execution Metrics                            ✓       ║
-║ Persistent Execution History                 ✓       ║
-║ Execution State Snapshot                     ✓       ║
-║ Recovery State Foundation                    ✓       ║
-║ Agent Runtime Context                        ✓       ║
-║ Execution Context Queries                    ✓       ║
-║ Multimodal Input Foundation                  ✓       ║
-║ InputType                                    ✓       ║
-║ MultimodalInput                              ✓       ║
-║ InputResult                                  ✓       ║
-║ InputRouter                                  ✓       ║
-║ Handler Registration                         ✓       ║
-║ Handler Lookup                               ✓       ║
-║ Handler Replacement                          ✓       ║
-║ Handler Unregistration                       ✓       ║
-║ Handler Clearing                             ✓       ║
-║ Text Routing                                 ✓       ║
-║ Voice Routing                                ✓       ║
-║ Vision Routing                               ✓       ║
-║ Gesture Routing                              ✓       ║
-║ Input Validation                             ✓       ║
-║ Handler Exception Isolation                  ✓       ║
-║ Routing Isolation                             ✓       ║
-║ Structured Input Results                     ✓       ║
-║ Multimodal Regression Testing                ✓       ║
+║ Execution Controller                          ✓       ║
+║ Execution Lifecycle                           ✓       ║
+║ Pause / Resume                                ✓       ║
+║ Cancellation                                  ✓       ║
+║ Retry / Skip                                  ✓       ║
+║ Execution Events                              ✓       ║
+║ Execution Observability                       ✓       ║
+║ Execution Metrics                             ✓       ║
+║ Persistent Execution History                  ✓       ║
+║ Execution State Snapshot                      ✓       ║
+║ Recovery State Foundation                     ✓       ║
+║ Agent Runtime Context                         ✓       ║
+║ Execution Context Queries                     ✓       ║
+║ Multimodal Input Foundation                   ✓       ║
+║ InputType                                     ✓       ║
+║ MultimodalInput                               ✓       ║
+║ InputResult                                   ✓       ║
+║ InputRouter                                   ✓       ║
+║ Handler Registration                          ✓       ║
+║ Handler Lookup                                ✓       ║
+║ Handler Replacement                           ✓       ║
+║ Handler Unregistration                        ✓       ║
+║ Handler Clearing                              ✓       ║
+║ Text Routing                                  ✓       ║
+║ Voice Routing                                 ✓       ║
+║ Vision Routing                                ✓       ║
+║ Gesture Routing                               ✓       ║
+║ Voice Input Foundation                        ✓       ║
+║ Voice Input Layer                             ✓       ║
+║ Voice Input Validation                         ✓       ║
+║ Voice Input Routing                            ✓       ║
+║ Voice Handler Boundary                         ✓       ║
+║ Voice Input Result Integration                 ✓       ║
+║ Voice Input Error Handling                     ✓       ║
+║ Voice Input Testing                            ✓       ║
+║ Input Validation                               ✓       ║
+║ Handler Exception Isolation                    ✓       ║
+║ Routing Isolation                              ✓       ║
+║ Structured Input Results                       ✓       ║
+║ Multimodal Regression Testing                  ✓       ║
+║ Full Regression Testing                        ✓       ║
 ╠══════════════════════════════════════════════════════╣
-║ Status: Active Development                          ║
+║ Tests: 1085 passed                                ║
+║ Voice Tests: 68 passed                            ║
+║ Status: Active Development                        ║
 ╚══════════════════════════════════════════════════════╝
 ```
 
 ---
 
-# 🧪 v0.51 Validation
+# 🧪 v0.52 Validation
 
-The v0.51 multimodal foundation has dedicated regression coverage for:
+The v0.52 architecture has dedicated regression coverage for:
 
 ```text
+Multimodal Input
+
 InputType
+
 MultimodalInput
+
 InputResult
+
 InputRouter
-Handler Registration
-Handler Lookup
-Handler Replacement
-Handler Removal
-Input Routing
+
+Voice Input
+
+Voice Input Validation
+
+Voice Input Routing
+
+Voice Handler Integration
+
+Voice Result Handling
+
 Failure Handling
+
 Exception Isolation
+
 Routing Isolation
+
 Validation
+
 Exported Symbols
 ```
 
-The final authoritative full-suite test count should be recorded from the latest `pytest -q` run.
+The latest authoritative validation result is:
 
 ```text
 Full Regression: PASS
+
+1085 passed
+
 Failures: 0
-Release: v0.51
+
+Voice Regression: PASS
+
+68 passed
+
+Failures: 0
+
+Release: v0.52
+
 Status: Active Development
 ```
 
 ---
 
-# 🏁 v0.51 Status
+# 🏁 v0.52 Status
 
 ```text
-ULTRON v0.51
+ULTRON v0.52
 
 ├── Agent Runtime                         ✓
 ├── Tool System                           ✓
@@ -1621,72 +1954,137 @@ ULTRON v0.51
 ├── Voice Routing                         ✓
 ├── Vision Routing                        ✓
 ├── Gesture Routing                       ✓
+│
+├── Voice Input Foundation                ✓
+├── Voice Input Layer                     ✓
+├── Voice Input Validation                ✓
+├── Voice Input Routing                   ✓
+├── Voice Handler Boundary                ✓
+├── Voice Input Result Integration        ✓
+├── Voice Input Error Handling            ✓
+├── Voice Input Testing                   ✓
+│
 ├── Input Validation                      ✓
 ├── Handler Exception Isolation           ✓
 ├── Routing Isolation                     ✓
 ├── Structured Input Results              ✓
 └── Multimodal Regression Testing         ✓
 
+Tests: 1085 passed
+Voice Tests: 68 passed
+
 Status: Active Development
 ```
 
-Ultron v0.51 establishes the first dedicated **Multimodal Input Foundation**.
+Ultron v0.52 extends the **Multimodal Input Foundation** with a dedicated **Voice Input Foundation**.
 
 The architecture now provides a structured path from:
 
 ```text
-User Input
+User Voice
+
     ↓
+
+Voice Input
+
+    ↓
+
+VoiceInput
+
+    ↓
+
 MultimodalInput
+
     ↓
-InputType
+
+InputType.VOICE
+
     ↓
+
 InputRouter
+
     ↓
-Modality Handler
+
+Voice Handler
+
     ↓
+
 InputResult
+
     ↓
+
 Ultron Runtime
 ```
 
-This is an important architectural step toward making Ultron capable of accepting multiple forms of human-computer interaction while preserving the modularity of the existing agent and execution infrastructure.
+This is an important architectural step toward making Ultron capable of accepting voice as a first-class human-computer interaction modality while preserving the modularity of the existing agent and execution infrastructure.
 
 The long-term direction remains:
 
 ```text
 Understand
+
    ↓
+
 Receive
+
    ↓
+
 Remember
+
    ↓
+
 Plan
+
    ↓
+
 Select
+
    ↓
+
 Contextualize
+
    ↓
+
 Query Context
+
    ↓
+
 Orchestrate
+
    ↓
+
 Execute
+
    ↓
+
 Observe
+
    ↓
+
 Measure
+
    ↓
+
 Persist
+
    ↓
+
 Snapshot
+
    ↓
+
 Recover
+
    ↓
+
 Restore
+
    ↓
+
 Resume
+
    ↓
+
 Automate
 ```
 
