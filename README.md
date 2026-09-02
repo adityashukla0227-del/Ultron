@@ -51,6 +51,7 @@ Voice Input
 
 Voice Processing
 
+Voice Processing Pipeline
 ```
 
 The long-term objective is to create a reliable, extensible, observable, persistent, context-aware, recoverable, and multimodal agent execution platform.
@@ -63,147 +64,76 @@ Ultron's architecture progressively evolves through independent execution layers
 
 ```text
 User
-
   │
-
   ▼
-
 Multimodal Input
-
   │
-
   ├── Text
-
   ├── Voice
-
   ├── Vision
-
   └── Gesture
-
   │
-
   ▼
-
 Input Router
-
   │
-
   ├── Text Handler
-
   ├── Voice Handler
-
   ├── Vision Handler
-
   └── Gesture Handler
-
   │
-
   ▼
-
 Normalized Input Result
-
   │
-
   ▼
-
 Conversation Engine
-
   │
-
   ▼
-
 AI Engine
-
   │
-
   ▼
-
 Agent Runtime
-
   │
-
   ▼
-
 Tool System
-
   │
-
   ▼
-
 Tool Selector
-
   │
-
   ▼
-
 Agent Planner
-
   │
-
   ▼
-
 Agent Plan
-
   │
-
   ▼
-
 Agent Orchestrator
-
   │
-
   ▼
-
 Execution Controller
-
   │
-
   ▼
-
 Execution Context
-
   │
-
   ├── Context Queries
-
   ├── Execution State
-
   ├── Step State
-
   ├── Results
-
   ├── Retry State
-
   └── Runtime Metadata
-
   │
-
   ▼
-
 Execution
-
   │
-
   ├── Events
-
   ├── Observability
-
   ├── Metrics
-
   ├── Persistence
-
   └── State Snapshots
-
   │
-
   ▼
-
 Recovery Infrastructure
-
   │
-
   ▼
-
 Future Durable Automation
 ```
 
@@ -213,7 +143,9 @@ The **v0.51 milestone** introduced the first dedicated multimodal input architec
 
 The **v0.52 milestone** introduced the dedicated voice input layer.
 
-The **v0.53 milestone** extends that foundation with a dedicated **Voice Processing Foundation**, creating a clean processing boundary between voice inputs and future speech-processing providers.
+The **v0.53 milestone** introduced the dedicated **Voice Processing Foundation**, establishing a clean processing contract between voice inputs and future speech-processing implementations.
+
+The **v0.54 milestone** extends this architecture with a dedicated **Voice Processing Pipeline**, creating an orchestration boundary between `VoiceInput`, `VoiceProcessor`, and standardized `MultimodalInputResult`.
 
 ---
 
@@ -221,430 +153,174 @@ The **v0.53 milestone** extends that foundation with a dedicated **Voice Process
 
 ```text
 v0.37 → Agent Runtime
-
         ↓
-
 v0.38 → Agent Tool System
-
         ↓
-
 v0.39 → Tool Selector
-
         ↓
-
 v0.40 → Agent Planning
-
         ↓
-
 v0.41 → Agent Execution & Plan Orchestration
-
         ↓
-
 v0.42 → Agent Execution Controller
-
         ↓
-
 v0.43 → Orchestrator Execution Control
-
         ↓
-
 v0.44 → Execution Events & Event Store
-
         ↓
-
 v0.45 → Execution Observability
-
         ↓
-
 v0.46 → Execution Metrics
-
         ↓
-
 v0.47 → Persistent Execution History
-
         ↓
-
 v0.48 → Execution Recovery & State Restoration
-
         ↓
-
 v0.49 → Agent Runtime Context
-
         ↓
-
 v0.50 → Execution Context Query & Orchestration Integration
-
         ↓
-
 v0.51 → Multimodal Input Foundation
-
         ↓
-
 v0.52 → Voice Input Foundation
-
         ↓
-
 v0.53 → Voice Processing Foundation
-
         ↓
-
+v0.54 → Voice Processing Pipeline Foundation
+        ↓
 Future → Speech-to-Text Intelligence
-
         ↓
-
 Future → Advanced Voice Processing
-
         ↓
-
 Future → Vision / Gesture Intelligence
-
         ↓
-
 Future → Context-Aware Multimodal Agents
-
         ↓
-
 Future → Durable Automation
-
         ↓
-
 v1.0 → Stable AI Operating System Platform
 ```
 
 ---
 
-# 🚀 v0.53 — Voice Processing Foundation
+# 🚀 v0.54 — Voice Processing Pipeline Foundation
 
-The v0.53 milestone extends Ultron's multimodal architecture with a dedicated **Voice Processing Foundation**.
+The v0.54 milestone introduces a dedicated **Voice Processing Pipeline Foundation** on top of the Voice Processing architecture established in v0.53.
 
-The milestone establishes a clean abstraction boundary between normalized voice input and future speech-processing implementations.
-
-The architecture now supports:
+The pipeline provides an orchestration boundary between:
 
 ```text
-Voice Input
-
-    ↓
-
 VoiceInput
-
     ↓
-
-MultimodalInput
-
-    ↓
-
-InputType.VOICE
-
-    ↓
-
-InputRouter
-
-    ↓
-
-Voice Handler
-
-    ↓
-
 VoiceProcessor
-
     ↓
-
+VoiceProcessingPipeline
+    ↓
 MultimodalInputResult
-
-    ↓
-
-Ultron Runtime
 ```
 
-The v0.53 milestone intentionally does **not** implement a concrete speech-to-text provider.
+The pipeline intentionally remains **provider-agnostic**.
 
-Instead, it establishes the processing contract required for future integrations.
+It does not implement a concrete speech-to-text provider, microphone API, cloud speech engine, or local speech-recognition model.
 
-Potential future processors may include:
-
-```text
-Local Speech Recognition
-
-Cloud Speech Recognition
-
-Streaming Speech Recognition
-
-Speech-to-Text Engines
-
-Voice Command Parsers
-
-Voice Activity Detection
-
-Speech Understanding
-```
-
-These remain future processing layers unless explicitly implemented.
+Instead, it coordinates the processing lifecycle while keeping provider-specific behavior isolated inside `VoiceProcessor` implementations.
 
 ---
 
-# 🎙️ v0.53 Voice Processing Architecture
+# 🎙️ v0.54 Voice Processing Pipeline Architecture
 
-The new Voice Processor layer sits between voice routing and normalized multimodal results.
-
-Conceptually:
+The new architecture is:
 
 ```text
 User
-
   │
-
   ▼
-
 Voice
-
   │
-
   ▼
-
 VoiceInput
-
   │
-
   ▼
-
 MultimodalInput
-
   │
-
   ▼
-
 InputRouter
-
   │
-
   ▼
-
 VOICE Handler
-
   │
-
   ▼
-
 VoiceProcessor
-
   │
-
   ▼
-
+VoiceProcessingPipeline
+  │
+  ▼
 MultimodalInputResult
-
   │
-
   ▼
-
 Conversation / Agent Runtime
 ```
 
-This architecture keeps voice processing independent from:
+The pipeline acts as the orchestration boundary between the normalized voice input and the configured processor.
+
+This separates:
 
 ```text
+Input Representation
+        ≠
 Input Routing
-
-Conversation Processing
-
-Agent Runtime
-
-Tool Selection
-
-Planning
-
-Execution
-```
-
----
-
-# 🎤 VoiceInput
-
-`VoiceInput` provides the dedicated voice input abstraction introduced in v0.52.
-
-Its responsibility is to represent voice input before it enters the broader multimodal processing pipeline.
-
-Conceptually:
-
-```text
-VoiceInput
-
-    │
-
-    ├── Voice Data
-
-    ├── Input Identity
-
-    ├── Source Information
-
-    └── Voice Metadata
-
-    │
-
-    ▼
-
-Multimodal Input Architecture
-```
-
-The voice layer can therefore evolve independently from the execution engine.
-
----
-
-# 🔗 Voice Input and MultimodalInput
-
-The voice layer integrates with the existing multimodal input architecture.
-
-Conceptually:
-
-```text
-Voice Input
-
-    ↓
-
-VoiceInput
-
-    ↓
-
-MultimodalInput
-
-    ↓
-
-InputType.VOICE
-
-    ↓
-
-InputRouter
-```
-
-This preserves the architectural boundary established in v0.51.
-
-Voice input does not create a separate execution architecture.
-
-Instead, it becomes another modality entering the existing pipeline.
-
----
-
-# 🔀 Voice Routing
-
-Voice inputs can be routed through the existing `InputRouter`.
-
-Conceptually:
-
-```text
-VoiceInput
-
-    │
-
-    ▼
-
-MultimodalInput
-
-    │
-
-    ▼
-
-InputRouter
-
-    │
-
-    ▼
-
-VOICE Handler
-
-    │
-
-    ▼
-
-InputResult
-```
-
-The router remains responsible only for dispatching the input to the appropriate handler.
-
-Voice-specific processing remains outside the router.
-
----
-
-# 🧩 Voice Handler Boundary
-
-The voice architecture maintains a dedicated processing boundary:
-
-```text
-VOICE
-
-  │
-
-  ▼
-
-Voice Handler
-
-  │
-
-  ▼
-
+        ≠
 Voice Processing
-
-  │
-
-  ▼
-
-Normalized Result
+        ≠
+Processing Orchestration
+        ≠
+Speech Provider
+        ≠
+Conversation Processing
+        ≠
+Agent Execution
 ```
-
-The v0.53 milestone formalizes this processing boundary through `VoiceProcessor`.
-
-This makes it possible to connect different voice-processing implementations without modifying the core routing architecture.
 
 ---
 
-# 🧠 VoiceProcessor
+# 🧩 VoiceProcessingPipeline
 
-`VoiceProcessor` provides the abstract processing contract for normalized voice inputs.
+`VoiceProcessingPipeline` provides the dedicated orchestration layer introduced in v0.54.
 
-The processor layer is intentionally provider-agnostic.
+Its responsibility is to coordinate voice processing without owning provider-specific processing logic.
 
 Conceptually:
 
 ```text
 VoiceInput
-
-     │
-
-     ▼
-
-VoiceProcessor
-
-     │
-
-     ├── Future Local STT
-
-     ├── Future Cloud STT
-
-     ├── Future Streaming STT
-
-     ├── Future Voice Command Processor
-
-     └── Future Speech Intelligence
-
-     │
-
-     ▼
-
-MultimodalInputResult
+    │
+    ▼
+VoiceProcessingPipeline
+    │
+    ├── Validate VoiceInput
+    │
+    ├── Validate Processor
+    │
+    ├── Start Processing
+    │
+    ├── Execute VoiceProcessor
+    │
+    ├── Normalize Failure
+    │
+    └── Return MultimodalInputResult
 ```
 
-The processor does not require a concrete speech-recognition engine.
-
-Instead, it defines the boundary through which future processors can operate.
+The pipeline therefore provides a stable boundary for future processing implementations.
 
 ---
 
-# 🧱 VoiceProcessor Contract
+# 🧱 Voice Processing Pipeline Contract
 
-The processor exposes a standard processing contract:
+The pipeline exposes a standard processing operation:
 
 ```text
-VoiceProcessor
+VoiceProcessingPipeline
 
     │
 
@@ -657,159 +333,117 @@ VoiceProcessor
     MultimodalInputResult
 ```
 
-Concrete implementations are expected to:
+The processing lifecycle is:
 
 ```text
 Receive VoiceInput
-
         ↓
-
-Validate Input
-
+Validate VoiceInput
         ↓
-
-Process Voice Data
-
+Validate Processor
         ↓
-
-Return MultimodalInputResult
+Create Processing Result
+        ↓
+Invoke VoiceProcessor
+        ↓
+Validate Processor Result
+        ↓
+Return Standardized Result
 ```
 
-This creates a stable interface for future voice-processing providers.
+This allows future processors to remain independent from the pipeline orchestration logic.
 
 ---
 
-# 🛡️ Voice Processor Validation
+# 🛡️ Voice Input Validation
 
-The `VoiceProcessor` layer provides dedicated input validation.
-
-Before processing:
-
-```text
-VoiceInput
-
-    ↓
-
-VoiceProcessor.validate_input()
-
-    ↓
-
-Valid VoiceInput
-
-    ↓
-
-Processing
-```
-
-Invalid input is rejected at the processor boundary.
-
-This prevents malformed voice inputs from reaching future processing providers.
-
-Validation remains separated from:
-
-```text
-Input Routing
-
-Conversation Processing
-
-Agent Execution
-
-Execution Control
-```
-
----
-
-# 📦 Voice Processing Results
-
-Voice processing uses the existing structured `MultimodalInputResult` architecture.
+Before processing begins, the pipeline validates the provided voice input.
 
 Conceptually:
 
 ```text
 VoiceInput
-
-    │
-
-    ▼
-
+    ↓
+Pipeline Validation
+    ↓
+Valid VoiceInput
+    ↓
 VoiceProcessor
-
-    │
-
-    ▼
-
-MultimodalInputResult
-
-    │
-
-    ├── Input ID
-
-    ├── Input Type
-
-    ├── Status
-
-    ├── Success
-
-    ├── Data
-
-    ├── Error
-
-    └── Confidence
 ```
 
-This allows voice processing results to remain compatible with the broader multimodal runtime.
+Invalid inputs are rejected before they reach the processor.
+
+The pipeline therefore protects downstream processing from malformed or incompatible voice input objects.
 
 ---
 
-# ⏳ Processing Result
+# 🔒 Processor Validation
 
-The processor can create a standardized processing-state result:
+The pipeline validates that its configured processor is a valid `VoiceProcessor`.
+
+Conceptually:
+
+```text
+Configured Processor
+        ↓
+Processor Validation
+        ↓
+VoiceProcessor
+        ↓
+Voice Processing Pipeline
+```
+
+Invalid processor objects are rejected at the pipeline boundary.
+
+This prevents unrelated objects from being used as voice-processing implementations.
+
+---
+
+# ⏳ Processing Lifecycle
+
+The pipeline integrates with the existing `MultimodalInputResult` lifecycle.
+
+Conceptually:
 
 ```text
 VoiceInput
-
     ↓
-
-VoiceProcessor
-
+Pipeline
     ↓
-
-InputResult
-
+Processing Result
     ↓
-
 status = processing
+    ↓
+VoiceProcessor
+    ↓
+Completed / Failed
 ```
 
-This allows future asynchronous or long-running voice processing implementations to maintain a consistent lifecycle.
+This creates a consistent lifecycle boundary for future synchronous, asynchronous, streaming, and long-running processing implementations.
 
 ---
 
-# ✅ Success Result
+# ✅ Successful Processing
 
-Successful processing can be represented through:
+Successful processor execution produces a standardized result:
 
 ```text
 VoiceInput
-
     ↓
-
 VoiceProcessor
-
     ↓
-
-InputResult
-
+VoiceProcessingPipeline
     ↓
-
-status = completed
-
-success = True
-
-data = processed result
+MultimodalInputResult
+    │
+    ├── status = completed
+    ├── success = True
+    └── data = processed result
 ```
 
-The result can contain arbitrary processing data, including:
+The processing data remains implementation-dependent.
+
+Future implementations may return:
 
 ```text
 Transcription
@@ -820,276 +454,263 @@ Intent
 
 Command
 
-Confidence Information
+Language Information
+
+Confidence
 
 Provider Metadata
 ```
 
-The actual data format remains implementation-dependent.
+The pipeline does not impose a provider-specific result schema.
 
 ---
 
-# ❌ Failure Result
+# ❌ Failure Handling
 
-Voice processing failures can be normalized into structured results:
+Processor exceptions are isolated by the pipeline.
+
+Conceptually:
 
 ```text
 VoiceInput
-
     ↓
-
 VoiceProcessor
-
     ↓
-
-Processing Failure
-
+Processing Exception
     ↓
-
-InputResult
-
+VoiceProcessingPipeline
+    ↓
+MultimodalInputResult
+    │
     ├── status = failed
-
     ├── success = False
-
-    └── error = processing error
+    └── error = normalized processing error
 ```
 
-This keeps downstream components independent from provider-specific exceptions.
+This prevents provider-specific exceptions from leaking directly into downstream runtime components.
 
 ---
 
-# 🧠 Voice Processing Separation
+# 🛡️ Processor Result Validation
 
-The v0.53 architecture intentionally separates:
-
-```text
-Voice Input Capture
-
-        ≠
-
-Voice Input Representation
-
-        ≠
-
-Voice Routing
-
-        ≠
-
-Voice Processing
-
-        ≠
-
-Speech-to-Text Provider
-
-        ≠
-
-Conversation Processing
-
-        ≠
-
-Agent Execution
-```
-
-This separation prevents microphone, audio, and speech-processing implementation details from leaking into the core agent runtime.
-
----
-
-# 🔗 Relationship With InputRouter
-
-The existing `InputRouter` remains the central multimodal dispatch mechanism.
-
-The relationship is:
-
-```text
-VoiceInput
-
-    ↓
-
-MultimodalInput
-
-    ↓
-
-InputRouter
-
-    ↓
-
-VOICE Handler
-
-    ↓
-
-VoiceProcessor
-
-    ↓
-
-InputResult
-```
-
-The router does not need to understand:
-
-```text
-Microphone APIs
-
-Audio Drivers
-
-Speech Recognition Engines
-
-Speech Models
-
-STT Providers
-```
-
-It only needs to recognize:
-
-```text
-InputType.VOICE
-```
-
-and dispatch the corresponding handler.
-
----
-
-# 🆔 Voice Input Identity Preservation
-
-Voice input preserves the identity of the original multimodal input.
-
-Conceptually:
-
-```text
-VoiceInput
-
-    │
-
-    ├── Input ID
-
-    └── Input Type = VOICE
-
-    │
-
-    ▼
-
-Voice Handler
-
-    │
-
-    ▼
-
-VoiceProcessor
-
-    │
-
-    ▼
-
-InputResult
-
-    │
-
-    ├── Input ID
-
-    └── Input Type = VOICE
-```
-
-This allows future execution layers to correlate voice input with downstream processing and agent execution.
-
----
-
-# 📊 Voice Processing Metadata
-
-The processor architecture supports processor-level metadata.
+The pipeline validates the result returned by the configured processor.
 
 Conceptually:
 
 ```text
 VoiceProcessor
-
+    ↓
+Returned Result
+    ↓
+Result Validation
     │
-
-    ├── Processor Name
-
-    └── Processor Metadata
+    ├── Valid MultimodalInputResult
+    │       ↓
+    │    Return Result
+    │
+    └── Invalid Result
+            ↓
+        Failed Result
 ```
 
-Processor metadata can later contain information such as:
-
-```text
-Provider
-
-Model
-
-Processing Mode
-
-Latency
-
-Language
-
-Audio Format
-
-Processing Configuration
-
-Provider Version
-
-Runtime Metadata
-```
-
-The v0.53 foundation keeps this metadata provider-agnostic.
+This creates a strong boundary between processor implementations and the broader multimodal runtime.
 
 ---
 
-# 🧩 Processor Metadata Isolation
+# 🧩 Processor Isolation
 
-Processor metadata is maintained independently from voice input metadata.
+The pipeline keeps the active processor isolated from pipeline orchestration.
 
 Conceptually:
+
+```text
+VoiceProcessingPipeline
+        │
+        ├── Pipeline Metadata
+        │
+        ├── Pipeline Identity
+        │
+        └── VoiceProcessor
+                │
+                └── Processor Metadata
+```
+
+The pipeline does not modify the processor's internal implementation.
+
+It only invokes the standardized processing contract.
+
+---
+
+# 🔄 Processor Replacement
+
+The pipeline supports replacing the active processor.
+
+Conceptually:
+
+```text
+VoiceProcessingPipeline
+        │
+        └── Processor A
+              ↓
+        set_processor()
+              ↓
+        Processor B
+```
+
+This allows future systems to switch processing implementations without redesigning the pipeline.
+
+Potential future scenarios include:
+
+```text
+Local STT
+    ↓
+Cloud STT
+    ↓
+Streaming STT
+    ↓
+Specialized Voice Processor
+```
+
+The pipeline architecture remains unchanged.
+
+---
+
+# 📊 Pipeline Metadata
+
+The pipeline supports its own metadata independently from the configured processor.
+
+Conceptually:
+
+```text
+VoiceProcessingPipeline Metadata
+
+    ├── Pipeline Version
+    ├── Environment
+    ├── Runtime Information
+    └── Pipeline Configuration
+```
+
+This remains separate from:
 
 ```text
 VoiceInput Metadata
-
         ≠
-
 VoiceProcessor Metadata
-
         ≠
-
-InputResult Metadata
+MultimodalInputResult Metadata
+        ≠
+Pipeline Metadata
 ```
 
-This separation prevents processing-provider information from becoming coupled to the input representation.
+This separation prevents metadata ownership from becoming coupled across architectural layers.
 
 ---
 
-# 🛡️ Voice Processor Error Handling
+# 🆔 Input Identity Preservation
 
-The v0.53 layer introduces a dedicated:
+The pipeline preserves the identity of the original voice input.
 
-```text
-VoiceProcessorError
-```
-
-exception boundary.
-
-Processor-level configuration and validation errors can therefore remain isolated from general runtime exceptions.
-
-Examples include:
+Conceptually:
 
 ```text
-Invalid VoiceInput
-
-Invalid Processor Name
-
-Invalid Processor Metadata
-
-Invalid Metadata Key
-
-Invalid Processing Error Message
+VoiceInput
+    │
+    ├── Input ID
+    └── Input Type = VOICE
+    │
+    ▼
+VoiceProcessor
+    │
+    ▼
+VoiceProcessingPipeline
+    │
+    ▼
+MultimodalInputResult
+    │
+    ├── Same Input ID
+    └── Input Type = VOICE
 ```
 
-Provider-specific processing failures can still be normalized through `InputResult`.
+This enables downstream components to correlate voice processing results with their originating input.
+
+---
+
+# 🔗 Voice Processing Pipeline Relationship
+
+The complete voice-processing architecture is now:
+
+```text
+VoiceInput
+    ↓
+MultimodalInput
+    ↓
+InputType.VOICE
+    ↓
+InputRouter
+    ↓
+VOICE Handler
+    ↓
+VoiceProcessor
+    ↓
+VoiceProcessingPipeline
+    ↓
+MultimodalInputResult
+    ↓
+Conversation / Agent Runtime
+```
+
+Each layer has a dedicated responsibility.
+
+```text
+VoiceInput
+    → Represents voice input
+
+InputRouter
+    → Routes multimodal input
+
+VoiceProcessor
+    → Defines voice processing behavior
+
+VoiceProcessingPipeline
+    → Orchestrates voice processing
+
+MultimodalInputResult
+    → Represents standardized processing outcome
+```
+
+---
+
+# 🧠 Provider-Agnostic Architecture
+
+The v0.54 pipeline intentionally does **not** implement concrete speech recognition.
+
+The architecture supports future providers such as:
+
+```text
+Local Speech Recognition
+
+Cloud Speech Recognition
+
+Streaming Speech Recognition
+
+Speech-to-Text Engines
+
+Voice Command Processors
+
+Voice Activity Detection
+
+Speech Understanding
+```
+
+These implementations can be connected through the existing `VoiceProcessor` abstraction.
+
+The pipeline itself remains independent of provider-specific APIs.
 
 ---
 
 # 🔒 Voice Architecture Isolation
 
-The voice processing layer does not directly control:
+The voice processing pipeline does not directly control:
 
 ```text
 Agent Plans
@@ -1111,79 +732,29 @@ Recovery
 State Restoration
 ```
 
-Instead, its responsibility is limited to:
+Its responsibility is limited to:
 
 ```text
 Voice Input
-
     ↓
-
-Voice Representation
-
+Voice Validation
     ↓
-
-Voice Routing
-
+Voice Processing
     ↓
-
-Voice Processing Boundary
-
+Processing Orchestration
     ↓
-
 Structured Input Result
 ```
 
+This preserves the separation between multimodal processing infrastructure and the agent execution system.
+
 ---
 
-# 🧱 v0.52 → v0.53 Evolution
+# 🧱 v0.53 → v0.54 Evolution
 
 The architectural progression is:
 
 ```text
-v0.51
-
-Multimodal Input Foundation
-
-    │
-
-    ├── InputType
-
-    ├── MultimodalInput
-
-    ├── InputRouter
-
-    └── InputResult
-
-    │
-
-    ▼
-
-Structured Multimodal Input Architecture
-
-
-v0.52
-
-Voice Input Foundation
-
-    │
-
-    ├── Voice Input Layer
-
-    ├── Voice Input Representation
-
-    ├── Voice Input Validation
-
-    ├── Voice Input Routing
-
-    └── Voice Input Testing
-
-    │
-
-    ▼
-
-Structured Voice Input Architecture
-
-
 v0.53
 
 Voice Processing Foundation
@@ -1191,28 +762,48 @@ Voice Processing Foundation
     │
 
     ├── VoiceProcessor
-
     ├── VoiceProcessorError
-
     ├── Processor Validation
-
     ├── Processing Result Helpers
-
     ├── Success Result Handling
-
     ├── Failure Result Handling
-
     ├── Processor Metadata
-
-    ├── Voice Processing Contract
-
-    └── Voice Processor Integration
+    ├── Processor Identity
+    └── Voice Processing Contract
 
     │
 
     ▼
 
-Structured Voice Processing Architecture
+Provider-Agnostic Voice Processing Boundary
+
+
+v0.54
+
+Voice Processing Pipeline Foundation
+
+    │
+
+    ├── VoiceProcessingPipeline
+    ├── Pipeline Validation
+    ├── VoiceInput Validation
+    ├── Processor Validation
+    ├── Processing Lifecycle
+    ├── Success Handling
+    ├── Failure Handling
+    ├── Processor Result Validation
+    ├── Processor Isolation
+    ├── Processor Replacement
+    ├── Pipeline Metadata
+    ├── Input Identity Preservation
+    ├── Standardized MultimodalInputResult
+    └── Pipeline Integration
+
+    │
+
+    ▼
+
+Structured Voice Processing Pipeline Architecture
 ```
 
 Together:
@@ -1231,6 +822,11 @@ Voice Input Foundation
 v0.53
 Voice Processing Foundation
 
+        +
+
+v0.54
+Voice Processing Pipeline Foundation
+
         ↓
 
 Multimodal Voice Processing Architecture
@@ -1240,9 +836,9 @@ Multimodal Voice Processing Architecture
 
 # 🧠 Multimodal AI Foundation
 
-The v0.53 milestone still does not claim complete voice intelligence.
+The v0.54 milestone still does not claim complete voice intelligence.
 
-Instead, it establishes the processing infrastructure required for future:
+Instead, it establishes the processing orchestration infrastructure required for future:
 
 ```text
 Speech Recognition
@@ -1276,89 +872,50 @@ The long-term voice architecture can evolve toward:
 
 ```text
 User
-
   │
-
   ▼
-
 Microphone
-
   │
-
   ▼
-
 Voice Capture
-
   │
-
   ▼
-
 Voice Input
-
   │
-
   ▼
-
 Multimodal Input
-
   │
-
   ▼
-
 Input Router
-
   │
-
   ▼
-
 Voice Processor
-
   │
-
   ▼
-
+Voice Processing Pipeline
+  │
+  ▼
 Speech-to-Text
-
   │
-
   ▼
-
 Normalized Text / Intent
-
   │
-
   ▼
-
 Context Layer
-
   │
-
   ▼
-
 Agent Runtime
-
   │
-
   ▼
-
 Planner
-
   │
-
   ▼
-
 Tool Selector
-
   │
-
   ▼
-
 Orchestrator
-
   │
-
   ▼
-
 Execution
 ```
 
@@ -1366,76 +923,47 @@ This architecture allows advanced voice intelligence to be introduced without re
 
 ---
 
-# 🧩 Multimodal Architecture After v0.53
+# 🧩 Multimodal Architecture After v0.54
 
 The multimodal entry architecture now evolves toward:
 
 ```text
                          User
-
                            │
-
                            ▼
-
                    Multimodal Input
-
                            │
-
               ┌────────────┼────────────┐
-
               │            │            │
-
               ▼            ▼            ▼
-
             Text         Voice        Vision
-
                            │
-
                            ▼
-
-                      VoiceInput
-
+                       VoiceInput
                            │
-
                            ▼
-
                     InputType.VOICE
-
                            │
-
                            ▼
-
                       InputRouter
-
                            │
-
                            ▼
-
                       VOICE Handler
-
                            │
-
                            ▼
-
                      VoiceProcessor
-
                            │
-
                            ▼
-
+                VoiceProcessingPipeline
+                           │
+                           ▼
                       InputResult
-
                            │
-
                            ▼
-
                  Conversation / Agent
-
                            │
-
                            ▼
-
-                     Agent Runtime
+                    Agent Runtime
 ```
 
 Gesture input remains part of the multimodal foundation and can receive dedicated processing layers in future milestones.
@@ -1444,7 +972,7 @@ Gesture input remains part of the multimodal foundation and can receive dedicate
 
 # 🚀 Future Runtime Capabilities
 
-The v0.51, v0.52, and v0.53 architecture creates a foundation for future capabilities such as:
+The v0.51, v0.52, v0.53, and v0.54 architecture creates a foundation for future capabilities such as:
 
 ```text
 Voice Input
@@ -1452,6 +980,8 @@ Voice Input
 Microphone Integration
 
 Voice Processing
+
+Voice Processing Pipelines
 
 Speech-to-Text
 
@@ -1490,111 +1020,87 @@ These capabilities are future extensions and are **not represented as completed 
 
 ---
 
-# 🧪 v0.53 Testing
+# 🧪 v0.54 Testing
 
-The v0.53 milestone includes dedicated unit and integration tests for the Voice Processor layer.
+The v0.54 milestone includes dedicated unit and integration tests for the Voice Processing Pipeline layer.
 
-Voice Processor test coverage includes:
+Pipeline unit test coverage includes:
 
 ```text
-VoiceProcessor Construction
+Pipeline Construction
 
-Processor Name Validation
+Processor Validation
 
-Processor Metadata Validation
+Pipeline Name Validation
 
-Processor Metadata Isolation
-
-Processor Metadata Access
-
-Processor Metadata Mutation
+Pipeline Metadata Validation
 
 VoiceInput Validation
 
 Invalid VoiceInput Handling
 
-Processing Contract
+Processor Invocation
 
-Processing Result Creation
+Processing Lifecycle
 
-Success Result Creation
+Successful Processing
 
-None Result Data
-
-Structured Result Data
-
-Failure Result Creation
-
-Invalid Failure Messages
-
-Processor Identity
-
-Processor Representation
-
-Voice Processor Integration
-
-Voice Input → Processor Flow
-
-Processor → InputResult Flow
-
-Success Processing
-
-Failure Processing
+Processor Failure Handling
 
 Exception Isolation
 
-Metadata Propagation
+Invalid Processor Result Handling
 
-Input Identity Preservation
+Processor Replacement
 
-Input Type Preservation
+Processor Identity
+
+Pipeline Metadata Access
+
+Pipeline Metadata Mutation
+
+Metadata Isolation
+
+Pipeline Representation
+
+Multiple Processing Calls
+
+Processor Isolation
 ```
 
-The dedicated Voice Processor unit test suite reports:
+The dedicated Voice Processing Pipeline unit suite reports:
 
 ```text
-52 passed
-
+30 passed
 0 failed
 ```
 
-The dedicated Voice Processor integration suite reports:
+The dedicated Voice Processing Pipeline integration suite reports:
 
 ```text
-28 passed
-
+10 passed
 0 failed
 ```
 
-The existing voice-input regression coverage remains:
+The complete v0.54 pipeline coverage is:
 
 ```text
-68 passed
-
-0 failed
-```
-
-Total dedicated voice-related regression coverage is now:
-
-```text
-148 passed
-
+40 passed
 0 failed
 ```
 
 The complete project regression suite reports:
 
 ```text
-1174 passed
-
+1214 passed
 0 failed
 ```
 
-This confirms that the Voice Processing Foundation integrates without breaking the existing architecture.
+This confirms that the Voice Processing Pipeline integrates with the existing architecture without breaking previous functionality.
 
 ---
 
-# 🛡️ v0.53 Quality Gate
+# 🛡️ v0.54 Quality Gate
 
 ```text
 [✓] Multimodal Input Foundation
@@ -1663,15 +1169,35 @@ This confirms that the Voice Processing Foundation integrates without breaking t
 
 [✓] Voice Processor Integration
 
+[✓] Voice Processing Pipeline
+
+[✓] Pipeline Validation
+
+[✓] VoiceInput Validation
+
+[✓] Processor Validation
+
+[✓] Processing Lifecycle
+
+[✓] Success Processing
+
+[✓] Failure Processing
+
+[✓] Processor Result Validation
+
+[✓] Processor Isolation
+
+[✓] Processor Replacement
+
+[✓] Pipeline Metadata
+
 [✓] Input Identity Preservation
 
-[✓] Input Type Preservation
+[✓] Standardized Input Results
 
-[✓] Handler Exception Isolation
+[✓] Pipeline Unit Testing
 
-[✓] Routing Isolation
-
-[✓] Structured Input Results
+[✓] Pipeline Integration Testing
 
 [✓] Multimodal Regression Testing
 
@@ -1686,35 +1212,48 @@ This confirms that the Voice Processing Foundation integrates without breaking t
 Voice Input Tests
 
 68 passed
-
 0 failed
 
 
 Voice Processor Unit Tests
 
 52 passed
-
 0 failed
 
 
 Voice Processor Integration Tests
 
 28 passed
-
 0 failed
 
 
-Total Dedicated Voice Coverage
+Voice Processing Pipeline Unit Tests
 
-148 passed
+30 passed
+0 failed
 
+
+Voice Processing Pipeline Integration Tests
+
+10 passed
+0 failed
+
+
+v0.54 Pipeline Coverage
+
+40 passed
+0 failed
+
+
+Dedicated Voice / Multimodal Coverage
+
+188 passed
 0 failed
 
 
 Full Ultron Regression
 
-1174 passed
-
+1214 passed
 0 failed
 
 
@@ -1745,6 +1284,10 @@ Receive Voice Input
       ↓
 
 Process Voice Input
+
+      ↓
+
+Orchestrate Voice Processing
 
       ↓
 
@@ -1811,103 +1354,121 @@ The recent architectural evolution is:
 
 ```text
 v0.44
-
 Execution Events
 
       ↓
 
 v0.45
-
 Execution Observability
 
       ↓
 
 v0.46
-
 Execution Metrics
 
       ↓
 
 v0.47
-
 Persistent Execution History
 
       ↓
 
 v0.48
-
 Execution State Snapshot
 
       ↓
 
 v0.49
-
 Agent Runtime Context
 
       ↓
 
 v0.50
-
 Execution Context Queries
 
       ↓
 
 v0.51
-
 Multimodal Input Foundation
 
       ↓
 
 v0.52
-
 Voice Input Foundation
 
       ↓
 
 v0.53
-
 Voice Processing Foundation
 
       ↓
 
-Future
+v0.54
+Voice Processing Pipeline Foundation
 
+      ↓
+
+Future
 Speech-to-Text Intelligence
 
       ↓
 
 Future
-
 Advanced Voice Processing
 
       ↓
 
 Future
-
 Multimodal Intelligence
 
       ↓
 
 Future
-
 Context-Aware Multimodal Execution
 
       ↓
 
 Future
-
 Recovery & Resumption
 
       ↓
 
 Future
-
 Durable Automation
 ```
 
 ---
 
 # 📜 Version History
+
+## v0.54 — Voice Processing Pipeline Foundation
+
+* Dedicated Voice Processing Pipeline Foundation
+* `VoiceProcessingPipeline` abstraction
+* Pipeline validation
+* Voice input validation boundary
+* Processor validation
+* Processing lifecycle orchestration
+* Successful processing handling
+* Failed processing handling
+* Processor exception isolation
+* Processor result validation
+* Invalid processor result protection
+* Processor isolation
+* Processor replacement
+* Pipeline metadata support
+* Pipeline metadata isolation
+* Pipeline identity support
+* Input identity preservation
+* Standardized `MultimodalInputResult` integration
+* Voice processing pipeline integration
+* 30 dedicated pipeline unit tests
+* 10 dedicated pipeline integration tests
+* 40 dedicated v0.54 pipeline tests
+* 1214 full-suite regression tests
+* Full regression compatibility
+
+---
 
 ## v0.53 — Voice Processing Foundation
 
@@ -1932,8 +1493,6 @@ Durable Automation
 * Voice processor integration testing
 * 52 dedicated processor unit tests
 * 28 dedicated processor integration tests
-* 148 dedicated voice-related tests
-* 1174 full-suite regression tests
 * Full regression compatibility
 
 ---
@@ -2057,97 +1616,53 @@ Ultron continues to evolve through focused architectural milestones.
 
 ```text
 v0.37 → Agent Runtime
-
         ↓
-
 v0.38 → Tool System
-
         ↓
-
 v0.39 → Tool Selector
-
         ↓
-
 v0.40 → Planning
-
         ↓
-
 v0.41 → Execution & Orchestration
-
         ↓
-
 v0.42 → Execution Controller
-
         ↓
-
 v0.43 → Execution Control
-
         ↓
-
 v0.44 → Execution Events
-
         ↓
-
 v0.45 → Execution Observability
-
         ↓
-
 v0.46 → Execution Metrics
-
         ↓
-
 v0.47 → Persistent Execution History
-
         ↓
-
 v0.48 → Execution State Snapshot
-
         ↓
-
 v0.49 → Agent Runtime Context
-
         ↓
-
 v0.50 → Execution Context Queries
-
         ↓
-
 v0.51 → Multimodal Input Foundation
-
         ↓
-
 v0.52 → Voice Input Foundation
-
         ↓
-
 v0.53 → Voice Processing Foundation
-
         ↓
-
+v0.54 → Voice Processing Pipeline Foundation
+        ↓
 Future → Speech-to-Text Intelligence
-
         ↓
-
 Future → Advanced Voice Processing
-
         ↓
-
 Future → Multimodal Intelligence
-
         ↓
-
 Future → Context-Aware Execution
-
         ↓
-
 Future → Recovery & Resumption
-
         ↓
-
 Future → Durable Automation
-
         ↓
-
 v1.0 → Stable AI Operating System Platform
 ```
 
@@ -2159,191 +1674,101 @@ The architecture is progressing toward a complete AI Operating System platform.
 
 ```text
 Core Intelligence
-
       │
-
       ▼
-
 Conversation & Memory
-
       │
-
       ▼
-
 AI Integration
-
       │
-
       ▼
-
 Multimodal Input
-
       │
-
       ▼
-
 Voice Input
-
       │
-
       ▼
-
 Voice Processing
-
       │
-
       ▼
-
+Voice Processing Pipeline
+      │
+      ▼
 Agent Runtime
-
       │
-
       ▼
-
 Tool System
-
       │
-
       ▼
-
 Capability Selection
-
       │
-
       ▼
-
 Planning
-
       │
-
       ▼
-
 Orchestration
-
       │
-
       ▼
-
 Execution Control
-
       │
-
       ▼
-
 Execution Lifecycle
-
       │
-
       ▼
-
 Execution Events
-
       │
-
       ▼
-
 Execution Observability
-
       │
-
       ▼
-
 Execution Metrics
-
       │
-
       ▼
-
 Persistent Execution History
-
       │
-
       ▼
-
 Execution State Snapshots
-
       │
-
       ▼
-
 Agent Runtime Context
-
       │
-
       ▼
-
 Execution Context Queries
-
       │
-
       ▼
-
 Advanced Voice Processing
-
       │
-
       ▼
-
 Speech-to-Text Intelligence
-
       │
-
       ▼
-
 Multimodal Intelligence
-
       │
-
       ▼
-
 Context-Aware Execution
-
       │
-
       ▼
-
 State Restoration
-
       │
-
       ▼
-
 Crash Recovery
-
       │
-
       ▼
-
 Execution Resumption
-
       │
-
       ▼
-
 Durable Automation
-
       │
-
       ▼
-
 Advanced Agents
-
       │
-
       ▼
-
 System Integration
-
       │
-
       ▼
-
 Production Hardening
-
       │
-
       ▼
-
 v1.0
 ```
 
@@ -2353,82 +1778,89 @@ v1.0
 
 ```text
 ╔══════════════════════════════════════════════════════╗
-║                    ULTRON v0.53                     ║
+║                    ULTRON v0.54                     ║
 ╠══════════════════════════════════════════════════════╣
-║ Conversation Engine                           ✓      ║
-║ Smart Memory System                            ✓      ║
-║ User Profile Memory                            ✓      ║
-║ AI Provider Architecture                       ✓      ║
-║ Agent Runtime                                  ✓      ║
-║ Agent Tool System                              ✓      ║
-║ Tool Registry                                  ✓      ║
-║ Tool Selector                                  ✓      ║
-║ Capability-Based Selection                     ✓      ║
-║ Agent Planner                                  ✓      ║
-║ Agent Plans                                    ✓      ║
-║ Agent Orchestrator                             ✓      ║
-║ Execution Controller                           ✓      ║
-║ Execution Lifecycle                            ✓      ║
-║ Pause / Resume                                 ✓      ║
-║ Cancellation                                   ✓      ║
-║ Retry / Skip                                   ✓      ║
-║ Execution Events                               ✓      ║
-║ Execution Observability                        ✓      ║
-║ Execution Metrics                              ✓      ║
-║ Persistent Execution History                   ✓      ║
-║ Execution State Snapshot                       ✓      ║
-║ Recovery State Foundation                      ✓      ║
-║ Agent Runtime Context                          ✓      ║
-║ Execution Context Queries                      ✓      ║
-║ Multimodal Input Foundation                    ✓      ║
-║ InputType                                      ✓      ║
-║ MultimodalInput                                ✓      ║
-║ InputResult                                    ✓      ║
-║ InputRouter                                    ✓      ║
-║ Handler Registration                            ✓      ║
-║ Handler Lookup                                 ✓      ║
-║ Handler Replacement                            ✓      ║
-║ Handler Unregistration                         ✓      ║
-║ Handler Clearing                               ✓      ║
-║ Text Routing                                   ✓      ║
-║ Voice Routing                                  ✓      ║
-║ Vision Routing                                 ✓      ║
-║ Gesture Routing                                ✓      ║
-║ Voice Input Foundation                         ✓      ║
-║ Voice Input Layer                              ✓      ║
-║ Voice Input Validation                          ✓      ║
-║ Voice Input Routing                             ✓      ║
-║ Voice Handler Boundary                          ✓      ║
-║ Voice Input Result Integration                  ✓      ║
-║ Voice Input Error Handling                      ✓      ║
-║ Voice Input Testing                             ✓      ║
-║ Voice Processing Foundation                     ✓      ║
-║ VoiceProcessor                                  ✓      ║
-║ VoiceProcessorError                             ✓      ║
-║ Processor Validation                            ✓      ║
-║ Processing Result Helpers                       ✓      ║
-║ Success Result Handling                         ✓      ║
-║ Failure Result Handling                         ✓      ║
-║ Processor Metadata                              ✓      ║
-║ Voice Processor Integration                     ✓      ║
-║ Input Validation                                ✓      ║
-║ Handler Exception Isolation                     ✓      ║
-║ Routing Isolation                               ✓      ║
-║ Structured Input Results                        ✓      ║
-║ Multimodal Regression Testing                   ✓      ║
-║ Full Regression Testing                         ✓      ║
+║ Conversation Engine                           ✓     ║
+║ Smart Memory System                            ✓     ║
+║ User Profile Memory                            ✓     ║
+║ AI Provider Architecture                       ✓     ║
+║ Agent Runtime                                  ✓     ║
+║ Agent Tool System                              ✓     ║
+║ Tool Registry                                  ✓     ║
+║ Tool Selector                                  ✓     ║
+║ Capability-Based Selection                     ✓     ║
+║ Agent Planner                                  ✓     ║
+║ Agent Plans                                    ✓     ║
+║ Agent Orchestrator                             ✓     ║
+║ Execution Controller                           ✓     ║
+║ Execution Lifecycle                            ✓     ║
+║ Pause / Resume                                 ✓     ║
+║ Cancellation                                   ✓     ║
+║ Retry / Skip                                   ✓     ║
+║ Execution Events                               ✓     ║
+║ Execution Observability                        ✓     ║
+║ Execution Metrics                              ✓     ║
+║ Persistent Execution History                   ✓     ║
+║ Execution State Snapshot                       ✓     ║
+║ Recovery State Foundation                      ✓     ║
+║ Agent Runtime Context                          ✓     ║
+║ Execution Context Queries                      ✓     ║
+║ Multimodal Input Foundation                    ✓     ║
+║ InputType                                      ✓     ║
+║ MultimodalInput                                ✓     ║
+║ InputResult                                    ✓     ║
+║ InputRouter                                    ✓     ║
+║ Handler Registration                            ✓     ║
+║ Handler Lookup                                 ✓     ║
+║ Handler Replacement                            ✓     ║
+║ Handler Unregistration                         ✓     ║
+║ Handler Clearing                               ✓     ║
+║ Text Routing                                   ✓     ║
+║ Voice Routing                                  ✓     ║
+║ Vision Routing                                 ✓     ║
+║ Gesture Routing                                ✓     ║
+║ Voice Input Foundation                         ✓     ║
+║ Voice Input Layer                              ✓     ║
+║ Voice Input Validation                          ✓     ║
+║ Voice Input Routing                             ✓     ║
+║ Voice Handler Boundary                          ✓     ║
+║ Voice Input Result Integration                  ✓     ║
+║ Voice Input Error Handling                      ✓     ║
+║ Voice Input Testing                             ✓     ║
+║ Voice Processing Foundation                    ✓     ║
+║ VoiceProcessor                                 ✓     ║
+║ VoiceProcessorError                            ✓     ║
+║ Processor Validation                            ✓     ║
+║ Processing Result Helpers                       ✓     ║
+║ Success Result Handling                         ✓     ║
+║ Failure Result Handling                         ✓     ║
+║ Processor Metadata                              ✓     ║
+║ Processor Identity                              ✓     ║
+║ Voice Processor Integration                     ✓     ║
+║ Voice Processing Pipeline                       ✓     ║
+║ Pipeline Validation                             ✓     ║
+║ Processing Lifecycle                            ✓     ║
+║ Success Processing                             ✓     ║
+║ Failure Processing                             ✓     ║
+║ Processor Result Validation                     ✓     ║
+║ Processor Isolation                             ✓     ║
+║ Processor Replacement                           ✓     ║
+║ Pipeline Metadata                               ✓     ║
+║ Input Identity Preservation                     ✓     ║
+║ Pipeline Integration                            ✓     ║
+║ Full Regression Testing                         ✓     ║
 ╠══════════════════════════════════════════════════════╣
-║ Tests: 1174 passed                                ║
-║ Voice Tests: 148 passed                           ║
-║ Status: Active Development                        ║
+║ Tests: 1214 passed                                  ║
+║ v0.54 Pipeline Tests: 40 passed                     ║
+║ Status: Active Development                          ║
 ╚══════════════════════════════════════════════════════╝
 ```
 
 ---
 
-# 🧪 v0.53 Validation
+# 🧪 v0.54 Validation
 
-The v0.53 architecture has dedicated regression coverage for:
+The v0.54 architecture has dedicated regression coverage for:
 
 ```text
 Multimodal Input
@@ -2469,6 +1901,22 @@ Processor Identity
 
 Voice Processor Integration
 
+Voice Processing Pipeline
+
+Pipeline Validation
+
+Processing Lifecycle
+
+Processor Result Validation
+
+Processor Isolation
+
+Processor Replacement
+
+Pipeline Metadata
+
+Input Identity Preservation
+
 Failure Handling
 
 Exception Isolation
@@ -2485,43 +1933,43 @@ The latest authoritative validation result is:
 ```text
 Full Regression: PASS
 
-1174 passed
+1214 passed
 
 Failures: 0
 
 
-Voice Processor Unit Tests: PASS
+Voice Processing Pipeline Unit Tests: PASS
 
-52 passed
-
-Failures: 0
-
-
-Voice Processor Integration Tests: PASS
-
-28 passed
+30 passed
 
 Failures: 0
 
 
-Dedicated Voice Coverage: PASS
+Voice Processing Pipeline Integration Tests: PASS
 
-148 passed
+10 passed
 
 Failures: 0
 
 
-Release: v0.53
+v0.54 Pipeline Coverage: PASS
+
+40 passed
+
+Failures: 0
+
+
+Release: v0.54
 
 Status: Active Development
 ```
 
 ---
 
-# 🏁 v0.53 Status
+# 🏁 v0.54 Status
 
 ```text
-ULTRON v0.53
+ULTRON v0.54
 
 ├── Agent Runtime                         ✓
 ├── Tool System                           ✓
@@ -2577,20 +2025,28 @@ ULTRON v0.53
 ├── Processor Identity                    ✓
 ├── Voice Processor Integration           ✓
 │
-├── Input Validation                      ✓
-├── Handler Exception Isolation           ✓
-├── Routing Isolation                     ✓
-├── Structured Input Results              ✓
+├── Voice Processing Pipeline             ✓
+├── Pipeline Validation                   ✓
+├── Processing Lifecycle                  ✓
+├── Success Processing                    ✓
+├── Failure Processing                    ✓
+├── Processor Result Validation           ✓
+├── Processor Isolation                   ✓
+├── Processor Replacement                 ✓
+├── Pipeline Metadata                     ✓
+├── Input Identity Preservation           ✓
+├── Pipeline Integration                  ✓
+│
 └── Multimodal Regression Testing         ✓
 
-Tests: 1174 passed
+Tests: 1214 passed
 
-Voice Tests: 148 passed
+v0.54 Pipeline Tests: 40 passed
 
 Status: Active Development
 ```
 
-Ultron v0.53 extends the **Multimodal Input Foundation** and **Voice Input Foundation** with a dedicated **Voice Processing Foundation**.
+Ultron v0.54 extends the **Multimodal Input Foundation**, **Voice Input Foundation**, and **Voice Processing Foundation** with a dedicated **Voice Processing Pipeline Foundation**.
 
 The architecture now provides a structured path from:
 
@@ -2627,6 +2083,10 @@ VoiceProcessor
 
     ↓
 
+VoiceProcessingPipeline
+
+    ↓
+
 InputResult
 
     ↓
@@ -2634,7 +2094,7 @@ InputResult
 Ultron Runtime
 ```
 
-This is an important architectural step toward making Ultron capable of accepting and processing voice as a first-class human-computer interaction modality while preserving the modularity of the existing agent and execution infrastructure.
+This is an important architectural step toward making Ultron capable of accepting, processing, and orchestrating voice as a first-class human-computer interaction modality while preserving the modularity of the existing agent and execution infrastructure.
 
 The long-term direction remains:
 
