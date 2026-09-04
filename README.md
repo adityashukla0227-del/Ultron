@@ -58,6 +58,8 @@ Voice Processing Strategy
 STT Provider Abstraction
 
 Concrete STT Provider
+
+Voice → Text Runtime Integration
 ```
 
 The long-term objective is to create a reliable, extensible, observable, persistent, context-aware, recoverable, and multimodal agent execution platform.
@@ -205,7 +207,8 @@ Voice Processing Infrastructure
   ├── VoiceProcessingPipeline
   ├── VoiceProcessingStrategy
   ├── STTProvider
-  └── Concrete STT Provider
+  ├── Concrete STT Provider
+  └── Voice → Text Runtime Integration
 
   │
 
@@ -228,7 +231,9 @@ The **v0.55 milestone** introduced the **Voice Processing Intelligence Foundatio
 
 The **v0.56 milestone** introduced the **STT Provider Abstraction**, establishing a provider-independent contract for speech-to-text implementations.
 
-The **v0.57 milestone** introduces the first concrete **OpenAI STT Provider**, implementing the provider abstraction while keeping provider-specific logic isolated from Ultron's core voice-processing architecture.
+The **v0.57 milestone** introduced the first concrete **OpenAI STT Provider**, implementing the provider abstraction while keeping provider-specific logic isolated from Ultron's core voice-processing architecture.
+
+The **v0.58 milestone** introduces **Voice → Text Runtime Integration**, connecting the concrete STT-backed voice processing path to the runtime query layer without coupling the runtime to a specific STT provider.
 
 ---
 
@@ -348,753 +353,511 @@ v1.0 → Stable AI Operating System Platform
 
 ---
 
-# 🚀 v0.57 — First STT Provider
+# 🚀 v0.58 — Voice → Text Runtime Integration
 
-The v0.57 milestone introduces the first concrete implementation of Ultron's provider-agnostic STT architecture.
+The v0.58 milestone connects Ultron's existing voice-processing and STT infrastructure to the runtime query layer.
 
-The milestone builds directly on the `STTProvider` abstraction introduced in v0.56.
+v0.57 established the first concrete STT provider.
 
-The new architecture is:
+v0.58 now establishes the runtime boundary that allows:
 
 ```text
 VoiceInput
-
-   ↓
-
-VoiceProcessingPipeline
-
-   ↓
-
-VoiceProcessor
-
-   ↓
-
-VoiceProcessingStrategy
-
-   ↓
-
-STTProvider
-
-   ↓
-
-OpenAISTTProvider
-
-   ↓
-
-OpenAI Speech-to-Text
-
-   ↓
-
-MultimodalInputResult
+    ↓
+Voice Processing
+    ↓
+STT Provider
+    ↓
+Transcription
+    ↓
+Runtime Query
 ```
 
-The concrete provider implementation is located under:
-
-```text
-modules/multimodal/providers/
-```
-
-with the OpenAI implementation:
-
-```text
-modules/multimodal/providers/openai_stt_provider.py
-```
-
-The provider-specific implementation remains isolated behind the existing `STTProvider` abstraction.
+The key objective is to convert recognized speech into a runtime query without introducing provider-specific dependencies into the agent execution infrastructure.
 
 ---
 
-# 🧠 v0.57 STT Provider Architecture
+# 🧩 v0.58 Architecture
 
-The v0.57 architecture is:
+The v0.58 architecture is:
 
 ```text
-User
+VoiceInput
+    ↓
+VoiceProcessingPipeline
+    ↓
+OpenAIVoiceProcessor
+    ↓
+OpenAISTTProvider
+    ↓
+OpenAI Speech-to-Text
+    ↓
+MultimodalInputResult
+    ↓
+VoiceRuntimeIntegration
+    ↓
+AgentRuntimeContext
+    ↓
+Runtime Query
+```
 
- │
+Conceptually:
 
- ▼
+```text
+🎤 Audio
 
-Voice Input
-
- │
-
- ▼
+    ↓
 
 VoiceInput
 
- │
+    ↓
 
- ▼
+Voice Processing Pipeline
 
-VoiceProcessingPipeline
+    ↓
 
- │
+Voice Processor
 
- ▼
+    ↓
 
-VoiceProcessor
+STT Provider
 
- │
-
- ▼
-
-VoiceProcessingStrategy
-
- │
-
- ▼
-
-STTProvider
-
- │
-
- ▼
-
-OpenAISTTProvider
-
- │
-
- ├── Provider Identity
- ├── Supported Audio Formats
- ├── Capabilities
- ├── Configuration
- ├── Metadata
- ├── Availability
- ├── Input Validation
- ├── Audio Format Validation
- └── Transcription
-
- │
-
- ▼
-
-OpenAI STT API
-
- │
-
- ▼
-
-MultimodalInputResult
-
- │
-
- ▼
-
-Conversation / Agent Runtime
-```
-
-The architecture separates:
-
-```text
-Voice Input
-
-    ≠
-
-Voice Processing
-
-    ≠
-
-Processing Pipeline
-
-    ≠
-
-Processing Strategy
-
-    ≠
-
-STT Provider Abstraction
-
-    ≠
+    ↓
 
 Concrete STT Provider
 
-    ≠
+    ↓
 
-External STT Service
+📝 Transcribed Text
 
-    ≠
+    ↓
 
-Conversation Processing
+Voice Runtime Integration
 
-    ≠
+    ↓
 
-Agent Execution
+Agent Runtime Context
+
+    ↓
+
+Runtime Query
 ```
 
-This separation allows the concrete OpenAI implementation to evolve independently from the rest of Ultron.
+This creates the first complete **voice → text → runtime** path in Ultron.
 
 ---
 
-# 🧩 OpenAISTTProvider
+# 🧠 Voice → Text Runtime Flow
 
-`OpenAISTTProvider` is the first concrete implementation of the `STTProvider` abstraction.
-
-It provides a real transcription boundary between Ultron's voice-processing infrastructure and an external speech-to-text service.
-
-Conceptually:
-
-```text
-STTProvider
-    │
-    ▼
-OpenAISTTProvider
-    │
-    ▼
-OpenAI Transcription API
-    │
-    ▼
-Transcription Text
-    │
-    ▼
-MultimodalInputResult
-```
-
-The provider is responsible for:
-
-```text
-Provider Initialization
-
-Client Validation
-
-Provider Availability
-
-VoiceInput Validation
-
-Audio Format Validation
-
-Audio File Preparation
-
-Model Configuration
-
-OpenAI Transcription Request
-
-Response Text Extraction
-
-Empty Transcription Handling
-
-Provider Error Isolation
-
-Standardized Result Generation
-
-Provider Metadata Propagation
-```
-
-Provider-specific implementation details remain outside the core STT abstraction.
-
----
-
-# 🤖 OpenAI STT Integration
-
-v0.57 introduces the first concrete OpenAI-backed speech-to-text provider.
-
-The provider receives a `VoiceInput`, converts the contained audio data into a provider-compatible file representation, and sends it through the configured OpenAI transcription client.
-
-Conceptually:
+The complete v0.58 flow is:
 
 ```text
 VoiceInput
-
     │
-
-    ├── audio_data
-    ├── audio_format
-    └── input_id
-
-    ↓
-
-OpenAISTTProvider
-
-    ↓
-
-Audio File Preparation
-
-    ↓
-
-OpenAI Transcription Request
-
-    ↓
-
-Transcription Response
-
-    ↓
-
-Text Extraction
-
-    ↓
-
-MultimodalInputResult
-```
-
-The provider uses:
-
-```text
-gpt-4o-mini-transcribe
-```
-
-as its default transcription model.
-
-The model remains configurable through provider configuration.
-
-No API key is hardcoded into the provider implementation.
-
-Client creation and authentication remain outside the provider boundary.
-
----
-
-# ⚙️ Provider Configuration
-
-The OpenAI STT provider supports configurable provider settings.
-
-The provider stores configuration through the inherited `STTProvider` configuration system.
-
-The default model is:
-
-```text
-gpt-4o-mini-transcribe
-```
-
-Conceptually:
-
-```text
-OpenAISTTProvider
-
-    │
-
-    └── Configuration
-
-          └── model
-```
-
-The provider can use a custom model configuration without modifying the surrounding voice-processing architecture.
-
-Configuration remains isolated from:
-
-```text
-VoiceInput
-
-VoiceProcessor
-
+    ▼
 VoiceProcessingPipeline
-
-VoiceProcessingStrategy
-
-MultimodalInputResult
-
-Agent Runtime
-```
-
----
-
-# 🎙️ Supported Audio Formats
-
-The OpenAI STT provider declares support for:
-
-```text
-WAV
-
-MP3
-
-M4A
-
-OGG
-
-FLAC
-
-WEBM
-```
-
-The provider inherits the format compatibility mechanisms from `STTProvider`.
-
-Conceptually:
-
-```text
-VoiceInput
     │
-    └── audio_format
-            │
-            ▼
-      OpenAISTTProvider
-            │
-            ▼
-     Supported Formats
-            │
-       ┌────┴────┐
-       ▼         ▼
-   Supported  Unsupported
-       │         │
-       ▼         ▼
-   Continue    Reject
-```
-
-Unsupported formats are rejected before the provider attempts transcription.
-
----
-
-# 🧠 Provider Capabilities
-
-The OpenAI provider declares its STT capabilities through the provider abstraction.
-
-Current capabilities include:
-
-```text
-transcription
-
-speech_to_text
-```
-
-These capabilities are exposed through the provider capability system.
-
-Conceptually:
-
-```text
-OpenAISTTProvider
-
-    │
-
-    └── Capabilities
-
-          ├── transcription
-          └── speech_to_text
-```
-
-The capability system allows future provider selection logic to distinguish providers based on supported functionality.
-
----
-
-# 🟢 Provider Availability
-
-The concrete provider implements an availability boundary.
-
-For v0.57, provider availability is based on the presence of a configured OpenAI client.
-
-Conceptually:
-
-```text
-OpenAISTTProvider
-
-        │
-
-        ▼
-
-is_available()
-
-        │
-
-   ┌────┴────┐
-   ▼         ▼
-Available  Unavailable
-   │         │
-   ▼         ▼
-Continue   Reject
-```
-
-The provider does not create or manage authentication credentials itself.
-
-This keeps credential management outside the provider implementation and allows future application-level dependency injection.
-
----
-
-# 🛡️ VoiceInput Validation
-
-Before transcription, `OpenAISTTProvider` validates the supplied `VoiceInput`.
-
-Validation is performed through the `STTProvider` abstraction.
-
-Conceptually:
-
-```text
-VoiceInput
-
-    ↓
-
-Provider Validation
-
-    ↓
-
-VoiceInput Type
-
-    ↓
-
-VoiceInput Validity
-
-    ↓
-
-Audio Format
-
-    ↓
-
-Provider Format Support
-
-    ↓
-
-Ready for Transcription
-```
-
-Invalid or incompatible inputs are rejected through `STTProviderError`.
-
-This prevents unsupported inputs from reaching the external STT service.
-
----
-
-# 🔄 Transcription Flow
-
-The complete v0.57 transcription flow is:
-
-```text
-VoiceInput
-
-    ↓
-
-OpenAISTTProvider.transcribe()
-
-    ↓
-
-Availability Validation
-
-    ↓
-
-VoiceInput Validation
-
-    ↓
-
-Audio Format Validation
-
-    ↓
-
-Audio Data Extraction
-
-    ↓
-
-Temporary In-Memory Audio File
-
-    ↓
-
-Configured STT Model
-
-    ↓
-
-OpenAI Transcription Request
-
-    ↓
-
-Response Extraction
-
-    ↓
-
-Transcription Text
-
-    ↓
-
-MultimodalInputResult
-
-    ↓
-
-Completed / Failed Result
-```
-
-The provider does not expose the external API response directly to the rest of Ultron.
-
-Instead, it converts the response into the standardized `MultimodalInputResult`.
-
----
-
-# 📦 Standardized Transcription Result
-
-The OpenAI provider returns:
-
-```text
-MultimodalInputResult
-```
-
-rather than introducing an OpenAI-specific result object.
-
-Conceptually:
-
-```text
-OpenAI Response
-
-    ↓
-
-Text Extraction
-
-    ↓
-
-MultimodalInputResult
-
-    ├── input_id
-    ├── input_type
-    ├── status
-    ├── success
-    ├── data
-    ├── metadata
-    └── error
-```
-
-Successful transcription produces a completed result containing the recognized text.
-
-Provider metadata includes:
-
-```text
-provider
-
-model
-```
-
-This keeps the external provider response isolated from the rest of Ultron.
-
----
-
-# 🧩 Result Identity Preservation
-
-The original `VoiceInput` identity is preserved through the transcription result.
-
-Conceptually:
-
-```text
-VoiceInput
-
-input_id
+    ▼
+OpenAIVoiceProcessor
     │
     ▼
 OpenAISTTProvider
     │
     ▼
+OpenAI STT
+    │
+    ▼
 MultimodalInputResult
     │
     ▼
-same input_id
+Transcribed Text
+    │
+    ▼
+VoiceRuntimeIntegration
+    │
+    ▼
+AgentRuntimeContext.set_query()
+    │
+    ▼
+Runtime Query
 ```
 
-This allows future runtime layers to correlate:
+Example:
 
 ```text
-Voice Input
+🎤 User speaks
 
-    ↓
+"open Chrome"
+
+        ↓
+
+VoiceInput
+
+        ↓
 
 STT Processing
 
-    ↓
+        ↓
 
-Transcription Result
+"open Chrome"
 
-    ↓
+        ↓
 
-Runtime Execution
+VoiceRuntimeIntegration
+
+        ↓
+
+AgentRuntimeContext.query
+
+        ↓
+
+"open Chrome"
 ```
 
-without losing input identity.
+At v0.58, the system **does not execute the command yet**.
+
+Command execution is intentionally deferred to v0.59.
 
 ---
 
-# 🛡️ Error Handling
+# 🧩 OpenAIVoiceProcessor
 
-The provider isolates provider-specific runtime errors.
-
-Possible failure conditions include:
+v0.58 introduces the voice processor adapter:
 
 ```text
-Invalid Provider
-
-Unavailable Provider
-
-Invalid VoiceInput
-
-Unsupported Audio Format
-
-Missing Audio Format
-
-Missing Audio Data
-
-OpenAI Client Error
-
-Transcription Request Failure
-
-Empty Transcription Response
-
-Unexpected Provider Response
+modules/multimodal/providers/openai_voice_processor.py
 ```
 
-Provider failures are converted into standardized failed `MultimodalInputResult` objects where appropriate.
+`OpenAIVoiceProcessor` provides the processing boundary between the generic `VoiceProcessor` abstraction and the concrete `OpenAISTTProvider`.
 
-The external provider exception does not leak directly into the surrounding voice-processing layers.
+Conceptually:
+
+```text
+VoiceProcessor
+      │
+      ▼
+OpenAIVoiceProcessor
+      │
+      ▼
+OpenAISTTProvider
+      │
+      ▼
+OpenAI STT
+```
+
+The adapter keeps the existing architecture intact:
+
+```text
+VoiceProcessor
+    ≠
+STTProvider
+```
+
+Instead, the processor delegates speech-to-text work to the provider.
+
+This preserves the separation between:
+
+```text
+Voice Processing Behavior
+
+        and
+
+STT Provider Capability
+```
+
+---
+
+# 🧠 Voice Processor Adapter Responsibility
+
+`OpenAIVoiceProcessor` is responsible for connecting the processing layer to the provider layer.
+
+Conceptually:
+
+```text
+VoiceInput
+    ↓
+Processor Validation
+    ↓
+STT Provider
+    ↓
+Transcription
+    ↓
+MultimodalInputResult
+```
+
+The adapter does not implement OpenAI API behavior itself.
+
+Provider-specific behavior remains inside:
+
+```text
+OpenAISTTProvider
+```
+
+This maintains provider isolation.
+
+---
+
+# 🔗 Voice Processing Pipeline Integration
+
+The v0.58 processing path uses the existing:
+
+```text
+VoiceProcessingPipeline
+```
+
+The pipeline remains responsible for:
+
+```text
+VoiceInput Validation
+
+Processor Validation
+
+Processing Lifecycle
+
+Processor Invocation
+
+Result Validation
+
+Failure Isolation
+
+Standardized Result Propagation
+```
+
+The pipeline does not become STT-specific.
+
+This keeps the architecture reusable for future voice-processing implementations.
+
+---
+
+# 🧩 VoiceRuntimeIntegration
+
+v0.58 introduces:
+
+```text
+modules/multimodal/voice_runtime_integration.py
+```
+
+The `VoiceRuntimeIntegration` layer connects the multimodal voice-processing result to the runtime context.
+
+Conceptually:
+
+```text
+MultimodalInputResult
+        ↓
+VoiceRuntimeIntegration
+        ↓
+AgentRuntimeContext
+        ↓
+Runtime Query
+```
+
+Its responsibility is intentionally narrow.
+
+It does not:
+
+```text
+Create Agent Plans
+
+Execute Commands
+
+Execute Tools
+
+Control Execution
+
+Manage Retries
+
+Manage Execution Events
+
+Perform STT
+
+Manage Provider Authentication
+```
+
+Instead, it translates the successful voice-processing output into the runtime's query state.
+
+---
+
+# 🧠 Agent Runtime Context Integration
+
+The existing:
+
+```text
+AgentRuntimeContext
+```
+
+provides the runtime-level representation of the current user query.
+
+v0.58 connects voice transcription to that query boundary.
+
+Conceptually:
+
+```text
+VoiceInput
+    ↓
+STT
+    ↓
+Transcription Text
+    ↓
+VoiceRuntimeIntegration
+    ↓
+AgentRuntimeContext.set_query()
+```
+
+This allows voice input to become equivalent to a runtime text query.
+
+The important architectural distinction is:
+
+```text
+VoiceInput
+
+    ≠
+
+Runtime Query
+```
+
+Instead:
+
+```text
+VoiceInput
+    ↓
+Processing
+    ↓
+Transcription
+    ↓
+Runtime Query
+```
+
+This keeps modality-specific representation separate from runtime semantics.
+
+---
+
+# 🔄 Runtime Query Transformation
+
+v0.58 establishes the following transformation:
+
+```text
+Raw Voice Input
+
+    ↓
+
+VoiceInput
+
+    ↓
+
+Voice Processing
+
+    ↓
+
+STT
+
+    ↓
+
+MultimodalInputResult
+
+    ↓
+
+Transcribed Text
+
+    ↓
+
+Runtime Integration
+
+    ↓
+
+AgentRuntimeContext.query
+```
+
+This creates a clean modality-to-runtime boundary.
+
+Text entered directly by a user and text produced through speech recognition can now converge at the runtime query layer.
+
+Conceptually:
+
+```text
+Text Input ──────────────┐
+                         │
+                         ▼
+                  Runtime Query
+                         ▲
+                         │
+Voice → STT → Text ──────┘
+```
+
+This convergence is important for future multimodal runtime behavior.
+
+---
+
+# 🛡️ Runtime Integration Validation
+
+The runtime integration validates the processing result before propagating text into runtime state.
+
+Conceptually:
+
+```text
+MultimodalInputResult
+
+        ↓
+
+Result Validation
+
+        ↓
+
+Success?
+
+   ┌────┴────┐
+   │         │
+  Yes        No
+   │         │
+   ▼         ▼
+Query      Failure
+Update     Handling
+```
+
+Successful results provide the transcribed text.
+
+Failed results remain failures and do not silently become runtime queries.
+
+This prevents invalid or incomplete voice processing from reaching the runtime layer.
 
 ---
 
 # 🔒 Provider Isolation
 
-The v0.57 architecture maintains strict provider isolation.
+The runtime layer does not depend directly on OpenAI.
+
+The architecture remains:
 
 ```text
-Voice Processing Architecture
-
+VoiceRuntimeIntegration
         │
-
         ▼
-
-STTProvider
-
+MultimodalInputResult
         │
-
         ▼
+Runtime Query
+```
 
-OpenAISTTProvider
+It does not require knowledge of:
 
-        │
-
-        ▼
+```text
+OpenAI SDK
 
 OpenAI API
+
+OpenAI Models
+
+OpenAI Request Format
+
+OpenAI Response Format
 ```
 
-The rest of Ultron does not need to know:
-
-```text
-OpenAI SDK Details
-
-HTTP Details
-
-Provider Request Structure
-
-Provider Response Structure
-
-Provider File Handling
-
-Provider-Specific Errors
-```
-
-Only the provider implementation is responsible for these concerns.
+Therefore the STT provider can later be replaced without redesigning the runtime integration.
 
 ---
 
 # 🔁 Future Provider Replacement
 
-The provider abstraction allows OpenAI STT to be replaced or complemented by other providers.
-
-Future implementations may include:
-
-```text
-Local STT Provider
-
-Whisper Provider
-
-Google STT Provider
-
-Azure STT Provider
-
-Offline STT Provider
-
-Streaming STT Provider
-
-Low-Latency STT Provider
-
-High-Accuracy STT Provider
-
-Specialized Speech Recognition Provider
-```
-
-Conceptually:
+The v0.58 runtime flow remains compatible with future providers:
 
 ```text
                  STTProvider
@@ -1103,758 +866,341 @@ Conceptually:
           │          │          │
           ▼          ▼          ▼
        OpenAI      Local      Future
-        STT         STT       Provider
+         STT        STT      Provider
+          │          │          │
+          └──────────┼──────────┘
+                     │
+                     ▼
+             MultimodalInputResult
+                     │
+                     ▼
+             VoiceRuntimeIntegration
+                     │
+                     ▼
+             AgentRuntimeContext
 ```
 
-The surrounding voice-processing architecture can remain unchanged.
+The runtime does not need to know which STT provider produced the transcription.
 
 ---
 
-# 🧠 Voice Processing Strategy + STT Provider
+# 🧠 Complete Voice Architecture After v0.58
 
-The combined v0.55, v0.56, and v0.57 architecture is:
-
-```text
-VoiceInput
-
-    │
-
-    ▼
-
-VoiceProcessingPipeline
-
-    │
-
-    ▼
-
-VoiceProcessor
-
-    │
-
-    ▼
-
-VoiceProcessingStrategy
-
-    │
-
-    ├── Strategy Configuration
-    ├── Strategy Metadata
-    ├── Strategy Validation
-    └── Processing Behavior
-
-    │
-
-    ▼
-
-STTProvider
-
-    │
-
-    ├── Provider Identity
-    ├── Supported Formats
-    ├── Capabilities
-    ├── Configuration
-    ├── Metadata
-    ├── Availability
-    ├── Input Validation
-    └── Transcription Contract
-
-    │
-
-    ▼
-
-OpenAISTTProvider
-
-    │
-
-    ├── OpenAI Client
-    ├── Audio Preparation
-    ├── Model Selection
-    ├── Transcription Request
-    ├── Response Extraction
-    └── Result Standardization
-
-    │
-
-    ▼
-
-MultimodalInputResult
-
-    │
-
-    ▼
-
-Conversation / Agent Runtime
-```
-
-The architecture now clearly separates:
-
-```text
-Pipeline
-
-    ↓
-
-Processing Strategy
-
-    ↓
-
-STT Provider Abstraction
-
-    ↓
-
-Concrete STT Provider
-
-    ↓
-
-External Speech Intelligence
-
-    ↓
-
-Structured Result
-```
-
----
-
-# 🧠 Processing Responsibility Separation
-
-The v0.57 architecture explicitly separates:
-
-```text
-Input Representation
-
-        ↓
-
-Input Routing
-
-        ↓
-
-Voice Processing
-
-        ↓
-
-Processing Orchestration
-
-        ↓
-
-Processing Strategy
-
-        ↓
-
-STT Provider Abstraction
-
-        ↓
-
-Concrete STT Provider
-
-        ↓
-
-External Speech Recognition
-
-        ↓
-
-Structured Result
-
-        ↓
-
-Conversation / Agent Runtime
-```
-
-This prevents provider-specific speech-recognition logic from leaking into the multimodal input, routing, pipeline, strategy, or execution layers.
-
----
-
-# 🔗 Complete Voice Architecture
-
-The complete voice architecture after v0.57 is:
-
-```text
-VoiceInput
-
-    ↓
-
-MultimodalInput
-
-    ↓
-
-InputType.VOICE
-
-    ↓
-
-InputRouter
-
-    ↓
-
-VOICE Handler
-
-    ↓
-
-VoiceProcessor
-
-    ↓
-
-VoiceProcessingPipeline
-
-    ↓
-
-VoiceProcessingStrategy
-
-    ↓
-
-STTProvider
-
-    ↓
-
-OpenAISTTProvider
-
-    ↓
-
-OpenAI Speech-to-Text
-
-    ↓
-
-MultimodalInputResult
-
-    ↓
-
-Conversation / Agent Runtime
-```
-
-Each layer has a dedicated responsibility:
-
-```text
-VoiceInput
-
-    → Represents voice input
-
-
-InputRouter
-
-    → Routes multimodal input
-
-
-VoiceProcessor
-
-    → Defines voice processing behavior
-
-
-VoiceProcessingPipeline
-
-    → Orchestrates voice processing
-
-
-VoiceProcessingStrategy
-
-    → Defines processing intelligence behavior
-
-
-STTProvider
-
-    → Defines provider-independent STT capability
-
-
-OpenAISTTProvider
-
-    → Implements OpenAI-specific STT behavior
-
-
-OpenAI STT
-
-    → Performs external speech recognition
-
-
-MultimodalInputResult
-
-    → Represents standardized processing outcome
-```
-
----
-
-# 🧠 v0.56 → v0.57 Evolution
-
-The architectural progression is:
-
-```text
-v0.55
-
-Voice Processing Intelligence Foundation
-
-    │
-
-    ├── VoiceProcessingStrategy
-    ├── Strategy Identity
-    ├── Processing Mode
-    ├── Strategy Configuration
-    ├── Strategy Metadata
-    ├── Strategy Validation
-    ├── VoiceInput Validation
-    ├── Processing Contract
-    └── Provider-Agnostic Processing Intelligence Boundary
-
-    │
-
-    ▼
-
-Provider-Agnostic Voice Processing Intelligence
-
-
-v0.56
-
-STT Provider Abstraction
-
-    │
-
-    ├── STTProvider
-    ├── STTProviderError
-    ├── Provider Identity
-    ├── Supported Audio Formats
-    ├── Capability Declaration
-    ├── Configuration Support
-    ├── Metadata Support
-    ├── Availability Boundary
-    ├── VoiceInput Validation
-    ├── Audio Format Compatibility
-    ├── Transcription Contract
-    ├── Defensive Configuration Copies
-    ├── Defensive Metadata Copies
-    └── Provider Isolation
-
-    │
-
-    ▼
-
-Provider-Agnostic Speech-to-Text Architecture
-
-
-v0.57
-
-First STT Provider
-
-    │
-
-    ├── OpenAISTTProvider
-    ├── OpenAI Client Boundary
-    ├── OpenAI STT Integration
-    ├── Default STT Model
-    ├── Audio File Preparation
-    ├── Supported Format Enforcement
-    ├── Provider Availability
-    ├── Transcription Request
-    ├── Response Text Extraction
-    ├── Empty Transcription Handling
-    ├── Provider Error Isolation
-    ├── Standardized MultimodalInputResult
-    ├── Provider Metadata Propagation
-    └── Provider Isolation
-
-    │
-
-    ▼
-
-Concrete Speech-to-Text Provider Architecture
-```
-
-Together:
-
-```text
-v0.51
-
-Multimodal Input Foundation
-
-        +
-
-v0.52
-
-Voice Input Foundation
-
-        +
-
-v0.53
-
-Voice Processing Foundation
-
-        +
-
-v0.54
-
-Voice Processing Pipeline Foundation
-
-        +
-
-v0.55
-
-Voice Processing Intelligence Foundation
-
-        +
-
-v0.56
-
-STT Provider Abstraction
-
-        +
-
-v0.57
-
-First STT Provider
-
-        ↓
-
-Modular Multimodal Voice Processing Architecture
-```
-
----
-
-# 🧠 Multimodal AI Foundation
-
-The v0.57 milestone still does not claim complete voice intelligence.
-
-It establishes the first real speech-to-text provider boundary required for future:
-
-```text
-Speech Recognition
-
-Speech-to-Text
-
-Voice Commands
-
-Voice Activity Detection
-
-Natural Language Voice Understanding
-
-Voice Intent Detection
-
-Conversational Voice Agents
-
-Voice-Based Tool Selection
-
-Voice-Based Planning
-
-Multimodal Voice Context
-```
-
-These remain future implementation layers unless explicitly implemented.
-
----
-
-# 🔮 Future Voice Architecture
-
-The long-term voice architecture can evolve toward:
+The complete architecture now becomes:
 
 ```text
 User
-
   │
-
   ▼
-
-Microphone
-
-  │
-
-  ▼
-
-Voice Capture
-
-  │
-
-  ▼
-
 Voice Input
-
   │
-
   ▼
-
-Multimodal Input
-
+VoiceInput
   │
-
   ▼
-
-Input Router
-
+InputRouter
   │
-
   ▼
-
-Voice Processor
-
+VOICE Handler
   │
-
   ▼
-
-Voice Processing Pipeline
-
+VoiceProcessingPipeline
   │
-
   ▼
-
-Voice Processing Strategy
-
+OpenAIVoiceProcessor
   │
-
   ▼
+OpenAISTTProvider
+  │
+  ▼
+OpenAI Speech-to-Text
+  │
+  ▼
+MultimodalInputResult
+  │
+  ▼
+VoiceRuntimeIntegration
+  │
+  ▼
+AgentRuntimeContext
+  │
+  ▼
+Runtime Query
+  │
+  ▼
+Agent Runtime
+```
+
+The resulting architecture is now:
+
+```text
+Voice
+
+ ↓
+
+Input
+
+ ↓
+
+Routing
+
+ ↓
+
+Processing
+
+ ↓
+
+Pipeline
+
+ ↓
+
+Strategy
+
+ ↓
 
 STT Provider
 
-  │
+ ↓
 
-  ▼
+Concrete Provider
 
-Concrete STT Provider
-
-  │
-
-  ▼
+ ↓
 
 Speech-to-Text
 
-  │
+ ↓
 
-  ▼
+Standardized Result
 
-Normalized Text / Intent
+ ↓
 
-  │
+Runtime Integration
 
-  ▼
+ ↓
 
-Context Layer
+Runtime Query
 
-  │
-
-  ▼
+ ↓
 
 Agent Runtime
-
-  │
-
-  ▼
-
-Planner
-
-  │
-
-  ▼
-
-Tool Selector
-
-  │
-
-  ▼
-
-Orchestrator
-
-  │
-
-  ▼
-
-Execution
 ```
-
-The v0.57 milestone now provides the first concrete implementation behind the STT Provider abstraction.
-
-The next milestone, v0.58, will focus on integrating voice transcription into the runtime pipeline.
 
 ---
 
-# 🧩 Multimodal Architecture After v0.57
+# 🧠 Responsibility Separation
 
-The multimodal entry architecture now evolves toward:
+v0.58 explicitly preserves the following responsibility boundaries:
 
 ```text
-                         User
+VoiceInput
+    → Represents audio input
 
-                          │
+InputRouter
+    → Routes multimodal input
 
-                          ▼
+VoiceProcessor
+    → Defines voice processing contract
 
-                   Multimodal Input
+VoiceProcessingPipeline
+    → Orchestrates processing
 
-                          │
+VoiceProcessingStrategy
+    → Defines processing intelligence behavior
 
-              ┌───────────┼───────────┐
-              │           │           │
-              ▼           ▼           ▼
-            Text        Voice       Vision
-                          │
-                          ▼
-                     VoiceInput
-                          │
-                          ▼
-                    InputType.VOICE
-                          │
-                          ▼
-                     InputRouter
-                          │
-                          ▼
-                    VOICE Handler
-                          │
-                          ▼
-                    VoiceProcessor
-                          │
-                          ▼
-              VoiceProcessingPipeline
-                          │
-                          ▼
-             VoiceProcessingStrategy
-                          │
-                          ▼
-                    STTProvider
-                          │
-                          ▼
-                OpenAISTTProvider
-                          │
-                          ▼
-                 OpenAI STT Service
-                          │
-                          ▼
-                   InputResult
-                          │
-                          ▼
-               Conversation / Agent
-                          │
-                          ▼
-                   Agent Runtime
+STTProvider
+    → Defines provider-independent STT capability
+
+OpenAISTTProvider
+    → Implements OpenAI-specific STT behavior
+
+OpenAIVoiceProcessor
+    → Connects voice processing to the STT provider
+
+MultimodalInputResult
+    → Represents standardized processing outcome
+
+VoiceRuntimeIntegration
+    → Connects successful transcription to runtime query state
+
+AgentRuntimeContext
+    → Holds the active runtime query
+
+Agent Runtime
+    → Consumes the runtime query
 ```
 
-Gesture input remains part of the multimodal foundation and can receive dedicated processing layers in future milestones.
+This prevents runtime-specific behavior from leaking into the provider layer.
 
 ---
 
-# 🚀 Future Runtime Capabilities
+# 🚫 What v0.58 Does NOT Do
 
-The v0.51 through v0.57 architecture creates a foundation for future capabilities such as:
+The v0.58 milestone intentionally stops at runtime query integration.
+
+It does **not** yet implement:
 
 ```text
-Voice Input
+Voice Command Execution
 
-Microphone Integration
+Tool Execution From Voice
 
-Voice Processing
+Automatic Browser Control
 
-Voice Processing Pipelines
+Voice Intent Detection
 
-Voice Processing Strategies
-
-STT Provider Abstraction
-
-Concrete STT Providers
-
-Speech-to-Text
-
-Voice Commands
-
-Streaming Voice
+Advanced Voice Understanding
 
 Voice Activity Detection
 
-Image Input
+Streaming STT
 
-Video Input
+Continuous Listening
 
-Gesture Input
+Wake Word Detection
 
-Multimodal Commands
+Voice Agent Conversation
 
-Speech-to-Intent
+Advanced Voice Memory
 
-Image-to-Intent
-
-Cross-Modal Context
-
-Multimodal Memory
-
-Multimodal Planning
-
-Multimodal Tool Selection
-
-Context-Aware Multimodal Agents
-
-Multimodal Automation
+Voice-Based Planning
 ```
 
-These capabilities are future extensions and are **not represented as completed functionality unless explicitly implemented**.
+These remain future milestones.
+
+In particular:
+
+```text
+v0.58
+
+Voice → Text → Runtime Query
+
+        ↓
+
+v0.59
+
+Voice → Command Execution
+```
 
 ---
 
-# 🧪 v0.57 Testing
+# 🚀 v0.58 Runtime Example
 
-The v0.57 milestone includes dedicated unit testing for the concrete OpenAI STT provider.
-
-Provider test coverage includes:
+The intended architecture is:
 
 ```text
-Provider Construction
+User:
 
-Client Validation
+"open Chrome"
+```
 
-Provider Configuration
+↓
 
-Provider Model Configuration
+```text
+VoiceInput
+```
 
-Provider Name Validation
+↓
 
-Supported Audio Formats
+```text
+VoiceProcessingPipeline
+```
 
-Audio Format Compatibility
+↓
 
-Provider Capabilities
+```text
+OpenAIVoiceProcessor
+```
 
-Provider Availability
+↓
 
-VoiceInput Validation
+```text
+OpenAISTTProvider
+```
 
-Invalid VoiceInput Protection
+↓
 
-Unsupported Audio Format Protection
+```text
+OpenAI STT
+```
 
-Missing Audio Format Handling
+↓
 
-Audio Data Handling
+```text
+"open Chrome"
+```
 
-Audio File Preparation
+↓
 
-OpenAI Client Invocation
+```text
+VoiceRuntimeIntegration
+```
 
-Model Propagation
+↓
 
-Successful Transcription
+```text
+AgentRuntimeContext.query
+```
 
-Completed Result Handling
+↓
 
-Successful Result Handling
+```text
+Agent Runtime
+```
 
-Transcription Data
+The runtime now receives the voice-derived text as a normal query.
+
+Actual command execution is deferred to v0.59.
+
+---
+
+# 🧪 v0.58 Testing
+
+The v0.58 milestone introduces dedicated runtime integration testing.
+
+Coverage includes:
+
+```text
+VoiceRuntimeIntegration Construction
+
+Runtime Context Validation
+
+Voice Processing Result Validation
+
+Successful Transcription Propagation
+
+Runtime Query Update
+
+Query Identity Propagation
 
 Input Identity Preservation
 
-Provider Identity Propagation
+Completed Result Handling
 
-Provider Metadata Propagation
+Failed Result Handling
 
-Model Metadata Propagation
+Invalid Result Protection
 
-Empty Transcription Handling
+Empty Transcription Protection
 
-Provider Exception Handling
-
-Unexpected Response Handling
-
-Dictionary Response Handling
-
-Object Response Handling
+Runtime Context Isolation
 
 Provider Isolation
 
-Standardized MultimodalInputResult
+Voice Processor Integration
 
-Provider Representation
+STT Provider Integration
+
+Voice → Text Flow
+
+Runtime Query Integration
+
+Failure Propagation
 ```
 
-The dedicated v0.57 OpenAI STT Provider test suite reports:
+The dedicated v0.58 test suite reports:
 
 ```text
-56 passed
+18 passed
 
 0 failed
 ```
@@ -1862,119 +1208,57 @@ The dedicated v0.57 OpenAI STT Provider test suite reports:
 The complete project regression suite reports:
 
 ```text
-1386 passed
+1404 passed
 
 0 failed
 ```
 
-This confirms that the first concrete STT provider integrates cleanly with the existing Ultron architecture without breaking previous functionality.
+This confirms that the voice-to-runtime integration was introduced without breaking the existing Ultron architecture.
 
 ---
 
-# 🛡️ v0.57 Quality Gate
+# 🛡️ v0.58 Quality Gate
 
 ```text
 [✓] Multimodal Input Foundation
 
-[✓] InputType Architecture
-
-[✓] MultimodalInput Model
-
-[✓] InputResult Model
-
-[✓] InputRouter
+[✓] Input Routing
 
 [✓] Voice Input Foundation
 
-[✓] Voice Input Layer
-
-[✓] Voice Input Validation
-
-[✓] Voice Input Routing
-
-[✓] Voice Handler Boundary
-
-[✓] Voice Input Result Integration
-
 [✓] Voice Processing Foundation
-
-[✓] VoiceProcessor
-
-[✓] Voice Processor Validation
-
-[✓] Voice Processing Contract
 
 [✓] Voice Processing Pipeline
 
-[✓] Pipeline Validation
-
-[✓] Processing Lifecycle
-
-[✓] Processor Isolation
-
-[✓] Pipeline Integration
-
 [✓] Voice Processing Strategy
 
-[✓] Strategy Validation
-
-[✓] Strategy Configuration
-
-[✓] Strategy Metadata
-
-[✓] Strategy Isolation
-
 [✓] STT Provider Abstraction
-
-[✓] STTProvider
-
-[✓] STTProviderError
-
-[✓] Provider Identity
-
-[✓] Supported Audio Formats
-
-[✓] Capability Declaration
-
-[✓] Provider Configuration
-
-[✓] Provider Metadata
-
-[✓] Provider Availability
-
-[✓] VoiceInput Provider Validation
-
-[✓] Audio Format Compatibility
-
-[✓] Transcription Contract
-
-[✓] Provider Isolation
 
 [✓] First Concrete STT Provider
 
 [✓] OpenAISTTProvider
 
-[✓] OpenAI Client Boundary
+[✓] OpenAIVoiceProcessor
 
-[✓] OpenAI STT Integration
-
-[✓] STT Model Configuration
-
-[✓] Audio File Preparation
-
-[✓] Transcription Request
-
-[✓] Response Text Extraction
+[✓] Voice Processing → STT Integration
 
 [✓] Standardized MultimodalInputResult
 
-[✓] Provider Metadata Propagation
+[✓] VoiceRuntimeIntegration
 
-[✓] Empty Transcription Handling
+[✓] Runtime Query Integration
 
-[✓] Provider Error Handling
+[✓] AgentRuntimeContext Integration
 
-[✓] Dedicated Provider Testing
+[✓] Voice → Text Runtime Flow
+
+[✓] Failure Propagation
+
+[✓] Provider Isolation
+
+[✓] Runtime Isolation
+
+[✓] Dedicated v0.58 Testing
 
 [✓] Full Regression Testing
 ```
@@ -2032,9 +1316,15 @@ v0.57 OpenAI STT Provider Tests
 0 failed
 
 
+v0.58 Voice Runtime Integration Tests
+
+18 passed
+0 failed
+
+
 Full Ultron Regression
 
-1386 passed
+1404 passed
 0 failed
 
 
@@ -2088,6 +1378,14 @@ Convert Speech to Text
 
       ↓
 
+Integrate With Runtime
+
+      ↓
+
+Create Runtime Query
+
+      ↓
+
 Remember
 
       ↓
@@ -2097,10 +1395,6 @@ Plan
       ↓
 
 Select Capabilities
-
-      ↓
-
-Create Runtime Context
 
       ↓
 
@@ -2278,6 +1572,31 @@ Durable Automation
 ---
 
 # 📜 Version History
+
+## v0.58 — Voice → Text Runtime Integration
+
+* Dedicated Voice → Text Runtime Integration
+* `OpenAIVoiceProcessor`
+* Voice processor → STT provider adapter
+* Concrete STT provider integration
+* Voice processing pipeline integration
+* Standardized transcription result propagation
+* `VoiceRuntimeIntegration`
+* Runtime query integration
+* `AgentRuntimeContext` query propagation
+* Successful transcription → runtime query flow
+* Voice input identity preservation
+* Runtime context isolation
+* Provider isolation
+* Failure propagation
+* Invalid result protection
+* Empty transcription protection
+* Voice → Text → Runtime architecture
+* 18 dedicated Voice Runtime Integration tests
+* 1404 full-suite regression tests
+* Full regression compatibility
+
+---
 
 ## v0.57 — First STT Provider
 
@@ -2497,63 +1816,6 @@ Durable Automation
 
 ---
 
-## v0.50 — Execution Context Query & Orchestration Integration
-
-* Dedicated ExecutionContext Query Layer
-* `has_result()` query
-* `has_failed_steps()` query
-* `has_completed_steps()` query
-* `has_skipped_steps()` query
-* `is_finished()` query
-* `get_last_result()` query
-* `get_processed_steps()` query
-* `get_remaining_steps()` query
-* AgentOrchestrator context creation
-* Runtime context lifecycle synchronization
-* Step state synchronization
-* Execution result tracking
-* Failure tracking
-* Retry tracking
-* Skip tracking
-* Processed step tracking
-* Remaining step tracking
-* Context snapshot support
-* Context reset support
-* Execution-scoped context integration
-* Context isolation
-* Context-aware orchestration foundation
-* Context-aware execution foundation
-* Separation between context queries and execution control
-* Backward-compatible execution architecture
-
----
-
-## v0.49 — Agent Runtime Context
-
-* Dedicated Agent Runtime Context layer
-* Execution-scoped runtime context
-* Execution identity context
-* Agent identity context
-* User query context
-* Execution lifecycle context
-* Current step tracking
-* Current step index tracking
-* Completed step tracking
-* Failed step tracking
-* Pending step tracking
-* Retry state tracking
-* Runtime metadata support
-* Context propagation foundation
-* Context isolation
-* Active execution state representation
-* Context-aware execution foundation
-* Context-aware orchestration foundation
-* Runtime context and snapshot separation
-* Runtime context and persistence separation
-* Runtime context and recovery separation
-
----
-
 # 📊 Version Milestone Philosophy
 
 Ultron continues to evolve through focused architectural milestones.
@@ -2567,7 +1829,7 @@ v0.38 → Tool System
 
         ↓
 
-v0.39 → Tool Selector
+v0.39 → Planning Selection
 
         ↓
 
@@ -2741,6 +2003,12 @@ First STT Provider
 
       ▼
 
+Voice → Text Runtime Integration
+
+      │
+
+      ▼
+
 Speech-to-Text Intelligence
 
       │
@@ -2906,7 +2174,7 @@ v1.0
 
 ```text
 ╔══════════════════════════════════════════════════════╗
-║                    ULTRON v0.57                     ║
+║                    ULTRON v0.58                     ║
 ╠══════════════════════════════════════════════════════╣
 ║ Conversation Engine                           ✓     ║
 ║ Smart Memory System                            ✓     ║
@@ -2965,11 +2233,11 @@ v1.0
 ║ Processing Result Helpers                       ✓     ║
 ║ Success Result Handling                         ✓     ║
 ║ Failure Result Handling                         ✓     ║
-║ Processor Metadata                             ✓     ║
-║ Processor Identity                             ✓     ║
+║ Processor Metadata                              ✓     ║
+║ Processor Identity                              ✓     ║
 ║ Voice Processor Integration                     ✓     ║
 ║                                                    ║
-║ Voice Processing Pipeline                       ✓     ║
+║ Voice Processing Pipeline                      ✓     ║
 ║ Pipeline Validation                             ✓     ║
 ║ Processing Lifecycle                            ✓     ║
 ║ Success Processing                              ✓     ║
@@ -2982,17 +2250,17 @@ v1.0
 ║ Pipeline Integration                            ✓     ║
 ║                                                    ║
 ║ Voice Processing Strategy                      ✓     ║
-║ Strategy Validation                             ✓     ║
-║ Strategy Identity                               ✓     ║
-║ Processing Mode                                 ✓     ║
-║ Strategy Configuration                           ✓     ║
-║ Strategy Metadata                                ✓     ║
-║ Configuration Isolation                          ✓     ║
-║ Metadata Isolation                               ✓     ║
-║ Processing Contract                              ✓     ║
-║ Provider-Agnostic Strategy Boundary              ✓     ║
+║ Strategy Validation                              ✓     ║
+║ Strategy Identity                                ✓     ║
+║ Processing Mode                                  ✓     ║
+║ Strategy Configuration                            ✓     ║
+║ Strategy Metadata                                 ✓     ║
+║ Configuration Isolation                           ✓     ║
+║ Metadata Isolation                                ✓     ║
+║ Processing Contract                               ✓     ║
+║ Provider-Agnostic Strategy Boundary               ✓     ║
 ║                                                    ║
-║ STT Provider Abstraction                         ✓     ║
+║ STT Provider Abstraction                        ✓     ║
 ║ STTProvider                                      ✓     ║
 ║ STTProviderError                                 ✓     ║
 ║ Provider Identity                                ✓     ║
@@ -3002,38 +2270,49 @@ v1.0
 ║ Provider Metadata                                 ✓     ║
 ║ Provider Availability                             ✓     ║
 ║ VoiceInput Provider Validation                    ✓     ║
-║ Audio Format Compatibility                        ✓     ║
+║ Audio Format Compatibility                       ✓     ║
 ║ Transcription Contract                            ✓     ║
 ║ Provider Isolation                                ✓     ║
 ║ Provider-Agnostic STT Boundary                    ✓     ║
 ║                                                    ║
-║ First STT Provider                                ✓     ║
+║ First STT Provider                               ✓     ║
 ║ OpenAISTTProvider                                 ✓     ║
 ║ OpenAI Client Boundary                            ✓     ║
 ║ OpenAI STT Integration                            ✓     ║
-║ STT Model Configuration                            ✓     ║
-║ Audio File Preparation                             ✓     ║
-║ Transcription Request                              ✓     ║
-║ Response Text Extraction                            ✓     ║
+║ STT Model Configuration                           ✓     ║
+║ Audio File Preparation                            ✓     ║
+║ Transcription Request                             ✓     ║
+║ Response Text Extraction                           ✓     ║
 ║ Empty Transcription Handling                       ✓     ║
 ║ Provider Error Handling                            ✓     ║
 ║ Standardized MultimodalInputResult                 ✓     ║
 ║ Provider Metadata Propagation                      ✓     ║
 ║ Provider Isolation                                ✓     ║
 ║                                                    ║
+║ Voice → Text Runtime Integration                  ✓     ║
+║ OpenAIVoiceProcessor                               ✓     ║
+║ Voice Processor → STT Adapter                      ✓     ║
+║ STT Result Integration                             ✓     ║
+║ VoiceRuntimeIntegration                            ✓     ║
+║ Runtime Query Propagation                          ✓     ║
+║ AgentRuntimeContext Integration                    ✓     ║
+║ Voice → Text → Runtime Flow                        ✓     ║
+║ Runtime Failure Handling                           ✓     ║
+║ Runtime Isolation                                  ✓     ║
+║                                                    ║
 ║ Full Regression Testing                            ✓     ║
 ╠══════════════════════════════════════════════════════╣
-║ v0.57 Provider Tests: 56 passed                    ║
-║ Full Regression: 1386 passed                      ║
+║ v0.58 Runtime Tests: 18 passed                    ║
+║ Full Regression: 1404 passed                      ║
 ║ Status: Active Development                         ║
 ╚══════════════════════════════════════════════════════╝
 ```
 
 ---
 
-# 🧪 v0.57 Validation
+# 🧪 v0.58 Validation
 
-The v0.57 architecture has dedicated coverage for:
+The v0.58 architecture has dedicated coverage for:
 
 ```text
 Multimodal Input
@@ -3142,47 +2421,59 @@ Result Standardization
 
 Provider Metadata Propagation
 
+OpenAIVoiceProcessor
+
+Voice Processor → STT Integration
+
+VoiceRuntimeIntegration
+
+Runtime Query Propagation
+
+AgentRuntimeContext Integration
+
+Voice → Text Runtime Flow
+
+Failure Propagation
+
 Provider Isolation
 
-Failure Handling
-
-Exception Isolation
+Runtime Isolation
 
 Validation
 
 Exported Symbols
 ```
 
-The authoritative v0.57 validation result is:
+The authoritative v0.58 validation result is:
 
 ```text
-OpenAI STT Provider Tests: PASS
+Voice Runtime Integration Tests: PASS
 
-56 passed
+18 passed
 
 Failures: 0
 
 
 Full Regression: PASS
 
-1386 passed
+1404 passed
 
 Failures: 0
 
 
-Release: v0.57
+Release: v0.58
 
-Milestone: First STT Provider
+Milestone: Voice → Text Runtime Integration
 
 Status: Active Development
 ```
 
 ---
 
-# 🏁 v0.57 Status
+# 🏁 v0.58 Status
 
 ```text
-ULTRON v0.57
+ULTRON v0.58
 
 ├── Agent Runtime                         ✓
 ├── Tool System                           ✓
@@ -3241,13 +2532,13 @@ ULTRON v0.57
 ├── Voice Processing Pipeline             ✓
 ├── Pipeline Validation                   ✓
 ├── Processing Lifecycle                  ✓
-├── Success Processing                    ✓
-├── Failure Processing                    ✓
-├── Processor Result Validation           ✓
+├── Success Processing                   ✓
+├── Failure Processing                   ✓
+├── Processor Result Validation            ✓
 ├── Processor Isolation                   ✓
 ├── Processor Replacement                 ✓
 ├── Pipeline Metadata                     ✓
-├── Input Identity Preservation           ✓
+├── Input Identity Preservation            ✓
 ├── Pipeline Integration                  ✓
 │
 ├── Voice Processing Strategy             ✓
@@ -3274,7 +2565,7 @@ ULTRON v0.57
 ├── Audio Format Compatibility            ✓
 ├── Transcription Contract                ✓
 ├── Provider Isolation                    ✓
-├── Provider-Agnostic STT Boundary        ✓
+├── Provider-Agnostic STT Boundary       ✓
 │
 ├── First STT Provider                    ✓
 ├── OpenAISTTProvider                     ✓
@@ -3290,16 +2581,25 @@ ULTRON v0.57
 ├── Provider Metadata Propagation         ✓
 ├── Provider Isolation                    ✓
 │
+├── Voice → Text Runtime Integration      ✓
+├── OpenAIVoiceProcessor                  ✓
+├── Voice Processor → STT Adapter         ✓
+├── STT Result Integration                ✓
+├── VoiceRuntimeIntegration               ✓
+├── Runtime Query Propagation             ✓
+├── AgentRuntimeContext Integration       ✓
+├── Voice → Text → Runtime Flow           ✓
+├── Runtime Failure Handling              ✓
+├── Runtime Isolation                     ✓
+│
 └── Full Regression Testing               ✓
 
-Provider Tests: 56 passed
-
-Full Regression: 1386 passed
-
+Runtime Tests: 18 passed
+Full Regression: 1404 passed
 Status: Active Development
 ```
 
-Ultron v0.57 extends the **Multimodal Input Foundation**, **Voice Input Foundation**, **Voice Processing Foundation**, **Voice Processing Pipeline Foundation**, and **Voice Processing Intelligence Foundation** with the first concrete **STT Provider implementation**.
+Ultron v0.58 extends the **Multimodal Input Foundation**, **Voice Input Foundation**, **Voice Processing Foundation**, **Voice Processing Pipeline Foundation**, **Voice Processing Intelligence Foundation**, **STT Provider Abstraction**, and **First STT Provider** with the first complete **Voice → Text Runtime Integration**.
 
 The architecture now provides a structured path from:
 
@@ -3332,15 +2632,11 @@ Voice Handler
 
     ↓
 
-VoiceProcessor
-
-    ↓
-
 VoiceProcessingPipeline
 
     ↓
 
-VoiceProcessingStrategy
+OpenAIVoiceProcessor
 
     ↓
 
@@ -3360,10 +2656,30 @@ MultimodalInputResult
 
     ↓
 
+VoiceRuntimeIntegration
+
+    ↓
+
+AgentRuntimeContext
+
+    ↓
+
+Runtime Query
+
+    ↓
+
 Ultron Runtime
 ```
 
-This is an important architectural step toward making speech-to-text a real, provider-independent capability of Ultron while preserving the modularity of the existing multimodal, agent, and execution infrastructure.
+This is an important architectural step toward making voice input a real runtime modality of Ultron while preserving the modularity of the existing multimodal, agent, and execution infrastructure.
+
+The next milestone is:
+
+```text
+v0.59 → Voice Command Execution
+```
+
+which will build on the runtime query produced by v0.58 and connect voice-derived commands to Ultron's command, agent, tool, and execution infrastructure.
 
 The long-term direction remains:
 
@@ -3380,11 +2696,15 @@ Process
 
    ↓
 
-Select
+Transcribe
 
    ↓
 
-Transcribe
+Integrate
+
+   ↓
+
+Contextualize
 
    ↓
 
@@ -3397,10 +2717,6 @@ Plan
    ↓
 
 Select
-
-   ↓
-
-Contextualize
 
    ↓
 
