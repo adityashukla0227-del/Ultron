@@ -6,71 +6,71 @@ Ultron is evolving from a personal AI assistant into a modular AI Operating Syst
 
 The project is designed around clear architectural boundaries between:
 
-Conversation 
- 
-Memory 
- 
-AI Providers 
- 
-Agents 
- 
-Tools 
- 
-Planning 
- 
-Orchestration 
- 
-Execution Control 
- 
-Execution Events 
- 
-Observability 
- 
-Metrics 
- 
-Persistence 
- 
-State Snapshots 
- 
-Runtime Context 
- 
-Context Queries 
- 
-Recovery 
- 
-Automation 
- 
-Multimodal Input 
- 
-Input Routing 
- 
-Input Results 
- 
-Voice Input 
- 
-Voice Processing 
- 
-Voice Processing Pipeline 
- 
-Voice Processing Strategy 
- 
-STT Provider Abstraction 
- 
-Concrete STT Provider 
- 
-Voice → Text Runtime Integration 
- 
-Audio Capture 
- 
-Microphone Capture 
- 
-Real Voice Input 
- 
-Voice Command Execution 
- 
-Future Voice Intelligence 
- 
-Future Multimodal Intelligence 
+Conversation
+
+Memory
+
+AI Providers
+
+Agents
+
+Tools
+
+Planning
+
+Orchestration
+
+Execution Control
+
+Execution Events
+
+Observability
+
+Metrics
+
+Persistence
+
+State Snapshots
+
+Runtime Context
+
+Context Queries
+
+Recovery
+
+Automation
+
+Multimodal Input
+
+Input Routing
+
+Input Results
+
+Voice Input
+
+Voice Processing
+
+Voice Processing Pipeline
+
+Voice Processing Strategy
+
+STT Provider Abstraction
+
+Concrete STT Provider
+
+Voice → Text Runtime Integration
+
+Audio Capture
+
+Microphone Capture
+
+Real Voice Input
+
+Voice Command Execution
+
+Future Voice Intelligence
+
+Future Multimodal Intelligence
 
 The long-term objective is to create a reliable, extensible, observable, persistent, context-aware, recoverable, multimodal, and voice-capable agent execution platform.
 
@@ -82,173 +82,173 @@ Each milestone introduces a focused capability while preserving the boundaries e
 
 Ultron's architecture progressively evolves through independent execution layers:
 
-User 
- 
- │ 
- 
- ▼ 
- 
-Multimodal Input 
- 
- │ 
- 
- ├── Text 
- ├── Voice 
- ├── Vision 
- └── Gesture 
- 
- │ 
- 
- ▼ 
- 
-Input Router 
- 
- │ 
- 
- ├── Text Handler 
- ├── Voice Handler 
- ├── Vision Handler 
- └── Gesture Handler 
- 
- │ 
- 
- ▼ 
- 
-Normalized Input Result 
- 
- │ 
- 
- ├── Text Result 
- ├── Voice Result 
- ├── Vision Result 
- └── Gesture Result 
- 
- │ 
- 
- ▼ 
- 
-Conversation Engine 
- 
- │ 
- 
- ▼ 
- 
-AI Engine 
- 
- │ 
- 
- ▼ 
- 
-Agent Runtime 
- 
- │ 
- 
- ▼ 
- 
-Tool System 
- 
- │ 
- 
- ▼ 
- 
-Tool Selector 
- 
- │ 
- 
- ▼ 
- 
-Agent Planner 
- 
- │ 
- 
- ▼ 
- 
-Agent Plan 
- 
- │ 
- 
- ▼ 
- 
-Agent Orchestrator 
- 
- │ 
- 
- ▼ 
- 
-Execution Controller 
- 
- │ 
- 
- ▼ 
- 
-Execution Context 
- 
- │ 
- 
- ├── Context Queries 
- ├── Execution State 
- ├── Step State 
- ├── Results 
- ├── Retry State 
- └── Runtime Metadata 
- 
- │ 
- 
- ▼ 
- 
-Execution 
- 
- │ 
- 
- ├── Events 
- ├── Observability 
- ├── Metrics 
- ├── Persistence 
- └── State Snapshots 
- 
- │ 
- 
- ▼ 
- 
-Recovery Infrastructure 
- 
- │ 
- 
- ▼ 
- 
-Voice Processing Infrastructure 
- 
- │ 
- 
- ├── Audio Capture 
- ├── Microphone Capture 
- ├── VoiceInput 
- ├── VoiceProcessor 
- ├── VoiceProcessingPipeline 
- ├── VoiceProcessingStrategy 
- ├── STTProvider 
- ├── Concrete STT Provider 
- └── Voice → Text Runtime Integration 
- 
- │ 
- 
- ▼ 
- 
-Voice Command Execution 
- 
- │ 
- 
- ├── Runtime Query 
- ├── Command Resolution 
- ├── Agent Planning 
- ├── Plan Orchestration 
- └── Agent Tool Execution 
- 
- │ 
- 
- ▼ 
- 
-Future Durable Automation 
+User
+
+│
+
+▼
+
+Multimodal Input
+
+│
+
+├── Text
+├── Voice
+├── Vision
+└── Gesture
+
+│
+
+▼
+
+Input Router
+
+│
+
+├── Text Handler
+├── Voice Handler
+├── Vision Handler
+└── Gesture Handler
+
+│
+
+▼
+
+Normalized Input Result
+
+│
+
+├── Text Result
+├── Voice Result
+├── Vision Result
+└── Gesture Result
+
+│
+
+▼
+
+Conversation Engine
+
+│
+
+▼
+
+AI Engine
+
+│
+
+▼
+
+Agent Runtime
+
+│
+
+▼
+
+Tool System
+
+│
+
+▼
+
+Tool Selector
+
+│
+
+▼
+
+Agent Planner
+
+│
+
+▼
+
+Agent Plan
+
+│
+
+▼
+
+Agent Orchestrator
+
+│
+
+▼
+
+Execution Controller
+
+│
+
+▼
+
+Execution Context
+
+│
+
+├── Context Queries
+├── Execution State
+├── Step State
+├── Results
+├── Retry State
+└── Runtime Metadata
+
+│
+
+▼
+
+Execution
+
+│
+
+├── Events
+├── Observability
+├── Metrics
+├── Persistence
+└── State Snapshots
+
+│
+
+▼
+
+Recovery Infrastructure
+
+│
+
+▼
+
+Voice Processing Infrastructure
+
+│
+
+├── Audio Capture
+├── Microphone Capture
+├── VoiceInput
+├── VoiceProcessor
+├── VoiceProcessingPipeline
+├── VoiceProcessingStrategy
+├── STTProvider
+├── Concrete STT Provider
+└── Voice → Text Runtime Integration
+
+│
+
+▼
+
+Voice Command Execution
+
+│
+
+├── Runtime Query
+├── Command Resolution
+├── Agent Planning
+├── Plan Orchestration
+└── Agent Tool Execution
+
+│
+
+▼
+
+Future Durable Automation
 
 Each layer has a dedicated responsibility.
 
@@ -276,119 +276,119 @@ This means the architecture now progresses from an actual microphone all the way
 
 📈 Version Progression
 
-v0.37 → Agent Runtime 
- 
-        ↓ 
- 
-v0.38 → Agent Tool System 
- 
-        ↓ 
- 
-v0.39 → Tool Selector 
- 
-        ↓ 
- 
-v0.40 → Agent Planning 
- 
-        ↓ 
- 
-v0.41 → Agent Execution & Plan Orchestration 
- 
-        ↓ 
- 
-v0.42 → Agent Execution Controller 
- 
-        ↓ 
- 
-v0.43 → Orchestrator Execution Control 
- 
-        ↓ 
- 
-v0.44 → Execution Events & Event Store 
- 
-        ↓ 
- 
-v0.45 → Execution Observability 
- 
-        ↓ 
- 
-v0.46 → Execution Metrics 
- 
-        ↓ 
- 
-v0.47 → Persistent Execution History 
- 
-        ↓ 
- 
-v0.48 → Execution Recovery & State Restoration 
- 
-        ↓ 
- 
-v0.49 → Agent Runtime Context 
- 
-        ↓ 
- 
-v0.50 → Execution Context & Orchestration Integration 
- 
-        ↓ 
- 
-v0.51 → Multimodal Input Foundation 
- 
-        ↓ 
- 
-v0.52 → Voice Input Foundation 
- 
-        ↓ 
- 
-v0.53 → Voice Processing Foundation 
- 
-        ↓ 
- 
-v0.54 → Voice Processing Pipeline Foundation 
- 
-        ↓ 
- 
-v0.55 → Voice Processing Intelligence Foundation 
- 
-        ↓ 
- 
-v0.56 → STT Provider Abstraction 
- 
-        ↓ 
- 
-v0.57 → First STT Provider 
- 
-        ↓ 
- 
-v0.58 → Voice → Text Runtime Integration 
- 
-        ↓ 
- 
-v0.59 → Audio Capture Foundation 
- 
-        ↓ 
- 
-v0.60 → Voice Command Execution 
- 
-        ↓ 
- 
-Future → Advanced Voice Intelligence 
- 
-        ↓ 
- 
-Future → Vision / Gesture Intelligence 
- 
-        ↓ 
- 
-Future → Context-Aware Multimodal Agents 
- 
-        ↓ 
- 
-Future → Durable Automation 
- 
-        ↓ 
- 
-v1.0 → Stable AI Operating System Platform 
+v0.37 → Agent Runtime
+
+    ↓
+
+v0.38 → Agent Tool System
+
+    ↓
+
+v0.39 → Tool Selector
+
+    ↓
+
+v0.40 → Agent Planning
+
+    ↓
+
+v0.41 → Agent Execution & Plan Orchestration
+
+    ↓
+
+v0.42 → Agent Execution Controller
+
+    ↓
+
+v0.43 → Orchestrator Execution Control
+
+    ↓
+
+v0.44 → Execution Events & Event Store
+
+    ↓
+
+v0.45 → Execution Observability
+
+    ↓
+
+v0.46 → Execution Metrics
+
+    ↓
+
+v0.47 → Persistent Execution History
+
+    ↓
+
+v0.48 → Execution Recovery & State Restoration
+
+    ↓
+
+v0.49 → Agent Runtime Context
+
+    ↓
+
+v0.50 → Execution Context & Orchestration Integration
+
+    ↓
+
+v0.51 → Multimodal Input Foundation
+
+    ↓
+
+v0.52 → Voice Input Foundation
+
+    ↓
+
+v0.53 → Voice Processing Foundation
+
+    ↓
+
+v0.54 → Voice Processing Pipeline Foundation
+
+    ↓
+
+v0.55 → Voice Processing Intelligence Foundation
+
+    ↓
+
+v0.56 → STT Provider Abstraction
+
+    ↓
+
+v0.57 → First STT Provider
+
+    ↓
+
+v0.58 → Voice → Text Runtime Integration
+
+    ↓
+
+v0.59 → Audio Capture Foundation
+
+    ↓
+
+v0.60 → Voice Command Execution
+
+    ↓
+
+Future → Advanced Voice Intelligence
+
+    ↓
+
+Future → Vision / Gesture Intelligence
+
+    ↓
+
+Future → Context-Aware Multimodal Agents
+
+    ↓
+
+Future → Durable Automation
+
+    ↓
+
+v1.0 → Stable AI Operating System Platform
 
 🚀 v0.59 — Audio Capture Foundation
 
@@ -398,33 +398,33 @@ Previous versions of the voice architecture assumed that a VoiceInput already ex
 
 That architecture was intentionally modular, but it left one important physical boundary incomplete:
 
-REAL MICROPHONE 
-       ↓ 
-     ?????? 
-       ↓ 
-VoiceInput 
+REAL MICROPHONE
+↓
+??????
+↓
+VoiceInput
 
 v0.59 fills that gap.
 
 The new architecture is:
 
-🎤 Real Microphone 
- 
-       ↓ 
- 
-MicrophoneCapture 
- 
-       ↓ 
- 
-AudioCapture 
- 
-       ↓ 
- 
-VoiceInput 
- 
-       ↓ 
- 
-Existing Voice Processing Architecture 
+🎤 Real Microphone
+
+   ↓
+
+MicrophoneCapture
+
+   ↓
+
+AudioCapture
+
+   ↓
+
+VoiceInput
+
+   ↓
+
+Existing Voice Processing Architecture
 
 The objective of v0.59 is therefore not advanced voice intelligence.
 
@@ -434,99 +434,99 @@ The objective is to establish a clean, testable, hardware-independent audio capt
 
 The v0.59 architecture is:
 
-Physical Microphone 
- 
-       ↓ 
- 
-MicrophoneCapture 
- 
-       ↓ 
- 
-AudioCapture 
- 
-       ↓ 
- 
-Raw PCM Audio 
- 
-       ↓ 
- 
-PCM → WAV Conversion 
- 
-       ↓ 
- 
-VoiceInput 
- 
-       ↓ 
- 
-VoiceProcessingPipeline 
- 
-       ↓ 
- 
-VoiceProcessor 
- 
-       ↓ 
- 
-STTProvider 
- 
-       ↓ 
- 
-Concrete STT Provider 
- 
-       ↓ 
- 
-MultimodalInputResult 
- 
-       ↓ 
- 
-VoiceRuntimeIntegration 
- 
-       ↓ 
- 
-AgentRuntimeContext 
- 
-       ↓ 
- 
-Runtime Query 
+Physical Microphone
+
+   ↓
+
+MicrophoneCapture
+
+   ↓
+
+AudioCapture
+
+   ↓
+
+Raw PCM Audio
+
+   ↓
+
+PCM → WAV Conversion
+
+   ↓
+
+VoiceInput
+
+   ↓
+
+VoiceProcessingPipeline
+
+   ↓
+
+VoiceProcessor
+
+   ↓
+
+STTProvider
+
+   ↓
+
+Concrete STT Provider
+
+   ↓
+
+MultimodalInputResult
+
+   ↓
+
+VoiceRuntimeIntegration
+
+   ↓
+
+AgentRuntimeContext
+
+   ↓
+
+Runtime Query
 
 Conceptually:
 
-🎤 REAL WORLD AUDIO 
- 
-       ↓ 
- 
-Audio Capture 
- 
-       ↓ 
- 
-Microphone Abstraction 
- 
-       ↓ 
- 
-Voice Input 
- 
-       ↓ 
- 
-Voice Processing 
- 
-       ↓ 
- 
-Speech-to-Text 
- 
-       ↓ 
- 
-Transcription 
- 
-       ↓ 
- 
-Runtime Integration 
- 
-       ↓ 
- 
-Runtime Query 
- 
-       ↓ 
- 
-Agent Runtime 
+🎤 REAL WORLD AUDIO
+
+   ↓
+
+Audio Capture
+
+   ↓
+
+Microphone Abstraction
+
+   ↓
+
+Voice Input
+
+   ↓
+
+Voice Processing
+
+   ↓
+
+Speech-to-Text
+
+   ↓
+
+Transcription
+
+   ↓
+
+Runtime Integration
+
+   ↓
+
+Runtime Query
+
+   ↓
+
+Agent Runtime
 
 This creates the complete architectural direction from physical voice input toward runtime intelligence.
 
@@ -540,31 +540,31 @@ Ultron can now acquire audio from a real system microphone.
 
 The capture layer is intentionally isolated from:
 
-Speech-to-Text 
- 
-Voice Understanding 
- 
-Intent Detection 
- 
-Command Execution 
- 
-Agent Planning 
- 
-Tool Execution 
- 
-Runtime Orchestration 
+Speech-to-Text
+
+Voice Understanding
+
+Intent Detection
+
+Command Execution
+
+Agent Planning
+
+Tool Execution
+
+Runtime Orchestration
 
 Its responsibility is simply:
 
-Microphone 
- 
-   ↓ 
- 
-Capture Audio 
- 
-   ↓ 
- 
-Return Structured VoiceInput 
+Microphone
+
+↓
+
+Capture Audio
+
+↓
+
+Return Structured VoiceInput
 
 This separation is important because microphone hardware should not determine how the rest of Ultron processes voice.
 
@@ -572,19 +572,19 @@ This separation is important because microphone hardware should not determine ho
 
 v0.59 introduces:
 
-modules/multimodal/audio_capture.py 
+modules/multimodal/audio_capture.py
 
 The AudioCapture abstraction defines the generic contract for audio acquisition.
 
 Conceptually:
 
-AudioCapture 
-     │ 
-     ├── start() 
-     ├── stop() 
-     ├── is_recording() 
-     ├── is_available() 
-     └── get_device_info() 
+AudioCapture
+│
+├── start()
+├── stop()
+├── is_recording()
+├── is_available()
+└── get_device_info()
 
 The abstraction does not know how audio is captured.
 
@@ -592,11 +592,11 @@ It only defines what an audio capture implementation must provide.
 
 This creates a provider-style boundary between:
 
-Audio Capture Contract 
- 
-        and 
- 
-Concrete Audio Capture Implementation 
+Audio Capture Contract
+
+    and
+
+Concrete Audio Capture Implementation
 
 🧠 AudioCapture Responsibility
 
@@ -604,41 +604,41 @@ AudioCapture is responsible for defining the generic audio acquisition lifecycle
 
 Its responsibilities include:
 
-Capture Configuration 
- 
-Sample Rate 
- 
-Channel Configuration 
- 
-Recording Lifecycle 
- 
-Availability Detection 
- 
-Device Information 
- 
-Last Capture Tracking 
- 
-Metadata Support 
- 
-Capture Contract Validation 
+Capture Configuration
+
+Sample Rate
+
+Channel Configuration
+
+Recording Lifecycle
+
+Availability Detection
+
+Device Information
+
+Last Capture Tracking
+
+Metadata Support
+
+Capture Contract Validation
 
 It does not perform:
 
-Speech-to-Text 
- 
-Voice Processing 
- 
-Intent Detection 
- 
-Command Execution 
- 
-Tool Selection 
- 
-Planning 
- 
-Orchestration 
- 
-Runtime Execution 
+Speech-to-Text
+
+Voice Processing
+
+Intent Detection
+
+Command Execution
+
+Tool Selection
+
+Planning
+
+Orchestration
+
+Runtime Execution
 
 This maintains strict architectural separation.
 
@@ -646,39 +646,39 @@ This maintains strict architectural separation.
 
 v0.59 introduces the concrete implementation:
 
-modules/multimodal/capture/microphone_capture.py 
+modules/multimodal/capture/microphone_capture.py
 
 MicrophoneCapture implements the AudioCapture contract using the system microphone through sounddevice.
 
 Conceptually:
 
-AudioCapture 
-      │ 
-      ▼ 
-MicrophoneCapture 
-      │ 
-      ▼ 
-System Microphone 
+AudioCapture
+│
+▼
+MicrophoneCapture
+│
+▼
+System Microphone
 
 The implementation is responsible for:
 
-Microphone Availability 
- 
-Device Selection 
- 
-Recording Start 
- 
-Recording Stop 
- 
-Audio Buffering 
- 
-PCM Audio Collection 
- 
-Capture Error Detection 
- 
-PCM → WAV Conversion 
- 
-VoiceInput Creation 
+Microphone Availability
+
+Device Selection
+
+Recording Start
+
+Recording Stop
+
+Audio Buffering
+
+PCM Audio Collection
+
+Capture Error Detection
+
+PCM → WAV Conversion
+
+VoiceInput Creation
 
 🔌 Microphone Backend Isolation
 
@@ -686,30 +686,30 @@ The concrete implementation uses an injectable backend.
 
 Conceptually:
 
-MicrophoneCapture 
-       │ 
-       ▼ 
-Audio Backend 
-       │ 
-       ├── Real sounddevice 
-       │ 
-       └── Fake Test Backend 
+MicrophoneCapture
+│
+▼
+Audio Backend
+│
+├── Real sounddevice
+│
+└── Fake Test Backend
 
 This allows Ultron to test microphone behavior without requiring physical hardware for every unit test.
 
 The production path uses:
 
-sounddevice 
+sounddevice
 
 while automated tests can use controlled fake streams.
 
 This provides:
 
-Real Hardware Support 
- 
-+ 
- 
-Deterministic Automated Testing 
+Real Hardware Support
+
+
+
+Deterministic Automated Testing
 
 without mixing the two.
 
@@ -717,23 +717,23 @@ without mixing the two.
 
 The default v0.59 configuration is:
 
-Sample Rate : 16000 Hz 
-Channels    : 1 
-Data Type   : int16 
-Format      : WAV 
-Encoding    : PCM 
+Sample Rate : 16000 Hz
+Channels    : 1
+Data Type   : int16
+Format      : WAV
+Encoding    : PCM
 
 The default configuration is designed to provide a simple speech-oriented capture format.
 
 The architecture also supports configurable:
 
-Sample Rate 
- 
-Channels 
- 
-Device 
- 
-Metadata 
+Sample Rate
+
+Channels
+
+Device
+
+Metadata
 
 This keeps the capture layer flexible for future voice-processing requirements.
 
@@ -743,21 +743,21 @@ MicrophoneCapture supports configurable microphone devices.
 
 A device may be selected using:
 
-Device Index 
- 
-Device Name 
- 
-Default System Device 
+Device Index
+
+Device Name
+
+Default System Device
 
 Conceptually:
 
-MicrophoneCapture 
-      │ 
-      ├── Default Device 
-      │ 
-      ├── Device Index 
-      │ 
-      └── Device Name 
+MicrophoneCapture
+│
+├── Default Device
+│
+├── Device Index
+│
+└── Device Name
 
 The capture layer can query device information before recording.
 
@@ -769,23 +769,23 @@ Before recording, the capture layer can determine whether a valid input device e
 
 Conceptually:
 
-MicrophoneCapture 
- 
-       ↓ 
- 
-Device Query 
- 
-       ↓ 
- 
-Input Channels > 0 ? 
- 
-     /       \ 
- 
-   YES        NO 
- 
-    ↓          ↓ 
- 
-Available    Unavailable 
+MicrophoneCapture
+
+   ↓
+
+Device Query
+
+   ↓
+
+Input Channels > 0 ?
+
+ /       \
+
+YES        NO
+
+↓          ↓
+
+Available    Unavailable
 
 Availability checking is intentionally isolated from the rest of the voice pipeline.
 
@@ -795,39 +795,39 @@ The voice-processing layer does not need to know anything about the underlying o
 
 The v0.59 recording lifecycle is:
 
-Create MicrophoneCapture 
- 
-        ↓ 
- 
-Check Availability 
- 
-        ↓ 
- 
-Start Recording 
- 
-        ↓ 
- 
-Capture PCM Frames 
- 
-        ↓ 
- 
-Buffer Audio 
- 
-        ↓ 
- 
-Stop Recording 
- 
-        ↓ 
- 
-Close Stream 
- 
-        ↓ 
- 
-Create WAV 
- 
-        ↓ 
- 
-Create VoiceInput 
+Create MicrophoneCapture
+
+    ↓
+
+Check Availability
+
+    ↓
+
+Start Recording
+
+    ↓
+
+Capture PCM Frames
+
+    ↓
+
+Buffer Audio
+
+    ↓
+
+Stop Recording
+
+    ↓
+
+Close Stream
+
+    ↓
+
+Create WAV
+
+    ↓
+
+Create VoiceInput
 
 The lifecycle is explicitly controlled.
 
@@ -841,23 +841,23 @@ MicrophoneCapture maintains explicit recording state.
 
 Conceptually:
 
-IDLE 
- 
- ↓ 
- 
-RECORDING 
- 
- ↓ 
- 
-STOPPING 
- 
- ↓ 
- 
-CAPTURED 
+IDLE
+
+↓
+
+RECORDING
+
+↓
+
+STOPPING
+
+↓
+
+CAPTURED
 
 The abstraction exposes:
 
-is_recording() 
+is_recording()
 
 which allows callers to determine whether the microphone is currently active.
 
@@ -869,23 +869,23 @@ During recording, captured PCM audio is accumulated in an internal audio buffer.
 
 Conceptually:
 
-Microphone 
- 
-   ↓ 
- 
-PCM Frames 
- 
-   ↓ 
- 
-Callback 
- 
-   ↓ 
- 
-Audio Buffer 
- 
-   ↓ 
- 
-Complete PCM Stream 
+Microphone
+
+↓
+
+PCM Frames
+
+↓
+
+Callback
+
+↓
+
+Audio Buffer
+
+↓
+
+Complete PCM Stream
 
 The buffer is protected through synchronization mechanisms so that callback-driven audio capture can safely update the internal state.
 
@@ -897,35 +897,35 @@ The microphone capture layer collects raw PCM audio.
 
 Conceptually:
 
-Microphone 
- 
-      ↓ 
- 
-Raw PCM 
- 
-      ↓ 
- 
-Audio Buffer 
- 
-      ↓ 
- 
-WAV Container 
+Microphone
+
+  ↓
+
+Raw PCM
+
+  ↓
+
+Audio Buffer
+
+  ↓
+
+WAV Container
 
 The capture implementation does not attempt to interpret the audio.
 
 It does not attempt to recognize:
 
-Words 
- 
-Sentences 
- 
-Commands 
- 
-Intent 
- 
-Language 
- 
-Speaker Identity 
+Words
+
+Sentences
+
+Commands
+
+Intent
+
+Language
+
+Speaker Identity
 
 It only acquires the signal.
 
@@ -935,25 +935,25 @@ After recording stops, the captured PCM data is converted into a WAV container.
 
 Conceptually:
 
-Raw PCM Audio 
- 
-      ↓ 
- 
-WAV Container 
- 
-      ↓ 
- 
-VoiceInput 
+Raw PCM Audio
+
+  ↓
+
+WAV Container
+
+  ↓
+
+VoiceInput
 
 The WAV metadata includes:
 
-Channels 
- 
-Sample Width 
- 
-Sample Rate 
- 
-PCM Frames 
+Channels
+
+Sample Width
+
+Sample Rate
+
+PCM Frames
 
 The v0.59 implementation uses 16-bit PCM samples.
 
@@ -963,7 +963,7 @@ This produces a standardized audio representation suitable for the existing voic
 
 The captured audio is converted into the existing:
 
-VoiceInput 
+VoiceInput
 
 model.
 
@@ -971,49 +971,49 @@ This is important because v0.59 does not introduce a parallel voice representati
 
 Instead:
 
-MicrophoneCapture 
- 
-      ↓ 
- 
-VoiceInput 
+MicrophoneCapture
+
+  ↓
+
+VoiceInput
 
 The existing voice architecture can therefore consume captured microphone audio without modification.
 
 The integration preserves:
 
-Input Type 
- 
-Audio Format 
- 
-Sample Rate 
- 
-Channels 
- 
-Duration 
- 
-Source 
- 
-Metadata 
- 
-Audio Data 
+Input Type
+
+Audio Format
+
+Sample Rate
+
+Channels
+
+Duration
+
+Source
+
+Metadata
+
+Audio Data
 
 🔗 Capture → VoiceInput Boundary
 
 The architectural boundary is:
 
-Audio Capture Layer 
- 
-        ↓ 
- 
-VoiceInput Layer 
+Audio Capture Layer
+
+    ↓
+
+VoiceInput Layer
 
 The capture layer knows:
 
-How to acquire audio 
+How to acquire audio
 
 The VoiceInput layer knows:
 
-How to represent voice input 
+How to represent voice input
 
 This prevents physical hardware concerns from leaking into the rest of the voice-processing stack.
 
@@ -1021,39 +1021,39 @@ This prevents physical hardware concerns from leaking into the rest of the voice
 
 The duration of the captured audio is calculated from:
 
-Captured Frames 
-        ÷ 
-Sample Rate 
+Captured Frames
+÷
+Sample Rate
 
 This allows the resulting VoiceInput to carry structured duration information.
 
 Conceptually:
 
-PCM Frames 
- 
-    ↓ 
- 
-Sample Rate 
- 
-    ↓ 
- 
-Audio Duration 
- 
-    ↓ 
- 
-VoiceInput.duration 
+PCM Frames
+
+↓
+
+Sample Rate
+
+↓
+
+Audio Duration
+
+↓
+
+VoiceInput.duration
 
 This metadata can later support:
 
-Voice Activity Detection 
- 
-Latency Measurement 
- 
-Voice Analytics 
- 
-STT Optimization 
- 
-Recording Limits 
+Voice Activity Detection
+
+Latency Measurement
+
+Voice Analytics
+
+STT Optimization
+
+Recording Limits
 
 without requiring changes to the capture abstraction.
 
@@ -1063,27 +1063,27 @@ v0.59 attaches capture metadata to the resulting VoiceInput.
 
 The metadata can include:
 
-source = microphone 
- 
-device 
- 
-sample_width 
- 
-encoding 
+source = microphone
+
+device
+
+sample_width
+
+encoding
 
 Additional custom metadata can also be configured.
 
 This allows future versions to attach:
 
-Device Information 
- 
-Capture Session ID 
- 
-Latency 
- 
-Audio Backend 
- 
-Processing Information 
+Device Information
+
+Capture Session ID
+
+Latency
+
+Audio Backend
+
+Processing Information
 
 without modifying the VoiceInput model itself.
 
@@ -1093,43 +1093,43 @@ The capture layer isolates hardware and stream errors.
 
 Potential failures include:
 
-Microphone Unavailable 
- 
-Invalid Device 
- 
-Device Access Failure 
- 
-Stream Start Failure 
- 
-Stream Stop Failure 
- 
-Audio Callback Failure 
- 
-Empty Capture 
- 
-WAV Creation Failure 
+Microphone Unavailable
+
+Invalid Device
+
+Device Access Failure
+
+Stream Start Failure
+
+Stream Stop Failure
+
+Audio Callback Failure
+
+Empty Capture
+
+WAV Creation Failure
 
 These failures are converted into:
 
-AudioCaptureError 
+AudioCaptureError
 
 rather than leaking raw backend exceptions into the rest of the architecture.
 
 Conceptually:
 
-Hardware / Backend Error 
- 
-        ↓ 
- 
-MicrophoneCapture 
- 
-        ↓ 
- 
-AudioCaptureError 
- 
-        ↓ 
- 
-Controlled Failure 
+Hardware / Backend Error
+
+    ↓
+
+MicrophoneCapture
+
+    ↓
+
+AudioCaptureError
+
+    ↓
+
+Controlled Failure
 
 This maintains a clean abstraction boundary.
 
@@ -1137,55 +1137,55 @@ This maintains a clean abstraction boundary.
 
 One of the most important architectural decisions in v0.59 is:
 
-Microphone Capture 
-        ≠ 
-Voice Processing 
+Microphone Capture
+�
+Voice Processing
 
 The microphone layer does not perform:
 
-STT 
- 
-Voice Processing 
- 
-Intent Detection 
- 
-Command Execution 
+STT
+
+Voice Processing
+
+Intent Detection
+
+Command Execution
 
 Instead:
 
-🎤 Microphone 
- 
-      ↓ 
- 
-MicrophoneCapture 
- 
-      ↓ 
- 
-AudioCapture 
- 
-      ↓ 
- 
-VoiceInput 
- 
-      ↓ 
- 
-Voice Processing Pipeline 
- 
-      ↓ 
- 
-STT 
+🎤 Microphone
+
+  ↓
+
+MicrophoneCapture
+
+  ↓
+
+AudioCapture
+
+  ↓
+
+VoiceInput
+
+  ↓
+
+Voice Processing Pipeline
+
+  ↓
+
+STT
 
 This means the same voice-processing pipeline can consume audio from:
 
-Microphone 
- 
-Uploaded Audio 
- 
-Recorded Audio 
- 
-External Device 
- 
-Future Streaming Source 
+Microphone
+
+Uploaded Audio
+
+Recorded Audio
+
+External Device
+
+Future Streaming Source
 
 without redesigning the processing architecture.
 
@@ -1193,109 +1193,109 @@ without redesigning the processing architecture.
 
 The complete voice architecture now becomes:
 
-User 
- 
- │ 
- 
- ▼ 
- 
-🎤 Real Microphone 
- 
- │ 
- 
- ▼ 
- 
-MicrophoneCapture 
- 
- │ 
- 
- ▼ 
- 
-AudioCapture 
- 
- │ 
- 
- ▼ 
- 
-PCM Audio 
- 
- │ 
- 
- ▼ 
- 
-PCM → WAV 
- 
- │ 
- 
- ▼ 
- 
-VoiceInput 
- 
- │ 
- 
- ▼ 
- 
-InputRouter 
- 
- │ 
- 
- ▼ 
- 
-Voice Handler 
- 
- │ 
- 
- ▼ 
- 
-VoiceProcessingPipeline 
- 
- │ 
- 
- ▼ 
- 
-OpenAIVoiceProcessor 
- 
- │ 
- 
- ▼ 
- 
-OpenAISTTProvider 
- 
- │ 
- 
- ▼ 
- 
-Speech-to-Text 
- 
- │ 
- 
- ▼ 
- 
-MultimodalInputResult 
- 
- │ 
- 
- ▼ 
- 
-VoiceRuntimeIntegration 
- 
- │ 
- 
- ▼ 
- 
-AgentRuntimeContext 
- 
- │ 
- 
- ▼ 
- 
-Runtime Query 
- 
- │ 
- 
- ▼ 
- 
-Agent Runtime 
+User
+
+│
+
+▼
+
+🎤 Real Microphone
+
+│
+
+▼
+
+MicrophoneCapture
+
+│
+
+▼
+
+AudioCapture
+
+│
+
+▼
+
+PCM Audio
+
+│
+
+▼
+
+PCM → WAV
+
+│
+
+▼
+
+VoiceInput
+
+│
+
+▼
+
+InputRouter
+
+│
+
+▼
+
+Voice Handler
+
+│
+
+▼
+
+VoiceProcessingPipeline
+
+│
+
+▼
+
+OpenAIVoiceProcessor
+
+│
+
+▼
+
+OpenAISTTProvider
+
+│
+
+▼
+
+Speech-to-Text
+
+│
+
+▼
+
+MultimodalInputResult
+
+│
+
+▼
+
+VoiceRuntimeIntegration
+
+│
+
+▼
+
+AgentRuntimeContext
+
+│
+
+▼
+
+Runtime Query
+
+│
+
+▼
+
+Agent Runtime
 
 This is the first architecture in Ultron that connects the physical microphone boundary to the existing voice runtime architecture.
 
@@ -1303,59 +1303,59 @@ This is the first architecture in Ultron that connects the physical microphone b
 
 The real hardware path is:
 
-🎤 User Speaks 
- 
-      ↓ 
- 
-Windows Microphone 
- 
-      ↓ 
- 
-sounddevice 
- 
-      ↓ 
- 
-MicrophoneCapture 
- 
-      ↓ 
- 
-Audio Buffer 
- 
-      ↓ 
- 
-PCM Audio 
- 
-      ↓ 
- 
-WAV Conversion 
- 
-      ↓ 
- 
-VoiceInput 
- 
-      ↓ 
- 
-Voice Processing Pipeline 
- 
-      ↓ 
- 
-STT Provider 
- 
-      ↓ 
- 
-Transcription 
- 
-      ↓ 
- 
-Runtime Integration 
- 
-      ↓ 
- 
-AgentRuntimeContext 
- 
-      ↓ 
- 
-Runtime Query 
+🎤 User Speaks
+
+  ↓
+
+Windows Microphone
+
+  ↓
+
+sounddevice
+
+  ↓
+
+MicrophoneCapture
+
+  ↓
+
+Audio Buffer
+
+  ↓
+
+PCM Audio
+
+  ↓
+
+WAV Conversion
+
+  ↓
+
+VoiceInput
+
+  ↓
+
+Voice Processing Pipeline
+
+  ↓
+
+STT Provider
+
+  ↓
+
+Transcription
+
+  ↓
+
+Runtime Integration
+
+  ↓
+
+AgentRuntimeContext
+
+  ↓
+
+Runtime Query
 
 The capture stage is now real.
 
@@ -1365,65 +1365,65 @@ The later STT stage remains provider-dependent.
 
 Example user command:
 
-"open Chrome" 
+"open Chrome"
 
 The physical flow is:
 
-🎤 User says: 
- 
-"open Chrome" 
- 
-        ↓ 
- 
-Microphone 
- 
-        ↓ 
- 
-MicrophoneCapture 
- 
-        ↓ 
- 
-PCM Audio 
- 
-        ↓ 
- 
-WAV 
- 
-        ↓ 
- 
-VoiceInput 
- 
-        ↓ 
- 
-VoiceProcessingPipeline 
- 
-        ↓ 
- 
-OpenAIVoiceProcessor 
- 
-        ↓ 
- 
-OpenAISTTProvider 
- 
-        ↓ 
- 
-Speech-to-Text 
- 
-        ↓ 
- 
-"open Chrome" 
- 
-        ↓ 
- 
-VoiceRuntimeIntegration 
- 
-        ↓ 
- 
-AgentRuntimeContext.query 
- 
-        ↓ 
- 
-"open Chrome" 
+🎤 User says:
+
+"open Chrome"
+
+    ↓
+
+Microphone
+
+    ↓
+
+MicrophoneCapture
+
+    ↓
+
+PCM Audio
+
+    ↓
+
+WAV
+
+    ↓
+
+VoiceInput
+
+    ↓
+
+VoiceProcessingPipeline
+
+    ↓
+
+OpenAIVoiceProcessor
+
+    ↓
+
+OpenAISTTProvider
+
+    ↓
+
+Speech-to-Text
+
+    ↓
+
+"open Chrome"
+
+    ↓
+
+VoiceRuntimeIntegration
+
+    ↓
+
+AgentRuntimeContext.query
+
+    ↓
+
+"open Chrome"
 
 At this point the runtime receives the voice-derived query.
 
@@ -1435,59 +1435,59 @@ v0.58 and v0.59 are complementary milestones.
 
 v0.58 established:
 
-VoiceInput 
- 
-   ↓ 
- 
-Voice Processing 
- 
-   ↓ 
- 
-STT 
- 
-   ↓ 
- 
-Runtime Query 
+VoiceInput
+
+↓
+
+Voice Processing
+
+↓
+
+STT
+
+↓
+
+Runtime Query
 
 v0.59 adds the missing physical input boundary:
 
-Real Microphone 
- 
-   ↓ 
- 
-Audio Capture 
- 
-   ↓ 
- 
-VoiceInput 
+Real Microphone
+
+↓
+
+Audio Capture
+
+↓
+
+VoiceInput
 
 Together:
 
-🎤 Real Microphone 
- 
-       ↓ 
- 
-Audio Capture 
- 
-       ↓ 
- 
-VoiceInput 
- 
-       ↓ 
- 
-Voice Processing 
- 
-       ↓ 
- 
-STT 
- 
-       ↓ 
- 
-Transcription 
- 
-       ↓ 
- 
-Runtime Query 
+🎤 Real Microphone
+
+   ↓
+
+Audio Capture
+
+   ↓
+
+VoiceInput
+
+   ↓
+
+Voice Processing
+
+   ↓
+
+STT
+
+   ↓
+
+Transcription
+
+   ↓
+
+Runtime Query
 
 v0.60 extends this runtime query into executable agent command processing.
 
@@ -1497,34 +1497,34 @@ Because v0.59 introduces an abstract AudioCapture layer, future capture implemen
 
 Conceptually:
 
-                 AudioCapture 
-                      │ 
-          ┌───────────┼───────────┐ 
-          │           │           │ 
-          ▼           ▼           ▼ 
-    Microphone     File        Future 
-     Capture      Capture      Source 
-          │           │           │ 
-          └───────────┼───────────┘ 
-                      │ 
-                      ▼ 
-                  VoiceInput 
+             AudioCapture
+                  │
+      ┌───────────┼───────────┐
+      │           │           │
+      ▼           ▼           ▼
+Microphone     File        Future
+ Capture      Capture      Source
+      │           │           │
+      └───────────┼───────────┘
+                  │
+                  ▼
+              VoiceInput
 
 Potential future implementations include:
 
-MicrophoneCapture 
- 
-FileAudioCapture 
- 
-StreamingAudioCapture 
- 
-BluetoothAudioCapture 
- 
-WebAudioCapture 
- 
-ExternalDeviceCapture 
- 
-VirtualAudioCapture 
+MicrophoneCapture
+
+FileAudioCapture
+
+StreamingAudioCapture
+
+BluetoothAudioCapture
+
+WebAudioCapture
+
+ExternalDeviceCapture
+
+VirtualAudioCapture
 
 The downstream voice architecture does not need to know which implementation produced the audio.
 
@@ -1532,83 +1532,83 @@ The downstream voice architecture does not need to know which implementation pro
 
 The responsibility boundary after v0.59 is:
 
-AudioCapture 
- 
-    → Defines audio acquisition contract 
- 
-MicrophoneCapture 
- 
-    → Captures audio from a physical microphone 
- 
-VoiceInput 
- 
-    → Represents captured voice input 
- 
-VoiceProcessor 
- 
-    → Defines voice processing contract 
- 
-VoiceProcessingPipeline 
- 
-    → Orchestrates voice processing 
- 
-VoiceProcessingStrategy 
- 
-    → Defines processing intelligence behavior 
- 
-STTProvider 
- 
-    → Defines provider-independent speech-to-text capability 
- 
-OpenAISTTProvider 
- 
-    → Implements OpenAI-specific STT behavior 
- 
-OpenAIVoiceProcessor 
- 
-    → Connects voice processing to STT 
- 
-MultimodalInputResult 
- 
-    → Represents standardized processing outcome 
- 
-VoiceRuntimeIntegration 
- 
-    → Connects successful transcription to runtime state 
- 
-AgentRuntimeContext 
- 
-    → Holds the active runtime query 
- 
-Agent Runtime 
- 
-    → Consumes the runtime query 
+AudioCapture
+
+→ Defines audio acquisition contract
+
+MicrophoneCapture
+
+→ Captures audio from a physical microphone
+
+VoiceInput
+
+→ Represents captured voice input
+
+VoiceProcessor
+
+→ Defines voice processing contract
+
+VoiceProcessingPipeline
+
+→ Orchestrates voice processing
+
+VoiceProcessingStrategy
+
+→ Defines processing intelligence behavior
+
+STTProvider
+
+→ Defines provider-independent speech-to-text capability
+
+OpenAISTTProvider
+
+→ Implements OpenAI-specific STT behavior
+
+OpenAIVoiceProcessor
+
+→ Connects voice processing to STT
+
+MultimodalInputResult
+
+→ Represents standardized processing outcome
+
+VoiceRuntimeIntegration
+
+→ Connects successful transcription to runtime state
+
+AgentRuntimeContext
+
+→ Holds the active runtime query
+
+Agent Runtime
+
+→ Consumes the runtime query
 
 v0.60 adds a new execution boundary after AgentRuntimeContext:
 
-VoiceCommandExecutor 
- 
-    → Bridges runtime query to executable agent command 
- 
-AgentEngine 
- 
-    → Resolves the executable capability 
- 
-AgentPlanner 
- 
-    → Creates the execution plan 
- 
-AgentOrchestrator 
- 
-    → Executes the plan 
- 
-ToolRegistry 
- 
-    → Provides the registered tool 
- 
-AgentTool 
- 
-    → Performs tool-specific execution 
+VoiceCommandExecutor
+
+→ Bridges runtime query to executable agent command
+
+AgentEngine
+
+→ Resolves the executable capability
+
+AgentPlanner
+
+→ Creates the execution plan
+
+AgentOrchestrator
+
+→ Executes the plan
+
+ToolRegistry
+
+→ Provides the registered tool
+
+AgentTool
+
+→ Performs tool-specific execution
 
 🚫 What v0.59 Does NOT Do
 
@@ -1616,65 +1616,65 @@ The v0.59 milestone intentionally stops at audio acquisition.
 
 It does not yet implement:
 
-Voice Command Execution 
- 
-Tool Execution From Voice 
- 
-Automatic Browser Control 
- 
-Voice Intent Detection 
- 
-Advanced Voice Understanding 
- 
-Voice Activity Detection 
- 
-Streaming STT 
- 
-Continuous Listening 
- 
-Wake Word Detection 
- 
-Voice Agent Conversation 
- 
-Advanced Voice Memory 
- 
-Voice-Based Planning 
- 
-Voice Emotion Recognition 
- 
-Speaker Recognition 
- 
-Real-Time Voice Agent 
- 
-Autonomous Voice Execution 
+Voice Command Execution
+
+Tool Execution From Voice
+
+Automatic Browser Control
+
+Voice Intent Detection
+
+Advanced Voice Understanding
+
+Voice Activity Detection
+
+Streaming STT
+
+Continuous Listening
+
+Wake Word Detection
+
+Voice Agent Conversation
+
+Advanced Voice Memory
+
+Voice-Based Planning
+
+Voice Emotion Recognition
+
+Speaker Recognition
+
+Real-Time Voice Agent
+
+Autonomous Voice Execution
 
 The v0.59 architecture therefore ends at:
 
-v0.59 
- 
-Real Microphone 
- 
-      ↓ 
- 
-Audio Capture 
- 
-      ↓ 
- 
-VoiceInput 
- 
-      ↓ 
- 
-Existing Voice Pipeline 
- 
-      ↓ 
- 
-Runtime Query 
+v0.59
+
+Real Microphone
+
+  ↓
+
+Audio Capture
+
+  ↓
+
+VoiceInput
+
+  ↓
+
+Existing Voice Pipeline
+
+  ↓
+
+Runtime Query
 
 The next milestone is:
 
-v0.60 
- 
-Voice Command Execution 
+v0.60
+
+Voice Command Execution
 
 🧪 v0.59 Testing
 
@@ -1682,81 +1682,81 @@ v0.59 introduces dedicated testing for the new audio capture foundation.
 
 The automated unit tests cover:
 
-AudioCapture Construction 
- 
-Abstract Contract Validation 
- 
-Default Configuration 
- 
-Custom Configuration 
- 
-Sample Rate Validation 
- 
-Channel Validation 
- 
-Metadata Handling 
- 
-Metadata Isolation 
- 
-Last Capture Tracking 
- 
-Last Capture Reset 
- 
-AudioCaptureError 
- 
-MicrophoneCapture Construction 
- 
-Microphone Availability 
- 
-Device Information 
- 
-Recording Start 
- 
-Recording Stop 
- 
-Recording State 
- 
-Stream Lifecycle 
- 
-Stream Closure 
- 
-VoiceInput Creation 
- 
-Input Source Metadata 
- 
-WAV Generation 
- 
-WAV Header Validation 
- 
-PCM Audio Handling 
- 
-Captured Frame Tracking 
- 
-Duration Calculation 
- 
-Callback Processing 
- 
-Callback Error Handling 
- 
-Device Validation 
- 
-Device Switching 
- 
-Reset Behavior 
+AudioCapture Construction
+
+Abstract Contract Validation
+
+Default Configuration
+
+Custom Configuration
+
+Sample Rate Validation
+
+Channel Validation
+
+Metadata Handling
+
+Metadata Isolation
+
+Last Capture Tracking
+
+Last Capture Reset
+
+AudioCaptureError
+
+MicrophoneCapture Construction
+
+Microphone Availability
+
+Device Information
+
+Recording Start
+
+Recording Stop
+
+Recording State
+
+Stream Lifecycle
+
+Stream Closure
+
+VoiceInput Creation
+
+Input Source Metadata
+
+WAV Generation
+
+WAV Header Validation
+
+PCM Audio Handling
+
+Captured Frame Tracking
+
+Duration Calculation
+
+Callback Processing
+
+Callback Error Handling
+
+Device Validation
+
+Device Switching
+
+Reset Behavior
 
 The dedicated automated v0.59 test suite reports:
 
-AudioCapture Tests 
-14 passed 
-0 failed 
- 
-MicrophoneCapture Tests 
-19 passed 
-0 failed 
- 
-Total Dedicated v0.59 Tests 
-33 passed 
-0 failed 
+AudioCapture Tests
+14 passed
+0 failed
+
+MicrophoneCapture Tests
+19 passed
+0 failed
+
+Total Dedicated v0.59 Tests
+33 passed
+0 failed
 
 🎤 Real Hardware Smoke Test
 
@@ -1764,50 +1764,50 @@ v0.59 also includes a real microphone smoke test.
 
 The real hardware test verifies:
 
-Microphone Availability 
- 
-Real Device Detection 
- 
-Recording Start 
- 
-Real PCM Capture 
- 
-Recording Stop 
- 
-Stream Closure 
- 
-PCM → WAV Conversion 
- 
-VoiceInput Creation 
- 
-Duration Calculation 
- 
-Audio Metadata 
+Microphone Availability
+
+Real Device Detection
+
+Recording Start
+
+Real PCM Capture
+
+Recording Stop
+
+Stream Closure
+
+PCM → WAV Conversion
+
+VoiceInput Creation
+
+Duration Calculation
+
+Audio Metadata
 
 The real Windows microphone detected during validation was:
 
-Microphone (Realtek(R) Audio) 
+Microphone (Realtek(R) Audio)
 
 The real capture test successfully recorded approximately:
 
-Duration: 
-~2.96 seconds 
- 
-Audio Bytes: 
-94,892 
- 
-Sample Rate: 
-16,000 Hz 
- 
-Channels: 
-1 
- 
-Format: 
-WAV 
+Duration:
+~2.96 seconds
+
+Audio Bytes:
+94,892
+
+Sample Rate:
+16,000 Hz
+
+Channels:
+1
+
+Format:
+WAV
 
 The result:
 
-REAL MICROPHONE TEST PASSED 
+REAL MICROPHONE TEST PASSED
 
 This confirms that v0.59 is not only an abstract capture architecture.
 
@@ -1819,203 +1819,203 @@ The v0.59 validation process is divided into two layers.
 
 Automated Layer
 
-Fake Audio Backend 
- 
-        ↓ 
- 
-Fake Input Stream 
- 
-        ↓ 
- 
-MicrophoneCapture 
- 
-        ↓ 
- 
-VoiceInput 
- 
-        ↓ 
- 
-Assertions 
+Fake Audio Backend
+
+    ↓
+
+Fake Input Stream
+
+    ↓
+
+MicrophoneCapture
+
+    ↓
+
+VoiceInput
+
+    ↓
+
+Assertions
 
 This provides deterministic regression testing.
 
 Hardware Layer
 
-Real Windows Microphone 
- 
-        ↓ 
- 
-sounddevice 
- 
-        ↓ 
- 
-MicrophoneCapture 
- 
-        ↓ 
- 
-Real Audio Buffer 
- 
-        ↓ 
- 
-WAV 
- 
-        ↓ 
- 
-VoiceInput 
- 
-        ↓ 
- 
-Smoke Test 
+Real Windows Microphone
+
+    ↓
+
+sounddevice
+
+    ↓
+
+MicrophoneCapture
+
+    ↓
+
+Real Audio Buffer
+
+    ↓
+
+WAV
+
+    ↓
+
+VoiceInput
+
+    ↓
+
+Smoke Test
 
 This verifies actual hardware compatibility.
 
 🛡️ v0.59 Quality Gate
 
-[✓] Multimodal Input Foundation 
- 
-[✓] Input Routing 
- 
-[✓] Voice Input Foundation 
- 
-[✓] Voice Processing Foundation 
- 
-[✓] Voice Processing Pipeline 
- 
-[✓] Voice Processing Strategy 
- 
-[✓] STT Provider Abstraction 
- 
-[✓] First Concrete STT Provider 
- 
-[✓] OpenAISTTProvider 
- 
-[✓] OpenAIVoiceProcessor 
- 
-[✓] Voice Processing → STT Integration 
- 
-[✓] Standardized MultimodalInputResult 
- 
-[✓] VoiceRuntimeIntegration 
- 
-[✓] Runtime Query Integration 
- 
-[✓] AgentRuntimeContext Integration 
- 
-[✓] Voice → Text Runtime Flow 
- 
-[✓] AudioCapture Abstraction 
- 
-[✓] MicrophoneCapture 
- 
-[✓] Microphone Availability Detection 
- 
-[✓] Real Device Information 
- 
-[✓] Recording Lifecycle 
- 
-[✓] PCM Audio Capture 
- 
-[✓] Audio Buffering 
- 
-[✓] PCM → WAV Conversion 
- 
-[✓] VoiceInput Integration 
- 
-[✓] Capture Metadata 
- 
-[✓] Capture Error Isolation 
- 
-[✓] Fake Backend Testing 
- 
-[✓] Real Microphone Smoke Test 
- 
-[✓] Dedicated v0.59 Testing 
- 
-[✓] 33 Dedicated Tests Passed 
- 
-[✓] Real Hardware Capture Verified 
+[✓] Multimodal Input Foundation
+
+[✓] Input Routing
+
+[✓] Voice Input Foundation
+
+[✓] Voice Processing Foundation
+
+[✓] Voice Processing Pipeline
+
+[✓] Voice Processing Strategy
+
+[✓] STT Provider Abstraction
+
+[✓] First Concrete STT Provider
+
+[✓] OpenAISTTProvider
+
+[✓] OpenAIVoiceProcessor
+
+[✓] Voice Processing → STT Integration
+
+[✓] Standardized MultimodalInputResult
+
+[✓] VoiceRuntimeIntegration
+
+[✓] Runtime Query Integration
+
+[✓] AgentRuntimeContext Integration
+
+[✓] Voice → Text Runtime Flow
+
+[✓] AudioCapture Abstraction
+
+[✓] MicrophoneCapture
+
+[✓] Microphone Availability Detection
+
+[✓] Real Device Information
+
+[✓] Recording Lifecycle
+
+[✓] PCM Audio Capture
+
+[✓] Audio Buffering
+
+[✓] PCM → WAV Conversion
+
+[✓] VoiceInput Integration
+
+[✓] Capture Metadata
+
+[✓] Capture Error Isolation
+
+[✓] Fake Backend Testing
+
+[✓] Real Microphone Smoke Test
+
+[✓] Dedicated v0.59 Testing
+
+[✓] 33 Dedicated Tests Passed
+
+[✓] Real Hardware Capture Verified
 
 📊 Current Test Status
 
 The following figures represent the validated milestone-specific and regression history.
 
-Voice Input Tests 
- 
-68 passed 
-0 failed 
- 
-Voice Processor Unit Tests 
- 
-52 passed 
-0 failed 
- 
-Voice Processor Integration Tests 
- 
-28 passed 
-0 failed 
- 
-Voice Processing Pipeline Unit Tests 
- 
-30 passed 
-0 failed 
- 
-Voice Processing Pipeline Integration Tests 
- 
-10 passed 
-0 failed 
- 
-Voice Processing Strategy Tests 
- 
-43 passed 
-0 failed 
- 
-v0.56 STT Provider Abstraction Tests 
- 
-73 passed 
-0 failed 
- 
-v0.57 OpenAI STT Provider Tests 
- 
-56 passed 
-0 failed 
- 
-v0.58 Voice Runtime Integration Tests 
- 
-18 passed 
-0 failed 
- 
-v0.59 AudioCapture Tests 
- 
-14 passed 
-0 failed 
- 
-v0.59 MicrophoneCapture Tests 
- 
-19 passed 
-0 failed 
- 
-v0.59 Dedicated Tests 
- 
-33 passed 
-0 failed 
- 
-v0.59 Real Microphone Smoke Test 
- 
-PASSED 
- 
-v0.60 Voice Command Executor Tests 
- 
-10 passed 
-0 failed 
- 
-Last Full Ultron Regression 
- 
-1447 passed 
-0 failed 
- 
-Status 
- 
-PASS 
+Voice Input Tests
+
+68 passed
+0 failed
+
+Voice Processor Unit Tests
+
+52 passed
+0 failed
+
+Voice Processor Integration Tests
+
+28 passed
+0 failed
+
+Voice Processing Pipeline Unit Tests
+
+30 passed
+0 failed
+
+Voice Processing Pipeline Integration Tests
+
+10 passed
+0 failed
+
+Voice Processing Strategy Tests
+
+43 passed
+0 failed
+
+v0.56 STT Provider Abstraction Tests
+
+73 passed
+0 failed
+
+v0.57 OpenAI STT Provider Tests
+
+56 passed
+0 failed
+
+v0.58 Voice Runtime Integration Tests
+
+18 passed
+0 failed
+
+v0.59 AudioCapture Tests
+
+14 passed
+0 failed
+
+v0.59 MicrophoneCapture Tests
+
+19 passed
+0 failed
+
+v0.59 Dedicated Tests
+
+33 passed
+0 failed
+
+v0.59 Real Microphone Smoke Test
+
+PASSED
+
+v0.60 Voice Command Executor Tests
+
+10 passed
+0 failed
+
+Last Full Ultron Regression
+
+1447 passed
+0 failed
+
+Status
+
+PASS
 
 The earlier 1404 figure represents the validated v0.58 full regression baseline.
 
@@ -2023,8 +2023,8 @@ The v0.59 dedicated automated tests and real hardware smoke test were validated 
 
 The current authoritative full Ultron regression after v0.60 is:
 
-1447 passed 
-0 failed 
+1447 passed
+0 failed
 
 🔒 API Independence During v0.59
 
@@ -2032,27 +2032,27 @@ The microphone capture layer does not require an external AI API.
 
 This means:
 
-Microphone Capture 
- 
-        ↓ 
- 
-Local Audio Acquisition 
- 
-        ↓ 
- 
-VoiceInput 
+Microphone Capture
+
+    ↓
+
+Local Audio Acquisition
+
+    ↓
+
+VoiceInput
 
 can work independently of:
 
-OpenAI 
- 
-Anthropic 
- 
-Google 
- 
-Local STT 
- 
-Cloud STT 
+OpenAI
+
+Anthropic
+
+Google
+
+Local STT
+
+Cloud STT
 
 This is an important property of the architecture.
 
@@ -2066,31 +2066,31 @@ Live OpenAI transcription remains a separate concern.
 
 The architecture is:
 
-Real Microphone 
- 
-      ↓ 
- 
-Audio Capture 
- 
-      ↓ 
- 
-VoiceInput 
- 
-      ↓ 
- 
-STT Provider 
- 
-      ↓ 
- 
-External Provider 
+Real Microphone
+
+  ↓
+
+Audio Capture
+
+  ↓
+
+VoiceInput
+
+  ↓
+
+STT Provider
+
+  ↓
+
+External Provider
 
 Therefore:
 
-Audio Capture 
+Audio Capture
 
 can be developed and validated independently from:
 
-Live Cloud STT 
+Live Cloud STT
 
 This keeps development modular and avoids coupling hardware testing to API availability.
 
@@ -2100,21 +2100,21 @@ Audio capture may appear simple, but architecturally it is an important boundary
 
 Without a capture layer:
 
-VoiceInput 
+VoiceInput
 
 must always originate somewhere outside Ultron.
 
 With v0.59:
 
-Ultron 
- 
-   ↓ 
- 
-AudioCapture 
- 
-   ↓ 
- 
-VoiceInput 
+Ultron
+
+↓
+
+AudioCapture
+
+↓
+
+VoiceInput
 
 Ultron now owns the transition from physical audio input into its multimodal architecture.
 
@@ -2124,79 +2124,79 @@ This is a major step toward making voice a first-class runtime modality.
 
 After v0.59, the voice stack is:
 
-                    ┌──────────────────────┐ 
-                    │   Physical World     │ 
-                    │                      │ 
-                    │  User's Voice        │ 
-                    └──────────┬───────────┘ 
-                               │ 
-                               ▼ 
-                    ┌──────────────────────┐ 
-                    │ MicrophoneCapture    │ 
-                    └──────────┬───────────┘ 
-                               │ 
-                               ▼ 
-                    ┌──────────────────────┐ 
-                    │ AudioCapture         │ 
-                    │ Abstraction          │ 
-                    └──────────┬───────────┘ 
-                               │ 
-                               ▼ 
-                    ┌──────────────────────┐ 
-                    │ Raw PCM Audio        │ 
-                    └──────────┬───────────┘ 
-                               │ 
-                               ▼ 
-                    ┌──────────────────────┐ 
-                    │ WAV Conversion       │ 
-                    └──────────┬───────────┘ 
-                               │ 
-                               ▼ 
-                    ┌──────────────────────┐ 
-                    │ VoiceInput           │ 
-                    └──────────┬───────────┘ 
-                               │ 
-                               ▼ 
-                    ┌──────────────────────┐ 
-                    │ VoiceProcessing      │ 
-                    │ Pipeline             │ 
-                    └──────────┬───────────┘ 
-                               │ 
-                               ▼ 
-                    ┌──────────────────────┐ 
-                    │ OpenAIVoiceProcessor │ 
-                    └──────────┬───────────┘ 
-                               │ 
-                               ▼ 
-                    ┌──────────────────────┐ 
-                    │ OpenAISTTProvider    │ 
-                    └──────────┬───────────┘ 
-                               │ 
-                               ▼ 
-                    ┌──────────────────────┐ 
-                    │ Speech → Text        │ 
-                    └──────────┬───────────┘ 
-                               │ 
-                               ▼ 
-                    ┌──────────────────────┐ 
-                    │ MultimodalInputResult│ 
-                    └──────────┬───────────┘ 
-                               │ 
-                               ▼ 
-                    ┌──────────────────────┐ 
-                    │ VoiceRuntime         │ 
-                    │ Integration          │ 
-                    └──────────┬───────────┘ 
-                               │ 
-                               ▼ 
-                    ┌──────────────────────┐ 
-                    │ AgentRuntimeContext  │ 
-                    └──────────┬───────────┘ 
-                               │ 
-                               ▼ 
-                    ┌──────────────────────┐ 
-                    │ Runtime Query        │ 
-                    └──────────────────────┘ 
+                ┌──────────────────────┐
+                │   Physical World     │
+                │                      │
+                │  User's Voice        │
+                └──────────┬───────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │ MicrophoneCapture    │
+                └──────────┬───────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │ AudioCapture         │
+                │ Abstraction          │
+                └──────────┬───────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │ Raw PCM Audio        │
+                └──────────┬───────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │ WAV Conversion       │
+                └──────────┬───────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │ VoiceInput           │
+                └──────────┬───────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │ VoiceProcessing      │
+                │ Pipeline             │
+                └──────────┬───────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │ OpenAIVoiceProcessor │
+                └──────────┬───────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │ OpenAISTTProvider    │
+                └──────────┬───────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │ Speech → Text        │
+                └──────────┬───────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │ MultimodalInputResult│
+                └──────────┬───────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │ VoiceRuntime         │
+                │ Integration          │
+                └──────────┬───────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │ AgentRuntimeContext  │
+                └──────────┬───────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │ Runtime Query        │
+                └──────────────────────┘
 
 v0.60 extends this stack into command execution.
 
@@ -2208,73 +2208,73 @@ The objective is to take the normalized runtime query produced by the voice pipe
 
 The architecture is:
 
-VoiceInput 
- 
-   ↓ 
- 
-VoiceProcessingPipeline 
- 
-   ↓ 
- 
-STTProvider 
- 
-   ↓ 
- 
-VoiceRuntimeIntegration 
- 
-   ↓ 
- 
-AgentRuntimeContext.query 
- 
-   ↓ 
- 
-VoiceCommandExecutor 
- 
-   ↓ 
- 
-Command / Capability Resolution 
- 
-   ↓ 
- 
-AgentPlanner 
- 
-   ↓ 
- 
-AgentPlan / AgentPlanStep 
- 
-   ↓ 
- 
-AgentOrchestrator 
- 
-   ↓ 
- 
-AgentExecutionController 
- 
-   ↓ 
- 
-ExecutionContext 
- 
-   ↓ 
- 
-AgentEngine 
- 
-   ↓ 
- 
-ToolRegistry 
- 
-   ↓ 
- 
-AgentTool 
- 
-   ↓ 
- 
-ToolResult 
+VoiceInput
+
+↓
+
+VoiceProcessingPipeline
+
+↓
+
+STTProvider
+
+↓
+
+VoiceRuntimeIntegration
+
+↓
+
+AgentRuntimeContext.query
+
+↓
+
+VoiceCommandExecutor
+
+↓
+
+Command / Capability Resolution
+
+↓
+
+AgentPlanner
+
+↓
+
+AgentPlan / AgentPlanStep
+
+↓
+
+AgentOrchestrator
+
+↓
+
+AgentExecutionController
+
+↓
+
+ExecutionContext
+
+↓
+
+AgentEngine
+
+↓
+
+ToolRegistry
+
+↓
+
+AgentTool
+
+↓
+
+ToolResult
 
 The most important architectural principle of v0.60 is:
 
-Voice Command Execution 
-        ≠ 
-Separate Voice Runtime 
+Voice Command Execution
+�
+Separate Voice Runtime
 
 Instead, voice becomes another input path into the existing agent execution infrastructure.
 
@@ -2282,59 +2282,59 @@ Instead, voice becomes another input path into the existing agent execution infr
 
 Before v0.60, the voice architecture ended at:
 
-Voice 
- 
- ↓ 
- 
-STT 
- 
- ↓ 
- 
-Runtime Query 
+Voice
+
+↓
+
+STT
+
+↓
+
+Runtime Query
 
 v0.60 extends this into:
 
-Voice 
- 
- ↓ 
- 
-STT 
- 
- ↓ 
- 
-Runtime Query 
- 
- ↓ 
- 
-VoiceCommandExecutor 
- 
- ↓ 
- 
-Tool / Capability Resolution 
- 
- ↓ 
- 
-Agent Planning 
- 
- ↓ 
- 
-Agent Plan 
- 
- ↓ 
- 
-Agent Orchestration 
- 
- ↓ 
- 
-Agent Execution 
- 
- ↓ 
- 
-Tool 
- 
- ↓ 
- 
-ToolResult 
+Voice
+
+↓
+
+STT
+
+↓
+
+Runtime Query
+
+↓
+
+VoiceCommandExecutor
+
+↓
+
+Tool / Capability Resolution
+
+↓
+
+Agent Planning
+
+↓
+
+Agent Plan
+
+↓
+
+Agent Orchestration
+
+↓
+
+Agent Execution
+
+↓
+
+Tool
+
+↓
+
+ToolResult
 
 This is the first milestone where a successfully transcribed voice query can enter the existing agent execution path.
 
@@ -2342,7 +2342,7 @@ This is the first milestone where a successfully transcribed voice query can ent
 
 v0.60 introduces:
 
-modules/multimodal/voice_command_executor.py 
+modules/multimodal/voice_command_executor.py
 
 VoiceCommandExecutor is the dedicated bridge between AgentRuntimeContext and the existing agent planning/orchestration infrastructure.
 
@@ -2350,59 +2350,59 @@ Its responsibility is to coordinate the transition from a runtime query into an 
 
 Conceptually:
 
-AgentRuntimeContext 
- 
-        ↓ 
- 
-VoiceCommandExecutor 
- 
-        ↓ 
- 
-AgentEngine / Tool Selector 
- 
-        ↓ 
- 
-AgentPlanner 
- 
-        ↓ 
- 
-AgentOrchestrator 
+AgentRuntimeContext
+
+    ↓
+
+VoiceCommandExecutor
+
+    ↓
+
+AgentEngine / Tool Selector
+
+    ↓
+
+AgentPlanner
+
+    ↓
+
+AgentOrchestrator
 
 🧠 VoiceCommandExecutor Responsibilities
 
 VoiceCommandExecutor is responsible for:
 
-Runtime Context Validation 
- 
-Planner Validation 
- 
-Orchestrator Validation 
- 
-Runtime Query Retrieval 
- 
-Query Normalization Handling 
- 
-Empty Query Protection 
- 
-Command / Capability Resolution 
- 
-Tool Resolution Through Existing AgentEngine 
- 
-One-Step Agent Plan Creation 
- 
-Plan Preparation 
- 
-Runtime Context State Synchronization 
- 
-Plan Execution Delegation 
- 
-Structured Result Creation 
- 
-Execution Progress Reporting 
- 
-Execution Identity Propagation 
- 
-Failure Handling 
+Runtime Context Validation
+
+Planner Validation
+
+Orchestrator Validation
+
+Runtime Query Retrieval
+
+Query Normalization Handling
+
+Empty Query Protection
+
+Command / Capability Resolution
+
+Tool Resolution Through Existing AgentEngine
+
+One-Step Agent Plan Creation
+
+Plan Preparation
+
+Runtime Context State Synchronization
+
+Plan Execution Delegation
+
+Structured Result Creation
+
+Execution Progress Reporting
+
+Execution Identity Propagation
+
+Failure Handling
 
 The executor therefore acts as an integration boundary rather than becoming another execution engine.
 
@@ -2410,23 +2410,23 @@ The executor therefore acts as an integration boundary rather than becoming anot
 
 The runtime query is the bridge between speech recognition and command execution.
 
-Voice Input 
- 
-      ↓ 
- 
-Speech-to-Text 
- 
-      ↓ 
- 
-VoiceRuntimeIntegration 
- 
-      ↓ 
- 
-AgentRuntimeContext.query 
- 
-      ↓ 
- 
-VoiceCommandExecutor 
+Voice Input
+
+  ↓
+
+Speech-to-Text
+
+  ↓
+
+VoiceRuntimeIntegration
+
+  ↓
+
+AgentRuntimeContext.query
+
+  ↓
+
+VoiceCommandExecutor
 
 The command executor reads the normalized query already stored in the runtime context.
 
@@ -2444,11 +2444,11 @@ Runtime queries are normalized before execution.
 
 For example:
 
-"   test_tool   " 
+"   test_tool   "
 
 becomes:
 
-"test_tool" 
+"test_tool"
 
 This ensures that command resolution receives the normalized runtime query.
 
@@ -2460,23 +2460,23 @@ A voice command cannot be executed if the runtime query is empty.
 
 Conceptually:
 
-VoiceCommandExecutor 
- 
-       ↓ 
- 
-Read Runtime Query 
- 
-       ↓ 
- 
-Query Empty? 
- 
-    /       \ 
- 
-  YES        NO 
- 
-   ↓          ↓ 
- 
-Reject      Resolve 
+VoiceCommandExecutor
+
+   ↓
+
+Read Runtime Query
+
+   ↓
+
+Query Empty?
+
+/       \
+
+YES        NO
+
+↓          ↓
+
+Reject      Resolve
 
 Empty or whitespace-only queries are rejected before planning or execution occurs.
 
@@ -2486,23 +2486,23 @@ This prevents invalid plans from entering the agent runtime.
 
 v0.60 reuses the existing AgentEngine.select_tool() capability-selection path.
 
-VoiceCommandExecutor 
- 
-       ↓ 
- 
-AgentEngine.select_tool() 
- 
-       ↓ 
- 
-ToolSelector 
- 
-       ↓ 
- 
-ToolRegistry 
- 
-       ↓ 
- 
-Resolved AgentTool 
+VoiceCommandExecutor
+
+   ↓
+
+AgentEngine.select_tool()
+
+   ↓
+
+ToolSelector
+
+   ↓
+
+ToolRegistry
+
+   ↓
+
+Resolved AgentTool
 
 No new voice-specific tool resolver has been introduced.
 
@@ -2514,15 +2514,15 @@ The existing Tool Selector remains the authoritative mechanism for matching a ru
 
 Resolution behavior includes:
 
-Exact Tool Name Match 
- 
-        ↓ 
- 
-Unique Candidate Match 
- 
-        ↓ 
- 
-No Match / Ambiguous Match 
+Exact Tool Name Match
+
+    ↓
+
+Unique Candidate Match
+
+    ↓
+
+No Match / Ambiguous Match
 
 The voice layer does not bypass this system.
 
@@ -2534,35 +2534,35 @@ v0.60 creates a one-step AgentPlan for a resolved voice command.
 
 Conceptually:
 
-Runtime Query 
- 
-      ↓ 
- 
-Resolved AgentTool 
- 
-      ↓ 
- 
-AgentPlanner 
- 
-      ↓ 
- 
-AgentPlan 
- 
-      ↓ 
- 
-AgentPlanStep 
+Runtime Query
+
+  ↓
+
+Resolved AgentTool
+
+  ↓
+
+AgentPlanner
+
+  ↓
+
+AgentPlan
+
+  ↓
+
+AgentPlanStep
 
 Example:
 
 Query:
-test_tool 
- 
+test_tool
+
 Plan:
-AgentPlan 
- 
- └── Step 1 
- 
-      └── test_tool 
+AgentPlan
+
+└── Step 1
+
+  └── test_tool
 
 The plan is then prepared and passed to the existing orchestrator.
 
@@ -2574,19 +2574,19 @@ The voice command layer does not create a second planner.
 
 It reuses the existing:
 
-AgentPlanner 
+AgentPlanner
 
 The planner remains responsible for:
 
-Plan Creation 
- 
-Step Creation 
- 
-Plan Validation 
- 
-Plan Preparation 
- 
-Plan Progress 
+Plan Creation
+
+Step Creation
+
+Plan Validation
+
+Plan Preparation
+
+Plan Progress
 
 The VoiceCommandExecutor only coordinates the planner as part of the voice execution flow.
 
@@ -2594,27 +2594,27 @@ The VoiceCommandExecutor only coordinates the planner as part of the voice execu
 
 Once a voice plan has been prepared, execution is delegated to the existing:
 
-AgentOrchestrator 
+AgentOrchestrator
 
 Conceptually:
 
-VoiceCommandExecutor 
- 
-       ↓ 
- 
-AgentPlan 
- 
-       ↓ 
- 
-AgentOrchestrator.execute_plan() 
- 
-       ↓ 
- 
-AgentExecutionController 
- 
-       ↓ 
- 
-AgentEngine 
+VoiceCommandExecutor
+
+   ↓
+
+AgentPlan
+
+   ↓
+
+AgentOrchestrator.execute_plan()
+
+   ↓
+
+AgentExecutionController
+
+   ↓
+
+AgentEngine
 
 The voice command layer does not execute the plan itself.
 
@@ -2626,23 +2626,23 @@ Voice command execution therefore benefits from the same lifecycle architecture 
 
 Conceptually:
 
-AgentPlan 
- 
-   ↓ 
- 
-AgentOrchestrator 
- 
-   ↓ 
- 
-AgentExecutionController 
- 
-   ↓ 
- 
-Running 
- 
-   ↓ 
- 
-Completed / Failed / Cancelled 
+AgentPlan
+
+↓
+
+AgentOrchestrator
+
+↓
+
+AgentExecutionController
+
+↓
+
+Running
+
+↓
+
+Completed / Failed / Cancelled
 
 The voice layer does not create an independent lifecycle controller.
 
@@ -2650,23 +2650,23 @@ The voice layer does not create an independent lifecycle controller.
 
 Voice command execution remains compatible with the existing execution context architecture.
 
-AgentPlan 
- 
-   ↓ 
- 
-Execution Identity 
- 
-   ↓ 
- 
-Execution Context 
- 
-   ↓ 
- 
-Execution State 
- 
-   ↓ 
- 
-Events / Observability / Metrics 
+AgentPlan
+
+↓
+
+Execution Identity
+
+↓
+
+Execution Context
+
+↓
+
+Execution State
+
+↓
+
+Events / Observability / Metrics
 
 The command executor integrates with the existing execution identity rather than inventing a separate voice-specific execution model.
 
@@ -2682,31 +2682,31 @@ Instead, the command execution result derives execution identity from the active
 
 Conceptually:
 
-AgentPlan.id 
- 
-      ↓ 
- 
-Execution Identity 
- 
-      ↓ 
- 
-Execution Context 
- 
-      ↓ 
- 
-Execution Events 
- 
-      ↓ 
- 
-Observability 
- 
-      ↓ 
- 
-Metrics 
- 
-      ↓ 
- 
-Persistent History 
+AgentPlan.id
+
+  ↓
+
+Execution Identity
+
+  ↓
+
+Execution Context
+
+  ↓
+
+Execution Events
+
+  ↓
+
+Observability
+
+  ↓
+
+Metrics
+
+  ↓
+
+Persistent History
 
 This prevents the introduction of a second execution identity system.
 
@@ -2716,23 +2716,23 @@ During command execution, the runtime context reflects the current command lifec
 
 Typical successful execution flow:
 
-created 
- 
-   ↓ 
- 
-planning 
- 
-   ↓ 
- 
-planned 
- 
-   ↓ 
- 
-executing 
- 
-   ↓ 
- 
-completed 
+created
+
+↓
+
+planning
+
+↓
+
+planned
+
+↓
+
+executing
+
+↓
+
+completed
 
 Failure paths transition into the appropriate failure state.
 
@@ -2744,29 +2744,29 @@ The command executor exposes structured progress information from the existing p
 
 Progress can include:
 
-Plan ID 
- 
-Total Steps 
- 
-Completed Steps 
- 
-Failed Steps 
- 
-Pending Steps 
- 
-Skipped Steps 
- 
-Progress Percentage 
- 
-Plan Status 
+Plan ID
+
+Total Steps
+
+Completed Steps
+
+Failed Steps
+
+Pending Steps
+
+Skipped Steps
+
+Progress Percentage
+
+Plan Status
 
 For a completed one-step command:
 
-Total Steps     : 1 
-Completed Steps : 1 
-Failed Steps    : 0 
-Pending Steps   : 0 
-Progress        : 100% 
+Total Steps     : 1
+Completed Steps : 1
+Failed Steps    : 0
+Pending Steps   : 0
+Progress        : 100%
 
 This progress information comes from the existing plan architecture rather than a separate voice progress system.
 
@@ -2774,17 +2774,17 @@ This progress information comes from the existing plan architecture rather than 
 
 A successful command execution returns structured information such as:
 
-success 
- 
-query 
- 
-plan_id 
- 
-execution_id 
- 
-result 
- 
-progress 
+success
+
+query
+
+plan_id
+
+execution_id
+
+result
+
+progress
 
 Failure responses can additionally contain an error description.
 
@@ -2796,27 +2796,27 @@ The command execution layer explicitly handles invalid execution conditions.
 
 Examples include:
 
-Invalid Runtime Context 
- 
-Invalid Agent 
- 
-Invalid Planner 
- 
-Invalid Orchestrator 
- 
-Empty Query 
- 
-Unknown Command 
- 
-Unknown Tool 
- 
-Tool Resolution Failure 
- 
-Plan Creation Failure 
- 
-Plan Preparation Failure 
- 
-Execution Failure 
+Invalid Runtime Context
+
+Invalid Agent
+
+Invalid Planner
+
+Invalid Orchestrator
+
+Empty Query
+
+Unknown Command
+
+Unknown Tool
+
+Tool Resolution Failure
+
+Plan Creation Failure
+
+Plan Preparation Failure
+
+Execution Failure
 
 Unknown commands are rejected before an invalid tool execution occurs.
 
@@ -2828,35 +2828,35 @@ v0.60 intentionally focuses on the first executable voice-command bridge.
 
 It does not yet implement:
 
-Direct Tool Execution From Voice Layer 
- 
-Second Agent Execution Engine 
- 
-Second Planner 
- 
-Second Orchestrator 
- 
-Arbitrary Natural-Language Parameter Extraction 
- 
-Advanced Voice Reasoning 
- 
-Multi-Step Voice Planning 
- 
-Wake Word Detection 
- 
-Continuous Listening 
- 
-Voice Emotion Recognition 
- 
-Speaker Identification 
- 
-Conversational Voice Intelligence 
- 
-Autonomous Continuous Voice Agent 
- 
-Advanced Voice Memory 
- 
-Real-Time Voice Conversation 
+Direct Tool Execution From Voice Layer
+
+Second Agent Execution Engine
+
+Second Planner
+
+Second Orchestrator
+
+Arbitrary Natural-Language Parameter Extraction
+
+Advanced Voice Reasoning
+
+Multi-Step Voice Planning
+
+Wake Word Detection
+
+Continuous Listening
+
+Voice Emotion Recognition
+
+Speaker Identification
+
+Conversational Voice Intelligence
+
+Autonomous Continuous Voice Agent
+
+Advanced Voice Memory
+
+Real-Time Voice Conversation
 
 These capabilities remain future milestones.
 
@@ -2864,53 +2864,53 @@ These capabilities remain future milestones.
 
 The v0.60 architecture maintains the following boundaries:
 
-VoiceInput 
- 
-    → Represents voice input 
- 
-VoiceProcessingPipeline 
- 
-    → Processes voice input 
- 
-STTProvider 
- 
-    → Converts speech to text 
- 
-VoiceRuntimeIntegration 
- 
-    → Transfers transcription into runtime state 
- 
-AgentRuntimeContext 
- 
-    → Stores normalized runtime query/state 
- 
-VoiceCommandExecutor 
- 
-    → Bridges runtime query to command execution 
- 
-AgentPlanner 
- 
-    → Creates executable plans 
- 
-AgentOrchestrator 
- 
-    → Executes plans 
- 
-AgentExecutionController 
- 
-    → Controls execution lifecycle 
- 
-AgentEngine 
- 
-    → Resolves and executes capabilities 
- 
-ToolRegistry 
- 
-    → Stores and retrieves tools 
- 
-AgentTool 
- 
-    → Performs tool-specific work 
+VoiceInput
+
+→ Represents voice input
+
+VoiceProcessingPipeline
+
+→ Processes voice input
+
+STTProvider
+
+→ Converts speech to text
+
+VoiceRuntimeIntegration
+
+→ Transfers transcription into runtime state
+
+AgentRuntimeContext
+
+→ Stores normalized runtime query/state
+
+VoiceCommandExecutor
+
+→ Bridges runtime query to command execution
+
+AgentPlanner
+
+→ Creates executable plans
+
+AgentOrchestrator
+
+→ Executes plans
+
+AgentExecutionController
+
+→ Controls execution lifecycle
+
+AgentEngine
+
+→ Resolves and executes capabilities
+
+ToolRegistry
+
+→ Stores and retrieves tools
+
+AgentTool
+
+→ Performs tool-specific work
 
 This preserves the modular architecture established by previous milestones.
 
@@ -2918,115 +2918,115 @@ This preserves the modular architecture established by previous milestones.
 
 The complete v0.60 flow is:
 
-🎤 User Voice 
- 
-       ↓ 
- 
-Physical Microphone 
- 
-       ↓ 
- 
-MicrophoneCapture 
- 
-       ↓ 
- 
-AudioCapture 
- 
-       ↓ 
- 
-PCM Audio 
- 
-       ↓ 
- 
-WAV 
- 
-       ↓ 
- 
-VoiceInput 
- 
-       ↓ 
- 
-VoiceProcessingPipeline 
- 
-       ↓ 
- 
-STTProvider 
- 
-       ↓ 
- 
-Concrete STT Provider 
- 
-       ↓ 
- 
-Transcription 
- 
-       ↓ 
- 
-VoiceRuntimeIntegration 
- 
-       ↓ 
- 
-AgentRuntimeContext.query 
- 
-       ↓ 
- 
-VoiceCommandExecutor 
- 
-       ↓ 
- 
-AgentEngine.select_tool() 
- 
-       ↓ 
- 
-ToolSelector 
- 
-       ↓ 
- 
-Resolved AgentTool 
- 
-       ↓ 
- 
-AgentPlanner 
- 
-       ↓ 
- 
-AgentPlan 
- 
-       ↓ 
- 
-AgentPlanStep 
- 
-       ↓ 
- 
-AgentOrchestrator 
- 
-       ↓ 
- 
-AgentExecutionController 
- 
-       ↓ 
- 
-ExecutionContext 
- 
-       ↓ 
- 
-AgentEngine 
- 
-       ↓ 
- 
-ToolRegistry 
- 
-       ↓ 
- 
-AgentTool 
- 
-       ↓ 
- 
-ToolResult 
- 
-       ↓ 
- 
-Structured Voice Execution Result 
+🎤 User Voice
+
+   ↓
+
+Physical Microphone
+
+   ↓
+
+MicrophoneCapture
+
+   ↓
+
+AudioCapture
+
+   ↓
+
+PCM Audio
+
+   ↓
+
+WAV
+
+   ↓
+
+VoiceInput
+
+   ↓
+
+VoiceProcessingPipeline
+
+   ↓
+
+STTProvider
+
+   ↓
+
+Concrete STT Provider
+
+   ↓
+
+Transcription
+
+   ↓
+
+VoiceRuntimeIntegration
+
+   ↓
+
+AgentRuntimeContext.query
+
+   ↓
+
+VoiceCommandExecutor
+
+   ↓
+
+AgentEngine.select_tool()
+
+   ↓
+
+ToolSelector
+
+   ↓
+
+Resolved AgentTool
+
+   ↓
+
+AgentPlanner
+
+   ↓
+
+AgentPlan
+
+   ↓
+
+AgentPlanStep
+
+   ↓
+
+AgentOrchestrator
+
+   ↓
+
+AgentExecutionController
+
+   ↓
+
+ExecutionContext
+
+   ↓
+
+AgentEngine
+
+   ↓
+
+ToolRegistry
+
+   ↓
+
+AgentTool
+
+   ↓
+
+ToolResult
+
+   ↓
+
+Structured Voice Execution Result
 
 This is the complete architectural bridge introduced by v0.60.
 
@@ -3034,61 +3034,61 @@ This is the complete architectural bridge introduced by v0.60.
 
 The deterministic v0.60 test path uses a simple command such as:
 
-test_tool 
+test_tool
 
 The execution flow is:
 
-User Query 
- 
-"test_tool" 
- 
-      ↓ 
- 
-AgentRuntimeContext.query 
- 
-      ↓ 
- 
-VoiceCommandExecutor 
- 
-      ↓ 
- 
-AgentEngine.select_tool() 
- 
-      ↓ 
- 
-test_tool 
- 
-      ↓ 
- 
-AgentPlanner 
- 
-      ↓ 
- 
-One-Step AgentPlan 
- 
-      ↓ 
- 
-AgentOrchestrator 
- 
-      ↓ 
- 
-AgentEngine 
- 
-      ↓ 
- 
-ToolRegistry 
- 
-      ↓ 
- 
-test_tool AgentTool 
- 
-      ↓ 
- 
-ToolResult 
- 
-      ↓ 
- 
-Voice Command Execution Result 
+User Query
+
+"test_tool"
+
+  ↓
+
+AgentRuntimeContext.query
+
+  ↓
+
+VoiceCommandExecutor
+
+  ↓
+
+AgentEngine.select_tool()
+
+  ↓
+
+test_tool
+
+  ↓
+
+AgentPlanner
+
+  ↓
+
+One-Step AgentPlan
+
+  ↓
+
+AgentOrchestrator
+
+  ↓
+
+AgentEngine
+
+  ↓
+
+ToolRegistry
+
+  ↓
+
+test_tool AgentTool
+
+  ↓
+
+ToolResult
+
+  ↓
+
+Voice Command Execution Result
 
 This provides a deterministic validation path without requiring arbitrary natural-language parameter extraction.
 
@@ -3096,36 +3096,36 @@ This provides a deterministic validation path without requiring arbitrary natura
 
 Dedicated v0.60 tests are located at:
 
-tests/multimodal/test_voice_command_executor.py 
+tests/multimodal/test_voice_command_executor.py
 
 The dedicated test suite validates:
 
-Successful Voice Command Execution 
- 
-Empty Query Rejection 
- 
-Runtime Context Query Contract 
- 
-Unknown Command Rejection 
- 
-Invalid / Missing Agent Rejection 
- 
-One-Step Plan Creation 
- 
-Runtime Context Status Synchronization 
- 
-Execution Progress Reporting 
- 
-Unknown Tool Protection 
- 
-Query Normalization 
+Successful Voice Command Execution
+
+Empty Query Rejection
+
+Runtime Context Query Contract
+
+Unknown Command Rejection
+
+Invalid / Missing Agent Rejection
+
+One-Step Plan Creation
+
+Runtime Context Status Synchronization
+
+Execution Progress Reporting
+
+Unknown Tool Protection
+
+Query Normalization
 
 The authoritative v0.60 dedicated test result is:
 
-VoiceCommandExecutor Tests 
- 
-10 passed 
-0 failed 
+VoiceCommandExecutor Tests
+
+10 passed
+0 failed
 
 🧪 v0.60 Regression Validation
 
@@ -3133,272 +3133,272 @@ After the v0.60 implementation, the complete Ultron regression suite was execute
 
 Result:
 
-1447 passed 
-0 failed 
+1447 passed
+0 failed
 
 This confirms that the new Voice Command Execution layer remains compatible with the existing architecture.
 
 🛡️ v0.60 Quality Gate
 
-[✓] Runtime Context Validation 
- 
-[✓] Query Normalization 
- 
-[✓] Empty Query Protection 
- 
-[✓] Voice Command Resolution 
- 
-[✓] Existing AgentEngine Tool Resolution 
- 
-[✓] Existing Tool Selector Reuse 
- 
-[✓] AgentPlanner Reuse 
- 
-[✓] One-Step AgentPlan Creation 
- 
-[✓] Plan Preparation 
- 
-[✓] AgentOrchestrator Reuse 
- 
-[✓] AgentExecutionController Integration 
- 
-[✓] AgentEngine Execution Reuse 
- 
-[✓] ToolRegistry Execution 
- 
-[✓] AgentTool Execution 
- 
-[✓] Structured Execution Result 
- 
-[✓] Execution Identity Propagation 
- 
-[✓] Progress Reporting 
- 
-[✓] Runtime Context Synchronization 
- 
-[✓] Unknown Command Handling 
- 
-[✓] Unknown Tool Protection 
- 
-[✓] Failure Handling 
- 
-[✓] No Duplicate Planner 
- 
-[✓] No Duplicate Orchestrator 
- 
-[✓] No Duplicate Execution Engine 
- 
-[✓] Dedicated v0.60 Test Suite 
- 
-[✓] 10 Dedicated v0.60 Tests Passed 
- 
-[✓] Full Regression 
- 
-[✓] 1447 Full Tests Passed 
+[✓] Runtime Context Validation
+
+[✓] Query Normalization
+
+[✓] Empty Query Protection
+
+[✓] Voice Command Resolution
+
+[✓] Existing AgentEngine Tool Resolution
+
+[✓] Existing Tool Selector Reuse
+
+[✓] AgentPlanner Reuse
+
+[✓] One-Step AgentPlan Creation
+
+[✓] Plan Preparation
+
+[✓] AgentOrchestrator Reuse
+
+[✓] AgentExecutionController Integration
+
+[✓] AgentEngine Execution Reuse
+
+[✓] ToolRegistry Execution
+
+[✓] AgentTool Execution
+
+[✓] Structured Execution Result
+
+[✓] Execution Identity Propagation
+
+[✓] Progress Reporting
+
+[✓] Runtime Context Synchronization
+
+[✓] Unknown Command Handling
+
+[✓] Unknown Tool Protection
+
+[✓] Failure Handling
+
+[✓] No Duplicate Planner
+
+[✓] No Duplicate Orchestrator
+
+[✓] No Duplicate Execution Engine
+
+[✓] Dedicated v0.60 Test Suite
+
+[✓] 10 Dedicated v0.60 Tests Passed
+
+[✓] Full Regression
+
+[✓] 1447 Full Tests Passed
 
 🧠 Complete Voice Architecture After v0.60
 
 After v0.60, the complete voice architecture becomes:
 
-User 
- 
- │ 
- 
- ▼ 
- 
-🎤 Real Microphone 
- 
- │ 
- 
- ▼ 
- 
-MicrophoneCapture 
- 
- │ 
- 
- ▼ 
- 
-AudioCapture 
- 
- │ 
- 
- ▼ 
- 
-PCM Audio 
- 
- │ 
- 
- ▼ 
- 
-PCM → WAV 
- 
- │ 
- 
- ▼ 
- 
-VoiceInput 
- 
- │ 
- 
- ▼ 
- 
-InputRouter 
- 
- │ 
- 
- ▼ 
- 
-Voice Handler 
- 
- │ 
- 
- ▼ 
- 
-VoiceProcessingPipeline 
- 
- │ 
- 
- ▼ 
- 
-VoiceProcessingStrategy 
- 
- │ 
- 
- ▼ 
- 
-STTProvider 
- 
- │ 
- 
- ▼ 
- 
-OpenAISTTProvider 
- 
- │ 
- 
- ▼ 
- 
-Speech-to-Text 
- 
- │ 
- 
- ▼ 
- 
-MultimodalInputResult 
- 
- │ 
- 
- ▼ 
- 
-VoiceRuntimeIntegration 
- 
- │ 
- 
- ▼ 
- 
-AgentRuntimeContext 
- 
- │ 
- 
- ▼ 
- 
-Runtime Query 
- 
- │ 
- 
- ▼ 
- 
-VoiceCommandExecutor 
- 
- │ 
- 
- ▼ 
- 
-AgentEngine / Tool Selector 
- 
- │ 
- 
- ▼ 
- 
-AgentPlanner 
- 
- │ 
- 
- ▼ 
- 
-AgentPlan 
- 
- │ 
- 
- ▼ 
- 
-AgentOrchestrator 
- 
- │ 
- 
- ▼ 
- 
-AgentExecutionController 
- 
- │ 
- 
- ▼ 
- 
-ExecutionContext 
- 
- │ 
- 
- ▼ 
- 
-AgentEngine 
- 
- │ 
- 
- ▼ 
- 
-ToolRegistry 
- 
- │ 
- 
- ▼ 
- 
-AgentTool 
- 
- │ 
- 
- ▼ 
- 
-ToolResult 
- 
- │ 
- 
- ▼ 
- 
-Execution Events 
- 
- │ 
- 
- ▼ 
- 
-Observability 
- 
- │ 
- 
- ▼ 
- 
-Metrics 
- 
- │ 
- 
- ▼ 
- 
-Persistent Execution History 
- 
- │ 
- 
- ▼ 
- 
-Recovery Infrastructure 
+User
+
+│
+
+▼
+
+🎤 Real Microphone
+
+│
+
+▼
+
+MicrophoneCapture
+
+│
+
+▼
+
+AudioCapture
+
+│
+
+▼
+
+PCM Audio
+
+│
+
+▼
+
+PCM → WAV
+
+│
+
+▼
+
+VoiceInput
+
+│
+
+▼
+
+InputRouter
+
+│
+
+▼
+
+Voice Handler
+
+│
+
+▼
+
+VoiceProcessingPipeline
+
+│
+
+▼
+
+VoiceProcessingStrategy
+
+│
+
+▼
+
+STTProvider
+
+│
+
+▼
+
+OpenAISTTProvider
+
+│
+
+▼
+
+Speech-to-Text
+
+│
+
+▼
+
+MultimodalInputResult
+
+│
+
+▼
+
+VoiceRuntimeIntegration
+
+│
+
+▼
+
+AgentRuntimeContext
+
+│
+
+▼
+
+Runtime Query
+
+│
+
+▼
+
+VoiceCommandExecutor
+
+│
+
+▼
+
+AgentEngine / Tool Selector
+
+│
+
+▼
+
+AgentPlanner
+
+│
+
+▼
+
+AgentPlan
+
+│
+
+▼
+
+AgentOrchestrator
+
+│
+
+▼
+
+AgentExecutionController
+
+│
+
+▼
+
+ExecutionContext
+
+│
+
+▼
+
+AgentEngine
+
+│
+
+▼
+
+ToolRegistry
+
+│
+
+▼
+
+AgentTool
+
+│
+
+▼
+
+ToolResult
+
+│
+
+▼
+
+Execution Events
+
+│
+
+▼
+
+Observability
+
+│
+
+▼
+
+Metrics
+
+│
+
+▼
+
+Persistent Execution History
+
+│
+
+▼
+
+Recovery Infrastructure
 
 This is the first complete architectural path from physical voice input to executable agent tooling.
 
@@ -3449,13 +3449,13 @@ TTS Architecture
 The v0.61 TTS architecture introduces the following abstraction:
 
 Text
-  ↓
+↓
 TTSProvider
-  ↓
+↓
 Concrete TTS Provider
-  ↓
+↓
 MultimodalInputResult
-  ↓
+↓
 Synthesized Audio
 
 The base TTSProvider defines the contract.
@@ -3778,35 +3778,35 @@ Relationship With Existing Voice Architecture
 The existing ULTRON voice architecture currently follows:
 
 Microphone
-   ↓
+↓
 Audio Capture
-   ↓
+↓
 Voice Input
-   ↓
+↓
 STT Provider
-   ↓
+↓
 Voice Processing
-   ↓
+↓
 Runtime Integration
-   ↓
+↓
 Voice Command Execution
-   ↓
+↓
 Agent Runtime
-   ↓
+↓
 Planner
-   ↓
+↓
 Orchestrator
-   ↓
+↓
 Tool Execution
 
 v0.61 adds the future response-side abstraction:
 
 Agent Execution Result
-   ↓
+↓
 Text Response
-   ↓
+↓
 TTSProvider
-   ↓
+↓
 Synthesized Audio
 
 The complete voice response path will be implemented incrementally in future releases.
@@ -3824,25 +3824,25 @@ v0.65 → Full Voice Conversation Loop
 The final target architecture is:
 
 🎤 User
-   ↓
+↓
 Audio Capture
-   ↓
+↓
 STT
-   ↓
+↓
 Voice Command Executor
-   ↓
+↓
 Agent Runtime
-   ↓
+↓
 Planner
-   ↓
+↓
 Orchestrator
-   ↓
+↓
 Tool Execution
-   ↓
+↓
 Result
-   ↓
+↓
 TTS
-   ↓
+↓
 🔊 ULTRON
 
 v0.61 Tests
@@ -3912,17 +3912,17 @@ v0.61 establishes the TTS Provider Layer required for future voice-response capa
 The architecture now contains independent provider abstractions for both directions of voice processing:
 
 Voice Input
-    ↓
+↓
 STTProvider
-    ↓
+↓
 Text
 
 and:
 
 Text
-    ↓
+↓
 TTSProvider
-    ↓
+↓
 Audio
 
 This creates a clean foundation for multi-provider voice intelligence while keeping external provider implementations isolated from ULTRON's core runtime.
@@ -3947,267 +3947,464 @@ The provider will implement the existing TTSProvider contract while keeping prov
 
 Runtime integration will remain outside v0.62 and will be introduced in v0.63.
 
+🔊 v0.62 — First TTS Provider
+
+Overview
+
+Ultron v0.62 introduces the first concrete Text-to-Speech (TTS) provider implementation.
+
+This release builds directly on the provider-independent TTSProvider abstraction introduced in v0.61 and adds an OpenAI-backed implementation for converting text into synthesized audio.
+
+The provider-specific logic remains isolated inside the multimodal provider layer, keeping the runtime and orchestration architecture provider-independent.
+
+v0.62 Features
+
+Added OpenAITTSProvider
+
+Integrated OpenAI Speech API support
+
+Added configurable TTS model
+
+Added configurable voice
+
+Added configurable audio format
+
+Added supported voice definitions
+
+Added supported audio format definitions
+
+Added provider availability validation
+
+Added text input validation
+
+Added synthesized audio extraction
+
+Added MultimodalInputResult integration
+
+Added provider metadata to TTS results
+
+Added provider-level error handling
+
+Added unsupported voice validation
+
+Added unsupported audio format validation
+
+Preserved provider abstraction and runtime independence
+
+TTS Provider Architecture
+
+Text
+  ↓
+TTSProvider
+  ↓
+OpenAITTSProvider
+  ↓
+OpenAI Speech API
+  ↓
+Synthesized Audio
+  ↓
+MultimodalInputResult
+
+OpenAI TTS Provider
+
+The OpenAITTSProvider provides the first concrete implementation of the TTSProvider abstraction.
+
+Responsibilities:
+
+Validate provider configuration
+
+Validate text input
+
+Validate provider availability
+
+Validate selected voice
+
+Validate selected audio format
+
+Execute speech synthesis
+
+Extract generated audio
+
+Return structured multimodal results
+
+Attach provider metadata
+
+Handle provider/API failures safely
+
+Default Configuration
+
+Provider:
+openai-tts
+
+Model:
+gpt-4o-mini-tts
+
+Default Voice:
+alloy
+
+Default Audio Format:
+mp3
+
+Supported Voices
+
+alloy
+echo
+fable
+onyx
+nova
+shimmer
+
+Supported Audio Formats
+
+mp3
+wav
+opus
+aac
+flac
+pcm
+
+Result Flow
+
+Successful synthesis returns a MultimodalInputResult containing the generated audio data along with provider metadata such as:
+
+provider
+model
+voice
+audio_format
+
+Failed synthesis operations are represented through the existing multimodal result lifecycle and error handling system.
+
+Provider Boundary
+
+The OpenAI implementation is intentionally isolated from:
+
+Agent Runtime
+
+Agent Planner
+
+Orchestrator
+
+Execution Controller
+
+Voice Command Execution
+
+Audio Playback
+
+Conversation Loop
+
+This keeps the TTS layer modular and allows additional providers to be introduced without changing the core runtime architecture.
+
+Testing
+
+Dedicated OpenAI TTS provider tests:
+
+62 passed
+
+Full regression after v0.62:
+
+1598 passed
+0 failed
+
+Version Progression
+
+v0.61 → TTS Provider Abstraction
+v0.62 → First TTS Provider
+v0.63 → Runtime TTS Integration
+v0.64 → Voice Response Execution
+v0.65 → Full Voice Conversation Loop
+
+v0.62 Milestone
+
+With v0.62, Ultron now has both:
+
+STT Provider Layer
+        +
+TTS Provider Layer
+
+This establishes the provider foundation required for a complete voice interaction pipeline.
+
+The next milestone, v0.63 — Runtime TTS Integration, will connect the TTS provider layer with the existing Ultron runtime and execution architecture.
+
 🤖 AI Operating System Direction
 
 Ultron is evolving beyond a conventional chatbot or personal assistant.
 
 The architecture is moving toward an AI Operating System capable of:
 
-Understand 
- 
-      ↓ 
- 
-Receive Multimodal Input 
- 
-      ↓ 
- 
-Receive Physical Voice Input 
- 
-      ↓ 
- 
-Capture Audio 
- 
-      ↓ 
- 
-Normalize Voice Input 
- 
-      ↓ 
- 
-Process Voice Input 
- 
-      ↓ 
- 
-Orchestrate Voice Processing 
- 
-      ↓ 
- 
-Apply Processing Strategy 
- 
-      ↓ 
- 
-Select STT Provider 
- 
-      ↓ 
- 
-Execute Concrete STT Provider 
- 
-      ↓ 
- 
-Convert Speech to Text 
- 
-      ↓ 
- 
-Integrate With Runtime 
- 
-      ↓ 
- 
-Create Runtime Query 
- 
-      ↓ 
- 
-Resolve Voice Command 
- 
-      ↓ 
- 
-Create Agent Plan 
- 
-      ↓ 
- 
-Orchestrate Agent Plan 
- 
-      ↓ 
- 
-Execute Agent Capability 
- 
-      ↓ 
- 
-Remember 
- 
-      ↓ 
- 
-Plan 
- 
-      ↓ 
- 
-Select Capabilities 
- 
-      ↓ 
- 
-Query Context 
- 
-      ↓ 
- 
-Orchestrate 
- 
-      ↓ 
- 
-Execute 
- 
-      ↓ 
- 
-Observe 
- 
-      ↓ 
- 
-Measure 
- 
-      ↓ 
- 
-Persist 
- 
-      ↓ 
- 
-Snapshot 
- 
-      ↓ 
- 
-Recover 
- 
-      ↓ 
- 
-Restore 
- 
-      ↓ 
- 
-Resume 
- 
-      ↓ 
- 
-Automate 
+Understand
+
+  ↓
+
+Receive Multimodal Input
+
+  ↓
+
+Receive Physical Voice Input
+
+  ↓
+
+Capture Audio
+
+  ↓
+
+Normalize Voice Input
+
+  ↓
+
+Process Voice Input
+
+  ↓
+
+Orchestrate Voice Processing
+
+  ↓
+
+Apply Processing Strategy
+
+  ↓
+
+Select STT Provider
+
+  ↓
+
+Execute Concrete STT Provider
+
+  ↓
+
+Convert Speech to Text
+
+  ↓
+
+Integrate With Runtime
+
+  ↓
+
+Create Runtime Query
+
+  ↓
+
+Resolve Voice Command
+
+  ↓
+
+Create Agent Plan
+
+  ↓
+
+Orchestrate Agent Plan
+
+  ↓
+
+Execute Agent Capability
+
+  ↓
+
+Remember
+
+  ↓
+
+Plan
+
+  ↓
+
+Select Capabilities
+
+  ↓
+
+Query Context
+
+  ↓
+
+Orchestrate
+
+  ↓
+
+Execute
+
+  ↓
+
+Observe
+
+  ↓
+
+Measure
+
+  ↓
+
+Persist
+
+  ↓
+
+Snapshot
+
+  ↓
+
+Recover
+
+  ↓
+
+Restore
+
+  ↓
+
+Resume
+
+  ↓
+
+Automate
 
 The recent architectural evolution is:
 
-v0.44 
- 
-Execution Events 
- 
-      ↓ 
- 
-v0.45 
- 
-Execution Observability 
- 
-      ↓ 
- 
-v0.46 
- 
-Execution Metrics 
- 
-      ↓ 
- 
-v0.47 
- 
-Persistent Execution History 
- 
-      ↓ 
- 
-v0.48 
- 
-Execution State Snapshot 
- 
-      ↓ 
- 
-v0.49 
- 
-Agent Runtime Context 
- 
-      ↓ 
- 
-v0.50 
- 
-Execution Context Queries 
- 
-      ↓ 
- 
-v0.51 
- 
-Multimodal Input Foundation 
- 
-      ↓ 
- 
-v0.52 
- 
-Voice Input Foundation 
- 
-      ↓ 
- 
-v0.53 
- 
-Voice Processing Foundation 
- 
-      ↓ 
- 
-v0.54 
- 
-Voice Processing Pipeline Foundation 
- 
-      ↓ 
- 
-v0.55 
- 
-Voice Processing Intelligence Foundation 
- 
-      ↓ 
- 
-v0.56 
- 
-STT Provider Abstraction 
- 
-      ↓ 
- 
-v0.57 
- 
-First STT Provider 
- 
-      ↓ 
- 
-v0.58 
- 
-Voice → Text Runtime Integration 
- 
-      ↓ 
- 
-v0.59 
- 
-Audio Capture Foundation 
- 
-      ↓ 
- 
-v0.60 
- 
-Voice Command Execution 
- 
-      ↓ 
- 
-Future 
- 
-Advanced Voice Intelligence 
- 
-      ↓ 
- 
-Future 
- 
-Multimodal Intelligence 
- 
-      ↓ 
- 
-Future 
- 
-Context-Aware Multimodal Execution 
- 
-      ↓ 
- 
-Future 
- 
-Recovery & Resumption 
- 
-      ↓ 
- 
-Future 
- 
-Durable Automation 
+v0.44
+
+Execution Events
+
+  ↓
+
+v0.45
+
+Execution Observability
+
+  ↓
+
+v0.46
+
+Execution Metrics
+
+  ↓
+
+v0.47
+
+Persistent Execution History
+
+  ↓
+
+v0.48
+
+Execution State Snapshot
+
+  ↓
+
+v0.49
+
+Agent Runtime Context
+
+  ↓
+
+v0.50
+
+Execution Context Queries
+
+  ↓
+
+v0.51
+
+Multimodal Input Foundation
+
+  ↓
+
+v0.52
+
+Voice Input Foundation
+
+  ↓
+
+v0.53
+
+Voice Processing Foundation
+
+  ↓
+
+v0.54
+
+Voice Processing Pipeline Foundation
+
+  ↓
+
+v0.55
+
+Voice Processing Intelligence Foundation
+
+  ↓
+
+v0.56
+
+STT Provider Abstraction
+
+  ↓
+
+v0.57
+
+First STT Provider
+
+  ↓
+
+v0.58
+
+Voice → Text Runtime Integration
+
+  ↓
+
+v0.59
+
+Audio Capture Foundation
+
+  ↓
+
+v0.60
+
+Voice Command Execution
+
+  ↓
+
+Future
+
+Advanced Voice Intelligence
+
+  ↓
+
+Future
+
+Multimodal Intelligence
+
+  ↓
+
+Future
+
+Context-Aware Multimodal Execution
+
+  ↓
+
+Future
+
+Recovery & Resumption
+
+  ↓
+
+Future
+
+Durable Automation
 
 📜 Version History
+
+v0.62 — First TTS Provider
+
+OpenAITTSProvider
+OpenAI Speech API integration
+Configurable TTS model
+Configurable voice
+Configurable audio format
+Supported voice definitions
+Supported audio format definitions
+Provider availability validation
+Text input validation
+Synthesized audio extraction
+MultimodalInputResult integration
+Provider metadata in TTS results
+Provider-level error handling
+Unsupported voice validation
+Unsupported audio format validation
+Runtime/provider abstraction preservation
 
 v0.61 — Text-to-Speech Provider Abstraction
 
@@ -4837,1101 +5034,1098 @@ Automated multimodal regression testing
 
 Ultron continues to evolve through focused architectural milestones.
 
-v0.37 → Agent Runtime 
- 
-        ↓ 
- 
-v0.38 → Tool System 
- 
-        ↓ 
- 
-v0.39 → Planning Selection 
- 
-        ↓ 
- 
-v0.40 → Planning 
- 
-        ↓ 
- 
-v0.41 → Execution & Orchestration 
- 
-        ↓ 
- 
-v0.42 → Execution Controller 
- 
-        ↓ 
- 
-v0.43 → Execution Control 
- 
-        ↓ 
- 
-v0.44 → Execution Events 
- 
-        ↓ 
- 
-v0.45 → Execution Observability 
- 
-        ↓ 
- 
-v0.46 → Execution Metrics 
- 
-        ↓ 
- 
-v0.47 → Persistent Execution History 
- 
-        ↓ 
- 
-v0.48 → Execution State Snapshot 
- 
-        ↓ 
- 
-v0.49 → Agent Runtime Context 
- 
-        ↓ 
- 
-v0.50 → Execution Context Queries 
- 
-        ↓ 
- 
-v0.51 → Multimodal Input Foundation 
- 
-        ↓ 
- 
-v0.52 → Voice Input Foundation 
- 
-        ↓ 
- 
-v0.53 → Voice Processing Foundation 
- 
-        ↓ 
- 
-v0.54 → Voice Processing Pipeline Foundation 
- 
-        ↓ 
- 
-v0.55 → Voice Processing Intelligence Foundation 
- 
-        ↓ 
- 
-v0.56 → STT Provider Abstraction 
- 
-        ↓ 
- 
-v0.57 → First STT Provider 
- 
-        ↓ 
- 
-v0.58 → Voice → Text Runtime Integration 
- 
-        ↓ 
- 
-v0.59 → Audio Capture Foundation 
- 
-        ↓ 
- 
-v0.60 → Voice Command Execution 
- 
-        ↓ 
- 
-Future → Advanced Voice Intelligence 
- 
-        ↓ 
- 
-Future → Multimodal Intelligence 
- 
-        ↓ 
- 
-Future → Context-Aware Execution 
- 
-        ↓ 
- 
-Future → Recovery & Resumption 
- 
-        ↓ 
- 
-Future → Durable Automation 
- 
-        ↓ 
- 
-v1.0 → Stable AI Operating System Platform 
+v0.37 → Agent Runtime
+
+    ↓
+
+v0.38 → Tool System
+
+    ↓
+
+v0.39 → Planning Selection
+
+    ↓
+
+v0.40 → Planning
+
+    ↓
+
+v0.41 → Execution & Orchestration
+
+    ↓
+
+v0.42 → Execution Controller
+
+    ↓
+
+v0.43 → Execution Control
+
+    ↓
+
+v0.44 → Execution Events
+
+    ↓
+
+v0.45 → Execution Observability
+
+    ↓
+
+v0.46 → Execution Metrics
+
+    ↓
+
+v0.47 → Persistent Execution History
+
+    ↓
+
+v0.48 → Execution State Snapshot
+
+    ↓
+
+v0.49 → Agent Runtime Context
+
+    ↓
+
+v0.50 → Execution Context Queries
+
+    ↓
+
+v0.51 → Multimodal Input Foundation
+
+    ↓
+
+v0.52 → Voice Input Foundation
+
+    ↓
+
+v0.53 → Voice Processing Foundation
+
+    ↓
+
+v0.54 → Voice Processing Pipeline Foundation
+
+    ↓
+
+v0.55 → Voice Processing Intelligence Foundation
+
+    ↓
+
+v0.56 → STT Provider Abstraction
+
+    ↓
+
+v0.57 → First STT Provider
+
+    ↓
+
+v0.58 → Voice → Text Runtime Integration
+
+    ↓
+
+v0.59 → Audio Capture Foundation
+
+    ↓
+
+v0.60 → Voice Command Execution
+
+    ↓
+
+Future → Advanced Voice Intelligence
+
+    ↓
+
+Future → Multimodal Intelligence
+
+    ↓
+
+Future → Context-Aware Execution
+
+    ↓
+
+Future → Recovery & Resumption
+
+    ↓
+
+Future → Durable Automation
+
+    ↓
+
+v1.0 → Stable AI Operating System Platform
 
 🧭 Path Toward v1.0
 
 The architecture is progressing toward a complete AI Operating System platform.
 
-Core Intelligence 
- 
-      │ 
- 
-      ▼ 
- 
-Conversation & Memory 
- 
-      │ 
- 
-      ▼ 
- 
-AI Integration 
- 
-      │ 
- 
-      ▼ 
- 
-Multimodal Input 
- 
-      │ 
- 
-      ▼ 
- 
-Voice Input 
- 
-      │ 
- 
-      ▼ 
- 
-Audio Capture 
- 
-      │ 
- 
-      ▼ 
- 
-Microphone Capture 
- 
-      │ 
- 
-      ▼ 
- 
-Voice Processing 
- 
-      │ 
- 
-      ▼ 
- 
-Voice Processing Pipeline 
- 
-      │ 
- 
-      ▼ 
- 
-Voice Processing Strategy 
- 
-      │ 
- 
-      ▼ 
- 
-STT Provider Abstraction 
- 
-      │ 
- 
-      ▼ 
- 
-First STT Provider 
- 
-      │ 
- 
-      ▼ 
- 
-Voice → Text Runtime Integration 
- 
-      │ 
- 
-      ▼ 
- 
-Runtime Query 
- 
-      │ 
- 
-      ▼ 
- 
-Voice Command Execution 
- 
-      │ 
- 
-      ▼ 
- 
-Agent Tool Resolution 
- 
-      │ 
- 
-      ▼ 
- 
-Agent Planning 
- 
-      │ 
- 
-      ▼ 
- 
-Agent Plan 
- 
-      │ 
- 
-      ▼ 
- 
-Agent Orchestration 
- 
-      │ 
- 
-      ▼ 
- 
-Execution Control 
- 
-      │ 
- 
-      ▼ 
- 
-Execution Lifecycle 
- 
-      │ 
- 
-      ▼ 
- 
-Execution Events 
- 
-      │ 
- 
-      ▼ 
- 
-Execution Observability 
- 
-      │ 
- 
-      ▼ 
- 
-Execution Metrics 
- 
-      │ 
- 
-      ▼ 
- 
-Persistent Execution History 
- 
-      │ 
- 
-      ▼ 
- 
-Execution State Snapshots 
- 
-      │ 
- 
-      ▼ 
- 
-Agent Runtime Context 
- 
-      │ 
- 
-      ▼ 
- 
-Execution Context Queries 
- 
-      │ 
- 
-      ▼ 
- 
-Advanced Voice Processing 
- 
-      │ 
- 
-      ▼ 
- 
-Multimodal Intelligence 
- 
-      │ 
- 
-      ▼ 
- 
-Context-Aware Execution 
- 
-      │ 
- 
-      ▼ 
- 
-State Restoration 
- 
-      │ 
- 
-      ▼ 
- 
-Crash Recovery 
- 
-      │ 
- 
-      ▼ 
- 
-Execution Resumption 
- 
-      │ 
- 
-      ▼ 
- 
-Durable Automation 
- 
-      │ 
- 
-      ▼ 
- 
-Advanced Agents 
- 
-      │ 
- 
-      ▼ 
- 
-System Integration 
- 
-      │ 
- 
-      ▼ 
- 
-Production Hardening 
- 
-      │ 
- 
-      ▼ 
- 
-v1.0 
+Core Intelligence
+
+  │
+
+  ▼
+
+Conversation & Memory
+
+  │
+
+  ▼
+
+AI Integration
+
+  │
+
+  ▼
+
+Multimodal Input
+
+  │
+
+  ▼
+
+Voice Input
+
+  │
+
+  ▼
+
+Audio Capture
+
+  │
+
+  ▼
+
+Microphone Capture
+
+  │
+
+  ▼
+
+Voice Processing
+
+  │
+
+  ▼
+
+Voice Processing Pipeline
+
+  │
+
+  ▼
+
+Voice Processing Strategy
+
+  │
+
+  ▼
+
+STT Provider Abstraction
+
+  │
+
+  ▼
+
+First STT Provider
+
+  │
+
+  ▼
+
+Voice → Text Runtime Integration
+
+  │
+
+  ▼
+
+Runtime Query
+
+  │
+
+  ▼
+
+Voice Command Execution
+
+  │
+
+  ▼
+
+Agent Tool Resolution
+
+  │
+
+  ▼
+
+Agent Planning
+
+  │
+
+  ▼
+
+Agent Plan
+
+  │
+
+  ▼
+
+Agent Orchestration
+
+  │
+
+  ▼
+
+Execution Control
+
+  │
+
+  ▼
+
+Execution Lifecycle
+
+  │
+
+  ▼
+
+Execution Events
+
+  │
+
+  ▼
+
+Execution Observability
+
+  │
+
+  ▼
+
+Execution Metrics
+
+  │
+
+  ▼
+
+Persistent Execution History
+
+  │
+
+  ▼
+
+Execution State Snapshots
+
+  │
+
+  ▼
+
+Agent Runtime Context
+
+  │
+
+  ▼
+
+Execution Context Queries
+
+  │
+
+  ▼
+
+Advanced Voice Processing
+
+  │
+
+  ▼
+
+Multimodal Intelligence
+
+  │
+
+  ▼
+
+Context-Aware Execution
+
+  │
+
+  ▼
+
+State Restoration
+
+  │
+
+  ▼
+
+Crash Recovery
+
+  │
+
+  ▼
+
+Execution Resumption
+
+  │
+
+  ▼
+
+Durable Automation
+
+  │
+
+  ▼
+
+Advanced Agents
+
+  │
+
+  ▼
+
+System Integration
+
+  │
+
+  ▼
+
+Production Hardening
+
+  │
+
+  ▼
+
+v1.0
 
 🚦 Current Milestone
 
-╔══════════════════════════════════════════════════════════╗ 
-║                    ULTRON v0.60                         ║ 
-╠══════════════════════════════════════════════════════════╣ 
-║ Conversation Engine                             ✓       ║ 
-║ Smart Memory System                              ✓       ║ 
-║ User Profile Memory                              ✓       ║ 
-║ AI Provider Architecture                         ✓       ║ 
-║ Agent Runtime                                    ✓       ║ 
-║ Agent Tool System                                ✓       ║ 
-║ Tool Registry                                    ✓       ║ 
-║ Tool Selector                                    ✓       ║ 
-║ Capability-Based Selection                       ✓       ║ 
-║ Agent Planner                                    ✓       ║ 
-║ Agent Plans                                      ✓       ║ 
-║ Agent Orchestrator                               ✓       ║ 
-║ Execution Controller                             ✓       ║ 
-║ Execution Lifecycle                              ✓       ║ 
-║ Pause / Resume                                   ✓       ║ 
-║ Cancellation                                     ✓       ║ 
-║ Retry / Skip                                     ✓       ║ 
-║ Execution Events                                 ✓       ║ 
-║ Execution Observability                          ✓       ║ 
-║ Execution Metrics                                ✓       ║ 
-║ Persistent Execution History                     ✓       ║ 
-║ Execution State Snapshot                         ✓       ║ 
-║ Recovery State Foundation                        ✓       ║ 
-║ Agent Runtime Context                            ✓       ║ 
-║ Execution Context Queries                        ✓       ║ 
-║                                                          ║ 
-║ Multimodal Input Foundation                      ✓       ║ 
-║ InputType                                        ✓       ║ 
-║ MultimodalInput                                  ✓       ║ 
-║ InputResult                                      ✓       ║ 
-║ InputRouter                                      ✓       ║ 
-║ Handler Registration                             ✓       ║ 
-║ Handler Lookup                                   ✓       ║ 
-║ Handler Replacement                              ✓       ║ 
-║ Handler Unregistration                           ✓       ║ 
-║ Handler Clearing                                 ✓       ║ 
-║ Text Routing                                     ✓       ║ 
-║ Voice Routing                                    ✓       ║ 
-║ Vision Routing                                   ✓       ║ 
-║ Gesture Routing                                  ✓       ║ 
-║                                                          ║ 
-║ Voice Input Foundation                           ✓       ║ 
-║ Voice Input Layer                                ✓       ║ 
-║ Voice Input Validation                            ✓       ║ 
-║ Voice Input Routing                               ✓       ║ 
-║ Voice Handler Boundary                            ✓       ║ 
-║ Voice Input Result Integration                    ✓       ║ 
-║ Voice Input Error Handling                        ✓       ║ 
-║ Voice Input Testing                               ✓       ║ 
-║                                                          ║ 
-║ Voice Processing Foundation                      ✓       ║ 
-║ VoiceProcessor                                   ✓       ║ 
-║ VoiceProcessorError                              ✓       ║ 
-║ Processor Validation                              ✓       ║ 
-║ Processing Result Helpers                         ✓       ║ 
-║ Success Result Handling                           ✓       ║ 
-║ Failure Result Handling                           ✓       ║ 
-║ Processor Metadata                                ✓       ║ 
-║ Processor Identity                                ✓       ║ 
-║ Voice Processor Integration                       ✓       ║ 
-║                                                          ║ 
-║ Voice Processing Pipeline                        ✓       ║ 
-║ Pipeline Validation                              ✓       ║ 
-║ Processing Lifecycle                             ✓       ║ 
-║ Success Processing                               ✓       ║ 
-║ Failure Processing                               ✓       ║ 
-║ Processor Result Validation                       ✓       ║ 
-║ Processor Isolation                               ✓       ║ 
-║ Processor Replacement                             ✓       ║ 
-║ Pipeline Metadata                                 ✓       ║ 
-║ Input Identity Preservation                       ✓       ║ 
-║ Pipeline Integration                              ✓       ║ 
-║                                                          ║ 
-║ Voice Processing Strategy                        ✓       ║ 
-║ Strategy Validation                               ✓       ║ 
-║ Strategy Identity                                 ✓       ║ 
-║ Processing Mode                                   ✓       ║ 
-║ Strategy Configuration                            ✓       ║ 
-║ Strategy Metadata                                 ✓       ║ 
-║ Configuration Isolation                           ✓       ║ 
-║ Metadata Isolation                                ✓       ║ 
-║ Processing Contract                               ✓       ║ 
-║ Provider-Agnostic Strategy Boundary               ✓       ║ 
-║                                                          ║ 
-║ STT Provider Abstraction                          ✓       ║ 
-║ STTProvider                                       ✓       ║ 
-║ STTProviderError                                  ✓       ║ 
-║ Provider Identity                                 ✓       ║ 
-║ Supported Audio Formats                           ✓       ║ 
-║ Capability Declaration                            ✓       ║ 
-║ Provider Configuration                            ✓       ║ 
-║ Provider Metadata                                 ✓       ║ 
-║ Provider Availability                             ✓       ║ 
-║ VoiceInput Provider Validation                    ✓       ║ 
-║ Audio Format Compatibility                        ✓       ║ 
-║ Transcription Contract                            ✓       ║ 
-║ Provider Isolation                                ✓       ║ 
-║ Provider-Agnostic STT Boundary                    ✓       ║ 
-║                                                          ║ 
-║ First STT Provider                                ✓       ║ 
-║ OpenAISTTProvider                                 ✓       ║ 
-║ OpenAI Client Boundary                            ✓       ║ 
-║ OpenAI STT Integration                            ✓       ║ 
-║ STT Model Configuration                           ✓       ║ 
-║ Audio File Preparation                            ✓       ║ 
-║ Transcription Request                             ✓       ║ 
-║ Response Text Extraction                           ✓       ║ 
-║ Empty Transcription Handling                      ✓       ║ 
-║ Provider Error Handling                            ✓       ║ 
-║ Standardized MultimodalInputResult                 ✓       ║ 
-║ Provider Metadata Propagation                      ✓       ║ 
-║ Provider Isolation                                ✓       ║ 
-║                                                          ║ 
-║ Voice → Text Runtime Integration                  ✓       ║ 
-║ OpenAIVoiceProcessor                              ✓       ║ 
-║ Voice Processor → STT Adapter                     ✓       ║ 
-║ STT Result Integration                            ✓       ║ 
-║ VoiceRuntimeIntegration                           ✓       ║ 
-║ Runtime Query Propagation                         ✓       ║ 
-║ AgentRuntimeContext Integration                   ✓       ║ 
-║ Voice → Text → Runtime Flow                      ✓       ║ 
-║ Runtime Failure Handling                          ✓       ║ 
-║ Runtime Isolation                                 ✓       ║ 
-║                                                          ║ 
-║ Audio Capture Foundation                          ✓       ║ 
-║ AudioCapture                                      ✓       ║ 
-║ AudioCaptureError                                 ✓       ║ 
-║ Capture Configuration                             ✓       ║ 
-║ Sample Rate Configuration                          ✓       ║ 
-║ Channel Configuration                              ✓       ║ 
-║ Capture Metadata                                   ✓       ║ 
-║ Last Capture Tracking                              ✓       ║ 
-║ MicrophoneCapture                                  ✓       ║ 
-║ Real Microphone Support                            ✓       ║ 
-║ sounddevice Backend                                ✓       ║ 
-║ Microphone Availability                            ✓       ║ 
-║ Device Information                                 ✓       ║ 
-║ Device Selection                                   ✓       ║ 
-║ Recording Lifecycle                                ✓       ║ 
-║ Recording State                                    ✓       ║ 
-║ PCM Audio Capture                                  ✓       ║ 
-║ Audio Buffering                                    ✓       ║ 
-║ Capture Callback                                   ✓       ║ 
-║ PCM Frame Tracking                                 ✓       ║ 
-║ Duration Calculation                               ✓       ║ 
-║ PCM → WAV Conversion                               ✓       ║ 
-║ WAV Generation                                     ✓       ║ 
-║ VoiceInput Integration                             ✓       ║ 
-║ Capture Metadata Propagation                       ✓       ║ 
-║ Capture Error Isolation                            ✓       ║ 
-║ Fake Backend Testing                               ✓       ║ 
-║ Real Microphone Smoke Test                         ✓       ║ 
-║                                                          ║ 
-║ Voice Command Execution                            ✓       ║ 
-║ VoiceCommandExecutor                               ✓       ║ 
-║ Runtime Query → Command Bridge                     ✓       ║ 
-║ Existing AgentEngine Resolution                    ✓       ║ 
-║ Existing Tool Selector Reuse                       ✓       ║ 
-║ One-Step Voice Plan Creation                       ✓       ║ 
-║ AgentPlan Preparation                              ✓       ║ 
-║ Voice Plan Orchestration                           ✓       ║ 
-║ AgentExecutionController Integration              ✓       ║ 
-║ AgentEngine Execution Reuse                        ✓       ║ 
-║ ToolRegistry / AgentTool Execution                 ✓       ║ 
-║ Structured Voice Execution Result                  ✓       ║ 
-║ Execution Identity Propagation                     ✓       ║ 
-║ Voice Execution Progress                           ✓       ║ 
-║ Runtime Context Synchronization                    ✓       ║ 
-║ Empty Query Protection                             ✓       ║ 
-║ Unknown Command Handling                           ✓       ║ 
-║ Unknown Tool Protection                             ✓       ║ 
-║ Voice Command Failure Handling                     ✓       ║ 
-║ No Duplicate Execution Architecture                ✓       ║ 
-║                                                          ║ 
-║ Dedicated v0.60 Tests                              ✓       ║ 
-╠══════════════════════════════════════════════════════════╣ 
-║ v0.60 Dedicated Tests: 10 passed                  ║ 
-║ Last Full Regression: 1447 passed                 ║ 
-║ Status: Active Development                        ║ 
-╚══════════════════════════════════════════════════════════╝ 
+╔══════════════════════════════════════════════════════════╗
+║                    ULTRON v0.60                         ║
+╠══════════════════════════════════════════════════════════╣
+║ Conversation Engine                             ✓       ║
+║ Smart Memory System                              ✓       ║
+║ User Profile Memory                              ✓       ║
+║ AI Provider Architecture                         ✓       ║
+║ Agent Runtime                                    ✓       ║
+║ Agent Tool System                                ✓       ║
+║ Tool Registry                                    ✓       ║
+║ Tool Selector                                    ✓       ║
+║ Capability-Based Selection                       ✓       ║
+║ Agent Planner                                    ✓       ║
+║ Agent Plans                                      ✓       ║
+║ Agent Orchestrator                               ✓       ║
+║ Execution Controller                             ✓       ║
+║ Execution Lifecycle                              ✓       ║
+║ Pause / Resume                                   ✓       ║
+║ Cancellation                                     ✓       ║
+║ Retry / Skip                                     ✓       ║
+║ Execution Events                                 ✓       ║
+║ Execution Observability                          ✓       ║
+║ Execution Metrics                                ✓       ║
+║ Persistent Execution History                     ✓       ║
+║ Execution State Snapshot                         ✓       ║
+║ Recovery State Foundation                        ✓       ║
+║ Agent Runtime Context                            ✓       ║
+║ Execution Context Queries                        ✓       ║
+║                                                          ║
+║ Multimodal Input Foundation                      ✓       ║
+║ InputType                                        ✓       ║
+║ MultimodalInput                                  ✓       ║
+║ InputResult                                      ✓       ║
+║ InputRouter                                      ✓       ║
+║ Handler Registration                             ✓       ║
+║ Handler Lookup                                   ✓       ║
+║ Handler Replacement                              ✓       ║
+║ Handler Unregistration                           ✓       ║
+║ Handler Clearing                                 ✓       ║
+║ Text Routing                                     ✓       ║
+║ Voice Routing                                    ✓       ║
+║ Vision Routing                                   ✓       ║
+║ Gesture Routing                                  ✓       ║
+║                                                          ║
+║ Voice Input Foundation                           ✓       ║
+║ Voice Input Layer                                ✓       ║
+║ Voice Input Validation                            ✓       ║
+║ Voice Input Routing                               ✓       ║
+║ Voice Handler Boundary                            ✓       ║
+║ Voice Input Result Integration                    ✓       ║
+║ Voice Input Error Handling                        ✓       ║
+║ Voice Input Testing                               ✓       ║
+║                                                          ║
+║ Voice Processing Foundation                      ✓       ║
+║ VoiceProcessor                                   ✓       ║
+║ VoiceProcessorError                              ✓       ║
+║ Processor Validation                              ✓       ║
+║ Processing Result Helpers                         ✓       ║
+║ Success Result Handling                           ✓       ║
+║ Failure Result Handling                           ✓       ║
+║ Processor Metadata                                ✓       ║
+║ Processor Identity                                ✓       ║
+║ Voice Processor Integration                       ✓       ║
+║                                                          ║
+║ Voice Processing Pipeline                        ✓       ║
+║ Pipeline Validation                              ✓       ║
+║ Processing Lifecycle                             ✓       ║
+║ Success Processing                               ✓       ║
+║ Failure Processing                               ✓       ║
+║ Processor Result Validation                       ✓       ║
+║ Processor Isolation                               ✓       ║
+║ Processor Replacement                             ✓       ║
+║ Pipeline Metadata                                 ✓       ║
+║ Input Identity Preservation                       ✓       ║
+║ Pipeline Integration                              ✓       ║
+║                                                          ║
+║ Voice Processing Strategy                        ✓       ║
+║ Strategy Validation                               ✓       ║
+║ Strategy Identity                                 ✓       ║
+║ Processing Mode                                   ✓       ║
+║ Strategy Configuration                            ✓       ║
+║ Strategy Metadata                                 ✓       ║
+║ Configuration Isolation                           ✓       ║
+║ Metadata Isolation                                ✓       ║
+║ Processing Contract                               ✓       ║
+║ Provider-Agnostic Strategy Boundary               ✓       ║
+║                                                          ║
+║ STT Provider Abstraction                          ✓       ║
+║ STTProvider                                       ✓       ║
+║ STTProviderError                                  ✓       ║
+║ Provider Identity                                 ✓       ║
+║ Supported Audio Formats                           ✓       ║
+║ Capability Declaration                            ✓       ║
+║ Provider Configuration                            ✓       ║
+║ Provider Metadata                                 ✓       ║
+║ Provider Availability                             ✓       ║
+║ VoiceInput Provider Validation                    ✓       ║
+║ Audio Format Compatibility                        ✓       ║
+║ Transcription Contract                            ✓       ║
+║ Provider Isolation                                ✓       ║
+║ Provider-Agnostic STT Boundary                    ✓       ║
+║                                                          ║
+║ First STT Provider                                ✓       ║
+║ OpenAISTTProvider                                 ✓       ║
+║ OpenAI Client Boundary                            ✓       ║
+║ OpenAI STT Integration                            ✓       ║
+║ STT Model Configuration                           ✓       ║
+║ Audio File Preparation                            ✓       ║
+║ Transcription Request                             ✓       ║
+║ Response Text Extraction                           ✓       ║
+║ Empty Transcription Handling                      ✓       ║
+║ Provider Error Handling                            ✓       ║
+║ Standardized MultimodalInputResult                 ✓       ║
+║ Provider Metadata Propagation                      ✓       ║
+║ Provider Isolation                                ✓       ║
+║                                                          ║
+║ Voice → Text Runtime Integration                  ✓       ║
+║ OpenAIVoiceProcessor                              ✓       ║
+║ Voice Processor → STT Adapter                     ✓       ║
+║ STT Result Integration                            ✓       ║
+║ VoiceRuntimeIntegration                           ✓       ║
+║ Runtime Query Propagation                         ✓       ║
+║ AgentRuntimeContext Integration                   ✓       ║
+║ Voice → Text → Runtime Flow                      ✓       ║
+║ Runtime Failure Handling                          ✓       ║
+║ Runtime Isolation                                 ✓       ║
+║                                                          ║
+║ Audio Capture Foundation                          ✓       ║
+║ AudioCapture                                      ✓       ║
+║ AudioCaptureError                                 ✓       ║
+║ Capture Configuration                             ✓       ║
+║ Sample Rate Configuration                          ✓       ║
+║ Channel Configuration                              ✓       ║
+║ Capture Metadata                                   ✓       ║
+║ Last Capture Tracking                              ✓       ║
+║ MicrophoneCapture                                  ✓       ║
+║ Real Microphone Support                            ✓       ║
+║ sounddevice Backend                                ✓       ║
+║ Microphone Availability                            ✓       ║
+║ Device Information                                 ✓       ║
+║ Device Selection                                   ✓       ║
+║ Recording Lifecycle                                ✓       ║
+║ Recording State                                    ✓       ║
+║ PCM Audio Capture                                  ✓       ║
+║ Audio Buffering                                    ✓       ║
+║ Capture Callback                                   ✓       ║
+║ PCM Frame Tracking                                 ✓       ║
+║ Duration Calculation                               ✓       ║
+║ PCM → WAV Conversion                               ✓       ║
+║ WAV Generation                                     ✓       ║
+║ VoiceInput Integration                             ✓       ║
+║ Capture Metadata Propagation                       ✓       ║
+║ Capture Error Isolation                            ✓       ║
+║ Fake Backend Testing                               ✓       ║
+║ Real Microphone Smoke Test                         ✓       ║
+║                                                          ║
+║ Voice Command Execution                            ✓       ║
+║ VoiceCommandExecutor                               ✓       ║
+║ Runtime Query → Command Bridge                     ✓       ║
+║ Existing AgentEngine Resolution                    ✓       ║
+║ Existing Tool Selector Reuse                       ✓       ║
+║ One-Step Voice Plan Creation                       ✓       ║
+║ AgentPlan Preparation                              ✓       ║
+║ Voice Plan Orchestration                           ✓       ║
+║ AgentExecutionController Integration              ✓       ║
+║ AgentEngine Execution Reuse                        ✓       ║
+║ ToolRegistry / AgentTool Execution                 ✓       ║
+║ Structured Voice Execution Result                  ✓       ║
+║ Execution Identity Propagation                     ✓       ║
+║ Voice Execution Progress                           ✓       ║
+║ Runtime Context Synchronization                    ✓       ║
+║ Empty Query Protection                             ✓       ║
+║ Unknown Command Handling                           ✓       ║
+║ Unknown Tool Protection                             ✓       ║
+║ Voice Command Failure Handling                     ✓       ║
+║ No Duplicate Execution Architecture                ✓       ║
+║                                                          ║
+║ Dedicated v0.60 Tests                              ✓       ║
+╠══════════════════════════════════════════════════════════╣
+║ v0.60 Dedicated Tests: 10 passed                  ║
+║ Last Full Regression: 1447 passed                 ║
+║ Status: Active Development                        ║
+╚══════════════════════════════════════════════════════════╝
 
 🧪 v0.60 Validation
 
 The v0.60 architecture has dedicated coverage for:
 
-Runtime Context Validation 
- 
-Query Normalization 
- 
-Empty Query Protection 
- 
-Voice Command Resolution 
- 
-AgentEngine Capability Resolution 
- 
-Existing Tool Selector Reuse 
- 
-AgentPlanner Reuse 
- 
-One-Step AgentPlan Generation 
- 
-Plan Preparation 
- 
-Plan Validation 
- 
-AgentOrchestrator Reuse 
- 
-AgentExecutionController Integration 
- 
-Execution Context Integration 
- 
-AgentEngine Execution Reuse 
- 
-ToolRegistry Execution 
- 
-AgentTool Execution 
- 
-Structured Execution Result 
- 
-Execution Identity Propagation 
- 
-Progress Reporting 
- 
-Runtime Context State Synchronization 
- 
-Unknown Command Handling 
- 
-Unknown Tool Protection 
- 
-Failure Handling 
- 
-Architecture Boundary Validation 
- 
-No Duplicate Planner 
- 
-No Duplicate Orchestrator 
- 
-No Duplicate Execution Engine 
+Runtime Context Validation
+
+Query Normalization
+
+Empty Query Protection
+
+Voice Command Resolution
+
+AgentEngine Capability Resolution
+
+Existing Tool Selector Reuse
+
+AgentPlanner Reuse
+
+One-Step AgentPlan Generation
+
+Plan Preparation
+
+Plan Validation
+
+AgentOrchestrator Reuse
+
+AgentExecutionController Integration
+
+Execution Context Integration
+
+AgentEngine Execution Reuse
+
+ToolRegistry Execution
+
+AgentTool Execution
+
+Structured Execution Result
+
+Execution Identity Propagation
+
+Progress Reporting
+
+Runtime Context State Synchronization
+
+Unknown Command Handling
+
+Unknown Tool Protection
+
+Failure Handling
+
+Architecture Boundary Validation
+
+No Duplicate Planner
+
+No Duplicate Orchestrator
+
+No Duplicate Execution Engine
 
 The authoritative v0.60 validation result is:
 
-VoiceCommandExecutor Tests: PASS 
- 
-10 passed 
- 
-Failures: 0 
- 
- 
-Full Ultron Regression: PASS 
- 
-1447 passed 
- 
-Failures: 0 
- 
- 
-Release: v0.60 
- 
-Milestone: Voice Command Execution 
- 
-Status: Active Development 
+VoiceCommandExecutor Tests: PASS
+
+10 passed
+
+Failures: 0
+
+Full Ultron Regression: PASS
+
+1447 passed
+
+Failures: 0
+
+Release: v0.60
+
+Milestone: Voice Command Execution
+
+Status: Active Development
 
 🏁 v0.60 Status
 
-ULTRON v0.60 
- 
-├── Agent Runtime                         ✓ 
- 
-├── Tool System                           ✓ 
- 
-├── Tool Selection                        ✓ 
- 
-├── Planning                              ✓ 
- 
-├── Orchestration                         ✓ 
- 
-├── Execution Control                     ✓ 
- 
-├── Execution Lifecycle                   ✓ 
- 
-├── Pause / Resume                        ✓ 
- 
-├── Cancellation                          ✓ 
- 
-├── Retry / Skip                          ✓ 
- 
-├── Execution Events                      ✓ 
- 
-├── Execution Observability               ✓ 
- 
-├── Execution Metrics                     ✓ 
- 
-├── Persistent Execution History          ✓ 
- 
-├── Execution State Snapshot              ✓ 
- 
-├── Recovery State Foundation             ✓ 
- 
-├── Agent Runtime Context                 ✓ 
- 
-├── Execution Context Queries             ✓ 
- 
-│ 
-├── Multimodal Input Foundation           ✓ 
- 
-├── InputType                             ✓ 
- 
-├── MultimodalInput                       ✓ 
- 
-├── InputResult                           ✓ 
- 
-├── InputRouter                           ✓ 
- 
-├── Handler Registration                  ✓ 
- 
-├── Handler Lookup                        ✓ 
- 
-├── Handler Replacement                   ✓ 
- 
-├── Handler Unregistration                ✓ 
- 
-├── Handler Clearing                      ✓ 
- 
-├── Text Routing                          ✓ 
- 
-├── Voice Routing                         ✓ 
- 
-├── Vision Routing                        ✓ 
- 
-├── Gesture Routing                       ✓ 
- 
-│ 
-├── Voice Input Foundation                ✓ 
- 
-├── Voice Input Layer                     ✓ 
- 
-├── Voice Input Validation                ✓ 
- 
-├── Voice Input Routing                   ✓ 
- 
-├── Voice Handler Boundary                ✓ 
- 
-├── Voice Input Result Integration        ✓ 
- 
-├── Voice Input Error Handling            ✓ 
- 
-├── Voice Input Testing                   ✓ 
- 
-│ 
-├── Voice Processing Foundation           ✓ 
- 
-├── VoiceProcessor                        ✓ 
- 
-├── VoiceProcessorError                   ✓ 
- 
-├── Processor Validation                  ✓ 
- 
-├── Processing Result Helpers             ✓ 
- 
-├── Success Result Handling               ✓ 
- 
-├── Failure Result Handling               ✓ 
- 
-├── Processor Metadata                    ✓ 
- 
-├── Processor Identity                    ✓ 
- 
-├── Voice Processor Integration           ✓ 
- 
-│ 
-├── Voice Processing Pipeline             ✓ 
- 
-├── Pipeline Validation                   ✓ 
- 
-├── Processing Lifecycle                  ✓ 
- 
-├── Success Processing                    ✓ 
- 
-├── Failure Processing                    ✓ 
- 
-├── Processor Result Validation            ✓ 
- 
-├── Processor Isolation                   ✓ 
- 
-├── Processor Replacement                 ✓ 
- 
-├── Pipeline Metadata                     ✓ 
- 
-├── Input Identity Preservation            ✓ 
- 
-├── Pipeline Integration                  ✓ 
- 
-│ 
-├── Voice Processing Strategy             ✓ 
- 
-├── Strategy Validation                   ✓ 
- 
-├── Strategy Identity                     ✓ 
- 
-├── Processing Mode                       ✓ 
- 
-├── Strategy Configuration                ✓ 
- 
-├── Strategy Metadata                     ✓ 
- 
-├── Configuration Isolation               ✓ 
- 
-├── Metadata Isolation                    ✓ 
- 
-├── Processing Contract                   ✓ 
- 
-├── Provider-Agnostic Strategy Boundary   ✓ 
- 
-│ 
-├── STT Provider Abstraction              ✓ 
- 
-├── STTProvider                           ✓ 
- 
-├── STTProviderError                      ✓ 
- 
-├── Provider Identity                     ✓ 
- 
-├── Supported Audio Formats               ✓ 
- 
-├── Capability Declaration                ✓ 
- 
-├── Provider Configuration                ✓ 
- 
-├── Provider Metadata                     ✓ 
- 
-├── Provider Availability                 ✓ 
- 
-├── VoiceInput Provider Validation        ✓ 
- 
-├── Audio Format Compatibility            ✓ 
- 
-├── Transcription Contract                ✓ 
- 
-├── Provider Isolation                    ✓ 
- 
-├── Provider-Agnostic STT Boundary        ✓ 
- 
-│ 
-├── First STT Provider                    ✓ 
- 
-├── OpenAISTTProvider                     ✓ 
- 
-├── OpenAI Client Boundary                ✓ 
- 
-├── OpenAI STT Integration                ✓ 
- 
-├── STT Model Configuration               ✓ 
- 
-├── Audio File Preparation                ✓ 
- 
-├── Transcription Request                 ✓ 
- 
-├── Response Text Extraction              ✓ 
- 
-├── Empty Transcription Handling          ✓ 
- 
-├── Provider Error Handling               ✓ 
- 
-├── Standardized MultimodalInputResult    ✓ 
- 
-├── Provider Metadata Propagation         ✓ 
- 
-├── Provider Isolation                    ✓ 
- 
-│ 
-├── Voice → Text Runtime Integration      ✓ 
- 
-├── OpenAIVoiceProcessor                  ✓ 
- 
-├── Voice Processor → STT Adapter         ✓ 
- 
-├── STT Result Integration                ✓ 
- 
-├── VoiceRuntimeIntegration               ✓ 
- 
-├── Runtime Query Propagation             ✓ 
- 
-├── AgentRuntimeContext Integration       ✓ 
- 
-├── Voice → Text → Runtime Flow           ✓ 
- 
-├── Runtime Failure Handling              ✓ 
- 
-├── Runtime Isolation                     ✓ 
- 
-│ 
-├── Audio Capture Foundation              ✓ 
- 
-├── AudioCapture                           ✓ 
- 
-├── AudioCaptureError                      ✓ 
- 
-├── Capture Configuration                  ✓ 
- 
-├── Sample Rate Configuration              ✓ 
- 
-├── Channel Configuration                  ✓ 
- 
-├── Capture Metadata                       ✓ 
- 
-├── Last Capture Tracking                  ✓ 
- 
-├── MicrophoneCapture                      ✓ 
- 
-├── Real Microphone Support                ✓ 
- 
-├── sounddevice Backend                    ✓ 
- 
-├── Microphone Availability                ✓ 
- 
-├── Device Information                     ✓ 
- 
-├── Device Selection                       ✓ 
- 
-├── Recording Lifecycle                    ✓ 
- 
-├── Recording State                        ✓ 
- 
-├── PCM Audio Capture                      ✓ 
- 
-├── Audio Buffering                        ✓ 
- 
-├── Capture Callback                       ✓ 
- 
-├── PCM Frame Tracking                     ✓ 
- 
-├── Duration Calculation                   ✓ 
- 
-├── PCM → WAV Conversion                   ✓ 
- 
-├── WAV Generation                         ✓ 
- 
-├── VoiceInput Integration                 ✓ 
- 
-├── Capture Metadata Propagation           ✓ 
- 
-├── Capture Error Isolation                ✓ 
- 
-├── Fake Backend Testing                   ✓ 
- 
-├── Real Microphone Smoke Test             ✓ 
- 
-│ 
-├── Voice Command Execution                ✓ 
- 
-├── VoiceCommandExecutor                   ✓ 
- 
-├── Runtime Query → Command Bridge         ✓ 
- 
-├── Runtime Context Validation              ✓ 
- 
-├── Query Normalization                     ✓ 
- 
-├── Empty Query Protection                 ✓ 
- 
-├── AgentEngine Tool Resolution             ✓ 
- 
-├── Tool Selector Reuse                     ✓ 
- 
-├── AgentPlanner Reuse                      ✓ 
- 
-├── One-Step AgentPlan                      ✓ 
- 
-├── AgentPlan Preparation                   ✓ 
- 
-├── AgentOrchestrator Reuse                 ✓ 
- 
-├── AgentExecutionController Integration    ✓ 
- 
-├── Execution Context Integration            ✓ 
- 
-├── AgentEngine Execution                   ✓ 
- 
-├── ToolRegistry Execution                  ✓ 
- 
-├── AgentTool Execution                     ✓ 
- 
-├── Structured Execution Result             ✓ 
- 
-├── Execution Identity                      ✓ 
- 
-├── Execution Progress                      ✓ 
- 
-├── Runtime Context Synchronization         ✓ 
- 
-├── Unknown Command Handling                ✓ 
- 
-├── Unknown Tool Protection                 ✓ 
- 
-├── Failure Handling                        ✓ 
- 
-│ 
-└── Dedicated v0.60 Validation              ✓ 
- 
- 
-v0.60 Dedicated Tests: 10 passed 
- 
-Last Full Ultron Regression: 1447 passed 
- 
-Status: Active Development 
+ULTRON v0.60
+
+├── Agent Runtime                         ✓
+
+├── Tool System                           ✓
+
+├── Tool Selection                        ✓
+
+├── Planning                              ✓
+
+├── Orchestration                         ✓
+
+├── Execution Control                     ✓
+
+├── Execution Lifecycle                   ✓
+
+├── Pause / Resume                        ✓
+
+├── Cancellation                          ✓
+
+├── Retry / Skip                          ✓
+
+├── Execution Events                      ✓
+
+├── Execution Observability               ✓
+
+├── Execution Metrics                     ✓
+
+├── Persistent Execution History          ✓
+
+├── Execution State Snapshot              ✓
+
+├── Recovery State Foundation             ✓
+
+├── Agent Runtime Context                 ✓
+
+├── Execution Context Queries             ✓
+
+│
+├── Multimodal Input Foundation           ✓
+
+├── InputType                             ✓
+
+├── MultimodalInput                       ✓
+
+├── InputResult                           ✓
+
+├── InputRouter                           ✓
+
+├── Handler Registration                  ✓
+
+├── Handler Lookup                        ✓
+
+├── Handler Replacement                   ✓
+
+├── Handler Unregistration                ✓
+
+├── Handler Clearing                      ✓
+
+├── Text Routing                          ✓
+
+├── Voice Routing                         ✓
+
+├── Vision Routing                        ✓
+
+├── Gesture Routing                       ✓
+
+│
+├── Voice Input Foundation                ✓
+
+├── Voice Input Layer                     ✓
+
+├── Voice Input Validation                ✓
+
+├── Voice Input Routing                   ✓
+
+├── Voice Handler Boundary                ✓
+
+├── Voice Input Result Integration        ✓
+
+├── Voice Input Error Handling            ✓
+
+├── Voice Input Testing                   ✓
+
+│
+├── Voice Processing Foundation           ✓
+
+├── VoiceProcessor                        ✓
+
+├── VoiceProcessorError                   ✓
+
+├── Processor Validation                  ✓
+
+├── Processing Result Helpers             ✓
+
+├── Success Result Handling               ✓
+
+├── Failure Result Handling               ✓
+
+├── Processor Metadata                    ✓
+
+├── Processor Identity                    ✓
+
+├── Voice Processor Integration           ✓
+
+│
+├── Voice Processing Pipeline             ✓
+
+├── Pipeline Validation                   ✓
+
+├── Processing Lifecycle                  ✓
+
+├── Success Processing                    ✓
+
+├── Failure Processing                    ✓
+
+├── Processor Result Validation            ✓
+
+├── Processor Isolation                   ✓
+
+├── Processor Replacement                 ✓
+
+├── Pipeline Metadata                     ✓
+
+├── Input Identity Preservation            ✓
+
+├── Pipeline Integration                  ✓
+
+│
+├── Voice Processing Strategy             ✓
+
+├── Strategy Validation                   ✓
+
+├── Strategy Identity                     ✓
+
+├── Processing Mode                       ✓
+
+├── Strategy Configuration                ✓
+
+├── Strategy Metadata                     ✓
+
+├── Configuration Isolation               ✓
+
+├── Metadata Isolation                    ✓
+
+├── Processing Contract                   ✓
+
+├── Provider-Agnostic Strategy Boundary   ✓
+
+│
+├── STT Provider Abstraction              ✓
+
+├── STTProvider                           ✓
+
+├── STTProviderError                      ✓
+
+├── Provider Identity                     ✓
+
+├── Supported Audio Formats               ✓
+
+├── Capability Declaration                ✓
+
+├── Provider Configuration                ✓
+
+├── Provider Metadata                     ✓
+
+├── Provider Availability                 ✓
+
+├── VoiceInput Provider Validation        ✓
+
+├── Audio Format Compatibility            ✓
+
+├── Transcription Contract                ✓
+
+├── Provider Isolation                    ✓
+
+├── Provider-Agnostic STT Boundary        ✓
+
+│
+├── First STT Provider                    ✓
+
+├── OpenAISTTProvider                     ✓
+
+├── OpenAI Client Boundary                ✓
+
+├── OpenAI STT Integration                ✓
+
+├── STT Model Configuration               ✓
+
+├── Audio File Preparation                ✓
+
+├── Transcription Request                 ✓
+
+├── Response Text Extraction              ✓
+
+├── Empty Transcription Handling          ✓
+
+├── Provider Error Handling               ✓
+
+├── Standardized MultimodalInputResult    ✓
+
+├── Provider Metadata Propagation         ✓
+
+├── Provider Isolation                    ✓
+
+│
+├── Voice → Text Runtime Integration      ✓
+
+├── OpenAIVoiceProcessor                  ✓
+
+├── Voice Processor → STT Adapter         ✓
+
+├── STT Result Integration                ✓
+
+├── VoiceRuntimeIntegration               ✓
+
+├── Runtime Query Propagation             ✓
+
+├── AgentRuntimeContext Integration       ✓
+
+├── Voice → Text → Runtime Flow           ✓
+
+├── Runtime Failure Handling              ✓
+
+├── Runtime Isolation                     ✓
+
+│
+├── Audio Capture Foundation              ✓
+
+├── AudioCapture                           ✓
+
+├── AudioCaptureError                      ✓
+
+├── Capture Configuration                  ✓
+
+├── Sample Rate Configuration              ✓
+
+├── Channel Configuration                  ✓
+
+├── Capture Metadata                       ✓
+
+├── Last Capture Tracking                  ✓
+
+├── MicrophoneCapture                      ✓
+
+├── Real Microphone Support                ✓
+
+├── sounddevice Backend                    ✓
+
+├── Microphone Availability                ✓
+
+├── Device Information                     ✓
+
+├── Device Selection                       ✓
+
+├── Recording Lifecycle                    ✓
+
+├── Recording State                        ✓
+
+├── PCM Audio Capture                      ✓
+
+├── Audio Buffering                        ✓
+
+├── Capture Callback                       ✓
+
+├── PCM Frame Tracking                     ✓
+
+├── Duration Calculation                   ✓
+
+├── PCM → WAV Conversion                   ✓
+
+├── WAV Generation                         ✓
+
+├── VoiceInput Integration                 ✓
+
+├── Capture Metadata Propagation           ✓
+
+├── Capture Error Isolation                ✓
+
+├── Fake Backend Testing                   ✓
+
+├── Real Microphone Smoke Test             ✓
+
+│
+├── Voice Command Execution                ✓
+
+├── VoiceCommandExecutor                   ✓
+
+├── Runtime Query → Command Bridge         ✓
+
+├── Runtime Context Validation              ✓
+
+├── Query Normalization                     ✓
+
+├── Empty Query Protection                 ✓
+
+├── AgentEngine Tool Resolution             ✓
+
+├── Tool Selector Reuse                     ✓
+
+├── AgentPlanner Reuse                      ✓
+
+├── One-Step AgentPlan                      ✓
+
+├── AgentPlan Preparation                   ✓
+
+├── AgentOrchestrator Reuse                 ✓
+
+├── AgentExecutionController Integration    ✓
+
+├── Execution Context Integration            ✓
+
+├── AgentEngine Execution                   ✓
+
+├── ToolRegistry Execution                  ✓
+
+├── AgentTool Execution                     ✓
+
+├── Structured Execution Result             ✓
+
+├── Execution Identity                      ✓
+
+├── Execution Progress                      ✓
+
+├── Runtime Context Synchronization         ✓
+
+├── Unknown Command Handling                ✓
+
+├── Unknown Tool Protection                 ✓
+
+├── Failure Handling                        ✓
+
+│
+└── Dedicated v0.60 Validation              ✓
+
+v0.60 Dedicated Tests: 10 passed
+
+Last Full Ultron Regression: 1447 passed
+
+Status: Active Development
 
 Ultron v0.60 extends the Multimodal Input Foundation, Voice Input Foundation, Voice Processing Foundation, Voice Processing Pipeline Foundation, Voice Processing Intelligence Foundation, STT Provider Abstraction, First STT Provider, Voice → Text Runtime Integration, and Audio Capture Foundation with the first dedicated Voice Command Execution layer.
 
 The architecture now provides a structured path from:
 
-Physical User Voice 
- 
-    ↓ 
- 
-Windows Microphone 
- 
-    ↓ 
- 
-MicrophoneCapture 
- 
-    ↓ 
- 
-AudioCapture 
- 
-    ↓ 
- 
-Raw PCM Audio 
- 
-    ↓ 
- 
-PCM → WAV 
- 
-    ↓ 
- 
-VoiceInput 
- 
-    ↓ 
- 
-MultimodalInput 
- 
-    ↓ 
- 
-InputType.VOICE 
- 
-    ↓ 
- 
-InputRouter 
- 
-    ↓ 
- 
-Voice Handler 
- 
-    ↓ 
- 
-VoiceProcessingPipeline 
- 
-    ↓ 
- 
-OpenAIVoiceProcessor 
- 
-    ↓ 
- 
-STTProvider 
- 
-    ↓ 
- 
-OpenAISTTProvider 
- 
-    ↓ 
- 
-Speech-to-Text 
- 
-    ↓ 
- 
-MultimodalInputResult 
- 
-    ↓ 
- 
-VoiceRuntimeIntegration 
- 
-    ↓ 
- 
-AgentRuntimeContext 
- 
-    ↓ 
- 
-Runtime Query 
- 
-    ↓ 
- 
-VoiceCommandExecutor 
- 
-    ↓ 
- 
-AgentEngine.select_tool() 
- 
-    ↓ 
- 
-ToolSelector 
- 
-    ↓ 
- 
-Resolved AgentTool 
- 
-    ↓ 
- 
-AgentPlanner 
- 
-    ↓ 
- 
-AgentPlan 
- 
-    ↓ 
- 
-AgentOrchestrator 
- 
-    ↓ 
- 
-AgentExecutionController 
- 
-    ↓ 
- 
-ExecutionContext 
- 
-    ↓ 
- 
-AgentEngine 
- 
-    ↓ 
- 
-ToolRegistry 
- 
-    ↓ 
- 
-AgentTool 
- 
-    ↓ 
- 
-ToolResult 
+Physical User Voice
+
+↓
+
+Windows Microphone
+
+↓
+
+MicrophoneCapture
+
+↓
+
+AudioCapture
+
+↓
+
+Raw PCM Audio
+
+↓
+
+PCM → WAV
+
+↓
+
+VoiceInput
+
+↓
+
+MultimodalInput
+
+↓
+
+InputType.VOICE
+
+↓
+
+InputRouter
+
+↓
+
+Voice Handler
+
+↓
+
+VoiceProcessingPipeline
+
+↓
+
+OpenAIVoiceProcessor
+
+↓
+
+STTProvider
+
+↓
+
+OpenAISTTProvider
+
+↓
+
+Speech-to-Text
+
+↓
+
+MultimodalInputResult
+
+↓
+
+VoiceRuntimeIntegration
+
+↓
+
+AgentRuntimeContext
+
+↓
+
+Runtime Query
+
+↓
+
+VoiceCommandExecutor
+
+↓
+
+AgentEngine.select_tool()
+
+↓
+
+ToolSelector
+
+↓
+
+Resolved AgentTool
+
+↓
+
+AgentPlanner
+
+↓
+
+AgentPlan
+
+↓
+
+AgentOrchestrator
+
+↓
+
+AgentExecutionController
+
+↓
+
+ExecutionContext
+
+↓
+
+AgentEngine
+
+↓
+
+ToolRegistry
+
+↓
+
+AgentTool
+
+↓
+
+ToolResult
 
 This is an important architectural step because voice input is no longer limited to physical capture, processing, transcription, and runtime-query creation.
 
@@ -5939,219 +6133,219 @@ Ultron can now take the resulting runtime query and route it into its existing a
 
 The voice command layer remains intentionally separate from:
 
-Voice Capture 
- 
-Voice Processing 
- 
-STT 
- 
-Planning Internals 
- 
-Execution Internals 
- 
-Tool Internals 
- 
-Lifecycle Control 
+Voice Capture
+
+Voice Processing
+
+STT
+
+Planning Internals
+
+Execution Internals
+
+Tool Internals
+
+Lifecycle Control
 
 Instead, it coordinates those existing components through their established interfaces.
 
 The v0.60 execution architecture is therefore:
 
-Voice Input 
- 
-    ↓ 
- 
-Voice Processing 
- 
-    ↓ 
- 
-Speech-to-Text 
- 
-    ↓ 
- 
-Runtime Query 
- 
-    ↓ 
- 
-VoiceCommandExecutor 
- 
-    ↓ 
- 
-Capability Resolution 
- 
-    ↓ 
- 
-Agent Plan 
- 
-    ↓ 
- 
-Agent Orchestration 
- 
-    ↓ 
- 
-Agent Execution 
- 
-    ↓ 
- 
-Tool Execution 
- 
-    ↓ 
- 
-ToolResult 
+Voice Input
+
+↓
+
+Voice Processing
+
+↓
+
+Speech-to-Text
+
+↓
+
+Runtime Query
+
+↓
+
+VoiceCommandExecutor
+
+↓
+
+Capability Resolution
+
+↓
+
+Agent Plan
+
+↓
+
+Agent Orchestration
+
+↓
+
+Agent Execution
+
+↓
+
+Tool Execution
+
+↓
+
+ToolResult
 
 The long-term direction remains:
 
-Understand 
- 
-   ↓ 
- 
-Receive 
- 
-   ↓ 
- 
-Capture 
- 
-   ↓ 
- 
-Normalize 
- 
-   ↓ 
- 
-Process 
- 
-   ↓ 
- 
-Transcribe 
- 
-   ↓ 
- 
-Integrate 
- 
-   ↓ 
- 
-Contextualize 
- 
-   ↓ 
- 
-Resolve 
- 
-   ↓ 
- 
-Plan 
- 
-   ↓ 
- 
-Select 
- 
-   ↓ 
- 
-Orchestrate 
- 
-   ↓ 
- 
-Execute 
- 
-   ↓ 
- 
-Observe 
- 
-   ↓ 
- 
-Measure 
- 
-   ↓ 
- 
-Persist 
- 
-   ↓ 
- 
-Snapshot 
- 
-   ↓ 
- 
-Recover 
- 
-   ↓ 
- 
-Restore 
- 
-   ↓ 
- 
-Resume 
- 
-   ↓ 
- 
-Automate 
+Understand
+
+↓
+
+Receive
+
+↓
+
+Capture
+
+↓
+
+Normalize
+
+↓
+
+Process
+
+↓
+
+Transcribe
+
+↓
+
+Integrate
+
+↓
+
+Contextualize
+
+↓
+
+Resolve
+
+↓
+
+Plan
+
+↓
+
+Select
+
+↓
+
+Orchestrate
+
+↓
+
+Execute
+
+↓
+
+Observe
+
+↓
+
+Measure
+
+↓
+
+Persist
+
+↓
+
+Snapshot
+
+↓
+
+Recover
+
+↓
+
+Restore
+
+↓
+
+Resume
+
+↓
+
+Automate
 
 Ultron continues to evolve incrementally toward a modular, extensible, observable, persistent, context-aware, recoverable, multimodal AI Operating System, Agent Runtime, Voice Intelligence Platform, and Automation Infrastructure.
 
 The architectural philosophy remains:
 
-Small Milestones 
- 
-      ↓ 
- 
-Clear Boundaries 
- 
-      ↓ 
- 
-Independent Components 
- 
-      ↓ 
- 
-Deterministic Testing 
- 
-      ↓ 
- 
-Hardware Isolation 
- 
-      ↓ 
- 
-Provider Isolation 
- 
-      ↓ 
- 
-Runtime Isolation 
- 
-      ↓ 
- 
-Observable Execution 
- 
-      ↓ 
- 
-Persistent State 
- 
-      ↓ 
- 
-Recoverable Runtime 
- 
-      ↓ 
- 
-Multimodal Intelligence 
- 
-      ↓ 
- 
-Voice Command Execution 
- 
-      ↓ 
- 
-Autonomous Execution 
- 
-      ↓ 
- 
-Durable Automation 
- 
-      ↓ 
- 
-AI Operating System 
+Small Milestones
 
-Ultron v0.61 therefore extends the voice architecture beyond input and command execution by establishing a provider-independent Text-to-Speech Provider Layer, while preserving the modular foundations required for future voice responses, full voice conversation, advanced voice intelligence, multimodal reasoning, autonomous agents, and durable automation.
+  ↓
+
+Clear Boundaries
+
+  ↓
+
+Independent Components
+
+  ↓
+
+Deterministic Testing
+
+  ↓
+
+Hardware Isolation
+
+  ↓
+
+Provider Isolation
+
+  ↓
+
+Runtime Isolation
+
+  ↓
+
+Observable Execution
+
+  ↓
+
+Persistent State
+
+  ↓
+
+Recoverable Runtime
+
+  ↓
+
+Multimodal Intelligence
+
+  ↓
+
+Voice Command Execution
+
+  ↓
+
+Autonomous Execution
+
+  ↓
+
+Durable Automation
+
+  ↓
+
+AI Operating System
+
+Ultron v0.62 therefore extends the voice architecture beyond input and command execution by adding the first concrete OpenAI-backed Text-to-Speech Provider on top of the provider-independent TTS layer introduced in v0.61, while preserving the modular foundations required for runtime TTS integration, voice responses, full voice conversation, advanced voice intelligence, multimodal reasoning, autonomous agents, and durable automation.
 
 🔮 Next Direction
 
-The immediate next milestone after v0.61 is:
+The immediate next milestone after v0.62 is:
 
-v0.62 → First TTS Provider
+v0.63 → Runtime TTS Integration
 
 The TTS roadmap continues:
 
@@ -6192,56 +6386,56 @@ Autonomous Voice Workflows
 
 These capabilities extend the existing architecture rather than replace the established voice-processing, command-execution, and TTS abstraction layers.
 
-🏁 ULTRON v0.61
+🏁 ULTRON v0.62
 
-Voice Input 
- 
-      ↓ 
- 
-Voice Processing 
- 
-      ↓ 
- 
-Speech-to-Text 
- 
-      ↓ 
- 
-Runtime Query 
- 
-      ↓ 
- 
-VoiceCommandExecutor 
- 
-      ↓ 
- 
-Tool Resolution 
- 
-      ↓ 
- 
-Agent Planning 
- 
-      ↓ 
- 
-Agent Orchestration 
- 
-      ↓ 
- 
-Agent Execution 
- 
-      ↓ 
- 
-Tool Execution 
- 
-      ↓ 
- 
-Result 
+Voice Input
 
-Current Version: v0.61
+  ↓
 
-Current Milestone: Text-to-Speech Provider Abstraction
+Voice Processing
 
-Dedicated v0.61 Tests: 89 passed
+  ↓
 
-Full Regression: 1536 passed
+Speech-to-Text
 
-Status: COMPLETE — Next: v0.62 First TTS Provider
+  ↓
+
+Runtime Query
+
+  ↓
+
+VoiceCommandExecutor
+
+  ↓
+
+Tool Resolution
+
+  ↓
+
+Agent Planning
+
+  ↓
+
+Agent Orchestration
+
+  ↓
+
+Agent Execution
+
+  ↓
+
+Tool Execution
+
+  ↓
+
+Result
+
+Current Version: v0.62
+
+Current Milestone: First TTS Provider
+
+Dedicated v0.62 Tests: 62 passed
+
+Full Regression: 1598 passed
+
+Status: COMPLETE — Next: v0.63 Runtime TTS Integration
