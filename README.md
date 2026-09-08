@@ -272,7 +272,9 @@ The v0.59 milestone introduced the Audio Capture Foundation, establishing the re
 
 The v0.60 milestone introduces Voice Command Execution, connecting the runtime query produced by the voice architecture to Ultron's existing tool resolution, planning, orchestration, and execution infrastructure.
 
-This means the architecture now progresses from an actual microphone all the way toward executable agent commands without introducing a duplicate runtime.
+The v0.61–v0.64 milestones extend the architecture from executable voice commands through runtime TTS and voice response execution.
+
+The v0.65 milestone completes the conversation-level orchestration boundary, connecting voice input, agent execution, response generation, and synthesized voice output without introducing a duplicate runtime.
 
 📈 Version Progression
 
@@ -369,6 +371,26 @@ v0.59 → Audio Capture Foundation
 ↓
 
 v0.60 → Voice Command Execution
+
+↓
+
+v0.61 → TTS Provider Abstraction
+
+↓
+
+v0.62 → First TTS Provider
+
+↓
+
+v0.63 → Runtime TTS Integration
+
+↓
+
+v0.64 → Voice Response Execution
+
+↓
+
+v0.65 → Full Voice Conversation Loop
 
 ↓
 
@@ -4494,6 +4516,392 @@ With v0.64, Ultron now has a complete output-side execution boundary for convert
 
 The architecture is now prepared for v0.65 — Full Voice Conversation Loop, where voice input, speech recognition, runtime command execution, response generation, and voice output will be connected into a complete conversational pipeline.
 
+v0.65 — Full Voice Conversation Loop
+
+ULTRON v0.65 introduces the Full Voice Conversation Loop, connecting the existing voice input, agent execution, and voice response layers into one complete request → execution → response cycle.
+
+The goal of v0.65 is to provide a clean conversation-level orchestration layer without introducing a monolithic voice system or duplicating responsibilities already owned by the existing architecture.
+
+Full Voice Architecture
+
+                    v0.65
+             Full Voice Conversation
+                      │
+                      ▼
+              VoiceConversationLoop
+                      │
+        ┌─────────────┴─────────────┐
+        ▼                           ▼
+   INPUT SIDE                  OUTPUT SIDE
+        │                           │
+   AudioCapture              VoiceResponseExecutor
+        │                           │
+   VoiceInput                 TTSRuntimeIntegration
+        │                           │
+   VoiceProcessingPipeline       TTSProvider
+        │                           │
+   VoiceProcessor                    🔊
+        │
+   STTProvider
+        │
+   MultimodalInputResult
+        │
+   VoiceRuntimeIntegration
+        │
+   AgentRuntimeContext
+        │
+   VoiceCommandExecutor
+        │
+   AgentOrchestrator
+        │
+   Execution Result
+        │
+        └──────────────► Response Text
+
+
+Complete Voice Flow
+
+🎤 AudioCapture
+    ↓
+VoiceInput
+    ↓
+VoiceProcessingPipeline
+    ↓
+VoiceProcessor
+    ↓
+STTProvider
+    ↓
+MultimodalInputResult
+    ↓
+VoiceRuntimeIntegration
+    ↓
+AgentRuntimeContext.query
+    ↓
+VoiceCommandExecutor
+    ↓
+AgentPlanner
+    ↓
+AgentOrchestrator
+    ↓
+Execution Result
+    ↓
+Response Text
+    ↓
+VoiceResponseExecutor
+    ↓
+TTSRuntimeIntegration
+    ↓
+TTSProvider
+    ↓
+🔊 Synthesized Audio
+
+
+New Component
+
+VoiceConversationLoop
+
+VoiceConversationLoop is the conversation-level orchestration boundary for a complete voice request-response cycle.
+
+Responsibilities:
+
+Start audio capture
+
+Stop audio capture and obtain VoiceInput
+
+Send voice input through the existing voice runtime integration
+
+Validate transcription results
+
+Trigger the existing VoiceCommandExecutor
+
+Resolve the execution response into response text
+
+Send response text through VoiceResponseExecutor
+
+Return a structured conversation result
+
+Preserve intermediate voice, transcription, execution, and response results
+
+Provide stage-aware failure handling
+
+The component intentionally coordinates existing architecture instead of replacing it.
+
+Conversation Lifecycle
+
+capture
+   ↓
+processing
+   ↓
+execution
+   ↓
+response
+   ↓
+completed
+
+
+Failures are reported with the stage at which they occurred:
+
+capture
+processing
+execution
+response
+
+
+Responsibility Boundaries
+
+The v0.65 implementation maintains strict separation between the existing layers:
+
+Component
+
+Responsibility
+
+AudioCapture
+
+Acquire audio input
+
+VoiceInput
+
+Represent normalized voice input
+
+VoiceProcessingPipeline
+
+Coordinate voice processing
+
+VoiceProcessor
+
+Process voice input
+
+STTProvider
+
+Convert speech to text
+
+VoiceRuntimeIntegration
+
+Transfer transcription into runtime context
+
+AgentRuntimeContext
+
+Maintain runtime query/context state
+
+VoiceCommandExecutor
+
+Convert runtime query into agent execution
+
+AgentPlanner
+
+Create execution plans
+
+AgentOrchestrator
+
+Execute agent plans
+
+VoiceResponseExecutor
+
+Convert response text into synthesized audio
+
+TTSRuntimeIntegration
+
+Bridge runtime responses to TTS
+
+TTSProvider
+
+Perform text-to-speech synthesis
+
+VoiceConversationLoop
+
+Orchestrate the complete conversation cycle
+
+Architectural Constraints
+
+VoiceConversationLoop does not:
+
+Perform STT directly
+
+Perform TTS directly
+
+Execute tools directly
+
+Create a new execution engine
+
+Replace AgentPlanner
+
+Replace AgentOrchestrator
+
+Control AgentOrchestrator internals
+
+Manage audio devices
+
+Implement audio playback
+
+Contain provider-specific logic
+
+Implement wake-word detection
+
+Implement continuous always-listening behavior
+
+This keeps the voice architecture modular and allows individual layers to evolve independently.
+
+Structured Conversation Result
+
+A successful conversation returns a structured result containing:
+
+success
+status
+stage
+conversation_loop
+voice_input
+transcription_result
+transcription
+execution_result
+response_text
+response_result
+
+
+Example:
+
+{
+    "success": True,
+    "status": "completed",
+    "stage": "completed",
+    "conversation_loop": "voice-conversation-loop",
+    "voice_input": voice_input,
+    "transcription_result": transcription_result,
+    "transcription": "open the browser",
+    "execution_result": execution_result,
+    "response_text": "The browser has been opened.",
+    "response_result": response_result,
+}
+
+
+Failure Handling
+
+The conversation loop provides stage-aware failure results.
+
+Example:
+
+{
+    "success": False,
+    "status": "failed",
+    "stage": "processing",
+    "conversation_loop": "voice-conversation-loop",
+    "error": "STT processing failed.",
+    "voice_input": voice_input,
+    "transcription_result": transcription_result,
+    "execution_result": None,
+    "response_result": None,
+}
+
+
+This makes failures traceable across the complete voice pipeline without changing the internal behavior of the existing components.
+
+Availability
+
+The conversation loop reports availability based on the required input and output boundaries:
+
+AudioCapture available
+        AND
+VoiceResponseExecutor available
+        ↓
+VoiceConversationLoop available
+
+
+Testing
+
+Dedicated v0.65 test coverage validates:
+
+Dependency validation
+
+Successful dependency construction
+
+Availability checks
+
+Complete voice conversation execution
+
+Audio capture failures
+
+Voice processing failures
+
+Runtime integration failures
+
+Execution failures
+
+Invalid execution results
+
+Missing response text
+
+Response execution failures
+
+Response executor exceptions
+
+Invalid transcription results
+
+Non-text transcription data
+
+Empty transcription handling
+
+Response text normalization
+
+Numeric response conversion
+
+Boolean response conversion
+
+Invalid/complex response handling
+
+Object representation
+
+Dedicated v0.65 tests:
+
+24 passed
+
+
+Full ULTRON regression:
+
+1673 passed
+0 failed
+
+
+v0.65 Milestone
+
+With v0.65, ULTRON now has a complete modular voice interaction path:
+
+Voice Input
+    ↓
+Speech Recognition
+    ↓
+Runtime Context
+    ↓
+Agent Execution
+    ↓
+Response Generation
+    ↓
+Text-to-Speech
+    ↓
+Voice Output
+
+
+This completes the foundational full voice conversation architecture while preserving the modular provider, runtime, agent, execution, and multimodal boundaries established in previous releases.
+
+Version Progression
+
+v0.51 → Multimodal Input Foundation
+v0.52 → Voice Input Foundation
+v0.53 → Voice Processing Foundation
+v0.54 → Voice Processing Pipeline Foundation
+v0.55 → Voice Processing Intelligence Foundation
+v0.56 → STT Provider Abstraction
+v0.57 → First STT Provider
+v0.58 → Voice → Text Runtime Integration
+v0.59 → Audio Capture Foundation
+v0.60 → Voice Command Execution
+v0.61 → TTS Provider Abstraction
+v0.62 → First TTS Provider
+v0.63 → Runtime TTS Integration
+v0.64 → Voice Response Execution
+v0.65 → Full Voice Conversation Loop
+
+
+v0.65 establishes the complete modular voice conversation orchestration layer for ULTRON.
+
 🤖 AI Operating System Direction
 
 Ultron is evolving beyond a conventional chatbot or personal assistant.
@@ -4755,6 +5163,33 @@ Future
 Durable Automation
 
 📜 Version History
+
+v0.65 — Full Voice Conversation Loop
+
+VoiceConversationLoop
+Complete voice request → execution → response cycle
+Voice input orchestration
+Existing voice runtime integration reuse
+VoiceCommandExecutor reuse
+AgentPlanner reuse
+AgentOrchestrator reuse
+VoiceResponseExecutor reuse
+TTSRuntimeIntegration reuse
+Structured conversation result
+Intermediate result preservation
+Stage-aware failure handling
+Availability based on input/output boundaries
+No direct STT implementation
+No direct TTS implementation
+No direct tool execution
+No duplicate execution engine
+No duplicate planner
+No duplicate orchestrator
+No audio device management
+No audio playback implementation
+No provider-specific voice logic
+No wake-word detection
+No continuous always-listening behavior
 
 v0.64 — Voice Response Execution
 
@@ -6540,6 +6975,10 @@ Instead, it coordinates those existing components through their established inte
 
 The v0.60 execution architecture is therefore:
 
+VoiceConversationLoop
+
+↓
+
 Voice Input
 
 ↓
@@ -6775,7 +7214,7 @@ Autonomous Voice Workflows
 
 These capabilities extend the existing architecture rather than replace the established voice-processing, command-execution, and TTS abstraction layers.
 
-🏁 ULTRON v0.64
+🏁 ULTRON v0.65
 
 Voice Input
 
@@ -6839,12 +7278,13 @@ TTSProvider
 
 Synthesized Audio
 
-Current Version: v0.64
+Current Version: v0.65
 
-Current Milestone: Voice Response Execution
+Current Milestone: Full Voice Conversation Loop
 
-Dedicated v0.64 Tests: 26 passed
+Dedicated v0.65 Tests: 24 passed
 
-Full Regression: 1649 passed in 50.10s
+Full Regression: 1673 passed
+0 failed
 
-Status: COMPLETE — Next: v0.65 Full Voice Conversation Loop
+Status: COMPLETE — Next: Advanced Voice Intelligence
