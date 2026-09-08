@@ -781,7 +781,6 @@ Input Channels > 0 ?
 
 /
 
-
 YES        NO
 
 ↓          ↓
@@ -1498,11 +1497,12 @@ Because v0.59 introduces an abstract AudioCapture layer, future capture implemen
 
 Conceptually:
 
-         AudioCapture
-              │
-  ┌───────────┼───────────┐
-  │           │           │
-  ▼           ▼           ▼
+     AudioCapture
+          │
+
+┌───────────┼───────────┐
+│           │           │
+▼           ▼           ▼
 
 Microphone     File        Future
 Capture      Capture      Source
@@ -2126,79 +2126,79 @@ This is a major step toward making voice a first-class runtime modality.
 
 After v0.59, the voice stack is:
 
-            ┌──────────────────────┐
-            │   Physical World     │
-            │                      │
-            │  User's Voice        │
-            └──────────┬───────────┘
-                       │
-                       ▼
-            ┌──────────────────────┐
-            │ MicrophoneCapture    │
-            └──────────┬───────────┘
-                       │
-                       ▼
-            ┌──────────────────────┐
-            │ AudioCapture         │
-            │ Abstraction          │
-            └──────────┬───────────┘
-                       │
-                       ▼
-            ┌──────────────────────┐
-            │ Raw PCM Audio        │
-            └──────────┬───────────┘
-                       │
-                       ▼
-            ┌──────────────────────┐
-            │ WAV Conversion       │
-            └──────────┬───────────┘
-                       │
-                       ▼
-            ┌──────────────────────┐
-            │ VoiceInput           │
-            └──────────┬───────────┘
-                       │
-                       ▼
-            ┌──────────────────────┐
-            │ VoiceProcessing      │
-            │ Pipeline             │
-            └──────────┬───────────┘
-                       │
-                       ▼
-            ┌──────────────────────┐
-            │ OpenAIVoiceProcessor │
-            └──────────┬───────────┘
-                       │
-                       ▼
-            ┌──────────────────────┐
-            │ OpenAISTTProvider    │
-            └──────────┬───────────┘
-                       │
-                       ▼
-            ┌──────────────────────┐
-            │ Speech → Text        │
-            └──────────┬───────────┘
-                       │
-                       ▼
-            ┌──────────────────────┐
-            │ MultimodalInputResult│
-            └──────────┬───────────┘
-                       │
-                       ▼
-            ┌──────────────────────┐
-            │ VoiceRuntime         │
-            │ Integration          │
-            └──────────┬───────────┘
-                       │
-                       ▼
-            ┌──────────────────────┐
-            │ AgentRuntimeContext  │
-            └──────────┬───────────┘
-                       │
-                       ▼
-            ┌──────────────────────┐
-            │ Runtime Query        │
-            └──────────────────────┘
+        ┌──────────────────────┐
+        │   Physical World     │
+        │                      │
+        │  User's Voice        │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │ MicrophoneCapture    │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │ AudioCapture         │
+        │ Abstraction          │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │ Raw PCM Audio        │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │ WAV Conversion       │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │ VoiceInput           │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │ VoiceProcessing      │
+        │ Pipeline             │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │ OpenAIVoiceProcessor │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │ OpenAISTTProvider    │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │ Speech → Text        │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │ MultimodalInputResult│
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │ VoiceRuntime         │
+        │ Integration          │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │ AgentRuntimeContext  │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │ Runtime Query        │
+        └──────────────────────┘
 
 v0.60 extends this stack into command execution.
 
@@ -2473,7 +2473,6 @@ Read Runtime Query
 Query Empty?
 
 /
-
 
 YES        NO
 
@@ -3942,7 +3941,7 @@ External TTS Provider: Not yet integrated
 
 Next Version
 
-v0.63 — Runtime TTS Integration
+v0.64 — Voice Response Execution
 
 TTSRuntimeIntegration
 TTSRuntimeIntegrationError
@@ -4194,17 +4193,17 @@ No changes to STT or voice-input processing
 Architecture
 
 Runtime Response Text
-        ↓
+↓
 TTSRuntimeIntegration
-        ↓
+↓
 TTSProvider
-        ↓
+↓
 OpenAITTSProvider
-        ↓
+↓
 TTS Provider API
-        ↓
+↓
 Synthesized Audio
-        ↓
+↓
 MultimodalInputResult
 
 Runtime TTS Boundary
@@ -4212,15 +4211,15 @@ Runtime TTS Boundary
 The new TTSRuntimeIntegration layer is responsible only for bridging runtime-generated text with the TTS provider layer.
 
 Agent Runtime / Execution
-        ↓
+↓
 Response Text
-        ↓
+↓
 TTSRuntimeIntegration
-        ↓
+↓
 Provider Abstraction
-        ↓
+↓
 Concrete TTS Provider
-        ↓
+↓
 Audio Result
 
 This keeps the architecture modular and prevents provider-specific TTS behavior from leaking into the core execution system.
@@ -4262,21 +4261,21 @@ The integration supports both normal and safe synthesis paths.
 Normal synthesis:
 
 synthesize()
-    ↓
+↓
 Validation
-    ↓
+↓
 TTS Provider
-    ↓
+↓
 MultimodalInputResult
 
 Safe synthesis:
 
 synthesize_safe()
-    ↓
+↓
 Validation / Provider Execution
-    ↓
+↓
 Failure
-    ↓
+↓
 Failed MultimodalInputResult
 
 This allows higher-level runtime components to choose whether provider/integration failures should propagate or be returned as structured results.
@@ -4321,13 +4320,13 @@ The v0.63 implementation adds 25 tests while maintaining full backward compatibi
 Version Progression
 
 v0.61 → TTS Provider Abstraction
-        ↓
+↓
 v0.62 → First TTS Provider
-        ↓
+↓
 v0.63 → Runtime TTS Integration
-        ↓
+↓
 v0.64 → Voice Response Execution
-        ↓
+↓
 v0.65 → Full Voice Conversation Loop
 
 Milestone
@@ -4335,20 +4334,165 @@ Milestone
 With v0.63, Ultron now has a complete TTS path from runtime-generated text to a provider-produced audio result.
 
 STT Layer
-    ↓
+↓
 Voice Command Execution
-    ↓
+↓
 Agent Runtime
-    ↓
+↓
 Runtime Response
-    ↓
+↓
 TTS Runtime Integration
-    ↓
+↓
 TTS Provider
-    ↓
+↓
 Synthesized Audio
 
 This establishes the runtime foundation required for v0.64 Voice Response Execution and the eventual v0.65 Full Voice Conversation Loop.
+
+v0.64 — Voice Response Execution
+
+Overview
+
+Ultron v0.64 introduces the Voice Response Execution layer.
+
+This version creates a dedicated execution boundary between runtime-generated response text and the existing TTS Runtime Integration layer introduced in v0.63.
+
+The new VoiceResponseExecutor is responsible for taking runtime response text and executing it through the configured TTSRuntimeIntegration, while preserving the synthesized MultimodalInputResult and attaching execution-related metadata.
+
+This keeps voice response execution isolated from provider-specific TTS logic, agent execution, orchestration, and audio playback.
+
+Features
+
+Added VoiceResponseExecutor
+
+Added VoiceResponseExecutionError
+
+Runtime response text validation
+
+Delegation to TTSRuntimeIntegration
+
+Provider-independent voice response execution
+
+Preserves synthesized MultimodalInputResult
+
+Preserves synthesized audio data
+
+Runtime context ID propagation
+
+Execution ID propagation
+
+Custom metadata propagation
+
+Executor-level metadata
+
+Safe voice response execution through execute_safe()
+
+Availability delegation to the TTS integration layer
+
+Defensive result validation
+
+No direct TTS provider dependency
+
+No audio playback or device management
+
+No changes to Agent Engine or Agent Orchestrator execution responsibilities
+
+Architecture
+
+Runtime Response Text
+        ↓
+VoiceResponseExecutor
+        ↓
+TTSRuntimeIntegration
+        ↓
+TTSProvider
+        ↓
+OpenAITTSProvider
+        ↓
+TTS Provider API
+        ↓
+Synthesized Audio
+        ↓
+MultimodalInputResult
+
+
+Responsibility Boundary
+
+VoiceResponseExecutor owns:
+
+Runtime voice response execution
+
+Response text validation
+
+Delegation to the TTS runtime layer
+
+Response execution metadata
+
+Safe execution handling
+
+Synthesized result preservation
+
+TTSRuntimeIntegration owns:
+
+Runtime-to-TTS integration
+
+Provider-independent synthesis delegation
+
+TTS integration metadata
+
+TTSProvider owns:
+
+Provider-independent TTS abstraction
+
+TTS capability and configuration contracts
+
+Concrete TTS providers own:
+
+Provider-specific API communication
+
+Provider-specific synthesis implementation
+
+Audio playback and device management remain outside the v0.64 scope.
+
+New Module
+
+modules/multimodal/voice_response_executor.py
+
+
+Provides:
+
+VoiceResponseExecutor
+VoiceResponseExecutionError
+
+
+Testing
+
+Dedicated v0.64 tests:
+
+26 passed
+
+
+Full regression test suite:
+
+1649 passed in 50.10s
+
+
+This confirms that Voice Response Execution integrates cleanly without introducing regressions across the existing Ultron architecture.
+
+Version Progression
+
+v0.61 → TTS Provider Abstraction
+v0.62 → First TTS Provider
+v0.63 → Runtime TTS Integration
+v0.64 → Voice Response Execution
+v0.65 → Full Voice Conversation Loop
+
+
+v0.64 Milestone
+
+With v0.64, Ultron now has a complete output-side execution boundary for converting runtime-generated text into synthesized voice responses.
+
+The architecture is now prepared for v0.65 — Full Voice Conversation Loop, where voice input, speech recognition, runtime command execution, response generation, and voice output will be connected into a complete conversational pipeline.
 
 🤖 AI Operating System Direction
 
@@ -4611,6 +4755,26 @@ Future
 Durable Automation
 
 📜 Version History
+
+v0.64 — Voice Response Execution
+
+VoiceResponseExecutor
+VoiceResponseExecutionError
+Runtime response text validation
+Delegation to TTSRuntimeIntegration
+Provider-independent voice response execution
+Synthesized MultimodalInputResult preservation
+Synthesized audio data preservation
+Runtime context ID propagation
+Execution ID propagation
+Custom metadata propagation
+Executor-level metadata
+Safe voice response execution through execute_safe()
+Availability delegation to TTS integration
+Defensive result validation
+No direct TTS provider dependency
+No audio playback or device management
+No Agent Engine or Agent Orchestrator execution responsibility changes
 
 v0.62 — First TTS Provider
 
@@ -6564,13 +6728,13 @@ Durable Automation
 
 AI Operating System
 
-Ultron v0.63 therefore extends the voice architecture beyond input, command execution, and provider-level TTS by connecting runtime-generated response text to the provider-agnostic TTS layer through a dedicated Runtime TTS Integration boundary, while preserving the modular foundations required for voice responses, full voice conversation, advanced voice intelligence, multimodal reasoning, autonomous agents, and durable automation.
+Ultron v0.64 therefore extends the voice architecture beyond input, command execution, provider-level TTS, and Runtime TTS Integration by introducing a dedicated Voice Response Execution boundary that executes runtime-generated response text through the TTS runtime layer while preserving synthesized results and execution metadata, and maintaining the modular foundations required for the full voice conversation loop, advanced voice intelligence, multimodal reasoning, autonomous agents, and durable automation.
 
 🔮 Next Direction
 
-The immediate next milestone after v0.63 is:
+The immediate next milestone after v0.64 is:
 
-v0.64 → Voice Response Execution
+v0.65 → Full Voice Conversation Loop
 
 The TTS roadmap continues:
 
@@ -6611,7 +6775,7 @@ Autonomous Voice Workflows
 
 These capabilities extend the existing architecture rather than replace the established voice-processing, command-execution, and TTS abstraction layers.
 
-🏁 ULTRON v0.63
+🏁 ULTRON v0.64
 
 Voice Input
 
@@ -6655,12 +6819,32 @@ Tool Execution
 
 Result
 
-Current Version: v0.63
+↓
 
-Current Milestone: Runtime TTS Integration
+Runtime Response Text
 
-Dedicated v0.63 Tests: 25 passed
+↓
 
-Full Regression: 1623 passed
+VoiceResponseExecutor
 
-Status: COMPLETE — Next: v0.64 Voice Response Execution
+↓
+
+TTSRuntimeIntegration
+
+↓
+
+TTSProvider
+
+↓
+
+Synthesized Audio
+
+Current Version: v0.64
+
+Current Milestone: Voice Response Execution
+
+Dedicated v0.64 Tests: 26 passed
+
+Full Regression: 1649 passed in 50.10s
+
+Status: COMPLETE — Next: v0.65 Full Voice Conversation Loop
