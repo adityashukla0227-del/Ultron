@@ -248,6 +248,21 @@ Voice Command Execution
 
 ▼
 
+Voice Response & Audio Output
+
+│
+
+├── Voice Response Execution
+├── TTS Runtime Integration
+├── TTS Provider
+├── Synthesized Audio
+├── Audio Playback Foundation
+└── Future Audio Output Device
+
+│
+
+▼
+
 Future Durable Automation
 
 Each layer has a dedicated responsibility.
@@ -275,6 +290,8 @@ The v0.60 milestone introduces Voice Command Execution, connecting the runtime q
 The v0.61–v0.64 milestones extend the architecture from executable voice commands through runtime TTS and voice response execution.
 
 The v0.65 milestone completes the conversation-level orchestration boundary, connecting voice input, agent execution, response generation, and synthesized voice output without introducing a duplicate runtime.
+
+The v0.66 milestone introduces the Audio Playback Foundation, separating synthesized audio generation from future concrete speaker/output-device playback through a provider- and device-independent contract.
 
 📈 Version Progression
 
@@ -391,6 +408,10 @@ v0.64 → Voice Response Execution
 ↓
 
 v0.65 → Full Voice Conversation Loop
+
+↓
+
+v0.66 → Audio Playback Foundation
 
 ↓
 
@@ -4902,6 +4923,351 @@ v0.65 → Full Voice Conversation Loop
 
 v0.65 establishes the complete modular voice conversation orchestration layer for ULTRON.
 
+v0.66 — Audio Playback Foundation
+
+ULTRON v0.66 introduces the Audio Playback Foundation, establishing a provider- and device-independent abstraction for handling synthesized audio output.
+
+This milestone creates the playback contract required to move from generated TTS audio toward actual speaker output while keeping audio-device integration and concrete playback implementation separated for future releases.
+
+Audio Playback Architecture
+
+v0.65
+VoiceConversationLoop
+        ↓
+VoiceResponseExecutor
+        ↓
+TTSRuntimeIntegration
+        ↓
+TTSProvider
+        ↓
+MultimodalInputResult
+        ↓
+Synthesized Audio
+        │
+        ▼
+v0.66
+AudioPlayback
+        │
+        ▼
+Future Audio Output Device
+
+
+New Component
+
+AudioPlayback
+
+AudioPlayback is an abstract interface defining the contract for audio playback within ULTRON.
+
+It provides the foundation required for future concrete playback implementations without coupling the voice architecture to a specific operating system, hardware device, or audio library.
+
+Playback Lifecycle
+
+idle
+  ↓
+playing
+  ↓
+paused
+  ↓
+playing
+  ↓
+stopped
+
+
+A playback implementation can also enter:
+
+failed
+
+
+when an unrecoverable playback error occurs.
+
+Playback Contract
+
+AudioPlayback defines the following operations:
+
+play(audio)
+stop()
+pause()
+resume()
+is_playing()
+is_paused()
+is_stopped()
+is_available()
+get_status()
+get_device_info()
+
+
+It also provides:
+
+get_last_audio()
+get_metadata()
+set_metadata()
+get_metadata_value()
+clear_metadata()
+reset()
+
+
+Responsibilities
+
+The Audio Playback Foundation is responsible for:
+
+Defining the audio playback abstraction
+
+Validating audio input
+
+Managing playback state
+
+Tracking the last supplied audio
+
+Exposing playback availability
+
+Providing output-device information through an abstract contract
+
+Maintaining playback metadata
+
+Providing common playback state helpers
+
+Providing a reset mechanism
+
+Establishing a clean boundary for future playback implementations
+
+Responsibility Boundaries
+
+The v0.66 architecture maintains strict separation between audio generation and audio playback.
+
+Component
+
+Responsibility
+
+TTSProvider
+
+Generate synthesized audio
+
+TTSRuntimeIntegration
+
+Bridge TTS synthesis into runtime
+
+VoiceResponseExecutor
+
+Execute response-to-audio conversion
+
+MultimodalInputResult
+
+Represent synthesized audio result
+
+AudioPlayback
+
+Define playback contract
+
+Future Output Device
+
+Provide concrete hardware/software playback
+
+Future Playback Execution
+
+Execute real audio playback
+
+Architectural Constraints
+
+AudioPlayback does not:
+
+Implement a concrete audio device
+
+Play audio directly
+
+Manage operating-system audio devices
+
+Depend on a specific audio library
+
+Perform TTS synthesis
+
+Contain provider-specific TTS logic
+
+Perform speech-to-text
+
+Execute agents or tools
+
+Control agent execution lifecycle
+
+Implement wake-word detection
+
+Implement continuous listening
+
+This keeps playback independent from the existing TTS and agent architecture.
+
+Audio State Model
+
+The foundation provides five standard playback states:
+
+STATUS_IDLE
+STATUS_PLAYING
+STATUS_PAUSED
+STATUS_STOPPED
+STATUS_FAILED
+
+
+These states provide a consistent lifecycle contract for future concrete implementations.
+
+Availability Model
+
+Playback availability is intentionally exposed through an abstract method:
+
+is_available() -> bool
+
+
+This allows future implementations to determine availability based on:
+
+Output hardware
+
+Operating-system support
+
+Audio backend availability
+
+Device configuration
+
+Runtime environment
+
+without changing the higher-level voice architecture.
+
+Metadata
+
+Playback instances support metadata for runtime and implementation-level information.
+
+Example:
+
+{
+    "provider": "openai",
+    "format": "mp3",
+    "sample_rate": 24000,
+}
+
+Metadata is maintained independently from the playback lifecycle and is returned defensively.
+
+Audio Validation
+
+The foundation validates that playback receives a non-null audio object.
+
+Concrete implementations may extend validation according to their supported audio format, codec, device, or backend.
+
+Error Handling
+
+AudioPlaybackError provides the base exception for playback abstraction-level errors.
+
+The foundation uses structured validation for:
+
+Invalid metadata
+
+Invalid metadata keys
+
+Invalid playback states
+
+Missing audio data
+
+Concrete implementations can build on this error boundary for device-specific failures.
+
+Testing
+
+Dedicated v0.66 tests validate:
+
+Initial playback state
+
+Playback state transitions
+
+Play operation
+
+Stop operation
+
+Pause operation
+
+Resume operation
+
+Last-audio tracking
+
+Audio validation
+
+Metadata initialization
+
+Defensive metadata handling
+
+Metadata updates
+
+Metadata validation
+
+Metadata clearing
+
+Status validation
+
+Reset behavior
+
+Playback availability
+
+Device information
+
+Failure-state helpers
+
+Object representation
+
+Dedicated v0.66 tests:
+
+31 passed
+
+
+Full ULTRON regression:
+
+1704 passed
+0 failed
+
+
+v0.66 Milestone
+
+With v0.66, ULTRON now has a dedicated abstraction separating audio generation from audio playback.
+
+The voice output architecture now follows:
+
+Agent Execution
+      ↓
+Response Text
+      ↓
+VoiceResponseExecutor
+      ↓
+TTSRuntimeIntegration
+      ↓
+TTSProvider
+      ↓
+Synthesized Audio
+      ↓
+AudioPlayback
+      ↓
+Future Audio Output Device
+      ↓
+🔊 Speaker
+
+
+This establishes the foundation required for real audio output while preserving the modular architecture of ULTRON.
+
+Version Progression
+
+v0.51 → Multimodal Input Foundation
+v0.52 → Voice Input Foundation
+v0.53 → Voice Processing Foundation
+v0.54 → Voice Processing Pipeline Foundation
+v0.55 → Voice Processing Intelligence Foundation
+v0.56 → STT Provider Abstraction
+v0.57 → First STT Provider
+v0.58 → Voice → Text Runtime Integration
+v0.59 → Audio Capture Foundation
+v0.60 → Voice Command Execution
+v0.61 → TTS Provider Abstraction
+v0.62 → First TTS Provider
+v0.63 → Runtime TTS Integration
+v0.64 → Voice Response Execution
+v0.65 → Full Voice Conversation Loop
+v0.66 → Audio Playback Foundation
+
+
+v0.66 establishes the modular audio playback boundary required for ULTRON to progress from synthesized voice responses toward real speaker output.
+
+
+
 🤖 AI Operating System Direction
 
 Ultron is evolving beyond a conventional chatbot or personal assistant.
@@ -5134,6 +5500,42 @@ Voice Command Execution
 
 ↓
 
+v0.61
+
+TTS Provider Abstraction
+
+↓
+
+v0.62
+
+First TTS Provider
+
+↓
+
+v0.63
+
+Runtime TTS Integration
+
+↓
+
+v0.64
+
+Voice Response Execution
+
+↓
+
+v0.65
+
+Full Voice Conversation Loop
+
+↓
+
+v0.66
+
+Audio Playback Foundation
+
+↓
+
 Future
 
 Advanced Voice Intelligence
@@ -5163,6 +5565,32 @@ Future
 Durable Automation
 
 📜 Version History
+
+v0.66 — Audio Playback Foundation
+
+AudioPlayback abstraction
+Provider- and device-independent playback contract
+Playback lifecycle state model
+Audio validation
+Last-audio tracking
+Playback availability contract
+Output-device information contract
+Playback metadata management
+Defensive metadata handling
+Reset support
+AudioPlaybackError boundary
+No concrete audio device
+No direct audio playback
+No operating-system audio device management
+No specific audio library dependency
+No TTS responsibility
+No STT responsibility
+No agent responsibility
+No wake-word detection
+No continuous listening
+31 dedicated tests passed
+1704 regression tests passed
+0 failed
 
 v0.65 — Full Voice Conversation Loop
 
@@ -7169,18 +7597,22 @@ AI Operating System
 
 Ultron v0.64 therefore extends the voice architecture beyond input, command execution, provider-level TTS, and Runtime TTS Integration by introducing a dedicated Voice Response Execution boundary that executes runtime-generated response text through the TTS runtime layer while preserving synthesized results and execution metadata, and maintaining the modular foundations required for the full voice conversation loop, advanced voice intelligence, multimodal reasoning, autonomous agents, and durable automation.
 
+Ultron v0.66 therefore extends the voice architecture beyond synthesized audio generation by introducing a dedicated Audio Playback boundary that separates playback contracts from future concrete audio-device execution, while preserving the modular foundations required for advanced voice intelligence, multimodal reasoning, autonomous agents, and durable automation.
+
 🔮 Next Direction
 
-The immediate next milestone after v0.64 is:
+The immediate next milestone after v0.66 is:
 
-v0.65 → Full Voice Conversation Loop
+Future → Advanced Voice Intelligence
 
-The TTS roadmap continues:
+The completed TTS and voice-output progression is:
 
+v0.61 → TTS Provider Abstraction
 v0.62 → First TTS Provider
 v0.63 → Runtime TTS Integration
 v0.64 → Voice Response Execution
 v0.65 → Full Voice Conversation Loop
+v0.66 → Audio Playback Foundation
 
 Future voice intelligence can then build on the complete input and response foundations:
 
@@ -7214,7 +7646,7 @@ Autonomous Voice Workflows
 
 These capabilities extend the existing architecture rather than replace the established voice-processing, command-execution, and TTS abstraction layers.
 
-🏁 ULTRON v0.65
+🏁 ULTRON v0.66
 
 Voice Input
 
@@ -7278,13 +7710,21 @@ TTSProvider
 
 Synthesized Audio
 
-Current Version: v0.65
+↓
 
-Current Milestone: Full Voice Conversation Loop
+AudioPlayback
 
-Dedicated v0.65 Tests: 24 passed
+↓
 
-Full Regression: 1673 passed
+Future Audio Output Device
+
+Current Version: v0.66
+
+Current Milestone: Audio Playback Foundation
+
+Dedicated v0.66 Tests: 31 passed
+
+Full Regression: 1704 passed
 0 failed
 
 Status: COMPLETE — Next: Advanced Voice Intelligence
