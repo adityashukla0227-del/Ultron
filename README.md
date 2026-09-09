@@ -778,8 +778,6 @@ This provides:
 
 Real Hardware Support
 
-
-
 Deterministic Automated Testing
 
 without mixing the two.
@@ -2202,71 +2200,71 @@ After v0.59, the voice stack is:
 │                      │
 │  User's Voice        │
 └──────────┬───────────┘
-           │
-           ▼
+│
+▼
 ┌──────────────────────┐
 │ MicrophoneCapture    │
 └──────────┬───────────┘
-           │
-           ▼
+│
+▼
 ┌──────────────────────┐
 │ AudioCapture         │
 │ Abstraction          │
 └──────────┬───────────┘
-           │
-           ▼
+│
+▼
 ┌──────────────────────┐
 │ Raw PCM Audio        │
 └──────────┬───────────┘
-           │
-           ▼
+│
+▼
 ┌──────────────────────┐
 │ WAV Conversion       │
 └──────────┬───────────┘
-           │
-           ▼
+│
+▼
 ┌──────────────────────┐
 │ VoiceInput           │
 └──────────┬───────────┘
-           │
-           ▼
+│
+▼
 ┌──────────────────────┐
 │ VoiceProcessing      │
 │ Pipeline             │
 └──────────┬───────────┘
-           │
-           ▼
+│
+▼
 ┌──────────────────────┐
 │ OpenAIVoiceProcessor │
 └──────────┬───────────┘
-           │
-           ▼
+│
+▼
 ┌──────────────────────┐
 │ OpenAISTTProvider    │
 └──────────┬───────────┘
-           │
-           ▼
+│
+▼
 ┌──────────────────────┐
 │ Speech → Text        │
 └──────────┬───────────┘
-           │
-           ▼
+│
+▼
 ┌──────────────────────┐
 │ MultimodalInputResult│
 └──────────┬───────────┘
-           │
-           ▼
+│
+▼
 ┌──────────────────────┐
 │ VoiceRuntime         │
 │ Integration          │
 └──────────┬───────────┘
-           │
-           ▼
+│
+▼
 ┌──────────────────────┐
 │ AgentRuntimeContext  │
 └──────────┬───────────┘
-           │
-           ▼
+│
+▼
 ┌──────────────────────┐
 │ Runtime Query        │
 └──────────────────────┘
@@ -4567,12 +4565,13 @@ The goal of v0.65 is to provide a clean conversation-level orchestration layer w
 
 Full Voice Architecture
 
-            v0.65
-     Full Voice Conversation
-              │
-              ▼
-      VoiceConversationLoop
-              │
+        v0.65
+ Full Voice Conversation
+          │
+          ▼
+  VoiceConversationLoop
+          │
+
 ┌─────────────┴─────────────┐
 ▼                           ▼
 
@@ -5266,8 +5265,6 @@ v0.66 → Audio Playback Foundation
 
 v0.66 establishes the modular audio playback boundary required for ULTRON to progress from synthesized voice responses toward real speaker output.
 
-
-
 v0.67 — Audio Output Device Integration
 
 ULTRON v0.67 introduces the Audio Output Device Integration Foundation.
@@ -5642,38 +5639,38 @@ The new VoicePlaybackExecutor provides a provider-independent execution layer fo
 v0.68 Architecture
 
 VoiceResponseExecutor
-        │
-        ▼
+│
+▼
 TTSRuntimeIntegration
-        │
-        ▼
+│
+▼
 TTSProvider
-        │
-        ▼
+│
+▼
 Synthesized Audio
-        │
-        ▼
+│
+▼
 VoicePlaybackExecutor
-        │
-        ▼
+│
+▼
 AudioPlayback
-        │
-        ▼
+│
+▼
 AudioOutputDeviceManager
-        │
-        ├───────────────┐
-        ▼               ▼
+│
+├───────────────┐
+▼               ▼
 Active Device      Default Device
-        │               │
-        └───────┬───────┘
-                ▼
-       Resolved Output Device
-                │
-                ▼
-       Playback Backend
-                │
-                ▼
-          Audio Output
+│               │
+└───────┬───────┘
+▼
+Resolved Output Device
+│
+▼
+Playback Backend
+│
+▼
+Audio Output
 
 VoicePlaybackExecutor
 
@@ -5719,11 +5716,13 @@ VoicePlaybackExecutor uses the existing AudioOutputDeviceManager to resolve the 
 
 Resolution order:
 
-1. Active Output Device
-        ↓
-2. Default Output Device
-        ↓
-3. No Available Device → Playback Failure
+Active Output Device
+↓
+
+Default Output Device
+↓
+
+No Available Device → Playback Failure
 
 The executor never communicates directly with operating-system audio APIs.
 
@@ -5734,17 +5733,17 @@ Active Device Priority
 When an active device is configured, it takes priority over the default device.
 
 AudioOutputDeviceManager
-        │
-        ▼
+│
+▼
 Active Device?
-   │          │
-  Yes         No
-   │          │
-   ▼          ▼
+│          │
+Yes         No
+│          │
+▼          ▼
 Use Active   Default Device
-              │
-              ▼
-        Validate Availability
+│
+▼
+Validate Availability
 
 This allows future runtime integrations to dynamically switch output devices without modifying the playback execution layer.
 
@@ -5767,8 +5766,8 @@ v0.68 intentionally does not hard-code a specific audio library or operating-sys
 The executor receives a playback backend through dependency injection:
 
 VoicePlaybackExecutor(
-    device_manager=device_manager,
-    playback_backend=playback_backend,
+device_manager=device_manager,
+playback_backend=playback_backend,
 )
 
 The backend receives:
@@ -5797,21 +5796,21 @@ Playback Lifecycle
 The executor follows the existing AudioPlayback lifecycle model.
 
 IDLE
- │
- ▼
+│
+▼
 PLAYING
- │
- ├──────────────► PAUSED
- │                  │
- │                  ▼
- │               PLAYING
- │
- ▼
+│
+├──────────────► PAUSED
+│                  │
+│                  ▼
+│               PLAYING
+│
+▼
 STOPPED
 
 Failure
-   │
-   ▼
+│
+▼
 FAILED
 
 Supported states:
@@ -5827,31 +5826,31 @@ Playback Execution
 The primary execution flow is:
 
 Synthesized Audio
-       │
-       ▼
+│
+▼
 Validate Audio
-       │
-       ▼
+│
+▼
 Resolve Output Device
-       │
-       ▼
+│
+▼
 Validate Device Availability
-       │
-       ▼
+│
+▼
 Set Playback State
-       │
-       ▼
+│
+▼
 Execute Playback Backend
-       │
-       ├──────────────► Failure
-       │                    │
-       │                    ▼
-       │                  FAILED
-       │
-       ▼
-    STOPPED
-       │
-       ▼
+│
+├──────────────► Failure
+│                    │
+│                    ▼
+│                  FAILED
+│
+▼
+STOPPED
+│
+▼
 Structured Result
 
 Structured Playback Results
@@ -5865,19 +5864,19 @@ which converts playback execution into a structured result.
 Successful execution contains information such as:
 
 {
-    "success": True,
-    "status": "stopped",
-    "device_id": "...",
-    "device_name": "..."
+"success": True,
+"status": "stopped",
+"device_id": "...",
+"device_name": "..."
 }
 
 Failed execution returns:
 
 {
-    "success": False,
-    "status": "failed",
-    "device_id": "...",
-    "error": "..."
+"success": False,
+"status": "failed",
+"device_id": "...",
+"error": "..."
 }
 
 This allows higher-level voice systems to consume playback results without depending on low-level playback exceptions.
@@ -6037,50 +6036,50 @@ Complete Voice Output Pipeline
 With v0.68, the output side of ULTRON's voice architecture now follows:
 
 Agent Execution
-      │
-      ▼
+│
+▼
 Response Text
-      │
-      ▼
+│
+▼
 VoiceResponseExecutor
-      │
-      ▼
+│
+▼
 TTSRuntimeIntegration
-      │
-      ▼
+│
+▼
 TTSProvider
-      │
-      ▼
+│
+▼
 Synthesized Audio
-      │
-      ▼
+│
+▼
 VoicePlaybackExecutor
-      │
-      ▼
+│
+▼
 AudioPlayback
-      │
-      ▼
+│
+▼
 AudioOutputDeviceManager
-      │
-      ▼
+│
+▼
 Active / Default Output Device
-      │
-      ▼
+│
+▼
 Playback Backend
-      │
-      ▼
+│
+▼
 Audio Output
 
 This creates a clean separation between:
 
 Response Generation
-        ↓
+↓
 Speech Synthesis
-        ↓
+↓
 Playback Execution
-        ↓
+↓
 Audio Device Selection
-        ↓
+↓
 Physical Audio Output
 
 Files Added
@@ -6162,40 +6161,39 @@ The voice pipeline now has both sides connected conceptually:
 INPUT SIDE
 ───────────
 Microphone
-    ↓
+↓
 AudioCapture
-    ↓
+↓
 VoiceInput
-    ↓
+↓
 VoiceProcessingPipeline
-    ↓
+↓
 STTProvider
-    ↓
+↓
 VoiceRuntimeIntegration
-    ↓
+↓
 VoiceCommandExecutor
-    ↓
+↓
 Agent Execution
-
 
 OUTPUT SIDE
 ────────────
 Agent Response
-    ↓
+↓
 VoiceResponseExecutor
-    ↓
+↓
 TTSRuntimeIntegration
-    ↓
+↓
 TTSProvider
-    ↓
+↓
 VoicePlaybackExecutor
-    ↓
+↓
 AudioPlayback
-    ↓
+↓
 AudioOutputDeviceManager
-    ↓
+↓
 Output Device
-    ↓
+↓
 Audio Output
 
 This establishes the foundation required for the final end-to-end voice assistant layer.
@@ -6212,29 +6210,580 @@ v0.65 → Full Voice Conversation Loop
 v0.66 → Audio Playback Foundation
 v0.67 → Audio Output Device Integration
 v0.68 → Voice Playback Execution       ✅
-v0.69 → End-to-End Voice Assistant     🔜
+v0.69 → End-to-End Voice Assistant       ✅
 
 v0.68 Completion Summary
 
 Voice Playback Execution
-        │
-        ├── Audio validation
-        ├── Device resolution
-        ├── Device availability
-        ├── Playback backend injection
-        ├── Playback lifecycle
-        ├── Structured results
-        ├── Failure handling
-        ├── Device tracking
-        └── Reset/state management
+│
+├── Audio validation
+├── Device resolution
+├── Device availability
+├── Playback backend injection
+├── Playback lifecycle
+├── Structured results
+├── Failure handling
+├── Device tracking
+└── Reset/state management
 
 v0.68 — Voice Playback Execution is complete.
 
-The next milestone is:
+v0.69 — End-to-End Voice Assistant is now complete.
 
 v0.69 — End-to-End Voice Assistant
 
-which will bring the complete ULTRON voice pipeline together into a unified end-to-end assistant flow.
+Overview
+
+ULTRON v0.69 completes the complete end-to-end voice assistant pipeline by connecting the existing voice conversation, agent execution, text-to-speech, audio playback, and output-device layers into one top-level orchestration component.
+
+The new EndToEndVoiceAssistant acts as the final coordinator for a single complete voice interaction.
+
+It does not replace or duplicate existing subsystems. Instead, it composes the already-established architecture and connects their outputs and inputs into one complete execution flow.
+
+End-to-End Architecture
+
+AudioCapture
+     ↓
+VoiceConversationLoop
+     ↓
+VoiceRuntimeIntegration
+     ↓
+VoiceCommandExecutor
+     ↓
+Response Text
+     ↓
+VoiceResponseExecutor
+     ↓
+TTSRuntimeIntegration
+     ↓
+TTSProvider
+     ↓
+Synthesized Audio
+     ↓
+VoicePlaybackExecutor
+     ↓
+AudioOutputDeviceManager
+     ↓
+Output Device / Speaker
+
+
+New Component
+
+modules/multimodal/end_to_end_voice_assistant.py
+
+
+The module introduces:
+
+EndToEndVoiceAssistant
+EndToEndVoiceAssistantError
+
+
+Core Responsibilities
+
+EndToEndVoiceAssistant is responsible only for top-level voice orchestration.
+
+It:
+
+Coordinates the existing VoiceConversationLoop
+
+Receives the completed voice interaction result
+
+Validates the synthesized voice response
+
+Extracts synthesized audio from the response result
+
+Passes synthesized audio to VoicePlaybackExecutor
+
+Coordinates final audio playback
+
+Produces a normalized end-to-end execution result
+
+Tracks the latest execution result
+
+Provides availability information
+
+Provides reset functionality
+
+Preserves the ownership boundaries of all underlying components
+
+Component Boundaries
+
+The new coordinator does not:
+
+Perform speech-to-text directly
+
+Perform text-to-speech directly
+
+Execute agents directly
+
+Execute tools directly
+
+Select tools
+
+Create execution plans
+
+Manage agent execution internals
+
+Discover audio devices
+
+Implement playback backends
+
+Control hardware directly
+
+Implement wake-word detection
+
+Implement continuous listening
+
+Replace VoiceConversationLoop
+
+Replace VoicePlaybackExecutor
+
+Each subsystem continues to own its own responsibilities.
+
+End-to-End Execution
+
+A single execute_once() call performs the following flow:
+
+1. VoiceConversationLoop.execute_once()
+                    ↓
+2. Voice input captured and processed
+                    ↓
+3. Voice command executed through existing
+   agent execution architecture
+                    ↓
+4. Runtime response text generated
+                    ↓
+5. VoiceResponseExecutor synthesizes response
+                    ↓
+6. Synthesized audio stored in
+   MultimodalInputResult.data
+                    ↓
+7. EndToEndVoiceAssistant extracts audio
+                    ↓
+8. VoicePlaybackExecutor.execute(audio)
+                    ↓
+9. Audio routed to active/default output device
+                    ↓
+10. Completed end-to-end result returned
+
+
+Constructor
+
+EndToEndVoiceAssistant(
+    voice_conversation_loop=voice_conversation_loop,
+    voice_playback_executor=voice_playback_executor,
+)
+
+
+The constructor requires:
+
+VoiceConversationLoop
+
+VoicePlaybackExecutor
+
+Both dependencies are validated before the assistant is created.
+
+Public API
+
+execute_once()
+
+Executes one complete end-to-end voice interaction.
+
+Returns a structured dictionary containing:
+
+success
+status
+stage
+assistant
+end_to_end
+conversation_result
+voice_input
+transcription_result
+transcription
+execution_result
+response_text
+response_result
+playback_result
+
+
+Successful execution produces:
+
+success = True
+status = "completed"
+stage = "completed"
+end_to_end = True
+
+
+is_available()
+
+Checks whether the complete voice assistant can currently operate.
+
+Availability requires:
+
+VoiceConversationLoop available
+        AND
+VoicePlaybackExecutor available
+
+
+get_voice_conversation_loop()
+
+Returns the configured VoiceConversationLoop instance.
+
+get_voice_playback_executor()
+
+Returns the configured VoicePlaybackExecutor instance.
+
+get_last_result()
+
+Returns a defensive copy of the most recent end-to-end execution result.
+
+If no execution has occurred, it returns an idle result:
+
+success = False
+status = "idle"
+stage = "idle"
+end_to_end = False
+
+
+reset()
+
+Clears the coordinator's stored execution result.
+
+Child components retain ownership of their own internal state.
+
+Error Handling
+
+v0.69 normalizes failures at the top-level orchestration layer.
+
+Possible failure stages include:
+
+conversation
+processing
+execution
+response
+playback
+completed
+idle
+
+
+Examples of handled failures include:
+
+Conversation loop exceptions
+
+Invalid conversation results
+
+Failed voice processing
+
+Missing response result
+
+Invalid response result
+
+Failed TTS response
+
+Missing synthesized audio
+
+Playback failures
+
+Invalid playback results
+
+Unavailable output devices
+
+Failures are returned as structured results rather than breaking the complete orchestration flow.
+
+Synthesized Audio Handling
+
+The existing MultimodalInputResult architecture is reused.
+
+The TTS response is represented as:
+
+MultimodalInputResult
+        ↓
+       data
+        ↓
+Synthesized Audio
+
+
+The end-to-end coordinator retrieves the synthesized audio through:
+
+response_result.get_data()
+
+
+No new audio-result abstraction is introduced in v0.69.
+
+Playback Integration
+
+Synthesized audio is passed directly to:
+
+VoicePlaybackExecutor.execute(audio)
+
+
+VoicePlaybackExecutor remains responsible for:
+
+Resolving the output device
+
+Using the active/default available device
+
+Executing the playback backend
+
+Tracking playback state
+
+Reporting playback success/failure
+
+The end-to-end coordinator does not duplicate any of these responsibilities.
+
+Output Device Flow
+
+VoicePlaybackExecutor
+        ↓
+AudioOutputDeviceManager
+        ↓
+Active Device
+        ↓
+Default Device fallback
+        ↓
+Available Output Device
+        ↓
+Playback Backend
+        ↓
+Speaker / Headphones / Output Device
+
+
+Result Structure
+
+A successful end-to-end result follows this structure:
+
+{
+    "success": True,
+    "status": "completed",
+    "stage": "completed",
+    "assistant": "end-to-end-voice-assistant",
+    "end_to_end": True,
+
+    "conversation_result": {...},
+
+    "voice_input": ...,
+
+    "transcription_result": ...,
+
+    "transcription": "...",
+
+    "execution_result": {...},
+
+    "response_text": "...",
+
+    "response_result": MultimodalInputResult(...),
+
+    "playback_result": {...},
+}
+
+
+Failure Result Structure
+
+A normalized failure result follows this structure:
+
+{
+    "success": False,
+    "status": "failed",
+    "stage": "...",
+    "assistant": "end-to-end-voice-assistant",
+    "end_to_end": False,
+    "error": "...",
+
+    "conversation_result": ...,
+
+    "response_result": ...,
+
+    "playback_result": ...,
+}
+
+
+Defensive State Management
+
+The coordinator stores the latest result internally but returns defensive copies through:
+
+get_last_result()
+
+
+and:
+
+execute_once()
+
+
+This prevents callers from directly mutating the internal execution state.
+
+Testing
+
+New dedicated test file:
+
+tests/multimodal/test_end_to_end_voice_assistant.py
+
+
+The test suite validates:
+
+Initial assistant state
+
+Component access
+
+Successful end-to-end execution
+
+Synthesized audio extraction
+
+Last-result storage
+
+Defensive result handling
+
+Conversation failures
+
+Conversation exceptions
+
+Invalid conversation results
+
+Missing response results
+
+Invalid response results
+
+Failed TTS response results
+
+Missing synthesized audio
+
+Playback failures
+
+Playback result preservation
+
+Availability
+
+Unavailable playback devices
+
+Reset behavior
+
+Constructor validation
+
+Object representation
+
+v0.69 Test Results
+
+Dedicated v0.69 tests:
+
+21 passed in 0.67s
+
+
+Full ULTRON regression suite:
+
+1792 passed in 46.07s
+0 failed
+
+
+This confirms that the v0.69 implementation integrates successfully with the existing ULTRON architecture without introducing regressions.
+
+Architecture Milestone
+
+The progression from the voice foundation to the complete voice assistant is now:
+
+v0.51  Multimodal Input Foundation
+   ↓
+v0.52  Voice Input Foundation
+   ↓
+v0.53  Voice Processing Foundation
+   ↓
+v0.54  Voice Processing Pipeline Foundation
+   ↓
+v0.55  Voice Processing Intelligence Foundation
+   ↓
+v0.56  STT Provider Abstraction
+   ↓
+v0.57  First STT Provider
+   ↓
+v0.58  Voice → Text Runtime Integration
+   ↓
+v0.59  Audio Capture Foundation
+   ↓
+v0.60  Voice Command Execution
+   ↓
+v0.61  TTS Provider Abstraction
+   ↓
+v0.62  First TTS Provider
+   ↓
+v0.63  Runtime TTS Integration
+   ↓
+v0.64  Voice Response Execution
+   ↓
+v0.65  Full Voice Conversation Loop
+   ↓
+v0.66  Audio Playback Foundation
+   ↓
+v0.67  Audio Output Device Integration
+   ↓
+v0.68  Voice Playback Execution
+   ↓
+v0.69  End-to-End Voice Assistant
+
+
+v0.69 Architectural Achievement
+
+With v0.69, ULTRON now has a complete architectural voice path connecting:
+
+Human Voice
+    ↓
+Audio Capture
+    ↓
+Speech Processing
+    ↓
+Voice Command
+    ↓
+Agent Runtime
+    ↓
+Tool / Agent Execution
+    ↓
+Response Generation
+    ↓
+Text-to-Speech
+    ↓
+Synthesized Audio
+    ↓
+Audio Playback
+    ↓
+Output Device
+    ↓
+Human Hearing
+
+
+This establishes the foundation for ULTRON to operate as a complete voice-driven AI assistant while keeping every subsystem modular and independently replaceable.
+
+Design Principle
+
+v0.69 follows the core ULTRON architectural principle:
+
+Compose existing capabilities instead of duplicating them.
+
+The EndToEndVoiceAssistant is therefore intentionally thin. It acts as the final orchestration layer connecting established voice, agent, TTS, playback, and device components.
+
+Release Status
+
+Version: v0.69
+Name: End-to-End Voice Assistant
+Status: Completed
+Dedicated Tests: 21 passed
+Full Regression: 1792 passed
+Failures: 0
+
+
+Next Direction
+
+With the end-to-end voice pipeline established, future ULTRON development can focus on higher-level voice intelligence and production capabilities such as:
+
+Continuous Voice Interaction
+Wake Word Detection
+Conversation Persistence
+Voice Session Management
+Interrupt / Barge-in Handling
+Streaming Audio
+Low-Latency Voice Responses
+Advanced Voice Context
+Multi-Voice / Multi-Provider Support
+Voice Agent Intelligence
+
+
+v0.69 represents the completion of the foundational end-to-end voice assistant architecture and marks a major milestone on the path toward ULTRON v1.0.
 
 🤖 AI Operating System Direction
 
@@ -6551,6 +7100,24 @@ Future
 Durable Automation
 
 📜 Version History
+
+v0.69 — End-to-End Voice Assistant
+
+EndToEndVoiceAssistant
+Top-level end-to-end voice orchestration
+VoiceConversationLoop integration
+VoicePlaybackExecutor integration
+Synthesized audio extraction from MultimodalInputResult
+Normalized end-to-end execution results
+Structured failure-stage handling
+Defensive result state management
+Availability and reset support
+No duplicated subsystem responsibilities
+21 dedicated tests passed
+1792 full regression tests passed
+0 failed
+
+↓
 
 v0.68 — Voice Playback Execution
 
@@ -8666,11 +9233,11 @@ Ultron v0.67 therefore extends the audio-output architecture by introducing prov
 
 Ultron v0.68 therefore extends the audio-output architecture with VoicePlaybackExecutor, connecting AudioPlayback to resolved output devices through an injected playback backend while providing lifecycle management, structured results, and controlled failure handling without coupling the core architecture to a specific audio technology.
 
+Ultron v0.69 therefore completes the foundational end-to-end voice path by introducing EndToEndVoiceAssistant as a thin top-level orchestration layer that composes the existing voice conversation, agent execution, TTS, playback, and output-device subsystems without duplicating their responsibilities.
+
 🔮 Next Direction
 
-The immediate next milestone after v0.68 is:
-
-v0.69 → End-to-End Voice Assistant
+v0.69 — End-to-End Voice Assistant is complete.
 
 The completed TTS and voice-output progression is:
 
@@ -8716,7 +9283,7 @@ Autonomous Voice Workflows
 
 These capabilities extend the existing architecture rather than replace the established voice-processing, command-execution, and TTS abstraction layers.
 
-🏁 ULTRON v0.68
+🏁 ULTRON v0.69
 
 Voice Input
 
@@ -8782,11 +9349,7 @@ Synthesized Audio
 
 ↓
 
-AudioPlayback
-
-↓
-
-AudioOutputDevice
+VoicePlaybackExecutor
 
 ↓
 
@@ -8804,16 +9367,16 @@ Playback Backend
 
 Audio Output
 
-Current Version: v0.68
+Current Version: v0.69
 
-Current Milestone: Voice Playback Execution
+Current Milestone: End-to-End Voice Assistant
 
-Dedicated v0.68 Tests: 30 passed
+Dedicated v0.69 Tests: 21 passed
 
-Full Regression: 1771 passed
+Full Regression: 1792 passed
 
 0 failed
 
 Repository Validation: git diff --check — Clean
 
-Status: COMPLETE — Next: v0.69 End-to-End Voice Assistant
+Status: COMPLETE — Foundational End-to-End Voice Assistant Architecture Established
