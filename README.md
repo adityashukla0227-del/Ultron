@@ -68,6 +68,14 @@ Real Voice Input
 
 Voice Command Execution
 
+Voice Response Execution
+
+TTS Runtime Integration
+
+Audio Playback Foundation
+
+Audio Output Device Integration
+
 Future Voice Intelligence
 
 Future Multimodal Intelligence
@@ -257,7 +265,9 @@ Voice Response & Audio Output
 ├── TTS Provider
 ├── Synthesized Audio
 ├── Audio Playback Foundation
-└── Future Audio Output Device
+├── AudioOutputDevice
+├── AudioOutputDeviceManager
+└── Future Voice Playback Execution
 
 │
 
@@ -292,6 +302,8 @@ The v0.61–v0.64 milestones extend the architecture from executable voice comma
 The v0.65 milestone completes the conversation-level orchestration boundary, connecting voice input, agent execution, response generation, and synthesized voice output without introducing a duplicate runtime.
 
 The v0.66 milestone introduces the Audio Playback Foundation, separating synthesized audio generation from future concrete speaker/output-device playback through a provider- and device-independent contract.
+
+The v0.67 milestone introduces the Audio Output Device Integration Foundation, adding provider- and hardware-independent device representation, registration, selection, availability tracking, default-device management, and routing metadata without implementing concrete hardware playback.
 
 📈 Version Progression
 
@@ -412,6 +424,10 @@ v0.65 → Full Voice Conversation Loop
 ↓
 
 v0.66 → Audio Playback Foundation
+
+↓
+
+v0.67 → Audio Output Device Integration
 
 ↓
 
@@ -1540,8 +1556,8 @@ Because v0.59 introduces an abstract AudioCapture layer, future capture implemen
 
 Conceptually:
 
-     AudioCapture
-          │
+ AudioCapture
+      │
 
 ┌───────────┼───────────┐
 │           │           │
@@ -2169,79 +2185,79 @@ This is a major step toward making voice a first-class runtime modality.
 
 After v0.59, the voice stack is:
 
-        ┌──────────────────────┐
-        │   Physical World     │
-        │                      │
-        │  User's Voice        │
-        └──────────┬───────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ MicrophoneCapture    │
-        └──────────┬───────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ AudioCapture         │
-        │ Abstraction          │
-        └──────────┬───────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ Raw PCM Audio        │
-        └──────────┬───────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ WAV Conversion       │
-        └──────────┬───────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ VoiceInput           │
-        └──────────┬───────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ VoiceProcessing      │
-        │ Pipeline             │
-        └──────────┬───────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ OpenAIVoiceProcessor │
-        └──────────┬───────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ OpenAISTTProvider    │
-        └──────────┬───────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ Speech → Text        │
-        └──────────┬───────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ MultimodalInputResult│
-        └──────────┬───────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ VoiceRuntime         │
-        │ Integration          │
-        └──────────┬───────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ AgentRuntimeContext  │
-        └──────────┬───────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ Runtime Query        │
-        └──────────────────────┘
+    ┌──────────────────────┐
+    │   Physical World     │
+    │                      │
+    │  User's Voice        │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ MicrophoneCapture    │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ AudioCapture         │
+    │ Abstraction          │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ Raw PCM Audio        │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ WAV Conversion       │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ VoiceInput           │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ VoiceProcessing      │
+    │ Pipeline             │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ OpenAIVoiceProcessor │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ OpenAISTTProvider    │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ Speech → Text        │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ MultimodalInputResult│
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ VoiceRuntime         │
+    │ Integration          │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ AgentRuntimeContext  │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ Runtime Query        │
+    └──────────────────────┘
 
 v0.60 extends this stack into command execution.
 
@@ -4443,21 +4459,20 @@ No changes to Agent Engine or Agent Orchestrator execution responsibilities
 Architecture
 
 Runtime Response Text
-        ↓
+↓
 VoiceResponseExecutor
-        ↓
+↓
 TTSRuntimeIntegration
-        ↓
+↓
 TTSProvider
-        ↓
+↓
 OpenAITTSProvider
-        ↓
+↓
 TTS Provider API
-        ↓
+↓
 Synthesized Audio
-        ↓
+↓
 MultimodalInputResult
-
 
 Responsibility Boundary
 
@@ -4501,12 +4516,10 @@ New Module
 
 modules/multimodal/voice_response_executor.py
 
-
 Provides:
 
 VoiceResponseExecutor
 VoiceResponseExecutionError
-
 
 Testing
 
@@ -4514,11 +4527,9 @@ Dedicated v0.64 tests:
 
 26 passed
 
-
 Full regression test suite:
 
 1649 passed in 50.10s
-
 
 This confirms that Voice Response Execution integrates cleanly without introducing regressions across the existing Ultron architecture.
 
@@ -4529,7 +4540,6 @@ v0.62 → First TTS Provider
 v0.63 → Runtime TTS Integration
 v0.64 → Voice Response Execution
 v0.65 → Full Voice Conversation Loop
-
 
 v0.64 Milestone
 
@@ -4545,77 +4555,76 @@ The goal of v0.65 is to provide a clean conversation-level orchestration layer w
 
 Full Voice Architecture
 
-                    v0.65
-             Full Voice Conversation
-                      │
-                      ▼
-              VoiceConversationLoop
-                      │
-        ┌─────────────┴─────────────┐
-        ▼                           ▼
-   INPUT SIDE                  OUTPUT SIDE
-        │                           │
-   AudioCapture              VoiceResponseExecutor
-        │                           │
-   VoiceInput                 TTSRuntimeIntegration
-        │                           │
-   VoiceProcessingPipeline       TTSProvider
-        │                           │
-   VoiceProcessor                    🔊
-        │
-   STTProvider
-        │
-   MultimodalInputResult
-        │
-   VoiceRuntimeIntegration
-        │
-   AgentRuntimeContext
-        │
-   VoiceCommandExecutor
-        │
-   AgentOrchestrator
-        │
-   Execution Result
-        │
-        └──────────────► Response Text
+                v0.65
+         Full Voice Conversation
+                  │
+                  ▼
+          VoiceConversationLoop
+                  │
+    ┌─────────────┴─────────────┐
+    ▼                           ▼
 
+INPUT SIDE                  OUTPUT SIDE
+│                           │
+AudioCapture              VoiceResponseExecutor
+│                           │
+VoiceInput                 TTSRuntimeIntegration
+│                           │
+VoiceProcessingPipeline       TTSProvider
+│                           │
+VoiceProcessor                    🔊
+│
+STTProvider
+│
+MultimodalInputResult
+│
+VoiceRuntimeIntegration
+│
+AgentRuntimeContext
+│
+VoiceCommandExecutor
+│
+AgentOrchestrator
+│
+Execution Result
+│
+└──────────────► Response Text
 
 Complete Voice Flow
 
 🎤 AudioCapture
-    ↓
+↓
 VoiceInput
-    ↓
+↓
 VoiceProcessingPipeline
-    ↓
+↓
 VoiceProcessor
-    ↓
+↓
 STTProvider
-    ↓
+↓
 MultimodalInputResult
-    ↓
+↓
 VoiceRuntimeIntegration
-    ↓
+↓
 AgentRuntimeContext.query
-    ↓
+↓
 VoiceCommandExecutor
-    ↓
+↓
 AgentPlanner
-    ↓
+↓
 AgentOrchestrator
-    ↓
+↓
 Execution Result
-    ↓
+↓
 Response Text
-    ↓
+↓
 VoiceResponseExecutor
-    ↓
+↓
 TTSRuntimeIntegration
-    ↓
+↓
 TTSProvider
-    ↓
+↓
 🔊 Synthesized Audio
-
 
 New Component
 
@@ -4650,15 +4659,14 @@ The component intentionally coordinates existing architecture instead of replaci
 Conversation Lifecycle
 
 capture
-   ↓
+↓
 processing
-   ↓
+↓
 execution
-   ↓
+↓
 response
-   ↓
+↓
 completed
-
 
 Failures are reported with the stage at which they occurred:
 
@@ -4666,7 +4674,6 @@ capture
 processing
 execution
 response
-
 
 Responsibility Boundaries
 
@@ -4777,22 +4784,20 @@ execution_result
 response_text
 response_result
 
-
 Example:
 
 {
-    "success": True,
-    "status": "completed",
-    "stage": "completed",
-    "conversation_loop": "voice-conversation-loop",
-    "voice_input": voice_input,
-    "transcription_result": transcription_result,
-    "transcription": "open the browser",
-    "execution_result": execution_result,
-    "response_text": "The browser has been opened.",
-    "response_result": response_result,
+"success": True,
+"status": "completed",
+"stage": "completed",
+"conversation_loop": "voice-conversation-loop",
+"voice_input": voice_input,
+"transcription_result": transcription_result,
+"transcription": "open the browser",
+"execution_result": execution_result,
+"response_text": "The browser has been opened.",
+"response_result": response_result,
 }
-
 
 Failure Handling
 
@@ -4801,17 +4806,16 @@ The conversation loop provides stage-aware failure results.
 Example:
 
 {
-    "success": False,
-    "status": "failed",
-    "stage": "processing",
-    "conversation_loop": "voice-conversation-loop",
-    "error": "STT processing failed.",
-    "voice_input": voice_input,
-    "transcription_result": transcription_result,
-    "execution_result": None,
-    "response_result": None,
+"success": False,
+"status": "failed",
+"stage": "processing",
+"conversation_loop": "voice-conversation-loop",
+"error": "STT processing failed.",
+"voice_input": voice_input,
+"transcription_result": transcription_result,
+"execution_result": None,
+"response_result": None,
 }
-
 
 This makes failures traceable across the complete voice pipeline without changing the internal behavior of the existing components.
 
@@ -4820,11 +4824,10 @@ Availability
 The conversation loop reports availability based on the required input and output boundaries:
 
 AudioCapture available
-        AND
+AND
 VoiceResponseExecutor available
-        ↓
+↓
 VoiceConversationLoop available
-
 
 Testing
 
@@ -4874,31 +4877,28 @@ Dedicated v0.65 tests:
 
 24 passed
 
-
 Full ULTRON regression:
 
 1673 passed
 0 failed
-
 
 v0.65 Milestone
 
 With v0.65, ULTRON now has a complete modular voice interaction path:
 
 Voice Input
-    ↓
+↓
 Speech Recognition
-    ↓
+↓
 Runtime Context
-    ↓
+↓
 Agent Execution
-    ↓
+↓
 Response Generation
-    ↓
+↓
 Text-to-Speech
-    ↓
+↓
 Voice Output
-
 
 This completes the foundational full voice conversation architecture while preserving the modular provider, runtime, agent, execution, and multimodal boundaries established in previous releases.
 
@@ -4920,7 +4920,6 @@ v0.63 → Runtime TTS Integration
 v0.64 → Voice Response Execution
 v0.65 → Full Voice Conversation Loop
 
-
 v0.65 establishes the complete modular voice conversation orchestration layer for ULTRON.
 
 v0.66 — Audio Playback Foundation
@@ -4933,24 +4932,23 @@ Audio Playback Architecture
 
 v0.65
 VoiceConversationLoop
-        ↓
+↓
 VoiceResponseExecutor
-        ↓
+↓
 TTSRuntimeIntegration
-        ↓
+↓
 TTSProvider
-        ↓
+↓
 MultimodalInputResult
-        ↓
+↓
 Synthesized Audio
-        │
-        ▼
+│
+▼
 v0.66
 AudioPlayback
-        │
-        ▼
+│
+▼
 Future Audio Output Device
-
 
 New Component
 
@@ -4963,20 +4961,18 @@ It provides the foundation required for future concrete playback implementations
 Playback Lifecycle
 
 idle
-  ↓
+↓
 playing
-  ↓
+↓
 paused
-  ↓
+↓
 playing
-  ↓
+↓
 stopped
-
 
 A playback implementation can also enter:
 
 failed
-
 
 when an unrecoverable playback error occurs.
 
@@ -4995,7 +4991,6 @@ is_available()
 get_status()
 get_device_info()
 
-
 It also provides:
 
 get_last_audio()
@@ -5004,7 +4999,6 @@ set_metadata()
 get_metadata_value()
 clear_metadata()
 reset()
-
 
 Responsibilities
 
@@ -5104,7 +5098,6 @@ STATUS_PAUSED
 STATUS_STOPPED
 STATUS_FAILED
 
-
 These states provide a consistent lifecycle contract for future concrete implementations.
 
 Availability Model
@@ -5112,7 +5105,6 @@ Availability Model
 Playback availability is intentionally exposed through an abstract method:
 
 is_available() -> bool
-
 
 This allows future implementations to determine availability based on:
 
@@ -5135,9 +5127,9 @@ Playback instances support metadata for runtime and implementation-level informa
 Example:
 
 {
-    "provider": "openai",
-    "format": "mp3",
-    "sample_rate": 24000,
+"provider": "openai",
+"format": "mp3",
+"sample_rate": 24000,
 }
 
 Metadata is maintained independently from the playback lifecycle and is returned defensively.
@@ -5210,12 +5202,10 @@ Dedicated v0.66 tests:
 
 31 passed
 
-
 Full ULTRON regression:
 
 1704 passed
 0 failed
-
 
 v0.66 Milestone
 
@@ -5224,23 +5214,22 @@ With v0.66, ULTRON now has a dedicated abstraction separating audio generation f
 The voice output architecture now follows:
 
 Agent Execution
-      ↓
+↓
 Response Text
-      ↓
+↓
 VoiceResponseExecutor
-      ↓
+↓
 TTSRuntimeIntegration
-      ↓
+↓
 TTSProvider
-      ↓
+↓
 Synthesized Audio
-      ↓
+↓
 AudioPlayback
-      ↓
+↓
 Future Audio Output Device
-      ↓
+↓
 🔊 Speaker
-
 
 This establishes the foundation required for real audio output while preserving the modular architecture of ULTRON.
 
@@ -5263,10 +5252,387 @@ v0.64 → Voice Response Execution
 v0.65 → Full Voice Conversation Loop
 v0.66 → Audio Playback Foundation
 
-
 v0.66 establishes the modular audio playback boundary required for ULTRON to progress from synthesized voice responses toward real speaker output.
 
 
+
+v0.67 — Audio Output Device Integration
+
+ULTRON v0.67 introduces the Audio Output Device Integration Foundation.
+
+This version builds on the AudioPlayback abstraction introduced in v0.66 and adds a provider-independent representation and management layer for audio output devices.
+
+The goal of v0.67 is to establish the foundation required for future real voice playback without introducing operating-system-specific audio APIs or concrete playback backends.
+
+The architecture now separates:
+
+TTS Provider
+     ↓
+TTS Runtime Integration
+     ↓
+Voice Response Executor
+     ↓
+AudioPlayback
+     ↓
+AudioOutputDevice
+     ↓
+AudioOutputDeviceManager
+     ↓
+Selected / Default Output Device
+     ↓
+v0.68 — Voice Playback Execution
+
+
+v0.67 Features
+
+Audio Output Device Model
+
+Added:
+
+modules/multimodal/audio_output_device.py
+
+
+The AudioOutputDevice class provides a provider- and hardware-independent representation of an audio output device.
+
+It stores and validates:
+
+Device ID
+
+Device name
+
+Device type
+
+Availability state
+
+Default-device state
+
+Supported sample rates
+
+Supported audio formats
+
+Device metadata
+
+Supported device types include:
+
+speaker
+headphones
+headset
+hdmi
+bluetooth
+virtual
+unknown
+
+
+The device model also provides helpers for:
+
+Availability checks
+
+Default-device checks
+
+Sample-rate support
+
+Audio-format support
+
+Metadata management
+
+Dictionary serialization
+
+Safe representation
+
+Audio Output Device Manager
+
+Added:
+
+modules/multimodal/audio_output_device_manager.py
+
+
+The AudioOutputDeviceManager provides the registry and selection layer for audio output devices.
+
+Responsibilities include:
+
+Registering output devices
+
+Unregistering devices
+
+Looking up devices by ID
+
+Listing registered devices
+
+Listing available devices
+
+Finding the default device
+
+Selecting the active output device
+
+Selecting the default device
+
+Tracking the active device
+
+Maintaining device registration state
+
+Managing manager metadata
+
+Clearing active-device state
+
+Clearing the complete device registry
+
+The manager guarantees that only one registered device is treated as the default device at a time.
+
+Unavailable devices cannot be selected as the active output device.
+
+Device Selection Model
+
+v0.67 establishes the following device-selection flow:
+
+Registered Devices
+        │
+        ├── Available Devices
+        │
+        ├── Default Device
+        │
+        └── Active Device
+
+
+The manager maintains a clear distinction between:
+
+Registered Device
+
+A device known to ULTRON's output-device registry.
+
+Available Device
+
+A registered device that is currently marked as available.
+
+Default Device
+
+The device designated as the preferred output device.
+
+Active Device
+
+The device currently selected for output operations.
+
+This separation allows future playback execution to select an output device without coupling device management to the playback implementation.
+
+Device Metadata
+
+Both the individual device model and the manager support metadata.
+
+Device metadata can contain additional implementation-independent information such as:
+
+manufacturer
+model
+connection
+description
+capabilities
+custom identifiers
+
+
+Metadata is exposed through defensive copies to prevent accidental external mutation of internal state.
+
+Validation & Error Handling
+
+v0.67 introduces dedicated exceptions:
+
+AudioOutputDeviceError
+AudioOutputDeviceManagerError
+
+
+Validation covers:
+
+Invalid device IDs
+
+Invalid device names
+
+Invalid device types
+
+Invalid availability values
+
+Invalid default-device values
+
+Invalid sample rates
+
+Invalid supported formats
+
+Invalid metadata
+
+Duplicate device registration
+
+Unknown device IDs
+
+Selecting unavailable devices
+
+Invalid manager operations
+
+The device layer remains deterministic and does not silently create invalid device state.
+
+Strict Architectural Boundaries
+
+v0.67 intentionally does not implement actual audio hardware interaction.
+
+v0.67 DOES:
+
+Represent output devices
+
+Validate device configuration
+
+Register output devices
+
+Track device availability
+
+Track default devices
+
+Track active devices
+
+Select output devices
+
+Maintain device metadata
+
+Provide a clean foundation for playback routing
+
+v0.67 DOES NOT:
+
+Access operating-system audio APIs
+
+Discover physical hardware automatically
+
+Open speaker/headphone devices
+
+Send audio data to hardware
+
+Play synthesized audio
+
+Implement a concrete playback backend
+
+Perform TTS synthesis
+
+Perform STT
+
+Execute agents
+
+Execute tools
+
+Control the operating system
+
+Actual audio playback remains a future responsibility.
+
+v0.66 → v0.67 Architecture
+
+Before v0.67:
+
+TTS
+ ↓
+Voice Response Executor
+ ↓
+AudioPlayback
+ ↓
+Future Output Device
+
+
+After v0.67:
+
+TTS Provider
+     ↓
+TTS Runtime Integration
+     ↓
+Voice Response Executor
+     ↓
+AudioPlayback
+     ↓
+AudioOutputDevice
+     ↓
+AudioOutputDeviceManager
+     ↓
+Active / Default Output Device
+
+
+This creates a clean separation between:
+
+Playback Contract
+        ↓
+Device Representation
+        ↓
+Device Management
+        ↓
+Future Playback Execution
+
+
+Backward Compatibility
+
+v0.67 preserves the existing v0.66 AudioPlayback abstraction.
+
+No existing playback contracts were removed or modified in a breaking manner.
+
+The new device layer is additive and designed to integrate with the existing multimodal architecture in future versions.
+
+Testing
+
+Dedicated v0.67 tests were added for:
+
+tests/multimodal/test_audio_output_device.py
+tests/multimodal/test_audio_output_device_manager.py
+
+
+Dedicated v0.67 test result:
+
+37 passed in 3.04s
+
+
+Full ULTRON regression suite:
+
+1741 passed in 74.93s
+
+
+Additional repository validation:
+
+git diff --check
+
+
+Result:
+
+No whitespace errors
+
+
+v0.67 Architecture Milestone
+
+v0.67 establishes the Audio Output Device Integration Foundation required for real voice playback.
+
+The voice-output architecture now has clear layers:
+
+Voice Response
+      ↓
+TTS Provider
+      ↓
+TTS Runtime Integration
+      ↓
+Voice Response Executor
+      ↓
+AudioPlayback
+      ↓
+AudioOutputDevice
+      ↓
+AudioOutputDeviceManager
+      ↓
+Selected Output Device
+      ↓
+v0.68 — Voice Playback Execution
+
+
+This keeps ULTRON's voice architecture modular and prevents device management from becoming tightly coupled to TTS or playback implementation.
+
+Version Progression
+
+v0.61 → TTS Provider Abstraction
+v0.62 → First TTS Provider
+v0.63 → Runtime TTS Integration
+v0.64 → Voice Response Execution
+v0.65 → Full Voice Conversation Loop
+v0.66 → Audio Playback Foundation
+v0.67 → Audio Output Device Integration
+v0.68 → Voice Playback Execution
+v0.69 → End-to-End Voice Assistant
+
+
+v0.67 establishes the device-management foundation required before ULTRON can perform real audio playback through a selected output device.
 
 🤖 AI Operating System Direction
 
@@ -5536,6 +5902,12 @@ Audio Playback Foundation
 
 ↓
 
+v0.67
+
+Audio Output Device Integration
+
+↓
+
 Future
 
 Advanced Voice Intelligence
@@ -5565,6 +5937,55 @@ Future
 Durable Automation
 
 📜 Version History
+
+v0.67 — Audio Output Device Integration
+
+AudioOutputDevice model
+Provider- and hardware-independent output-device representation
+Device ID and name validation
+Device type validation
+Availability state
+Default-device state
+Supported sample rates
+Supported audio formats
+Device metadata management
+Availability checks
+Default-device checks
+Sample-rate support checks
+Audio-format support checks
+Dictionary serialization
+Safe representation
+AudioOutputDeviceManager registry and selection layer
+Device registration and unregistration
+Device lookup by ID
+Registered-device listing
+Available-device listing
+Default-device lookup
+Active-device selection
+Default-device selection
+Active-device tracking
+Device registration state management
+Manager metadata management
+Active-device clearing
+Complete registry clearing
+Single-default-device guarantee
+Unavailable-device selection protection
+AudioOutputDeviceError boundary
+AudioOutputDeviceManagerError boundary
+No operating-system audio API access
+No automatic physical hardware discovery
+No direct speaker/headphone access
+No synthesized audio playback
+No concrete playback backend
+No TTS responsibility
+No STT responsibility
+No agent responsibility
+No tool execution responsibility
+No operating-system control
+37 dedicated tests passed
+1741 full regression tests passed
+0 failed
+No whitespace errors from git diff --check
 
 v0.66 — Audio Playback Foundation
 
@@ -7599,11 +8020,13 @@ Ultron v0.64 therefore extends the voice architecture beyond input, command exec
 
 Ultron v0.66 therefore extends the voice architecture beyond synthesized audio generation by introducing a dedicated Audio Playback boundary that separates playback contracts from future concrete audio-device execution, while preserving the modular foundations required for advanced voice intelligence, multimodal reasoning, autonomous agents, and durable automation.
 
+Ultron v0.67 therefore extends the audio-output architecture by introducing provider- and hardware-independent AudioOutputDevice and AudioOutputDeviceManager layers for device representation, registration, availability, default-device tracking, active-device selection, and playback routing preparation without implementing concrete hardware playback.
+
 🔮 Next Direction
 
-The immediate next milestone after v0.66 is:
+The immediate next milestone after v0.67 is:
 
-Future → Advanced Voice Intelligence
+v0.68 → Voice Playback Execution
 
 The completed TTS and voice-output progression is:
 
@@ -7613,8 +8036,11 @@ v0.63 → Runtime TTS Integration
 v0.64 → Voice Response Execution
 v0.65 → Full Voice Conversation Loop
 v0.66 → Audio Playback Foundation
+v0.67 → Audio Output Device Integration
+v0.68 → Voice Playback Execution
+v0.69 → End-to-End Voice Assistant
 
-Future voice intelligence can then build on the complete input and response foundations:
+Future voice intelligence can then build on the complete input, response, playback, and device foundations:
 
 Advanced Natural-Language Understanding
 
@@ -7646,7 +8072,7 @@ Autonomous Voice Workflows
 
 These capabilities extend the existing architecture rather than replace the established voice-processing, command-execution, and TTS abstraction layers.
 
-🏁 ULTRON v0.66
+🏁 ULTRON v0.67
 
 Voice Input
 
@@ -7716,15 +8142,26 @@ AudioPlayback
 
 ↓
 
-Future Audio Output Device
+AudioOutputDevice
 
-Current Version: v0.66
+↓
 
-Current Milestone: Audio Playback Foundation
+AudioOutputDeviceManager
 
-Dedicated v0.66 Tests: 31 passed
+↓
 
-Full Regression: 1704 passed
+Selected / Default Output Device
+
+Current Version: v0.67
+
+Current Milestone: Audio Output Device Integration
+
+Dedicated v0.67 Tests: 37 passed
+
+Full Regression: 1741 passed
+
 0 failed
 
-Status: COMPLETE — Next: Advanced Voice Intelligence
+Repository Validation: git diff --check — No whitespace errors
+
+Status: COMPLETE — Next: v0.68 Voice Playback Execution
