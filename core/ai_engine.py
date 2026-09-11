@@ -1,12 +1,13 @@
 """
 Ultron AI Engine.
 
-Version: v0.71
+Version: v0.72
 
 Coordinates AI provider selection and response generation.
 
 Responsibilities:
 - Resolve the configured AI provider
+- Maintain supported provider registry
 - Preserve provider abstraction
 - Delegate generation to the selected provider
 - Preserve backward-compatible AI Engine behavior
@@ -23,19 +24,27 @@ from __future__ import annotations
 
 import os
 
-from core.providers.anthropic_provider import (
-    AnthropicProvider,
-)
-from core.providers.base import (
-    AIProvider,
-    AIProviderError,
-)
+from core.providers.anthropic_provider import AnthropicProvider
+from core.providers.base import AIProvider, AIProviderError
 from core.providers.mock import MockProvider
+
+
+SUPPORTED_PROVIDERS: dict[str, type[AIProvider]] = {
+    "mock": MockProvider,
+    "anthropic": AnthropicProvider,
+}
 
 
 def get_ai_provider() -> AIProvider:
     """
     Return the configured AI provider.
+
+    Supported providers:
+    - mock
+    - anthropic
+
+    Unknown or empty provider modes fall back to MockProvider
+    to preserve backward-compatible AI Engine behavior.
     """
 
     mode = (
@@ -43,14 +52,23 @@ def get_ai_provider() -> AIProvider:
             "AI_MODE",
             "mock",
         )
-        .lower()
         .strip()
+        .lower()
     )
 
-    if mode == "anthropic":
-        return AnthropicProvider()
+    provider_class = SUPPORTED_PROVIDERS.get(
+        mode,
+        MockProvider,
+    )
 
-    return MockProvider()
+    provider = provider_class()
+
+    if not isinstance(provider, AIProvider):
+        raise TypeError(
+            "Configured AI provider must implement AIProvider."
+        )
+
+    return provider
 
 
 def generate_ai_response(
@@ -85,6 +103,7 @@ def generate_ai_response(
 
 
 __all__ = [
+    "SUPPORTED_PROVIDERS",
     "get_ai_provider",
     "generate_ai_response",
 ]

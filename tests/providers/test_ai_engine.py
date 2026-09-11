@@ -1,7 +1,7 @@
 """
 Tests for the Ultron AI Engine.
 
-Version: v0.71
+Version: v0.72
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from core.ai_engine import (
+    SUPPORTED_PROVIDERS,
     generate_ai_response,
     get_ai_provider,
 )
@@ -146,6 +147,14 @@ class TestAIProviderSelection:
             provider,
             AIProvider,
         )
+
+    def test_supported_providers_registry_contains_expected_providers(
+        self,
+    ):
+        assert SUPPORTED_PROVIDERS == {
+            "mock": MockProvider,
+            "anthropic": AnthropicProvider,
+        }
 
 
 class TestAIGeneration:
