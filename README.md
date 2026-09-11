@@ -4,50 +4,45 @@
 
 Ultron is a modular AI system evolving from a personal assistant into a broader agent execution platform with multimodal input, voice interaction, planning, orchestration, execution control, observability, persistence, recovery, automation, and AI intelligence foundations.
 
-The architecture is designed around clear boundaries, replaceable components, deterministic testing, provider isolation, and hardware isolation.
+The architecture is designed around clear boundaries, replaceable components, deterministic testing, provider isolation, runtime isolation, and hardware isolation.
 
 ---
 
 ## 📌 Current Status
 
-| Item                                | Status                     |
-| ----------------------------------- | -------------------------- |
-| **Current Version**                 | **v0.72**                  |
-| **Current Milestone**               | **First AI Provider**      |
-| **Dedicated v0.72 AI Engine Tests** | **22 passed**              |
-| **Full Regression at v0.72**        | **Pending**                |
-| **Failures at v0.72**               | **0 in dedicated tests**   |
-| **Repository Validation**           | `git diff --check` — clean |
-| **Development State**               | Active development         |
+| Item                                 | Status                                                |
+| ------------------------------------ | ----------------------------------------------------- |
+| **Current Version**                  | **v0.73**                                             |
+| **Current Milestone**                | **AI Runtime**                                        |
+| **Dedicated v0.73 AI Runtime Tests** | **9 passed**                                          |
+| **Full Regression at v0.73**         | **Pending**                                           |
+| **Failures at v0.73**                | **0 in dedicated tests**                              |
+| **Repository Validation**            | `git diff --check` — pending final release validation |
+| **Development State**                | Active development                                    |
 
-v0.72 establishes the first concrete AI provider integration path on top of Ultron's provider-agnostic AI Provider abstraction.
+v0.73 introduces the dedicated AI Runtime boundary above Ultron's existing AI Intelligence layer.
 
-The milestone formalizes AI provider resolution through the AI Engine while preserving the existing provider boundary and backward-compatible behavior.
+The milestone provides a stable runtime entry point for AI intelligence execution while preserving the existing provider abstraction, AI Engine, AI Intelligence, and structured `IntelligenceResult` systems.
 
-The AI Engine now maintains an explicit supported-provider registry:
+The architecture is:
 
 ```text
+User / Voice / UI
+       ↓
+AI Runtime
+       ↓
+AI Intelligence
+       ↓
 AI Engine
-    ↓
-Supported Provider Registry
-    ├── MockProvider
-    └── AnthropicProvider
+       ↓
+AI Provider
+       ├── MockProvider
+       └── AnthropicProvider
 ```
 
-Provider selection is controlled through the `AI_MODE` environment setting.
+The v0.73 AI Runtime intentionally does **not** implement Context Injection, Intent Understanding, Agent Decision logic, planning, tool selection, or agent execution.
 
-Supported modes include:
-
-```text
-mock
-anthropic
-```
-
-Provider selection is case-insensitive and ignores surrounding whitespace.
-
-Unknown or empty provider modes continue to fall back to `MockProvider`, preserving the existing AI Engine behavior.
-
-v0.72 intentionally does **not** implement AI Runtime, Context Injection, Intent Understanding, or Agent Decision logic. Those capabilities remain future milestones.
+Those capabilities remain future milestones.
 
 ---
 
@@ -60,6 +55,7 @@ The system separates responsibilities across:
 * Conversation
 * Memory
 * AI Intelligence
+* AI Runtime
 * AI Providers
 * AI Engine
 * Agents
@@ -109,11 +105,8 @@ User
 Multimodal Input
 
   ├── Text
-
   ├── Voice
-
   ├── Vision
-
   └── Gesture
 
   │
@@ -138,13 +131,28 @@ Conversation Engine
 
   ▼
 
+AI Runtime
+
+  │
+
+  ▼
+
 AI Intelligence
 
   │
 
   ▼
 
-AI Runtime
+AI Engine
+
+  │
+
+  ▼
+
+AI Provider
+
+  ├── MockProvider
+  └── AnthropicProvider
 
   │
 
@@ -167,9 +175,7 @@ Agent Decision Layer
   │
 
   ├── Direct Answer
-
   │
-
   └── Agent Task
 
         │
@@ -221,15 +227,10 @@ Execution Controller
 Execution Context
 
   ├── Context Queries
-
   ├── Execution State
-
   ├── Step State
-
   ├── Results
-
   ├── Retry State
-
   └── Runtime Metadata
 
   │
@@ -239,13 +240,9 @@ Execution Context
 Execution
 
   ├── Events
-
   ├── Observability
-
   ├── Metrics
-
   ├── Persistence
-
   └── State Snapshots
 
   │
@@ -259,298 +256,187 @@ Voice is integrated as an additional input/output path rather than as a replacem
 
 ---
 
-## 🎙️ End-to-End Voice Architecture
+## 🧠 AI Runtime Architecture
 
-The v0.69 voice path connects physical voice input to physical audio output:
+v0.73 introduces a dedicated runtime boundary between external AI requests and the existing AI Intelligence layer.
+
+The runtime architecture is:
 
 ```text
-Human Voice
-
-    ↓
-
-Audio Capture
-
-    ↓
-
-Microphone Capture
-
-    ↓
-
-VoiceInput
-
-    ↓
-
-Voice Processing
-
-    ↓
-
-STT Provider
-
-    ↓
-
-Transcription
-
-    ↓
-
-Runtime Query
-
-    ↓
-
-VoiceCommandExecutor
-
-    ↓
-
-Tool Resolution
-
-    ↓
-
-Agent Planning
-
-    ↓
-
-Agent Orchestration
-
-    ↓
-
-Agent Execution
-
-    ↓
-
-Tool Execution
-
-    ↓
-
-Result
-
-    ↓
-
-Runtime Response Text
-
-    ↓
-
-VoiceResponseExecutor
-
-    ↓
-
-TTSRuntimeIntegration
-
-    ↓
-
-TTSProvider
-
-    ↓
-
-Synthesized Audio
-
-    ↓
-
-VoicePlaybackExecutor
-
-    ↓
-
-AudioOutputDeviceManager
-
-    ↓
-
-Selected / Default Output Device
-
-    ↓
-
-Playback Backend
-
-    ↓
-
-Audio Output
+Incoming AI Request
+        ↓
+    AI Runtime
+        ↓
+   AI Intelligence
+        ↓
+     AI Engine
+        ↓
+   AI Provider
+        ↓
+Generated AI Response
+        ↓
+ IntelligenceResult
 ```
 
-This is the core architectural achievement of v0.69.
+The AI Runtime is intentionally thin.
 
-The top-level `EndToEndVoiceAssistant` is intentionally thin. It composes existing subsystems instead of duplicating their responsibilities.
+Its purpose is to coordinate the existing intelligence system rather than duplicate its responsibilities.
+
+### AI Runtime Responsibilities
+
+The `AIRuntime` is responsible for:
+
+* Providing a stable AI runtime entry point
+* Coordinating AI intelligence execution
+* Delegating requests to `AIIntelligence`
+* Forwarding query data
+* Forwarding goal context
+* Forwarding ranked context
+* Forwarding token limits
+* Returning `IntelligenceResult`
+* Exposing runtime availability
+* Preserving the existing intelligence boundary
+
+### AI Runtime Does Not Own
+
+The AI Runtime does **not** own:
+
+* AI provider selection
+* Anthropic API handling
+* Mock provider implementation
+* Provider configuration
+* AI context construction
+* Query validation logic
+* Intelligence result construction
+* Intent understanding
+* Action determination
+* Tool selection
+* Agent planning
+* Agent orchestration
+* Tool execution
+* Voice processing
+* Audio playback
+
+Those responsibilities remain in their existing architectural layers.
+
+### Runtime Dependency Boundary
+
+The runtime depends on the existing `AIIntelligence` component:
+
+```text
+AIRuntime
+    ↓
+AIIntelligence
+    ↓
+AI Engine
+    ↓
+AI Provider
+```
+
+The dependency can be injected for deterministic testing.
+
+This keeps the runtime testable without requiring a real AI provider or external API credentials.
+
+### Runtime Execution Contract
+
+The runtime exposes:
+
+```text
+run(
+    query,
+    goal_context=None,
+    ranked_context=None,
+    max_tokens=1024
+)
+```
+
+The runtime delegates these values to the existing intelligence layer and returns the resulting `IntelligenceResult`.
+
+The runtime therefore does not create a second response contract.
+
+### Runtime Availability
+
+The runtime exposes:
+
+```text
+is_available()
+```
+
+Availability is delegated to the existing AI Intelligence layer.
+
+This prevents the runtime from creating a duplicate provider-availability mechanism.
 
 ---
 
-## 🔊 Voice Subsystem Boundaries
+## 🧠 AI Intelligence Foundation
 
-### Input
+The v0.70 AI Intelligence layer remains responsible for coordinating AI intelligence operations.
 
-```text
-Physical Microphone
-
-        ↓
-
-MicrophoneCapture
-
-        ↓
-
-AudioCapture
-
-        ↓
-
-VoiceInput
-```
-
-The capture layer is responsible for acquiring and normalizing physical audio before it enters the existing voice-processing architecture.
-
-### Speech-to-Text
+Its architecture is:
 
 ```text
-VoiceInput
-
-    ↓
-
-VoiceProcessingPipeline
-
-    ↓
-
-VoiceProcessor
-
-    ↓
-
-STTProvider
-
-    ↓
-
-Concrete STT Provider
-
-    ↓
-
-MultimodalInputResult
-
-    ↓
-
-Runtime Integration
+AI Runtime
+     ↓
+AI Intelligence
+     ├── Query Validation
+     ├── Context Construction
+     ├── AI Response Generation
+     └── IntelligenceResult
 ```
 
-STT is isolated behind a provider abstraction so the core voice architecture does not depend directly on one concrete provider.
-
-### Voice Command Execution
+`AIIntelligence` continues to reuse:
 
 ```text
-Runtime Query
-
-    ↓
-
-VoiceCommandExecutor
-
-    ↓
-
-Capability / Tool Resolution
-
-    ↓
-
-Agent Planner
-
-    ↓
-
-Agent Plan
-
-    ↓
-
-Agent Orchestrator
-
-    ↓
-
-Agent Execution
-
-    ↓
-
-Tool Execution
+core/ai_context.py
+core/ai_engine.py
 ```
 
-The command layer coordinates existing agent capabilities rather than duplicating planning or execution logic.
+The v0.73 runtime does not duplicate these systems.
 
-### Text-to-Speech
+### IntelligenceResult
 
-```text
-Runtime Response
+`IntelligenceResult` provides a structured and immutable representation of intelligence execution.
 
-    ↓
+The result contains:
 
-VoiceResponseExecutor
+* success
+* response
+* intent
+* action
+* error
+* metadata
 
-    ↓
+The `intent` and `action` fields remain future-compatible.
 
-TTSRuntimeIntegration
-
-    ↓
-
-TTSProvider
-
-    ↓
-
-Concrete TTS Provider
-
-    ↓
-
-Synthesized Audio
-```
-
-TTS is provider-independent at the architectural boundary.
-
-### Audio Playback
-
-```text
-Synthesized Audio
-
-        ↓
-
-VoicePlaybackExecutor
-
-        ↓
-
-AudioOutputDeviceManager
-
-        ↓
-
-Active Device
-
-        ↓
-
-Default Device Fallback
-
-        ↓
-
-Playback Backend
-
-        ↓
-
-Audio Output
-```
-
-`VoicePlaybackExecutor` does not directly own operating-system device management. It relies on the output-device abstraction and an injected playback backend.
+They are not automatically determined by v0.73.
 
 ---
 
-## 🧠 AI Provider Architecture
+## 🤖 AI Provider Architecture
 
 v0.71 established the provider abstraction used by Ultron's AI Engine.
 
-v0.72 builds the first concrete provider-resolution path on top of that abstraction.
+v0.72 established the first concrete provider-resolution path.
+
+v0.73 adds the runtime boundary above that existing architecture.
 
 The architecture is:
 
 ```text
+AI Runtime
+      ↓
 AI Intelligence
-
-       ↓
-
+      ↓
 AI Engine
-
-       ↓
-
+      ↓
 Supported Provider Registry
-
-       ↓
-
+      ↓
 AIProvider
-
-       ↓
-
+      ↓
 Concrete AI Provider
 
-   ├── MockProvider
-
-   └── AnthropicProvider
+    ├── MockProvider
+    └── AnthropicProvider
 ```
 
 The provider abstraction ensures that higher-level Ultron components do not depend directly on provider-specific API implementations.
@@ -570,6 +456,7 @@ The `AIProvider` abstraction owns:
 
 The abstraction does **not** own:
 
+* AI runtime coordination
 * AI context construction
 * Intelligence results
 * Intent understanding
@@ -577,66 +464,6 @@ The abstraction does **not** own:
 * Agent planning
 * Agent execution
 * Tool execution
-
-Those responsibilities belong to higher architectural layers.
-
-### Provider Identity
-
-Providers expose a stable provider name through the abstraction.
-
-### Provider Capabilities
-
-Providers can declare capabilities such as:
-
-```text
-text_generation
-
-chat
-
-context_generation
-```
-
-Capabilities can be queried without exposing provider-specific implementation details.
-
-### Provider Configuration
-
-The abstraction provides controlled configuration storage and retrieval while keeping provider-specific configuration isolated.
-
-### Provider Metadata
-
-Provider metadata can be stored independently from runtime configuration.
-
-### Provider Availability
-
-Providers expose availability through:
-
-```text
-is_available()
-```
-
-Availability validation is centralized through the provider abstraction.
-
-### Prompt Validation
-
-The provider abstraction validates prompts before generation.
-
-Invalid prompt values are rejected consistently through `AIProviderError`.
-
-### AI Generation Contract
-
-Every concrete AI provider implements:
-
-```text
-generate(
-    prompt,
-    context=None,
-    max_tokens=1024
-)
-```
-
-The provider layer returns the generated response as text.
-
-Structured intelligence results remain the responsibility of the intelligence layer.
 
 ---
 
@@ -674,8 +501,6 @@ Responsibilities include:
 * Claude response generation
 * Provider error handling
 
-The default model configuration is maintained by the provider and can be overridden through configuration or environment settings.
-
 The provider remains unavailable when a valid Anthropic API key is not configured.
 
 This preserves safe development behavior without requiring external credentials for the test suite.
@@ -686,19 +511,18 @@ This preserves safe development behavior without requiring external credentials 
 
 The AI Engine resolves the configured provider and delegates generation to it.
 
-The v0.72 provider-resolution architecture is:
+The architecture is:
 
 ```text
+AI Runtime
+    ↓
+AI Intelligence
+    ↓
 AI Engine
-
     ↓
-
 AI_MODE
-
     ↓
-
 SUPPORTED_PROVIDERS
-
     ├── mock
     │     ↓
     │  MockProvider
@@ -706,17 +530,11 @@ SUPPORTED_PROVIDERS
     └── anthropic
           ↓
       AnthropicProvider
-
     ↓
-
 AIProvider
-
     ↓
-
 generate()
-
     ↓
-
 AI Response
 ```
 
@@ -724,17 +542,14 @@ The AI Engine does not implement provider-specific API logic.
 
 ### Supported Provider Registry
 
-The AI Engine maintains an explicit provider registry:
+The AI Engine maintains:
 
 ```text
 SUPPORTED_PROVIDERS
 
-    mock       → MockProvider
-
-    anthropic  → AnthropicProvider
+mock       → MockProvider
+anthropic  → AnthropicProvider
 ```
-
-This creates a centralized provider-resolution boundary without introducing provider-specific logic into higher-level intelligence or agent systems.
 
 ### Provider Selection
 
@@ -753,26 +568,6 @@ anthropic
 
 Provider selection is case-insensitive and ignores surrounding whitespace.
 
-For example:
-
-```text
-AI_MODE=mock
-AI_MODE=MOCK
-AI_MODE=  mock
-```
-
-all resolve to `MockProvider`.
-
-Likewise:
-
-```text
-AI_MODE=anthropic
-AI_MODE=ANTHROPIC
-AI_MODE=  anthropic
-```
-
-resolve to `AnthropicProvider`.
-
 ### Backward-Compatible Fallback
 
 Unknown or empty provider modes fall back to `MockProvider`.
@@ -787,7 +582,7 @@ invalid
 ""
 ```
 
-This preserves the existing AI Engine behavior and ensures that development and testing remain safe when an unsupported provider mode is configured.
+This preserves the existing AI Engine behavior and keeps development and testing safe when an unsupported provider mode is configured.
 
 ### AI Engine Responsibilities
 
@@ -802,6 +597,7 @@ The AI Engine is responsible for:
 
 The AI Engine does **not** own:
 
+* AI runtime coordination
 * Provider-specific API implementation
 * AI intelligence results
 * Context injection
@@ -811,19 +607,221 @@ The AI Engine does **not** own:
 * Agent orchestration
 * Tool execution
 
-This preserves the separation between:
+This preserves:
 
 ```text
+AI Runtime
+
+    ≠
+
+AI Intelligence
+
+    ≠
+
 AI Engine
 
     ≠
 
 AI Provider
+```
 
-    ≠
+---
+
+## 🎙️ End-to-End Voice Architecture
+
+The v0.69 voice path connects physical voice input to physical audio output.
+
+The AI Runtime now provides the AI intelligence boundary used by the broader architecture:
+
+```text
+Human Voice
+
+    ↓
+
+Audio Capture
+
+    ↓
+
+Microphone Capture
+
+    ↓
+
+VoiceInput
+
+    ↓
+
+Voice Processing
+
+    ↓
+
+STT Provider
+
+    ↓
+
+Transcription
+
+    ↓
+
+Runtime Query
+
+    ↓
+
+AI Runtime
+
+    ↓
 
 AI Intelligence
+
+    ↓
+
+AI Engine
+
+    ↓
+
+AI Provider
+
+    ↓
+
+AI Response
+
+    ↓
+
+Agent / Response Routing
+
+    ↓
+
+VoiceResponseExecutor
+
+    ↓
+
+TTSRuntimeIntegration
+
+    ↓
+
+TTSProvider
+
+    ↓
+
+Synthesized Audio
+
+    ↓
+
+VoicePlaybackExecutor
+
+    ↓
+
+AudioOutputDeviceManager
+
+    ↓
+
+Playback Backend
+
+    ↓
+
+Audio Output
 ```
+
+The top-level voice components remain intentionally thin.
+
+They compose existing subsystems instead of duplicating their responsibilities.
+
+---
+
+## 🔊 Voice Subsystem Boundaries
+
+### Input
+
+```text
+Physical Microphone
+        ↓
+MicrophoneCapture
+        ↓
+AudioCapture
+        ↓
+VoiceInput
+```
+
+The capture layer is responsible for acquiring and normalizing physical audio before it enters the existing voice-processing architecture.
+
+### Speech-to-Text
+
+```text
+VoiceInput
+    ↓
+VoiceProcessingPipeline
+    ↓
+VoiceProcessor
+    ↓
+STTProvider
+    ↓
+Concrete STT Provider
+    ↓
+MultimodalInputResult
+    ↓
+Runtime Integration
+```
+
+STT is isolated behind a provider abstraction.
+
+### Voice Command Execution
+
+```text
+Runtime Query
+    ↓
+VoiceCommandExecutor
+    ↓
+Capability / Tool Resolution
+    ↓
+Agent Planner
+    ↓
+Agent Plan
+    ↓
+Agent Orchestrator
+    ↓
+Agent Execution
+    ↓
+Tool Execution
+```
+
+The command layer coordinates existing agent capabilities rather than duplicating planning or execution logic.
+
+### Text-to-Speech
+
+```text
+Runtime Response
+    ↓
+VoiceResponseExecutor
+    ↓
+TTSRuntimeIntegration
+    ↓
+TTSProvider
+    ↓
+Concrete TTS Provider
+    ↓
+Synthesized Audio
+```
+
+TTS remains provider-independent at the architectural boundary.
+
+### Audio Playback
+
+```text
+Synthesized Audio
+        ↓
+VoicePlaybackExecutor
+        ↓
+AudioOutputDeviceManager
+        ↓
+Active Device
+        ↓
+Default Device Fallback
+        ↓
+Playback Backend
+        ↓
+Audio Output
+```
+
+`VoicePlaybackExecutor` does not directly own operating-system device management.
 
 ---
 
@@ -835,17 +833,11 @@ Each version introduces a focused architectural capability.
 
 ```text
 Small Milestones
-
       ↓
-
 Clear Boundaries
-
       ↓
-
 Independent Components
-
       ↓
-
 Deterministic Testing
 ```
 
@@ -855,17 +847,11 @@ External AI, STT, and TTS providers remain behind abstractions.
 
 ```text
 Core Architecture
-
        ↓
-
 Provider Interface
-
        ↓
-
 Concrete Provider
 ```
-
-Changing a provider should not require rewriting unrelated runtime architecture.
 
 ### 3. Hardware Isolation
 
@@ -873,25 +859,19 @@ Physical microphone and output-device handling remain behind dedicated abstracti
 
 ```text
 Application Logic
-
        ↓
-
 Hardware Abstraction
-
        ↓
-
 Concrete Audio Backend
-
        ↓
-
 Physical Device
 ```
 
-This keeps the core architecture testable without requiring physical hardware for every test.
-
 ### 4. Runtime Isolation
 
-The runtime coordinates components through established interfaces instead of reaching directly into their internals.
+Runtime components coordinate established interfaces instead of reaching directly into unrelated internals.
+
+The v0.73 `AIRuntime` specifically provides a stable boundary above `AIIntelligence` without duplicating provider, context, or intelligence logic.
 
 ### 5. Observable Execution
 
@@ -908,30 +888,16 @@ Higher-level components should compose existing capabilities rather than reimple
 For example:
 
 ```text
-EndToEndVoiceAssistant
-
-        ↓
-
-VoiceConversationLoop
-
-        +
-
-Agent Execution
-
-        +
-
-TTS
-
-        +
-
-Voice Playback
-
-        +
-
-Output Device Management
+AIRuntime
+    ↓
+AIIntelligence
+    ↓
+AI Engine
+    ↓
+AI Provider
 ```
 
-The coordinator connects these capabilities; it does not replace them.
+The runtime connects these capabilities; it does not replace them.
 
 ---
 
@@ -939,46 +905,55 @@ The coordinator connects these capabilities; it does not replace them.
 
 Testing is a core part of the architecture.
 
-### v0.72 Validation Snapshot
+### v0.73 Validation Snapshot
+
+Dedicated v0.73 AI Runtime tests:
+
+```text
+9 passed
+0 failed
+```
+
+The dedicated runtime tests cover:
+
+* Default runtime initialization
+* Dependency injection
+* Invalid intelligence dependency protection
+* Runtime execution
+* `IntelligenceResult` return contract
+* Query delegation
+* Context forwarding
+* Query normalization
+* Intelligence failure propagation
+* Runtime availability
+
+Full ULTRON regression validation remains pending for the v0.73 milestone.
+
+### v0.72 Validation
 
 Dedicated v0.72 AI Engine tests:
 
 ```text
 22 passed
-
 0 failed
 ```
 
-Repository validation:
+Full ULTRON regression:
 
 ```text
-git diff --check
-
-Clean
+1918 passed
+0 failed
 ```
 
-The v0.72 dedicated tests cover:
+Status:
 
-* Default MockProvider selection
-* MockProvider selection
-* Case-insensitive provider selection
-* AnthropicProvider selection
-* Unknown provider-mode fallback
-* Provider abstraction validation
-* Supported provider registry
-* AI response delegation
-* Prompt forwarding
-* Context forwarding
-* Token-limit forwarding
-* Invalid provider protection
-* Anthropic availability behavior
-* Mock generation through the AI Engine
+```text
+PASS
+```
 
-Full ULTRON regression validation remains pending for the v0.72 milestone.
+### v0.71 Validation
 
-### Previous v0.71 Validation
-
-Dedicated v0.71 provider and AI Engine tests:
+Total dedicated v0.71 tests:
 
 ```text
 105 passed
@@ -992,9 +967,13 @@ Full ULTRON regression suite:
 0 failed
 ```
 
-These numbers are version-specific validation results, not a permanent guarantee for future commits.
+Status:
 
-Earlier milestones also include their own dedicated and full-regression validation snapshots.
+```text
+PASS
+```
+
+These numbers are version-specific validation results, not a permanent guarantee for future commits.
 
 ---
 
@@ -1004,161 +983,83 @@ Ultron has progressed through focused architectural milestones:
 
 ```text
 v0.37 → Agent Runtime
-
    ↓
-
 v0.38 → Agent Tool System
-
    ↓
-
 v0.39 → Tool Selector
-
    ↓
-
 v0.40 → Agent Planning
-
    ↓
-
 v0.41 → Agent Execution & Plan Orchestration
-
    ↓
-
 v0.42 → Agent Execution Controller
-
    ↓
-
 v0.43 → Orchestrator Execution Control
-
    ↓
-
 v0.44 → Execution Events & Event Store
-
    ↓
-
 v0.45 → Execution Observability
-
    ↓
-
 v0.46 → Execution Metrics
-
    ↓
-
 v0.47 → Persistent Execution History
-
    ↓
-
 v0.48 → Execution Recovery & State Restoration
-
    ↓
-
 v0.49 → Agent Runtime Context
-
    ↓
-
 v0.50 → Execution Context & Orchestration Integration
-
    ↓
-
 v0.51 → Multimodal Input Foundation
-
    ↓
-
 v0.52 → Voice Input Foundation
-
    ↓
-
 v0.53 → Voice Processing Foundation
-
    ↓
-
 v0.54 → Voice Processing Pipeline Foundation
-
    ↓
-
 v0.55 → Voice Processing Intelligence Foundation
-
    ↓
-
 v0.56 → STT Provider Abstraction
-
    ↓
-
 v0.57 → First STT Provider
-
    ↓
-
 v0.58 → Voice → Text Runtime Integration
-
    ↓
-
 v0.59 → Audio Capture Foundation
-
    ↓
-
 v0.60 → Voice Command Execution
-
    ↓
-
 v0.61 → TTS Provider Abstraction
-
    ↓
-
 v0.62 → First TTS Provider
-
    ↓
-
 v0.63 → Runtime TTS Integration
-
    ↓
-
 v0.64 → Voice Response Execution
-
    ↓
-
 v0.65 → Full Voice Conversation Loop
-
    ↓
-
 v0.66 → Audio Playback Foundation
-
    ↓
-
 v0.67 → Audio Output Device Integration
-
    ↓
-
 v0.68 → Voice Playback Execution
-
    ↓
-
 v0.69 → End-to-End Voice Assistant
-
    ↓
-
 v0.70 → AI Intelligence Foundation
-
    ↓
-
 v0.71 → AI Provider Abstraction
-
    ↓
-
 v0.72 → First AI Provider
-
    ↓
-
 v0.73 → AI Runtime
-
    ↓
-
 v0.74 → Context Injection
-
    ↓
-
 v0.75 → Intent Understanding
-
    ↓
-
 v0.76 → Agent Decision Layer
 ```
 
@@ -1166,51 +1067,203 @@ v0.76 → Agent Decision Layer
 
 # 📜 Version History
 
+## v0.73 — AI Runtime
+
+The v0.73 milestone introduces a dedicated AI Runtime boundary above Ultron's existing AI Intelligence system.
+
+The goal is to provide a stable runtime entry point for AI execution without duplicating provider selection, context construction, intelligence processing, or agent execution responsibilities.
+
+### v0.73 Architecture
+
+```text
+Incoming AI Request
+        ↓
+    AIRuntime
+        ↓
+   AIIntelligence
+        ↓
+     AI Engine
+        ↓
+   AI Provider
+        ↓
+IntelligenceResult
+```
+
+### AI Runtime
+
+The new runtime component is:
+
+```text
+modules/intelligence/ai_runtime.py
+```
+
+`AIRuntime` provides:
+
+* Runtime initialization
+* AI Intelligence dependency injection
+* Runtime execution
+* Query forwarding
+* Goal-context forwarding
+* Ranked-context forwarding
+* Token-limit forwarding
+* Structured `IntelligenceResult` return
+* Runtime availability checking
+
+### Runtime Boundary
+
+The runtime intentionally delegates to the existing intelligence layer:
+
+```text
+AIRuntime
+    ↓
+AIIntelligence.generate()
+```
+
+It does not duplicate:
+
+```text
+core/ai_context.py
+core/ai_engine.py
+core/providers/
+```
+
+### Runtime Execution Contract
+
+The runtime exposes:
+
+```text
+run(
+    query,
+    goal_context=None,
+    ranked_context=None,
+    max_tokens=1024
+)
+```
+
+The returned object remains:
+
+```text
+IntelligenceResult
+```
+
+This keeps the result contract centralized inside the intelligence layer.
+
+### Dependency Injection
+
+`AIRuntime` accepts an optional `AIIntelligence` instance.
+
+This allows deterministic tests without changing the runtime architecture or requiring external AI credentials.
+
+### Availability
+
+The runtime exposes:
+
+```text
+is_available()
+```
+
+Availability is delegated to `AIIntelligence`.
+
+### v0.73 Tests
+
+Dedicated AI Runtime tests:
+
+```text
+9 passed
+0 failed
+```
+
+The tests cover:
+
+* Runtime initialization
+* Dependency injection
+* Invalid dependency validation
+* Runtime execution
+* Result contract
+* Query delegation
+* Context forwarding
+* Query normalization
+* Failure propagation
+* Availability
+
+Full ULTRON regression validation remains pending for the v0.73 milestone.
+
+### v0.73 Milestone Summary
+
+Ultron v0.73 establishes:
+
+```text
+AIRuntime
+     +
+AI Intelligence Delegation
+     +
+Stable Runtime Entry Point
+     +
+Dependency Injection
+     +
+Structured Result Preservation
+     +
+Availability Delegation
+     +
+Runtime Isolation
+```
+
+The architecture is now prepared for:
+
+```text
+AI Provider Abstraction
+        ↓
+First AI Provider
+        ↓
+AI Runtime
+        ↓
+Context Injection
+        ↓
+Intent Understanding
+        ↓
+Agent Decision
+        ↓
+Agent Planning
+        ↓
+Agent Orchestration
+        ↓
+Execution
+```
+
+The v0.73 milestone intentionally focuses on establishing the runtime boundary rather than prematurely implementing context injection, intent understanding, autonomous decisions, planning, or execution.
+
+---
+
 ## v0.72 — First AI Provider
 
-The v0.72 milestone establishes the first concrete AI provider integration path on top of Ultron's provider-agnostic AI Provider abstraction.
+The v0.72 milestone established the first concrete AI provider integration path on top of Ultron's provider-agnostic AI Provider abstraction.
 
-The goal is to formalize provider resolution inside the AI Engine while keeping provider-specific implementation isolated inside concrete providers.
+The goal was to formalize provider resolution inside the AI Engine while keeping provider-specific implementation isolated inside concrete providers.
 
 ### v0.72 Architecture
 
 ```text
 AI Intelligence
-
        │
-
        ▼
-
 AI Engine
-
        │
-
        ▼
-
 Supported Provider Registry
-
        │
-
        ├── MockProvider
-
        │
-
        └── AnthropicProvider
 ```
 
 ### Supported Provider Registry
 
-The AI Engine maintains an explicit provider registry:
-
 ```text
 SUPPORTED_PROVIDERS
 
-    mock       → MockProvider
-
-    anthropic  → AnthropicProvider
+mock       → MockProvider
+anthropic  → AnthropicProvider
 ```
-
-This provides a centralized provider-resolution boundary without introducing provider-specific logic into higher-level intelligence or agent systems.
 
 ### Provider Selection
 
@@ -1220,7 +1273,7 @@ The configured provider is selected through:
 AI_MODE
 ```
 
-Supported values are:
+Supported values:
 
 ```text
 mock
@@ -1229,41 +1282,11 @@ anthropic
 
 Provider selection is case-insensitive and ignores surrounding whitespace.
 
-For example:
-
-```text
-AI_MODE=mock
-AI_MODE=MOCK
-AI_MODE=  mock
-```
-
-all resolve to `MockProvider`.
-
-Likewise:
-
-```text
-AI_MODE=anthropic
-AI_MODE=ANTHROPIC
-AI_MODE=  anthropic
-```
-
-resolve to `AnthropicProvider`.
-
 ### Backward-Compatible Fallback
 
 Unknown or empty provider modes fall back to `MockProvider`.
 
-Examples include:
-
-```text
-unknown
-openai
-gemini
-invalid
-""
-```
-
-This preserves the existing AI Engine behavior and ensures that development and testing remain safe when an unsupported provider mode is configured.
+This preserves the existing AI Engine behavior.
 
 ### AI Engine Responsibilities
 
@@ -1273,19 +1296,8 @@ The AI Engine is responsible for:
 * Maintaining the supported provider registry
 * Instantiating the selected provider
 * Validating the provider abstraction
-* Delegating generation to the selected provider
-* Preserving the existing `generate_ai_response()` interface
-
-The AI Engine does **not** own:
-
-* Provider-specific API implementation
-* AI intelligence results
-* Context injection
-* Intent understanding
-* Agent decisions
-* Agent planning
-* Agent orchestration
-* Tool execution
+* Delegating generation
+* Preserving `generate_ai_response()`
 
 ### Anthropic as First Concrete Provider
 
@@ -1297,42 +1309,15 @@ core/providers/anthropic_provider.py
 
 The AI Engine does not directly implement Anthropic API calls.
 
-The architecture remains:
-
 ```text
 AI Engine
-
     ↓
-
 AIProvider
-
     ↓
-
 AnthropicProvider
-
     ↓
-
 Anthropic API
 ```
-
-This preserves provider isolation and allows additional providers to be introduced later without rewriting higher-level architecture.
-
-### AIProvider Contract Preservation
-
-The v0.72 milestone continues to consume the `AIProvider` abstraction introduced in v0.71.
-
-The provider contract remains responsible for:
-
-* Provider identity
-* Provider capabilities
-* Provider configuration
-* Provider metadata
-* Availability
-* Prompt validation
-* AI generation
-* Provider-level errors
-
-v0.72 does not duplicate or replace this abstraction.
 
 ### v0.72 Test Status
 
@@ -1343,132 +1328,46 @@ AI Engine Tests:
 0 failed
 ```
 
-The v0.72 dedicated tests cover:
+Full ULTRON Regression:
 
-* Default MockProvider selection
-* MockProvider selection
-* Case-insensitive provider selection
-* AnthropicProvider selection
-* Unknown-mode fallback
-* Provider abstraction validation
-* Supported provider registry
-* AI response delegation
-* Prompt forwarding
-* Context forwarding
-* Token-limit forwarding
-* Invalid provider protection
-* Anthropic availability behavior
-* Mock generation through the AI Engine
+```text
+1918 passed
+0 failed
+```
 
-Full ULTRON regression validation remains pending for the v0.72 milestone.
+Status:
+
+```text
+PASS
+```
 
 ### v0.72 Milestone Summary
 
-Ultron v0.72 establishes the first concrete AI provider integration path above the provider abstraction.
-
-The milestone introduces:
+The milestone introduced:
 
 ```text
 Supported Provider Registry
-
         +
-
 MockProvider Resolution
-
         +
-
 AnthropicProvider Resolution
-
         +
-
 AI_MODE Provider Selection
-
         +
-
 Backward-Compatible Fallback
-
         +
-
 AIProvider Validation
-
         +
-
 AI Engine Provider Delegation
 ```
-
-The architecture is now prepared for:
-
-```text
-AI Provider Abstraction
-
-        ↓
-
-First AI Provider
-
-        ↓
-
-AI Runtime
-
-        ↓
-
-Context Injection
-
-        ↓
-
-Intent Understanding
-
-        ↓
-
-Agent Decision
-
-        ↓
-
-Agent Planning
-
-        ↓
-
-Agent Orchestration
-
-        ↓
-
-Execution
-```
-
-The v0.72 milestone intentionally focuses on provider resolution, first-provider integration, backward compatibility, modularity, and architectural stability rather than prematurely implementing higher-level AI runtime intelligence.
 
 ---
 
 ## v0.71 — AI Provider Abstraction
 
-The v0.71 milestone establishes the provider-agnostic AI Provider abstraction for Ultron.
+The v0.71 milestone established the provider-agnostic AI Provider abstraction for Ultron.
 
-The goal is to create a stable contract between the AI Engine and concrete AI providers while keeping provider-specific API implementation isolated.
-
-### v0.71 Architecture
-
-```text
-AI Intelligence
-
-       │
-
-       ▼
-
-AI Engine
-
-       │
-
-       ▼
-
-AIProvider
-
-       │
-
-       ├── MockProvider
-
-       │
-
-       └── AnthropicProvider
-```
+The goal was to create a stable contract between the AI Engine and concrete AI providers while keeping provider-specific API implementation isolated.
 
 ### AIProvider
 
@@ -1484,115 +1383,16 @@ The provider abstraction provides:
 * Provider error abstraction
 * Defensive configuration and metadata handling
 
-### MockProvider
-
-The MockProvider provides:
-
-* Deterministic development behavior
-* No external API dependency
-* Default capabilities
-* Provider validation
-* Configuration support
-* Metadata support
-
-### AnthropicProvider
-
-The Anthropic provider provides:
-
-* Anthropic API integration
-* API key configuration
-* Model configuration
-* Provider capabilities
-* Availability checks
-* Context-aware generation
-* Error handling
-* Testable client injection
-
-### AI Engine Integration
-
-The existing AI Engine resolves providers through the `AIProvider` abstraction.
-
-The architecture remains:
-
-```text
-AI Engine
-
-    ↓
-
-AIProvider
-
-    ↓
-
-Concrete Provider
-```
-
-The AI Engine does not contain provider-specific API logic.
-
-### Backward Compatibility
-
-The v0.71 provider abstraction preserves the existing high-level AI Engine behavior.
-
-Provider-level validation remains strict while the existing `generate_ai_response()` interface continues to provide compatible response behavior for existing callers.
-
-### Separation of Responsibilities
-
-The architecture intentionally maintains:
-
-```text
-AI Intelligence
-
-       ≠
-
-AI Engine
-
-       ≠
-
-AI Provider
-
-       ≠
-
-Agent Planning
-
-       ≠
-
-Agent Orchestration
-
-       ≠
-
-Tool Execution
-```
-
 ### v0.71 Test Status
 
-AI Provider Abstraction Tests:
-
 ```text
-35 passed
-0 failed
+AI Provider Abstraction Tests: 35 passed
+Mock Provider Tests: 22 passed
+Anthropic Provider Tests: 27 passed
+AI Engine Tests: 21 passed
 ```
 
-Mock Provider Tests:
-
-```text
-22 passed
-0 failed
-```
-
-Anthropic Provider Tests:
-
-```text
-27 passed
-0 failed
-```
-
-AI Engine Tests:
-
-```text
-21 passed
-0 failed
-```
-
-Total dedicated v0.71 tests:
+Total dedicated tests:
 
 ```text
 105 passed
@@ -1612,240 +1412,37 @@ Status:
 PASS
 ```
 
-### v0.71 Milestone Summary
-
-Ultron v0.71 establishes the stable provider boundary required for future AI intelligence evolution.
-
-The milestone introduces:
-
-```text
-AIProvider
-
-      +
-
-AIProviderError
-
-      +
-
-MockProvider
-
-      +
-
-AnthropicProvider
-
-      +
-
-AI Engine Provider Integration
-
-      +
-
-Provider Configuration
-
-      +
-
-Provider Metadata
-
-      +
-
-Provider Capabilities
-
-      +
-
-Provider Availability
-
-      +
-
-Prompt Validation
-```
-
-The architecture is now prepared for:
-
-```text
-AI Provider Abstraction
-
-        ↓
-
-First AI Provider
-
-        ↓
-
-AI Runtime
-
-        ↓
-
-Context Injection
-
-        ↓
-
-Intent Understanding
-
-        ↓
-
-Agent Decision
-
-        ↓
-
-Agent Planning
-
-        ↓
-
-Agent Orchestration
-
-        ↓
-
-Execution
-```
-
-The v0.71 milestone intentionally focuses on provider abstraction, modularity, separation of concerns, testability, backward compatibility, and provider isolation rather than prematurely implementing AI runtime intelligence.
-
 ---
 
 ## v0.70 — AI Intelligence Foundation
 
 The v0.70 milestone introduced the dedicated AI Intelligence Foundation for Ultron.
 
-This milestone established a structured intelligence layer above Ultron's existing AI provider and AI engine architecture.
-
-The goal of v0.70 was to create a stable foundation that future intelligence capabilities can consume without coupling AI reasoning directly to agent execution, planning, or orchestration.
+The intelligence layer established a structured coordination boundary above the existing AI engine and provider systems.
 
 ### v0.70 Architecture
 
 ```text
 User Query
-
     │
-
     ▼
-
 AI Intelligence
-
     │
-
     ├── Query Validation
-
-    │
-
     ├── Context Construction
-
-    │       │
-
-    │       └── Existing AI Context Builder
-
-    │
-
     ├── AI Response Generation
-
-    │       │
-
-    │       └── Existing AI Engine
-
     │
-
     ▼
-
-Intelligence Result
-
-    │
-
-    ├── Success
-
-    ├── Response
-
-    ├── Intent
-
-    ├── Action
-
-    ├── Error
-
-    └── Metadata
+IntelligenceResult
 ```
-
-The intelligence layer intentionally separated AI intelligence coordination from the provider system.
-
-### Intelligence Module
-
-The intelligence module is located under:
-
-```text
-modules/
-
-└── intelligence/
-
-    ├── __init__.py
-
-    ├── ai_intelligence.py
-
-    └── intelligence_result.py
-```
-
-### AIIntelligence
-
-Responsibilities include:
-
-* Query validation
-* Query normalization
-* Context construction
-* AI response generation
-* Response validation
-* Structured result creation
-* Failure handling
-* Availability checking
-
-The component reuses existing Ultron infrastructure rather than duplicating it.
-
-It does not replace:
-
-```text
-core/ai_context.py
-
-core/ai_engine.py
-
-core/providers/
-```
-
-### IntelligenceResult
-
-`IntelligenceResult` provides a structured and immutable representation of an intelligence operation.
-
-The result contains:
-
-* success
-* response
-* intent
-* action
-* error
-* metadata
-
-The intent and action fields are intentionally future-compatible. They are not automatically determined by v0.70.
 
 ### v0.70 Test Status
 
-AI Intelligence Foundation Tests:
-
 ```text
-20 passed
-0 failed
-```
-
-IntelligenceResult Tests:
-
-```text
-8 passed
-0 failed
-```
-
-AI Intelligence Tests:
-
-```text
-12 passed
-0 failed
-```
-
-Full ULTRON Regression:
-
-```text
-1812 passed
-0 failed
+AI Intelligence Foundation Tests: 20 passed
+IntelligenceResult Tests: 8 passed
+AI Intelligence Tests: 12 passed
+Full ULTRON Regression: 1812 passed
 ```
 
 Status:
@@ -1879,11 +1476,8 @@ Introduced the top-level end-to-end voice orchestration layer.
 
 ```text
 21 dedicated tests passed
-
 1792 full regression tests passed
-
 0 failures
-
 git diff --check clean
 ```
 
@@ -1893,7 +1487,7 @@ git diff --check clean
 
 Introduced `VoicePlaybackExecutor`.
 
-### Key capabilities
+Key capabilities included:
 
 * Provider-independent playback execution
 * Audio validation
@@ -1908,34 +1502,13 @@ Introduced `VoicePlaybackExecutor`.
 * Device information access
 * Reset support
 
-The executor does not own:
-
-* TTS
-* STT
-* Agent execution
-* Tool execution
-* Physical-device discovery
-* Direct operating-system audio APIs
-
-### Validation
-
-```text
-30 dedicated tests passed
-
-1771 full regression tests passed
-
-0 failures
-
-git diff --check clean
-```
-
 ---
 
 ## v0.67 — Audio Output Device Integration
 
 Introduced the output-device abstraction and manager.
 
-### Key capabilities
+Key capabilities included:
 
 * AudioOutputDevice
 * AudioOutputDeviceManager
@@ -1952,21 +1525,17 @@ Introduced the output-device abstraction and manager.
 * Registry clearing
 * Single-default-device guarantee
 
-The milestone intentionally did not implement concrete physical playback.
-
 ---
 
 ## v0.66 — Audio Playback Foundation
 
 Introduced the audio playback boundary required before concrete output execution.
 
-The purpose was to separate playback contracts from future device and backend implementation.
-
 ---
 
 ## v0.65 — Full Voice Conversation Loop
 
-Extended the architecture from voice command execution toward a complete voice conversation loop.
+Extended the architecture toward a complete voice conversation loop.
 
 ---
 
@@ -2006,25 +1575,15 @@ Introduced real microphone capture and established the hardware-independent audi
 
 ```text
 Physical Microphone
-
         ↓
-
 MicrophoneCapture
-
         ↓
-
 AudioCapture
-
         ↓
-
 Raw PCM Audio
-
         ↓
-
 PCM → WAV
-
         ↓
-
 VoiceInput
 ```
 
@@ -2076,7 +1635,7 @@ Established voice as a first-class multimodal input path.
 
 Established the initial multimodal input architecture.
 
-The input model supports architectural paths for:
+The input model supports:
 
 * Text
 * Voice
@@ -2175,7 +1734,6 @@ The current architecture provides a foundation for future capabilities.
 
 ## AI Intelligence
 
-* AI Runtime
 * Context injection
 * Intent understanding
 * Agent decision layer
@@ -2222,85 +1780,47 @@ The long-term architectural direction is:
 
 ```text
 Understand
-
    ↓
-
 Receive
-
    ↓
-
 Capture
-
    ↓
-
 Normalize
-
    ↓
-
 Process
-
    ↓
-
 Transcribe
-
    ↓
-
 Integrate
-
    ↓
-
+Runtime
+   ↓
 Contextualize
-
    ↓
-
 Resolve
-
    ↓
-
 Plan
-
    ↓
-
 Select
-
    ↓
-
 Orchestrate
-
    ↓
-
 Execute
-
    ↓
-
 Observe
-
    ↓
-
 Measure
-
    ↓
-
 Persist
-
    ↓
-
 Snapshot
-
    ↓
-
 Recover
-
    ↓
-
 Restore
-
    ↓
-
 Resume
-
    ↓
-
 Automate
 ```
 
@@ -2325,41 +1845,25 @@ The intended evolution is:
 
 ```text
 Personal AI Assistant
-
         ↓
-
 Agent Runtime
-
         ↓
-
 Multimodal Interface
-
         ↓
-
 Voice Intelligence
-
         ↓
-
 AI Intelligence
-
         ↓
-
+AI Runtime
+        ↓
 Context-Aware Execution
-
         ↓
-
 Persistent & Recoverable Runtime
-
         ↓
-
 Autonomous Agents
-
         ↓
-
 Durable Automation
-
         ↓
-
 AI Operating System Platform
 ```
 
@@ -2392,19 +1896,12 @@ README.md
 docs/
 
 ├── architecture/
-
 │   ├── overview.md
-
 │   └── milestones/
-
 ├── ai/
-
 ├── voice/
-
 ├── execution/
-
 ├── testing/
-
 └── roadmap.md
 ```
 
@@ -2456,29 +1953,17 @@ Ultron follows a milestone-driven development model:
 
 ```text
 Define Boundary
-
      ↓
-
 Implement Small Capability
-
      ↓
-
 Write Dedicated Tests
-
      ↓
-
 Run Full Regression
-
      ↓
-
 Validate Repository
-
      ↓
-
 Document Milestone
-
      ↓
-
 Move to Next Boundary
 ```
 
@@ -2488,13 +1973,12 @@ This approach keeps architectural growth incremental and makes regressions easie
 
 # ⚠️ Current Scope
 
-The v0.72 milestone establishes the first concrete AI provider integration path on top of the provider-agnostic AI Provider foundation.
+The v0.73 milestone establishes the dedicated AI Runtime boundary above the existing AI Intelligence and AI Provider architecture.
 
 It does not mean that every future AI capability is complete.
 
 In particular, the roadmap still includes higher-level capabilities such as:
 
-* AI Runtime
 * Context Injection
 * Intent Understanding
 * Agent Decision Layer
@@ -2516,127 +2000,106 @@ These are future extensions of the architecture established by the current miles
 
 ```text
 v0.37
-
 Agent Runtime
 
    ↓
 
 v0.44
-
 Execution Events
 
    ↓
 
 v0.48
-
 Recovery & State Restoration
 
    ↓
 
 v0.51
-
 Multimodal Input
 
    ↓
 
 v0.56
-
 STT Provider Abstraction
 
    ↓
 
 v0.59
-
 Real Audio Capture
 
    ↓
 
 v0.60
-
 Voice Command Execution
 
    ↓
 
 v0.61–v0.64
-
 TTS & Voice Response Architecture
 
    ↓
 
 v0.65
-
 Full Voice Conversation Loop
 
    ↓
 
 v0.66–v0.68
-
 Audio Playback Architecture
 
    ↓
 
 v0.69
-
 End-to-End Voice Assistant
 
    ↓
 
 v0.70
-
 AI Intelligence Foundation
 
    ↓
 
 v0.71
-
 AI Provider Abstraction
 
    ↓
 
 v0.72
-
 First AI Provider
 
    ↓
 
 v0.73
-
 AI Runtime
 
    ↓
 
 v0.74
-
 Context Injection
 
    ↓
 
 v0.75
-
 Intent Understanding
 
    ↓
 
 v0.76
-
 Agent Decision Layer
 
    ↓
 
 Future
-
 Advanced Voice + Multimodal Intelligence
 
    ↓
 
 Future
-
 Context-Aware Execution & Durable Automation
 
    ↓
 
 Long Term
-
 AI Operating System Platform
 ```
 
@@ -2650,96 +2113,66 @@ The project prioritizes:
 
 ```text
 Small Milestones
-
         →
 
 Clear Boundaries
-
         →
 
 Independent Components
-
         →
 
 Deterministic Testing
-
         →
 
 Hardware Isolation
-
         →
 
 Provider Isolation
-
         →
 
 Runtime Isolation
-
         →
 
 Observable Execution
-
         →
 
 Persistent State
-
         →
 
 Recoverable Runtime
-
         →
 
 Multimodal Intelligence
-
         →
 
 Autonomous Execution
-
         →
 
 Durable Automation
 ```
 
-v0.72 marks the establishment of Ultron's **First AI Provider integration path**, building directly on the stable **AI Provider Abstraction** introduced in v0.71.
+v0.73 marks the establishment of Ultron's **AI Runtime boundary**, building directly on the **AI Intelligence Foundation** introduced in v0.70 and the **AI Provider Architecture** established across v0.71 and v0.72.
 
-The AI Engine now provides explicit provider resolution through a supported-provider registry while preserving provider isolation and backward-compatible fallback behavior.
-
-The architecture is now prepared for:
+The AI Runtime provides a stable execution entry point while preserving separation between:
 
 ```text
-AI Provider Abstraction
-
-        ↓
-
-First AI Provider
-
-        ↓
-
 AI Runtime
 
-        ↓
+    ↓
 
-Context Injection
+AI Intelligence
 
-        ↓
+    ↓
 
-Intent Understanding
+AI Engine
 
-        ↓
+    ↓
 
-Agent Decision
+AI Provider
 
-        ↓
+    ↓
 
-Agent Planning
-
-        ↓
-
-Agent Orchestration
-
-        ↓
-
-Execution
+Concrete Provider
 ```
 
-The v0.72 milestone intentionally focuses on **provider resolution, first-provider integration, provider isolation, modularity, backward compatibility, testability, and architectural stability** while leaving higher-level AI runtime intelligence to the upcoming milestones.
+The v0.73 milestone intentionally focuses on **runtime coordination, dependency isolation, structured result preservation, testability, backward compatibility, and architectural stability** while leaving context injection, intent understanding, agent decisions, planning, and autonomous execution to upcoming milestones.
