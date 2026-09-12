@@ -85,6 +85,99 @@ def test_intelligence_uses_context_builder():
     assert captured["max_tokens"] == 2048
 
 
+def test_intelligence_uses_injected_context():
+    captured = {}
+
+    def fake_context_builder(
+        user,
+        goal_context=None,
+        ranked_context=None,
+    ):
+        captured["builder_called"] = True
+        return "Built context"
+
+    def fake_generator(
+        prompt,
+        context=None,
+        max_tokens=1024,
+    ):
+        captured["prompt"] = prompt
+        captured["context"] = context
+        return "Injected context response"
+
+    intelligence = AIIntelligence(
+        context_builder=fake_context_builder,
+        response_generator=fake_generator,
+    )
+
+    result = intelligence.generate(
+        "Continue building Ultron",
+        context="Injected Ultron context",
+    )
+
+    assert result.success is True
+    assert result.response == "Injected context response"
+    assert captured["prompt"] == "Continue building Ultron"
+    assert captured["context"] == "Injected Ultron context"
+    assert "builder_called" not in captured
+
+
+def test_intelligence_injected_context_takes_precedence():
+    captured = {}
+
+    def fake_context_builder(
+        user,
+        goal_context=None,
+        ranked_context=None,
+    ):
+        captured["builder_called"] = True
+        return "Generated context"
+
+    def fake_generator(
+        prompt,
+        context=None,
+        max_tokens=1024,
+    ):
+        captured["context"] = context
+        return "Precedence response"
+
+    intelligence = AIIntelligence(
+        context_builder=fake_context_builder,
+        response_generator=fake_generator,
+    )
+
+    result = intelligence.generate(
+        "What are we building?",
+        goal_context={
+            "goal": "Build Ultron",
+        },
+        ranked_context=[
+            {
+                "query": "Previous discussion",
+            }
+        ],
+        context="Explicit injected context",
+    )
+
+    assert result.success is True
+    assert captured["context"] == "Explicit injected context"
+    assert "builder_called" not in captured
+
+
+def test_invalid_injected_context_returns_failure():
+    intelligence = AIIntelligence(
+        response_generator=lambda **kwargs: "Should not run",
+    )
+
+    result = intelligence.generate(
+        "Hello Ultron",
+        context=123,
+    )
+
+    assert result.success is False
+    assert "context must be a string" in result.error.lower()
+
+
 def test_intelligence_strips_query():
     captured = {}
 

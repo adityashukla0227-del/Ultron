@@ -1,13 +1,14 @@
 """
 Ultron AI Runtime.
 
-Version: v0.73
+Version: v0.74
 
 Runtime boundary for Ultron's AI intelligence system.
 
 Responsibilities:
 - Coordinate AI intelligence execution
 - Provide a stable runtime entry point
+- Support explicit context injection
 - Preserve the existing AI Intelligence layer
 - Return structured IntelligenceResult objects
 - Expose runtime availability
@@ -31,10 +32,6 @@ from modules.intelligence.intelligence_result import IntelligenceResult
 
 
 class AIRuntime:
-    """
-    Runtime coordinator for Ultron's AI intelligence system.
-    """
-
     def __init__(
         self,
         intelligence: Optional[AIIntelligence] = None,
@@ -58,26 +55,17 @@ class AIRuntime:
         goal_context: Optional[Dict[str, Any]] = None,
         ranked_context: Optional[list] = None,
         max_tokens: int = 1024,
+        context: Optional[str] = None,
     ) -> IntelligenceResult:
-        """
-        Execute an AI intelligence request through the runtime.
-
-        The runtime delegates intelligence processing to the
-        existing AIIntelligence layer.
-        """
-
         return self._intelligence.generate(
             query=query,
             goal_context=goal_context,
             ranked_context=ranked_context,
             max_tokens=max_tokens,
+            context=context,
         )
 
     def is_available(self) -> bool:
-        """
-        Return whether the underlying AI intelligence system is available.
-        """
-
         return self._intelligence.is_available()
 
 

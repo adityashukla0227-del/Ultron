@@ -1,12 +1,14 @@
 """
 Ultron AI Intelligence
-Version: v0.70
+Version: v0.74
 
-Coordinates Ultron's AI intelligence foundation.
+Coordinates Ultron's AI intelligence foundation with explicit
+context injection support.
 
 Responsibilities:
 - Validate incoming user queries
-- Reuse Ultron's existing AI context builder
+- Accept explicitly injected AI context
+- Reuse Ultron's existing AI context builder when context is not injected
 - Reuse Ultron's existing AI engine
 - Generate structured IntelligenceResult objects
 - Preserve provider abstraction and existing AI behavior
@@ -33,10 +35,6 @@ from modules.intelligence.intelligence_result import (
 
 
 class AIIntelligence:
-    """
-    Foundation-level coordinator for Ultron AI intelligence.
-    """
-
     def __init__(
         self,
         context_builder=build_ai_context,
@@ -56,9 +54,6 @@ class AIIntelligence:
         self._response_generator = response_generator
 
     def validate_query(self, query: Any) -> str:
-        """
-        Validate and normalize an incoming user query.
-        """
         if not isinstance(query, str):
             raise TypeError(
                 "query must be a string"
@@ -73,16 +68,26 @@ class AIIntelligence:
 
         return normalized_query
 
+    def validate_context(
+        self,
+        context: Any,
+    ) -> Optional[str]:
+        if context is None:
+            return None
+
+        if not isinstance(context, str):
+            raise TypeError(
+                "context must be a string"
+            )
+
+        return context
+
     def build_context(
         self,
         query: str,
         goal_context: Optional[Dict[str, Any]] = None,
         ranked_context: Optional[list] = None,
     ) -> str:
-        """
-        Build AI-ready context using Ultron's existing
-        context builder.
-        """
         return self._context_builder(
             user=query,
             goal_context=goal_context,
@@ -95,22 +100,27 @@ class AIIntelligence:
         goal_context: Optional[Dict[str, Any]] = None,
         ranked_context: Optional[list] = None,
         max_tokens: int = 1024,
+        context: Optional[str] = None,
     ) -> IntelligenceResult:
-        """
-        Generate a structured intelligence result.
-        """
         try:
             validated_query = self.validate_query(query)
 
-            context = self.build_context(
-                query=validated_query,
-                goal_context=goal_context,
-                ranked_context=ranked_context,
+            validated_context = self.validate_context(
+                context
             )
+
+            if validated_context is None:
+                effective_context = self.build_context(
+                    query=validated_query,
+                    goal_context=goal_context,
+                    ranked_context=ranked_context,
+                )
+            else:
+                effective_context = validated_context
 
             response = self._response_generator(
                 prompt=validated_query,
-                context=context or None,
+                context=effective_context or None,
                 max_tokens=max_tokens,
             )
 
@@ -134,7 +144,7 @@ class AIIntelligence:
                 response=response,
                 metadata={
                     "query": validated_query,
-                    "context_used": bool(context),
+                    "context_used": bool(effective_context),
                 },
             )
 
@@ -154,23 +164,17 @@ class AIIntelligence:
         goal_context: Optional[Dict[str, Any]] = None,
         ranked_context: Optional[list] = None,
         max_tokens: int = 1024,
+        context: Optional[str] = None,
     ) -> IntelligenceResult:
-        """
-        Alias for generate() representing an intelligence
-        processing operation.
-        """
         return self.generate(
             query=query,
             goal_context=goal_context,
             ranked_context=ranked_context,
             max_tokens=max_tokens,
+            context=context,
         )
 
     def is_available(self) -> bool:
-        """
-        Return whether the intelligence coordinator is configured
-        with callable AI components.
-        """
         return (
             callable(self._context_builder)
             and callable(self._response_generator)

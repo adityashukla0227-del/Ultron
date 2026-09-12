@@ -10,19 +10,19 @@ The architecture is designed around clear boundaries, replaceable components, de
 
 ## 📌 Current Status
 
-| Item                                 | Status                                                |
-| ------------------------------------ | ----------------------------------------------------- |
-| **Current Version**                  | **v0.73**                                             |
-| **Current Milestone**                | **AI Runtime**                                        |
-| **Dedicated v0.73 AI Runtime Tests** | **9 passed**                                          |
-| **Full Regression at v0.73**         | **Pending**                                           |
-| **Failures at v0.73**                | **0 in dedicated tests**                              |
-| **Repository Validation**            | `git diff --check` — pending final release validation |
-| **Development State**                | Active development                                    |
+| Item                                                | Status                        |
+| --------------------------------------------------- | ----------------------------- |
+| **Current Version**                                 | **v0.74**                     |
+| **Current Milestone**                               | **Context Injection**         |
+| **Dedicated v0.74 AI Intelligence + Runtime Tests** | **28 passed**                 |
+| **Full Regression at v0.74**                        | **1934 passed**               |
+| **Failures at v0.74**                               | **0**                         |
+| **Repository Validation**                           | `git diff --check` — **PASS** |
+| **Development State**                               | Active development            |
 
-v0.73 introduces the dedicated AI Runtime boundary above Ultron's existing AI Intelligence layer.
+v0.74 introduces explicit **Context Injection** support into Ultron's existing AI Intelligence and AI Runtime architecture.
 
-The milestone provides a stable runtime entry point for AI intelligence execution while preserving the existing provider abstraction, AI Engine, AI Intelligence, and structured `IntelligenceResult` systems.
+The milestone allows callers to provide already-prepared AI context directly to the intelligence runtime while preserving the existing context-building system as the default fallback.
 
 The architecture is:
 
@@ -33,14 +33,22 @@ AI Runtime
        ↓
 AI Intelligence
        ↓
-AI Engine
-       ↓
-AI Provider
-       ├── MockProvider
-       └── AnthropicProvider
+Explicit Context ─────────────┐
+       │                      │
+       │ if absent            │
+       ▼                      │
+Existing AI Context Builder   │
+       │                      │
+       └──────────┬───────────┘
+                  ↓
+              AI Engine
+                  ↓
+              AI Provider
+                  ├── MockProvider
+                  └── AnthropicProvider
 ```
 
-The v0.73 AI Runtime intentionally does **not** implement Context Injection, Intent Understanding, Agent Decision logic, planning, tool selection, or agent execution.
+The v0.74 Context Injection milestone intentionally does **not** implement Intent Understanding, Agent Decision logic, planning, tool selection, or agent execution.
 
 Those capabilities remain future milestones.
 
@@ -98,156 +106,154 @@ The high-level architecture is:
 ```text
 User
 
-  │
+ │
 
-  ▼
+ ▼
 
 Multimodal Input
 
-  ├── Text
-  ├── Voice
-  ├── Vision
-  └── Gesture
+ ├── Text
+ ├── Voice
+ ├── Vision
+ └── Gesture
 
-  │
+ │
 
-  ▼
+ ▼
 
 Input Router
 
-  │
+ │
 
-  ▼
+ ▼
 
 Normalized Input Result
 
-  │
+ │
 
-  ▼
+ ▼
 
 Conversation Engine
 
-  │
+ │
 
-  ▼
+ ▼
 
 AI Runtime
 
-  │
+ │
 
-  ▼
+ ▼
 
 AI Intelligence
 
-  │
+ │
+ ├── Query Validation
+ ├── Context Injection
+ └── Existing Context Construction
 
-  ▼
+ │
+
+ ▼
 
 AI Engine
 
-  │
+ │
 
-  ▼
+ ▼
 
 AI Provider
 
-  ├── MockProvider
-  └── AnthropicProvider
+ ├── MockProvider
+ └── AnthropicProvider
 
-  │
+ │
 
-  ▼
-
-Context Injection
-
-  │
-
-  ▼
+ ▼
 
 Intent Understanding
 
-  │
+ │
 
-  ▼
+ ▼
 
 Agent Decision Layer
 
-  │
+ │
 
-  ├── Direct Answer
-  │
-  └── Agent Task
+ ├── Direct Answer
+ └── Agent Task
 
-        │
+       │
 
-        ▼
+       ▼
 
 Agent Runtime
 
-  │
+ │
 
-  ▼
+ ▼
 
 Tool System
 
-  │
+ │
 
-  ▼
+ ▼
 
 Tool Selector
 
-  │
+ │
 
-  ▼
+ ▼
 
 Agent Planner
 
-  │
+ │
 
-  ▼
+ ▼
 
 Agent Plan
 
-  │
+ │
 
-  ▼
+ ▼
 
 Agent Orchestrator
 
-  │
+ │
 
-  ▼
+ ▼
 
 Execution Controller
 
-  │
+ │
 
-  ▼
+ ▼
 
 Execution Context
 
-  ├── Context Queries
-  ├── Execution State
-  ├── Step State
-  ├── Results
-  ├── Retry State
-  └── Runtime Metadata
+ ├── Context Queries
+ ├── Execution State
+ ├── Step State
+ ├── Results
+ ├── Retry State
+ └── Runtime Metadata
 
-  │
+ │
 
-  ▼
+ ▼
 
 Execution
 
-  ├── Events
-  ├── Observability
-  ├── Metrics
-  ├── Persistence
-  └── State Snapshots
+ ├── Events
+ ├── Observability
+ ├── Metrics
+ ├── Persistence
+ └── State Snapshots
 
-  │
+ │
 
-  ▼
+ ▼
 
 Recovery Infrastructure
 ```
@@ -256,11 +262,13 @@ Voice is integrated as an additional input/output path rather than as a replacem
 
 ---
 
-## 🧠 AI Runtime Architecture
+# 🧠 AI Runtime Architecture
 
-v0.73 introduces a dedicated runtime boundary between external AI requests and the existing AI Intelligence layer.
+v0.73 introduced a dedicated runtime boundary between external AI requests and the existing AI Intelligence layer.
 
-The runtime architecture is:
+v0.74 extends that runtime with explicit Context Injection.
+
+The architecture is:
 
 ```text
 Incoming AI Request
@@ -269,16 +277,29 @@ Incoming AI Request
         ↓
    AI Intelligence
         ↓
-     AI Engine
+ Context Resolution
         ↓
-   AI Provider
-        ↓
-Generated AI Response
-        ↓
- IntelligenceResult
+ ┌───────────────┐
+ │ Explicit      │
+ │ Context       │
+ └───────┬───────┘
+         │
+         │ absent
+         ▼
+ Existing AI Context Builder
+         │
+         └──────────────┐
+                        ↓
+                    AI Engine
+                        ↓
+                    AI Provider
+                        ↓
+                Generated Response
+                        ↓
+                IntelligenceResult
 ```
 
-The AI Runtime is intentionally thin.
+The AI Runtime remains intentionally thin.
 
 Its purpose is to coordinate the existing intelligence system rather than duplicate its responsibilities.
 
@@ -293,6 +314,7 @@ The `AIRuntime` is responsible for:
 * Forwarding goal context
 * Forwarding ranked context
 * Forwarding token limits
+* Forwarding explicitly injected context
 * Returning `IntelligenceResult`
 * Exposing runtime availability
 * Preserving the existing intelligence boundary
@@ -346,13 +368,14 @@ run(
     query,
     goal_context=None,
     ranked_context=None,
-    max_tokens=1024
+    max_tokens=1024,
+    context=None
 )
 ```
 
-The runtime delegates these values to the existing intelligence layer and returns the resulting `IntelligenceResult`.
+The optional `context` parameter allows callers to inject already-prepared AI context directly.
 
-The runtime therefore does not create a second response contract.
+The runtime does not create a second response contract.
 
 ### Runtime Availability
 
@@ -368,9 +391,127 @@ This prevents the runtime from creating a duplicate provider-availability mechan
 
 ---
 
-## 🧠 AI Intelligence Foundation
+# 🧠 Context Injection Architecture
 
-The v0.70 AI Intelligence layer remains responsible for coordinating AI intelligence operations.
+v0.74 introduces explicit Context Injection into `AIIntelligence`.
+
+The goal is to allow higher-level runtime components to provide prepared context without forcing the intelligence layer to rebuild it.
+
+The architecture is:
+
+```text
+Incoming Query
+      ↓
+AI Runtime
+      ↓
+AI Intelligence
+      ↓
+Context Provided?
+   ┌──────┴──────┐
+  YES            NO
+   │              │
+   ▼              ▼
+Injected      Existing Context
+Context       Builder
+   │              │
+   └──────┬───────┘
+          ↓
+      AI Engine
+          ↓
+      AI Provider
+```
+
+### Explicit Context
+
+When a caller provides:
+
+```text
+context="..."
+```
+
+`AIIntelligence` uses that context directly.
+
+The existing context builder is not called.
+
+This allows already-prepared context to flow through the architecture without unnecessary reconstruction.
+
+### Context Fallback
+
+When no explicit context is provided, the existing context-building system remains active:
+
+```text
+AIIntelligence
+      ↓
+core/ai_context.py
+      ↓
+Structured AI Context
+      ↓
+AI Engine
+```
+
+This preserves backward compatibility with the pre-existing AI context architecture.
+
+### Context Precedence
+
+Explicit injected context has priority over generated context.
+
+For example:
+
+```text
+Query
++
+Goal Context
++
+Ranked Context
++
+Explicit Context
+```
+
+When explicit context exists:
+
+```text
+Explicit Context
+        ↓
+    AI Engine
+```
+
+The `goal_context` and `ranked_context` values are not used to rebuild another context in that execution.
+
+### Context Validation
+
+Injected context must be either:
+
+```text
+None
+```
+
+or:
+
+```text
+str
+```
+
+Invalid context types are rejected through the existing intelligence failure contract.
+
+### Existing Context Builder Preservation
+
+v0.74 does **not** introduce another context-builder implementation.
+
+The existing:
+
+```text
+core/ai_context.py
+```
+
+remains the source of generated AI context when explicit context is not supplied.
+
+This follows Ultron's composition-over-duplication principle.
+
+---
+
+# 🧠 AI Intelligence Foundation
+
+The AI Intelligence layer remains responsible for coordinating AI intelligence operations.
 
 Its architecture is:
 
@@ -379,6 +520,8 @@ AI Runtime
      ↓
 AI Intelligence
      ├── Query Validation
+     ├── Context Validation
+     ├── Context Injection
      ├── Context Construction
      ├── AI Response Generation
      └── IntelligenceResult
@@ -391,7 +534,7 @@ core/ai_context.py
 core/ai_engine.py
 ```
 
-The v0.73 runtime does not duplicate these systems.
+The v0.74 Context Injection capability does not replace these systems.
 
 ### IntelligenceResult
 
@@ -408,17 +551,19 @@ The result contains:
 
 The `intent` and `action` fields remain future-compatible.
 
-They are not automatically determined by v0.73.
+They are not automatically determined by v0.74.
 
 ---
 
-## 🤖 AI Provider Architecture
+# 🤖 AI Provider Architecture
 
 v0.71 established the provider abstraction used by Ultron's AI Engine.
 
 v0.72 established the first concrete provider-resolution path.
 
-v0.73 adds the runtime boundary above that existing architecture.
+v0.73 added the AI Runtime boundary.
+
+v0.74 adds Context Injection above the existing provider architecture.
 
 The architecture is:
 
@@ -434,7 +579,6 @@ Supported Provider Registry
 AIProvider
       ↓
 Concrete AI Provider
-
     ├── MockProvider
     └── AnthropicProvider
 ```
@@ -458,6 +602,7 @@ The abstraction does **not** own:
 
 * AI runtime coordination
 * AI context construction
+* Context injection
 * Intelligence results
 * Intent understanding
 * Tool selection
@@ -467,7 +612,7 @@ The abstraction does **not** own:
 
 ---
 
-## 🤖 Mock AI Provider
+# 🤖 Mock AI Provider
 
 `MockProvider` provides a deterministic development and testing implementation.
 
@@ -484,7 +629,7 @@ This allows the broader AI architecture to be tested without requiring external 
 
 ---
 
-## 🧠 Anthropic AI Provider
+# 🧠 Anthropic AI Provider
 
 `AnthropicProvider` is the first concrete Anthropic implementation behind the provider abstraction.
 
@@ -507,7 +652,7 @@ This preserves safe development behavior without requiring external credentials 
 
 ---
 
-## ⚙️ AI Engine Integration
+# ⚙️ AI Engine Integration
 
 The AI Engine resolves the configured provider and delegates generation to it.
 
@@ -611,113 +756,67 @@ This preserves:
 
 ```text
 AI Runtime
-
     ≠
-
 AI Intelligence
-
     ≠
-
 AI Engine
-
     ≠
-
 AI Provider
 ```
 
 ---
 
-## 🎙️ End-to-End Voice Architecture
+# 🎙️ End-to-End Voice Architecture
 
 The v0.69 voice path connects physical voice input to physical audio output.
 
-The AI Runtime now provides the AI intelligence boundary used by the broader architecture:
+The AI Runtime provides the AI intelligence boundary used by the broader architecture:
 
 ```text
 Human Voice
-
     ↓
-
 Audio Capture
-
     ↓
-
 Microphone Capture
-
     ↓
-
 VoiceInput
-
     ↓
-
 Voice Processing
-
     ↓
-
 STT Provider
-
     ↓
-
 Transcription
-
     ↓
-
 Runtime Query
-
     ↓
-
 AI Runtime
-
     ↓
-
 AI Intelligence
-
     ↓
-
+Context Injection / Context Construction
+    ↓
 AI Engine
-
     ↓
-
 AI Provider
-
     ↓
-
 AI Response
-
     ↓
-
 Agent / Response Routing
-
     ↓
-
 VoiceResponseExecutor
-
     ↓
-
 TTSRuntimeIntegration
-
     ↓
-
 TTSProvider
-
     ↓
-
 Synthesized Audio
-
     ↓
-
 VoicePlaybackExecutor
-
     ↓
-
 AudioOutputDeviceManager
-
     ↓
-
 Playback Backend
-
     ↓
-
 Audio Output
 ```
 
@@ -727,7 +826,7 @@ They compose existing subsystems instead of duplicating their responsibilities.
 
 ---
 
-## 🔊 Voice Subsystem Boundaries
+# 🔊 Voice Subsystem Boundaries
 
 ### Input
 
@@ -825,7 +924,7 @@ Audio Output
 
 ---
 
-## 🧩 Core Design Principles
+# 🧩 Core Design Principles
 
 ### 1. Small Milestones
 
@@ -871,7 +970,9 @@ Physical Device
 
 Runtime components coordinate established interfaces instead of reaching directly into unrelated internals.
 
-The v0.73 `AIRuntime` specifically provides a stable boundary above `AIIntelligence` without duplicating provider, context, or intelligence logic.
+The v0.73 `AIRuntime` provides a stable boundary above `AIIntelligence`.
+
+v0.74 extends this boundary with explicit Context Injection without moving context-building responsibilities into the runtime.
 
 ### 5. Observable Execution
 
@@ -892,6 +993,8 @@ AIRuntime
     ↓
 AIIntelligence
     ↓
+Context Resolution
+    ↓
 AI Engine
     ↓
 AI Provider
@@ -901,37 +1004,81 @@ The runtime connects these capabilities; it does not replace them.
 
 ---
 
-## 🧪 Testing
+# 🧪 Testing
 
 Testing is a core part of the architecture.
 
-### v0.73 Validation Snapshot
+## v0.74 Validation Snapshot
 
-Dedicated v0.73 AI Runtime tests:
+Dedicated v0.74 AI Intelligence + AI Runtime tests:
+
+```text
+28 passed
+0 failed
+```
+
+Full ULTRON regression:
+
+```text
+1934 passed
+0 failed
+```
+
+Repository validation:
+
+```text
+git diff --check
+PASS
+```
+
+The dedicated v0.74 tests cover:
+
+* Explicit context injection
+* Context precedence
+* Context validation
+* Existing context-builder fallback
+* Runtime context forwarding
+* Query forwarding
+* Goal-context forwarding
+* Ranked-context forwarding
+* Token-limit forwarding
+* Query normalization
+* Runtime failure propagation
+* Runtime availability
+* Invalid dependency protection
+* Structured `IntelligenceResult` preservation
+
+These numbers are version-specific validation results, not a permanent guarantee for future commits.
+
+---
+
+## v0.73 Validation
+
+Dedicated AI Runtime tests:
 
 ```text
 9 passed
 0 failed
 ```
 
-The dedicated runtime tests cover:
+Full ULTRON regression:
 
-* Default runtime initialization
-* Dependency injection
-* Invalid intelligence dependency protection
-* Runtime execution
-* `IntelligenceResult` return contract
-* Query delegation
-* Context forwarding
-* Query normalization
-* Intelligence failure propagation
-* Runtime availability
+```text
+1927 passed
+0 failed
+```
 
-Full ULTRON regression validation remains pending for the v0.73 milestone.
+Status:
 
-### v0.72 Validation
+```text
+PASS
+```
 
-Dedicated v0.72 AI Engine tests:
+---
+
+## v0.72 Validation
+
+Dedicated AI Engine tests:
 
 ```text
 22 passed
@@ -951,7 +1098,9 @@ Status:
 PASS
 ```
 
-### v0.71 Validation
+---
+
+## v0.71 Validation
 
 Total dedicated v0.71 tests:
 
@@ -972,8 +1121,6 @@ Status:
 ```text
 PASS
 ```
-
-These numbers are version-specific validation results, not a permanent guarantee for future commits.
 
 ---
 
@@ -1067,11 +1214,167 @@ v0.76 → Agent Decision Layer
 
 # 📜 Version History
 
+## v0.74 — Context Injection
+
+The v0.74 milestone introduces explicit Context Injection into Ultron's existing AI Intelligence and AI Runtime architecture.
+
+The goal is to allow higher-level components to provide prepared AI context directly while preserving the existing context builder as the default fallback.
+
+### v0.74 Architecture
+
+```text
+Incoming AI Request
+        ↓
+    AIRuntime
+        ↓
+   AIIntelligence
+        ↓
+   Context Resolution
+        ↓
+ ┌───────────────────────┐
+ │ Explicit Context?     │
+ └───────────┬───────────┘
+             │
+       ┌─────┴─────┐
+      YES          NO
+       │            │
+       ▼            ▼
+ Injected       Existing
+ Context        Context Builder
+       │            │
+       └──────┬─────┘
+              ↓
+          AI Engine
+              ↓
+          AI Provider
+```
+
+### Context Injection
+
+`AIIntelligence.generate()` now supports:
+
+```text
+context=None
+```
+
+When an explicit string context is supplied, it is passed directly to the existing AI response-generation path.
+
+### Context Precedence
+
+Explicit context takes precedence over generated context.
+
+This prevents duplicate context construction when a higher-level component has already prepared the required context.
+
+### Context Validation
+
+The intelligence layer validates injected context before generation.
+
+Supported values are:
+
+```text
+None
+str
+```
+
+Invalid context types produce a structured intelligence failure.
+
+### Existing Context Fallback
+
+When explicit context is absent, the existing:
+
+```text
+core/ai_context.py
+```
+
+builder continues to construct context from:
+
+* Current user query
+* Goal context
+* Topic
+* Entity
+* Intent
+* Technology
+* Pending question
+* Ranked previous conversation
+
+No second context-building system was introduced.
+
+### Runtime Integration
+
+`AIRuntime.run()` now accepts and forwards:
+
+```text
+context=None
+```
+
+The runtime remains a thin coordination boundary.
+
+### v0.74 Test Status
+
+Dedicated AI Intelligence + AI Runtime tests:
+
+```text
+28 passed
+0 failed
+```
+
+Full ULTRON regression:
+
+```text
+1934 passed
+0 failed
+```
+
+Repository validation:
+
+```text
+git diff --check
+PASS
+```
+
+### v0.74 Milestone Summary
+
+Ultron v0.74 establishes:
+
+```text
+Explicit Context Injection
+        +
+Context Validation
+        +
+Context Precedence
+        +
+Existing Context Builder Fallback
+        +
+Runtime Context Forwarding
+        +
+Backward Compatibility
+        +
+Deterministic Testing
+```
+
+The architecture is now prepared for:
+
+```text
+Context Injection
+        ↓
+Intent Understanding
+        ↓
+Agent Decision
+        ↓
+Agent Planning
+        ↓
+Agent Orchestration
+        ↓
+Execution
+```
+
+---
+
 ## v0.73 — AI Runtime
 
-The v0.73 milestone introduces a dedicated AI Runtime boundary above Ultron's existing AI Intelligence system.
+The v0.73 milestone introduced a dedicated AI Runtime boundary above Ultron's existing AI Intelligence system.
 
-The goal is to provide a stable runtime entry point for AI execution without duplicating provider selection, context construction, intelligence processing, or agent execution responsibilities.
+The goal was to provide a stable runtime entry point for AI execution without duplicating provider selection, context construction, intelligence processing, or agent execution responsibilities.
 
 ### v0.73 Architecture
 
@@ -1082,7 +1385,7 @@ Incoming AI Request
         ↓
    AIIntelligence
         ↓
-     AI Engine
+    AI Engine
         ↓
    AI Provider
         ↓
@@ -1091,7 +1394,7 @@ IntelligenceResult
 
 ### AI Runtime
 
-The new runtime component is:
+The runtime component is:
 
 ```text
 modules/intelligence/ai_runtime.py
@@ -1129,7 +1432,7 @@ core/providers/
 
 ### Runtime Execution Contract
 
-The runtime exposes:
+The v0.73 contract was:
 
 ```text
 run(
@@ -1140,13 +1443,11 @@ run(
 )
 ```
 
-The returned object remains:
+v0.74 extends this contract with:
 
 ```text
-IntelligenceResult
+context=None
 ```
-
-This keeps the result contract centralized inside the intelligence layer.
 
 ### Dependency Injection
 
@@ -1164,7 +1465,7 @@ is_available()
 
 Availability is delegated to `AIIntelligence`.
 
-### v0.73 Tests
+### v0.73 Validation
 
 Dedicated AI Runtime tests:
 
@@ -1173,64 +1474,18 @@ Dedicated AI Runtime tests:
 0 failed
 ```
 
-The tests cover:
-
-* Runtime initialization
-* Dependency injection
-* Invalid dependency validation
-* Runtime execution
-* Result contract
-* Query delegation
-* Context forwarding
-* Query normalization
-* Failure propagation
-* Availability
-
-Full ULTRON regression validation remains pending for the v0.73 milestone.
-
-### v0.73 Milestone Summary
-
-Ultron v0.73 establishes:
+Full ULTRON regression:
 
 ```text
-AIRuntime
-     +
-AI Intelligence Delegation
-     +
-Stable Runtime Entry Point
-     +
-Dependency Injection
-     +
-Structured Result Preservation
-     +
-Availability Delegation
-     +
-Runtime Isolation
+1927 passed
+0 failed
 ```
 
-The architecture is now prepared for:
+Status:
 
 ```text
-AI Provider Abstraction
-        ↓
-First AI Provider
-        ↓
-AI Runtime
-        ↓
-Context Injection
-        ↓
-Intent Understanding
-        ↓
-Agent Decision
-        ↓
-Agent Planning
-        ↓
-Agent Orchestration
-        ↓
-Execution
+PASS
 ```
-
-The v0.73 milestone intentionally focuses on establishing the runtime boundary rather than prematurely implementing context injection, intent understanding, autonomous decisions, planning, or execution.
 
 ---
 
@@ -1339,26 +1594,6 @@ Status:
 
 ```text
 PASS
-```
-
-### v0.72 Milestone Summary
-
-The milestone introduced:
-
-```text
-Supported Provider Registry
-        +
-MockProvider Resolution
-        +
-AnthropicProvider Resolution
-        +
-AI_MODE Provider Selection
-        +
-Backward-Compatible Fallback
-        +
-AIProvider Validation
-        +
-AI Engine Provider Delegation
 ```
 
 ---
@@ -1734,7 +1969,7 @@ The current architecture provides a foundation for future capabilities.
 
 ## AI Intelligence
 
-* Context injection
+* Context injection — **Completed in v0.74**
 * Intent understanding
 * Agent decision layer
 * Conversational reasoning
@@ -1856,6 +2091,8 @@ AI Intelligence
         ↓
 AI Runtime
         ↓
+Context Injection
+        ↓
 Context-Aware Execution
         ↓
 Persistent & Recoverable Runtime
@@ -1894,7 +2131,6 @@ A future documentation structure can follow:
 README.md
 
 docs/
-
 ├── architecture/
 │   ├── overview.md
 │   └── milestones/
@@ -1913,33 +2149,19 @@ Ultron's architecture is intentionally designed around these boundaries:
 
 ```text
 Provider Isolation
-
         +
-
 Hardware Isolation
-
         +
-
 Runtime Isolation
-
         +
-
 Component Isolation
-
         +
-
 Observable Execution
-
         +
-
 Persistent State
-
         +
-
 Recoverable Runtime
-
         +
-
 Deterministic Testing
 ```
 
@@ -1973,13 +2195,12 @@ This approach keeps architectural growth incremental and makes regressions easie
 
 # ⚠️ Current Scope
 
-The v0.73 milestone establishes the dedicated AI Runtime boundary above the existing AI Intelligence and AI Provider architecture.
+The v0.74 milestone establishes explicit **Context Injection** within the existing AI Runtime and AI Intelligence architecture.
 
 It does not mean that every future AI capability is complete.
 
 In particular, the roadmap still includes higher-level capabilities such as:
 
-* Context Injection
 * Intent Understanding
 * Agent Decision Layer
 * Continuous voice interaction
@@ -2114,65 +2335,51 @@ The project prioritizes:
 ```text
 Small Milestones
         →
-
 Clear Boundaries
         →
-
 Independent Components
         →
-
 Deterministic Testing
         →
-
 Hardware Isolation
         →
-
 Provider Isolation
         →
-
 Runtime Isolation
         →
-
 Observable Execution
         →
-
 Persistent State
         →
-
 Recoverable Runtime
         →
-
 Multimodal Intelligence
         →
-
+Context Injection
+        →
 Autonomous Execution
         →
-
 Durable Automation
 ```
 
-v0.73 marks the establishment of Ultron's **AI Runtime boundary**, building directly on the **AI Intelligence Foundation** introduced in v0.70 and the **AI Provider Architecture** established across v0.71 and v0.72.
+v0.74 marks the establishment of **explicit Context Injection** on top of Ultron's **AI Runtime** and **AI Intelligence** architecture.
 
-The AI Runtime provides a stable execution entry point while preserving separation between:
+The milestone preserves separation between:
 
 ```text
 AI Runtime
-
     ↓
-
 AI Intelligence
-
     ↓
-
+Context Resolution
+    ↓
 AI Engine
-
     ↓
-
 AI Provider
-
     ↓
-
 Concrete Provider
 ```
 
-The v0.73 milestone intentionally focuses on **runtime coordination, dependency isolation, structured result preservation, testability, backward compatibility, and architectural stability** while leaving context injection, intent understanding, agent decisions, planning, and autonomous execution to upcoming milestones.
+Explicit context can now be injected directly into the intelligence execution path, while the existing `core/ai_context.py` system remains the fallback when no context is provided.
+
+The v0.74 milestone intentionally focuses on **context injection, context precedence, validation, runtime forwarding, backward compatibility, deterministic testing, and architectural stability** while leaving intent understanding, agent decisions, planning, and autonomous execution to upcoming milestones.
