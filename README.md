@@ -4,58 +4,64 @@
 
 Ultron is a modular AI system evolving from a personal assistant into a broader agent execution platform with multimodal input, voice interaction, planning, orchestration, execution control, observability, persistence, recovery, automation, and AI intelligence.
 
-The architecture is designed around clear boundaries, replaceable components, deterministic testing, provider isolation, runtime isolation, and hardware isolation.
+The architecture is designed around clear boundaries, replaceable components, deterministic testing, provider isolation, runtime isolation, hardware isolation, and composition over duplication.
 
 ---
 
-## 📌 Current Status
+# 📌 Current Status
 
-| Item                                           | Status                        |
-| ---------------------------------------------- | ----------------------------- |
-| **Current Version**                            | **v0.75**                     |
-| **Current Milestone**                          | **Intent Understanding**      |
-| **Dedicated v0.75 Intent Understanding Tests** | **20 passed**                 |
-| **Focused v0.72–v0.75 Regression**             | **78 passed**                 |
-| **Full ULTRON Regression**                     | **1954 passed**               |
-| **Failures**                                   | **0**                         |
-| **Repository Validation**                      | `git diff --check` — **PASS** |
-| **Development State**                          | Active development            |
+| Item                                           | Status                   |
+| ---------------------------------------------- | ------------------------ |
+| **Current Version**                            | **v0.76**                |
+| **Current Milestone**                          | **Agent Decision Layer** |
+| **Dedicated v0.76 Tests**                      | **33 passed**            |
+| **v0.75 Dedicated Intent Understanding Tests** | **20 passed**            |
+| **v0.75 Focused Regression**                   | **78 passed**            |
+| **v0.75 Full ULTRON Regression Baseline**      | **1954 passed**          |
+| **v0.76 Dedicated Failures**                   | **0**                    |
+| **Development State**                          | Active development       |
 
-v0.75 introduces **Intent Understanding** as a dedicated intelligence boundary on top of Ultron's existing AI Engine and provider architecture.
+v0.76 introduces the **Agent Decision Layer** as a dedicated intelligence boundary between semantic intent understanding and existing agent execution infrastructure.
 
-The milestone allows Ultron to classify the semantic intent of a normalized user query into a controlled set of intent categories while maintaining strict separation from agent decisions, tool selection, planning, orchestration, and execution.
+The milestone builds on the `Intent` model and `IntentUnderstanding` component introduced in v0.75.
 
-The v0.75 architecture is:
+The v0.76 architecture is:
 
 ```text
 User Query
      ↓
 IntentUnderstanding
      ↓
-Intent Classification Prompt
-     ↓
-Existing AI Engine
-     ↓
-Configured AI Provider
-     ↓
-Structured JSON Response
-     ↓
-Intent Validation
-     ↓
 Structured Intent
+     ↓
+AgentDecisionLayer
+     ↓
+Structured AgentDecision
+     ↓
+Existing Agent Systems
+     ├── Direct Response
+     ├── ToolSelector
+     └── AgentPlanner
+            ↓
+      AgentEngine
+            ↓
+        Execution
 ```
 
-The v0.75 Intent Understanding component intentionally does **not**:
+The v0.76 Agent Decision Layer determines the **high-level execution strategy**.
 
-* Select tools
-* Determine concrete execution actions
-* Create execution plans
-* Select agents
-* Orchestrate execution
+It intentionally does **not**:
+
+* Select a specific tool
+* Create an execution plan
 * Execute tools
 * Execute agents
+* Orchestrate execution
+* Replace `ToolSelector`
+* Replace `AgentPlanner`
+* Replace `AgentEngine`
 
-Those capabilities remain future milestones, with the **Agent Decision Layer introduced in v0.76**.
+Those responsibilities remain in their existing architectural layers.
 
 ---
 
@@ -71,6 +77,8 @@ The system separates responsibilities across:
 * AI Runtime
 * AI Providers
 * AI Engine
+* Intent Understanding
+* Agent Decision Layer
 * Agents
 * Tools
 * Tool Selection
@@ -99,214 +107,507 @@ The system separates responsibilities across:
 * Voice Response Execution
 * Audio Playback
 * Audio Output Device Management
-* Intent Understanding
 
 The goal is to allow each subsystem to evolve independently without forcing unrelated layers to know about implementation details.
 
 ---
 
-## 🏗️ Architecture Overview
+# 🏗️ Architecture Overview
 
 The high-level architecture represents the intended architectural direction while individual capabilities are introduced incrementally through independent milestones.
 
-The v0.75 Intent Understanding milestone is currently implemented as a dedicated component that reuses the existing AI Engine. Full routing from runtime intelligence into an Agent Decision Layer remains part of v0.76.
+The current intelligence-to-execution boundary is:
 
 ```text
 User
-
-  │
-
-  ▼
-
+ │
+ ▼
 Multimodal Input
-
-  ├── Text
-  ├── Voice
-  ├── Vision
-  └── Gesture
-
-  │
-
-  ▼
-
+ ├── Text
+ ├── Voice
+ ├── Vision
+ └── Gesture
+ │
+ ▼
 Input Router
-
-  │
-
-  ▼
-
+ │
+ ▼
 Normalized Input Result
-
-  │
-
-  ▼
-
+ │
+ ▼
 Conversation Engine
-
-  │
-
-  ▼
-
+ │
+ ▼
 AI Runtime
-
-  │
-
-  ▼
-
+ │
+ ▼
 AI Intelligence
-
-  │
-  ├── Query Validation
-  ├── Context Injection
-  └── Context Construction
-
-  │
-
-  ▼
-
+ │
+ ├── Query Validation
+ ├── Context Injection
+ └── Context Construction
+ │
+ ▼
 Intent Understanding
-  [v0.75 Dedicated Boundary]
-
-  │
-
-  ▼
-
-Existing AI Engine
-
-  │
-
-  ▼
-
-AI Provider
-
-  ├── MockProvider
-  └── AnthropicProvider
-
-  │
-
-  ▼
-
+ [v0.75]
+ │
+ ▼
 Structured Intent
-
-  │
-
-  ▼
-
+ │
+ ▼
 Agent Decision Layer
-  [v0.76]
-
-  │
-
-  ├── Direct Answer
-  └── Agent Task
-
-         │
-
-         ▼
-
-Agent Runtime
-
-  │
-
-  ▼
-
-Tool System
-
-  │
-
-  ▼
-
-Tool Selector
-
-  │
-
-  ▼
-
-Agent Planner
-
-  │
-
-  ▼
-
-Agent Plan
-
-  │
-
-  ▼
-
+ [v0.76]
+ │
+ ├── RESPOND
+ ├── EXECUTE
+ ├── PLAN
+ ├── CLARIFY
+ ├── CONTINUE
+ └── UNKNOWN
+ │
+ ▼
+Existing Agent Infrastructure
+ │
+ ├── Direct Response
+ │
+ ├── Tool Selector
+ │
+ └── Agent Planner
+        │
+        ▼
+    Agent Plan
+        │
+        ▼
 Agent Orchestrator
-
-  │
-
-  ▼
-
+        │
+        ▼
 Execution Controller
-
-  │
-
-  ▼
-
+        │
+        ▼
 Execution Context
-
-  ├── Context Queries
-  ├── Execution State
-  ├── Step State
-  ├── Results
-  ├── Retry State
-  └── Runtime Metadata
-
-  │
-
-  ▼
-
+ ├── Context Queries
+ ├── Execution State
+ ├── Step State
+ ├── Results
+ ├── Retry State
+ └── Runtime Metadata
+        │
+        ▼
 Execution
-
-  ├── Events
-  ├── Observability
-  ├── Metrics
-  ├── Persistence
-  └── State Snapshots
-
-  │
-
-  ▼
-
+ ├── Events
+ ├── Observability
+ ├── Metrics
+ ├── Persistence
+ └── State Snapshots
+        │
+        ▼
 Recovery Infrastructure
 ```
 
-The architecture above represents the intended progression of the system.
-
-The important v0.75 boundary is:
+The critical v0.76 boundary is:
 
 ```text
 Intent Understanding
         ↓
 Structured Intent
         ↓
-Future Agent Decision Layer
+Agent Decision Layer
+        ↓
+Structured Agent Decision
+        ↓
+Existing Tool / Planning / Execution Systems
 ```
 
-The current v0.75 implementation does not automatically perform the final decision or execution steps.
-
-Voice is integrated as an additional input/output path rather than as a replacement for the core agent architecture.
+The Agent Decision Layer does not replace the existing execution architecture.
 
 ---
 
-# 🧠 Intent Understanding Architecture
+# 🧠 Agent Decision Layer Architecture
 
-v0.75 introduces a dedicated **Intent Understanding** component for semantic classification of user queries.
+v0.76 introduces a dedicated **Agent Decision Layer** for determining the high-level path that Ultron should take after understanding user intent.
 
-The implementation is intentionally separated from agent decision-making.
+The component consumes the structured `Intent` produced by v0.75 and produces an immutable `AgentDecision`.
 
-## v0.75 Components
-
-The milestone introduces:
+## v0.76 Components
 
 ```text
-modules/intelligence/intent.py
-modules/intelligence/intent_understanding.py
-tests/intelligence/test_intent_understanding.py
+modules/intelligence/agent_decision.py
+
+modules/intelligence/agent_decision_layer.py
+
+tests/intelligence/test_agent_decision.py
+
+tests/intelligence/test_agent_decision_layer.py
 ```
+
+The architecture is:
+
+```text
+Structured Intent
+       ↓
+AgentDecisionLayer
+       ↓
+Decision Prompt
+       ↓
+Existing AI Engine
+       ↓
+Configured AI Provider
+       ↓
+Structured JSON
+       ↓
+Decision Validation
+       ↓
+AgentDecision
+```
+
+---
+
+# 🤖 AgentDecision Model
+
+The structured decision result is represented by the `AgentDecision` model.
+
+```text
+AgentDecision
+├── decision_type
+├── intent
+├── confidence
+└── metadata
+```
+
+The model is immutable and validates:
+
+* Decision type
+* Intent instance
+* Confidence type
+* Confidence range
+* Metadata type
+
+The original `Intent` is preserved inside the decision.
+
+This allows downstream systems to access both:
+
+```text
+Intent
++
+High-Level Decision
+```
+
+without reconstructing semantic information.
+
+---
+
+# 🎯 Supported Decision Types
+
+v0.76 supports six high-level decision categories:
+
+```text
+respond
+execute
+plan
+clarify
+continue
+unknown
+```
+
+## Respond
+
+The request can be answered directly without entering an execution workflow.
+
+```text
+User Query
+    ↓
+Intent
+    ↓
+RESPOND
+    ↓
+Direct Response
+```
+
+The decision layer does not itself generate the response.
+
+---
+
+## Execute
+
+The request requires an execution-oriented path.
+
+```text
+User Query
+    ↓
+Intent
+    ↓
+EXECUTE
+    ↓
+Existing Execution Infrastructure
+```
+
+`EXECUTE` does **not** mean that a tool is immediately executed.
+
+Tool selection and execution remain separate responsibilities.
+
+```text
+Agent Decision
+      ↓
+ToolSelector
+      ↓
+AgentEngine
+      ↓
+Execution
+```
+
+---
+
+## Plan
+
+The request requires planning or multi-step work.
+
+```text
+User Query
+    ↓
+Intent
+    ↓
+PLAN
+    ↓
+AgentPlanner
+    ↓
+Agent Plan
+```
+
+The Agent Decision Layer does not create the plan.
+
+---
+
+## Clarify
+
+The request does not contain enough information for a safe high-level decision.
+
+```text
+User Query
+    ↓
+Intent
+    ↓
+CLARIFY
+    ↓
+Clarification Path
+```
+
+This prevents Ultron from forcing an uncertain execution decision.
+
+---
+
+## Continue
+
+The user is continuing an existing task or workflow.
+
+```text
+Existing Task
+      ↓
+New User Input
+      ↓
+Intent
+      ↓
+CONTINUE
+```
+
+The decision layer identifies the continuation path but does not directly mutate or execute the existing task.
+
+---
+
+## Unknown
+
+The decision cannot be safely determined.
+
+```text
+Ambiguous Intent
+      ↓
+UNKNOWN
+```
+
+This provides a safe fallback rather than forcing an unsupported decision.
+
+---
+
+# 🧠 Agent Decision Responsibilities
+
+The v0.76 Agent Decision Layer is responsible for:
+
+* Validating `Intent` input
+* Building a decision-classification prompt
+* Reusing the existing AI Engine
+* Requesting structured decision output
+* Parsing JSON
+* Validating decision type
+* Validating confidence
+* Validating metadata
+* Producing `AgentDecision`
+* Preserving the originating `Intent`
+* Providing deterministic dependency injection
+
+---
+
+# 🚫 Agent Decision Layer Does Not Own
+
+The component intentionally does **not** own:
+
+* Specific tool selection
+* Tool execution
+* Agent execution
+* Plan creation
+* Plan validation
+* Plan execution
+* Orchestration
+* Execution control
+* Runtime event management
+* Execution metrics
+* Persistence
+* Recovery
+
+The architectural boundary is:
+
+```text
+Agent Decision
+      ≠
+Tool Selection
+      ≠
+Planning
+      ≠
+Orchestration
+      ≠
+Execution
+```
+
+This preserves the existing agent architecture.
+
+---
+
+# 🔗 Intent → Decision Flow
+
+v0.75 and v0.76 now form a clean intelligence pipeline:
+
+```text
+User Query
+    ↓
+IntentUnderstanding
+    ↓
+Intent
+    ↓
+AgentDecisionLayer
+    ↓
+AgentDecision
+```
+
+For example:
+
+```text
+User:
+"Calculator kholo"
+
+        ↓
+
+IntentUnderstanding
+
+        ↓
+
+Intent
+{
+    intent_type: "action",
+    query: "Calculator kholo",
+    confidence: 0.95
+}
+
+        ↓
+
+AgentDecisionLayer
+
+        ↓
+
+AgentDecision
+{
+    decision_type: "execute",
+    confidence: 0.92
+}
+```
+
+The decision layer stops at the high-level decision.
+
+It does not decide:
+
+```text
+Which tool?
+Which parameters?
+Which plan?
+Which execution step?
+```
+
+Those decisions belong to the existing agent infrastructure.
+
+---
+
+# 🧩 Existing Agent Architecture Preservation
+
+Ultron already contains dedicated systems for tool selection, planning, orchestration, and execution.
+
+v0.76 composes those systems instead of duplicating them.
+
+The architecture remains:
+
+```text
+Agent Decision Layer
+        ↓
+Existing Agent Systems
+        ↓
+ToolSelector
+        ↓
+AgentPlanner
+        ↓
+AgentOrchestrator
+        ↓
+ExecutionController
+        ↓
+AgentEngine
+        ↓
+Execution
+```
+
+### ToolSelector
+
+`ToolSelector` remains responsible for concrete tool selection.
+
+It determines which registered tool matches the execution requirement.
+
+### AgentPlanner
+
+`AgentPlanner` remains responsible for creating and managing executable plans.
+
+### AgentOrchestrator
+
+The existing orchestration layer remains responsible for coordinating execution.
+
+### ExecutionController
+
+The existing execution-controller boundary continues to control execution lifecycle.
+
+### AgentEngine
+
+`AgentEngine` remains responsible for actual agent/tool execution.
+
+Therefore:
+
+```text
+AgentDecisionLayer
+       ≠
+ToolSelector
+       ≠
+AgentPlanner
+       ≠
+AgentEngine
+```
+
+---
+
+# 🧠 v0.75 Intent Understanding
+
+v0.75 introduced the dedicated **Intent Understanding** boundary for semantic classification of normalized user queries.
 
 The architecture is:
 
@@ -323,35 +624,12 @@ Configured AI Provider
      ↓
 Structured JSON
      ↓
-Validation
+Intent Validation
      ↓
-Intent
+Structured Intent
 ```
 
-## Intent Model
-
-The structured result is represented by the `Intent` model.
-
-```text
-Intent
-├── intent_type
-├── query
-├── confidence
-└── metadata
-```
-
-The model is immutable and validates:
-
-* Intent type
-* Query type
-* Query non-emptiness
-* Confidence type
-* Confidence range
-* Metadata type
-
-## Supported Intent Types
-
-v0.75 supports the following semantic intent categories:
+Supported intent categories:
 
 ```text
 information
@@ -363,159 +641,83 @@ conversation
 unknown
 ```
 
-### Information
+The v0.75 component does not determine execution decisions.
 
-The user is requesting information or an answer.
-
-Example:
+It establishes:
 
 ```text
-"Ultron kya hai?"
+What does the user mean?
 ```
 
-### Action
-
-The user is expressing an action-oriented intent.
-
-Example:
+while v0.76 establishes:
 
 ```text
-"CalcPro open karo."
+What high-level path should Ultron take?
 ```
-
-The intent layer identifies the query as action-oriented but does **not** determine how the action should be executed.
-
-### Creation
-
-The user wants something to be created.
-
-Example:
-
-```text
-"Ek Python calculator banao."
-```
-
-Intent Understanding identifies the creation intent but does not create a plan or execute the request.
-
-### Continuation
-
-The user is continuing an existing conversation or task.
-
-Example:
-
-```text
-"Ab usme login bhi add karo."
-```
-
-### Explanation
-
-The user is requesting an explanation.
-
-Example:
-
-```text
-"Ye error kyun aa raha hai?"
-```
-
-### Conversation
-
-The query is primarily conversational.
-
-Example:
-
-```text
-"Kaise ho bhai?"
-```
-
-### Unknown
-
-The query is ambiguous or cannot be reliably classified.
-
-This provides a safe fallback rather than forcing an incorrect intent category.
 
 ---
 
-## Structured Intent Output
+# 🧠 v0.75 → v0.76 Boundary
 
-Intent Understanding expects structured JSON from the AI layer.
-
-Example:
-
-```json
-{
-  "intent_type": "information",
-  "confidence": 0.95,
-  "metadata": {}
-}
-```
-
-The response is validated before an `Intent` object is created.
-
-Invalid responses are rejected when:
-
-* JSON is malformed
-* The JSON root is not an object
-* `intent_type` is missing or invalid
-* The intent type is unsupported
-* Confidence is not numeric
-* Confidence is outside `0.0–1.0`
-* Metadata is not a dictionary
-
----
-
-## Intent Understanding Responsibilities
-
-The v0.75 component is responsible for:
-
-* Validating the user query
-* Normalizing query whitespace
-* Building the intent-classification prompt
-* Reusing the existing AI Engine
-* Requesting structured intent output
-* Parsing JSON
-* Validating intent type
-* Validating confidence
-* Validating metadata
-* Producing a structured `Intent`
-* Preserving context-awareness metadata
-* Supporting deterministic dependency injection
-
----
-
-## Intent Understanding Does Not Own
-
-The component intentionally does **not** own:
-
-* Tool selection
-* Concrete action determination
-* Agent selection
-* Agent planning
-* Plan creation
-* Tool execution
-* Agent execution
-* Orchestration
-* Execution control
-* Autonomous decision-making
-
-The architectural boundary is:
+The separation is intentional:
 
 ```text
+v0.75
+
+User Query
+    ↓
 Intent Understanding
-        ≠
-Agent Decision
-        ≠
-Planning
-        ≠
+    ↓
+Intent
+```
+
+followed by:
+
+```text
+v0.76
+
+Intent
+    ↓
+Agent Decision Layer
+    ↓
+AgentDecision
+```
+
+followed by future integration:
+
+```text
+AgentDecision
+    ↓
+ToolSelector / AgentPlanner
+    ↓
+AgentOrchestrator
+    ↓
+AgentEngine
+    ↓
 Execution
 ```
 
-This separation is important because semantic understanding and execution decision-making are different responsibilities.
+This creates a clear progression:
+
+```text
+Understand
+    ↓
+Decide
+    ↓
+Plan
+    ↓
+Select
+    ↓
+Orchestrate
+    ↓
+Execute
+```
 
 ---
 
-## Context Awareness
+# 🧠 Context Awareness
 
-Intent Understanding accepts optional context.
+Intent Understanding accepts optional context:
 
 ```text
 understand(
@@ -526,23 +728,35 @@ understand(
 
 When context is provided, it is included in the classification prompt.
 
-The component records whether context was used in the resulting metadata.
+The resulting `Intent` records:
 
 ```text
 context_used = True / False
 ```
 
-Context is used to improve semantic understanding.
+The context improves semantic understanding but does not cause intent understanding to select tools or execute actions.
 
-It does not cause the component to perform actions or select tools.
+The Agent Decision Layer receives the already-understood `Intent`.
+
+Therefore:
+
+```text
+Context
+   ↓
+Intent Understanding
+   ↓
+Intent
+   ↓
+Agent Decision
+```
 
 ---
 
-## Existing AI Engine Reuse
+# 🤖 AI Engine Reuse
 
-v0.75 intentionally reuses the existing AI Engine.
+Both v0.75 Intent Understanding and v0.76 Agent Decision Layer reuse the existing AI Engine.
 
-The component calls:
+The architecture remains:
 
 ```text
 IntentUnderstanding
@@ -550,442 +764,35 @@ IntentUnderstanding
 core.ai_engine.generate_ai_response()
 ```
 
-This prevents the introduction of another provider-resolution or AI-generation system.
-
-The existing provider architecture remains responsible for selecting and communicating with the configured provider.
+and:
 
 ```text
-IntentUnderstanding
+AgentDecisionLayer
         ↓
-AI Engine
-        ↓
-AI Provider
+core.ai_engine.generate_ai_response()
 ```
+
+No second AI-generation mechanism was introduced.
 
 This follows Ultron's composition-over-duplication principle.
-
----
-
-## Provider Independence
-
-Intent Understanding does not directly depend on:
-
-* Anthropic API implementation
-* Provider-specific SDKs
-* Provider credentials
-* Concrete provider classes
-
-Instead, it uses the existing AI Engine boundary.
-
-Therefore:
-
-```text
-Intent Understanding
-        ↓
-AI Engine
-        ↓
-Provider Abstraction
-        ↓
-Concrete Provider
-```
-
-The same architecture can therefore operate with the configured provider without moving provider-specific logic into the intelligence component.
-
----
-
-## Deterministic Testing
-
-The `IntentUnderstanding` component accepts an injectable response generator.
-
-This allows tests to provide deterministic AI responses without requiring:
-
-* Real API credentials
-* External network calls
-* Provider availability
-* Non-deterministic model behavior
-
-The testing boundary is:
-
-```text
-IntentUnderstanding
-        ↓
-Injected Response Generator
-        ↓
-Deterministic JSON
-        ↓
-Intent Validation
-```
-
-This preserves reliable unit testing while still using the real production AI Engine by default.
-
----
-
-## v0.75 Intent Understanding Boundary
-
-The milestone establishes:
-
-```text
-Query Validation
-       +
-Intent Classification
-       +
-Structured JSON Parsing
-       +
-Intent Validation
-       +
-Confidence Validation
-       +
-Metadata Handling
-       +
-Context Awareness
-       +
-Existing AI Engine Reuse
-       +
-Deterministic Testing
-```
-
-The next architectural boundary is:
-
-```text
-Intent
-  ↓
-Agent Decision Layer
-  ↓
-Action / Agent Task
-```
-
-That decision layer belongs to v0.76.
-
----
-
-# 🧠 AI Runtime Architecture
-
-v0.73 introduced a dedicated runtime boundary between external AI requests and the existing AI Intelligence layer.
-
-v0.74 extended that runtime with explicit Context Injection.
-
-v0.75 introduces Intent Understanding as a separate intelligence capability that can reuse the existing AI Engine without moving decision logic into the runtime.
-
-The runtime architecture remains:
-
-```text
-Incoming AI Request
-
-        ↓
-
-    AI Runtime
-
-        ↓
-
-   AI Intelligence
-
-        ↓
-
-Context Resolution
-
-        ↓
-
-┌───────────────┐
-│ Explicit      │
-│ Context       │
-└───────┬───────┘
-        │
-        │ absent
-        ▼
-Existing AI Context Builder
-        │
-        └──────────────┐
-                       ↓
-                   AI Engine
-                       ↓
-                   AI Provider
-                       ↓
-               Generated Response
-                       ↓
-               IntelligenceResult
-```
-
-The AI Runtime remains intentionally thin.
-
-Its purpose is to coordinate the existing intelligence system rather than duplicate its responsibilities.
-
-### AI Runtime Responsibilities
-
-The `AIRuntime` is responsible for:
-
-* Providing a stable AI runtime entry point
-* Coordinating AI intelligence execution
-* Delegating requests to `AIIntelligence`
-* Forwarding query data
-* Forwarding goal context
-* Forwarding ranked context
-* Forwarding token limits
-* Forwarding explicitly injected context
-* Returning `IntelligenceResult`
-* Exposing runtime availability
-* Preserving the existing intelligence boundary
-
-### AI Runtime Does Not Own
-
-The AI Runtime does **not** own:
-
-* AI provider selection
-* Anthropic API handling
-* Mock provider implementation
-* Provider configuration
-* AI context construction
-* Query validation logic
-* Intelligence result construction
-* Intent understanding implementation
-* Action determination
-* Tool selection
-* Agent planning
-* Agent orchestration
-* Tool execution
-* Voice processing
-* Audio playback
-
-Those responsibilities remain in their existing architectural layers.
-
-### Runtime Dependency Boundary
-
-The runtime depends on the existing `AIIntelligence` component:
-
-```text
-AIRuntime
-    ↓
-AIIntelligence
-    ↓
-AI Engine
-    ↓
-AI Provider
-```
-
-The dependency can be injected for deterministic testing.
-
-This keeps the runtime testable without requiring a real AI provider or external API credentials.
-
-### Runtime Execution Contract
-
-The runtime exposes:
-
-```text
-run(
-    query,
-    goal_context=None,
-    ranked_context=None,
-    max_tokens=1024,
-    context=None
-)
-```
-
-The optional `context` parameter allows callers to inject already-prepared AI context directly.
-
-The runtime does not create a second response contract.
-
-### Runtime Availability
-
-The runtime exposes:
-
-```text
-is_available()
-```
-
-Availability is delegated to the existing AI Intelligence layer.
-
-This prevents the runtime from creating a duplicate provider-availability mechanism.
-
----
-
-# 🧠 Context Injection Architecture
-
-v0.74 introduced explicit Context Injection into `AIIntelligence`.
-
-The goal is to allow higher-level runtime components to provide prepared context without forcing the intelligence layer to rebuild it.
-
-The architecture is:
-
-```text
-Incoming Query
-
-      ↓
-
-AI Runtime
-
-      ↓
-
-AI Intelligence
-
-      ↓
-
-Context Provided?
-
-   ┌──────┴──────┐
-   YES           NO
-    │             │
-    ▼             ▼
-Injected      Existing Context
-Context       Builder
-    │             │
-    └──────┬──────┘
-           ↓
-       AI Engine
-           ↓
-       AI Provider
-```
-
-### Explicit Context
-
-When a caller provides:
-
-```text
-context="..."
-```
-
-`AIIntelligence` uses that context directly.
-
-The existing context builder is not called.
-
-This allows already-prepared context to flow through the architecture without unnecessary reconstruction.
-
-### Context Fallback
-
-When no explicit context is provided, the existing context-building system remains active:
-
-```text
-AIIntelligence
-      ↓
-core/ai_context.py
-      ↓
-Structured AI Context
-      ↓
-AI Engine
-```
-
-This preserves backward compatibility with the pre-existing AI context architecture.
-
-### Context Precedence
-
-Explicit injected context has priority over generated context.
-
-For example:
-
-```text
-Query
-+
-Goal Context
-+
-Ranked Context
-+
-Explicit Context
-```
-
-When explicit context exists:
-
-```text
-Explicit Context
-        ↓
-    AI Engine
-```
-
-The `goal_context` and `ranked_context` values are not used to rebuild another context in that execution.
-
-### Context Validation
-
-Injected context must be either:
-
-```text
-None
-```
-
-or:
-
-```text
-str
-```
-
-Invalid context types are rejected through the existing intelligence failure contract.
-
-### Existing Context Builder Preservation
-
-v0.74 does **not** introduce another context-builder implementation.
-
-The existing:
-
-```text
-core/ai_context.py
-```
-
-remains the source of generated AI context when explicit context is not supplied.
-
-This follows Ultron's composition-over-duplication principle.
-
----
-
-# 🧠 AI Intelligence Foundation
-
-The AI Intelligence layer remains responsible for coordinating AI intelligence operations.
-
-Its architecture is:
-
-```text
-AI Runtime
-
-     ↓
-
-AI Intelligence
-
-     ├── Query Validation
-     ├── Context Validation
-     ├── Context Injection
-     ├── Context Construction
-     ├── AI Response Generation
-     └── IntelligenceResult
-```
-
-`AIIntelligence` continues to reuse:
-
-```text
-core/ai_context.py
-core/ai_engine.py
-```
-
-The v0.74 Context Injection capability does not replace these systems.
-
-### IntelligenceResult
-
-`IntelligenceResult` provides a structured and immutable representation of intelligence execution.
-
-The result contains:
-
-* success
-* response
-* intent
-* action
-* error
-* metadata
-
-The `intent` and `action` fields remain future-compatible.
-
-They are not automatically populated by the v0.74 milestone.
-
-v0.75 introduces a dedicated `Intent` model for semantic intent understanding, but this does not mean that the existing `IntelligenceResult` execution contract has been replaced.
 
 ---
 
 # 🤖 AI Provider Architecture
 
-v0.71 established the provider abstraction used by Ultron's AI Engine.
+v0.71 established the provider abstraction.
 
 v0.72 established the first concrete provider-resolution path.
 
-v0.73 added the AI Runtime boundary.
+v0.73 introduced the AI Runtime.
 
-v0.74 added Context Injection above the existing provider architecture.
+v0.74 introduced Context Injection.
 
-v0.75 reuses this provider architecture for Intent Understanding.
+v0.75 introduced Intent Understanding.
 
-The architecture is:
+v0.76 introduces the Agent Decision Layer.
+
+The provider architecture remains:
 
 ```text
 AI Runtime
@@ -998,37 +805,12 @@ Supported Provider Registry
       ↓
 AIProvider
       ↓
-Concrete AI Provider
-    ├── MockProvider
-    └── AnthropicProvider
+Concrete Provider
+ ├── MockProvider
+ └── AnthropicProvider
 ```
 
-The provider abstraction ensures that higher-level Ultron components do not depend directly on provider-specific API implementations.
-
-### AIProvider Responsibilities
-
-The `AIProvider` abstraction owns:
-
-* Provider identity
-* Capability declaration
-* Configuration management
-* Metadata management
-* Availability validation
-* Prompt validation
-* AI generation contract
-* Provider error abstraction
-
-The abstraction does **not** own:
-
-* AI runtime coordination
-* AI context construction
-* Context injection
-* Intelligence results
-* Intent understanding
-* Tool selection
-* Agent planning
-* Agent execution
-* Tool execution
+Higher-level intelligence components do not directly depend on provider-specific SDKs.
 
 ---
 
@@ -1040,18 +822,17 @@ It:
 
 * Implements `AIProvider`
 * Requires no external API
-* Declares default text-generation and chat capabilities
-* Uses centralized prompt validation
-* Supports configuration and metadata
-* Provides deterministic mock responses
+* Provides deterministic responses
+* Supports development without API credentials
+* Enables isolated testing
 
-This allows the broader AI architecture to be tested without requiring external provider credentials.
+This allows v0.75 and v0.76 intelligence components to be tested without relying on external AI services.
 
 ---
 
 # 🧠 Anthropic AI Provider
 
-`AnthropicProvider` is the first concrete Anthropic implementation behind the provider abstraction.
+`AnthropicProvider` remains the concrete Anthropic implementation behind the provider abstraction.
 
 Provider-specific Anthropic API logic remains isolated inside the provider.
 
@@ -1062,521 +843,392 @@ Responsibilities include:
 * Model configuration
 * Provider capability declaration
 * Availability validation
-* Context-aware prompt construction
 * Claude response generation
 * Provider error handling
 
-The provider remains unavailable when a valid Anthropic API key is not configured.
+The Agent Decision Layer does not directly communicate with Anthropic.
 
-This preserves safe development behavior without requiring external credentials for the test suite.
+```text
+AgentDecisionLayer
+       ↓
+AI Engine
+       ↓
+AI Provider
+       ↓
+AnthropicProvider
+       ↓
+Anthropic API
+```
 
 ---
 
 # ⚙️ AI Engine Integration
 
-The AI Engine resolves the configured provider and delegates generation to it.
-
-The architecture is:
+The AI Engine resolves the configured provider and delegates generation.
 
 ```text
-AI Runtime
-    ↓
 AI Intelligence
-    ↓
+      ↓
 AI Engine
-    ↓
+      ↓
 AI_MODE
-    ↓
+      ↓
 SUPPORTED_PROVIDERS
-    ├── mock
-    │     ↓
-    │  MockProvider
-    │
-    └── anthropic
-          ↓
-      AnthropicProvider
-    ↓
+ ├── mock
+ │    ↓
+ │ MockProvider
+ │
+ └── anthropic
+      ↓
+   AnthropicProvider
+      ↓
 AIProvider
-    ↓
+      ↓
 generate()
-    ↓
+      ↓
 AI Response
 ```
 
 The AI Engine does not implement provider-specific API logic.
 
-### Supported Provider Registry
-
-The AI Engine maintains:
-
-```text
-SUPPORTED_PROVIDERS
-
-mock       → MockProvider
-anthropic  → AnthropicProvider
-```
-
-### Provider Selection
-
-The configured provider is selected through:
-
-```text
-AI_MODE
-```
-
-Supported values are:
+Supported provider modes:
 
 ```text
 mock
 anthropic
 ```
 
-Provider selection is case-insensitive and ignores surrounding whitespace.
+Unknown or empty provider modes continue to fall back to `MockProvider` for safe development behavior.
 
-### Backward-Compatible Fallback
+---
 
-Unknown or empty provider modes fall back to `MockProvider`.
+# 🧠 AI Runtime Architecture
 
-Examples include:
+v0.73 introduced the dedicated AI Runtime boundary.
 
-```text
-unknown
-openai
-gemini
-invalid
-""
-```
+v0.74 extended it with explicit Context Injection.
 
-This preserves the existing AI Engine behavior and keeps development and testing safe when an unsupported provider mode is configured.
+v0.75 added Intent Understanding without moving decision logic into the runtime.
 
-### AI Engine Responsibilities
+v0.76 adds Agent Decision as a separate intelligence capability rather than changing the existing runtime contract.
 
-The AI Engine is responsible for:
-
-* Resolving the configured provider
-* Maintaining the supported provider registry
-* Instantiating the selected provider
-* Validating the provider abstraction
-* Delegating generation to the selected provider
-* Preserving the existing `generate_ai_response()` interface
-
-The AI Engine does **not** own:
-
-* AI runtime coordination
-* Provider-specific API implementation
-* AI intelligence results
-* Context injection
-* Intent understanding
-* Agent decisions
-* Agent planning
-* Agent orchestration
-* Tool execution
-
-This preserves:
+The runtime remains:
 
 ```text
-AI Runtime
-
-    ≠
-
-AI Intelligence
-
-    ≠
-
+AIRuntime
+    ↓
+AIIntelligence
+    ↓
 AI Engine
-
-    ≠
-
+    ↓
 AI Provider
 ```
+
+The AI Runtime does not own:
+
+* Provider-specific API handling
+* Context construction
+* Intent classification
+* Agent decisions
+* Tool selection
+* Planning
+* Orchestration
+* Tool execution
+* Voice processing
+* Audio playback
+
+This preserves runtime isolation.
 
 ---
 
 # 🎙️ End-to-End Voice Architecture
 
-The v0.69 voice path connects physical voice input to physical audio output.
-
-The AI Runtime provides the AI intelligence boundary used by the broader architecture:
+The voice architecture remains integrated with the broader AI and agent architecture:
 
 ```text
 Human Voice
-
     ↓
-
 Audio Capture
-
     ↓
-
 Microphone Capture
-
     ↓
-
 VoiceInput
-
     ↓
-
 Voice Processing
-
     ↓
-
 STT Provider
-
     ↓
-
 Transcription
-
     ↓
-
 Runtime Query
-
     ↓
-
 AI Runtime
-
     ↓
-
 AI Intelligence
-
     ↓
-
-Context Injection / Context Construction
-
+Intent Understanding
     ↓
-
-AI Engine
-
+Agent Decision
     ↓
-
-AI Provider
-
-    ↓
-
-AI Response
-
-    ↓
-
 Agent / Response Routing
-
     ↓
-
+Existing Agent Infrastructure
+    ↓
+AI Response
+    ↓
 VoiceResponseExecutor
-
     ↓
-
 TTSRuntimeIntegration
-
     ↓
-
 TTSProvider
-
     ↓
-
 Synthesized Audio
-
     ↓
-
 VoicePlaybackExecutor
-
     ↓
-
 AudioOutputDeviceManager
-
     ↓
-
-Playback Backend
-
-    ↓
-
 Audio Output
 ```
 
-The top-level voice components remain intentionally thin.
-
-They compose existing subsystems instead of duplicating their responsibilities.
+Voice remains an additional input/output path rather than a replacement for the core agent architecture.
 
 ---
 
 # 🔊 Voice Subsystem Boundaries
 
-### Input
+## Input
 
 ```text
 Physical Microphone
-
         ↓
-
 MicrophoneCapture
-
         ↓
-
 AudioCapture
-
         ↓
-
 VoiceInput
 ```
 
-The capture layer is responsible for acquiring and normalizing physical audio before it enters the existing voice-processing architecture.
-
-### Speech-to-Text
+## Speech-to-Text
 
 ```text
 VoiceInput
-
     ↓
-
 VoiceProcessingPipeline
-
     ↓
-
 VoiceProcessor
-
     ↓
-
 STTProvider
-
     ↓
-
 Concrete STT Provider
-
     ↓
-
 MultimodalInputResult
-
     ↓
-
 Runtime Integration
 ```
 
-STT is isolated behind a provider abstraction.
-
-### Voice Command Execution
+## Voice Command Execution
 
 ```text
 Runtime Query
-
     ↓
-
-VoiceCommandExecutor
-
+Intent Understanding
     ↓
-
+Agent Decision
+    ↓
 Capability / Tool Resolution
-
     ↓
-
 Agent Planner
-
     ↓
-
 Agent Plan
-
     ↓
-
 Agent Orchestrator
-
     ↓
-
 Agent Execution
-
     ↓
-
 Tool Execution
 ```
 
-The command layer coordinates existing agent capabilities rather than duplicating planning or execution logic.
-
-### Text-to-Speech
+## Text-to-Speech
 
 ```text
 Runtime Response
-
     ↓
-
 VoiceResponseExecutor
-
     ↓
-
 TTSRuntimeIntegration
-
     ↓
-
 TTSProvider
-
     ↓
-
 Concrete TTS Provider
-
     ↓
-
 Synthesized Audio
 ```
 
-TTS remains provider-independent at the architectural boundary.
-
-### Audio Playback
+## Audio Playback
 
 ```text
 Synthesized Audio
-
         ↓
-
 VoicePlaybackExecutor
-
         ↓
-
 AudioOutputDeviceManager
-
         ↓
-
 Active Device
-
         ↓
-
 Default Device Fallback
-
         ↓
-
 Playback Backend
-
         ↓
-
 Audio Output
 ```
-
-`VoicePlaybackExecutor` does not directly own operating-system device management.
 
 ---
 
 # 🧩 Core Design Principles
 
-### 1. Small Milestones
+## 1. Small Milestones
 
 Each version introduces a focused architectural capability.
 
 ```text
 Small Milestones
-
       ↓
-
 Clear Boundaries
-
       ↓
-
 Independent Components
-
       ↓
-
 Deterministic Testing
 ```
 
-### 2. Provider Isolation
+## 2. Provider Isolation
 
 External AI, STT, and TTS providers remain behind abstractions.
 
 ```text
 Core Architecture
-
        ↓
-
 Provider Interface
-
        ↓
-
 Concrete Provider
 ```
 
-### 3. Hardware Isolation
+## 3. Hardware Isolation
 
 Physical microphone and output-device handling remain behind dedicated abstractions.
 
 ```text
 Application Logic
-
        ↓
-
 Hardware Abstraction
-
        ↓
-
 Concrete Audio Backend
-
        ↓
-
 Physical Device
 ```
 
-### 4. Runtime Isolation
+## 4. Runtime Isolation
 
 Runtime components coordinate established interfaces instead of reaching directly into unrelated internals.
 
-The v0.73 `AIRuntime` provides a stable boundary above `AIIntelligence`.
-
-v0.74 extends this boundary with explicit Context Injection without moving context-building responsibilities into the runtime.
-
-v0.75 adds Intent Understanding as a dedicated intelligence capability without moving agent decision or execution responsibilities into the intent layer.
-
-### 5. Observable Execution
+## 5. Observable Execution
 
 Execution is designed around explicit lifecycle state, events, metrics, results, and failure information.
 
-### 6. Persistent & Recoverable Execution
+## 6. Persistent & Recoverable Execution
 
-Persistence, state snapshots, runtime context, and recovery are separate architectural concerns.
+Persistence, state snapshots, runtime context, and recovery remain separate architectural concerns.
 
-### 7. Composition Over Duplication
+## 7. Composition Over Duplication
 
-Higher-level components should compose existing capabilities rather than reimplement them.
+Higher-level components compose existing capabilities rather than reimplementing them.
 
 For example:
 
 ```text
-AIRuntime
-
-    ↓
-
-AIIntelligence
-
-    ↓
-
-Context Resolution
-
-    ↓
-
+IntentUnderstanding
+       ↓
 AI Engine
-
-    ↓
-
+       ↓
 AI Provider
 ```
 
-The runtime connects these capabilities; it does not replace them.
-
-Similarly, v0.75 follows:
+and:
 
 ```text
-IntentUnderstanding
-
-        ↓
-
-Existing AI Engine
-
-        ↓
-
-Existing AI Provider Architecture
+AgentDecisionLayer
+       ↓
+AI Engine
+       ↓
+AI Provider
 ```
 
-No second AI generation or provider system is introduced.
+and later:
+
+```text
+AgentDecision
+       ↓
+Existing ToolSelector / AgentPlanner
+       ↓
+Existing Execution Architecture
+```
+
+No duplicate tool-selection, planning, or execution system is introduced.
 
 ---
 
 # 🧪 Testing
 
-Testing is a core part of the architecture.
+Testing is a core part of Ultron's architecture.
 
-## v0.75 Validation Snapshot
+## v0.76 Validation Snapshot
 
-Dedicated v0.75 Intent Understanding tests:
+Dedicated Agent Decision tests:
+
+```text
+33 passed
+0 failed
+```
+
+These consist of:
+
+```text
+AgentDecision Model Tests
+15 passed
+
+AgentDecisionLayer Tests
+18 passed
+```
+
+Package export verification:
+
+```text
+v0.76 exports OK
+```
+
+The v0.76 dedicated tests cover:
+
+* Structured `AgentDecision` creation
+* Decision serialization
+* Decision type validation
+* Intent validation
+* Confidence validation
+* Metadata validation
+* Model immutability
+* All supported decision types
+* Invalid AI responses
+* Invalid JSON
+* Unsupported decisions
+* Confidence validation
+* Metadata validation
+* Prompt boundary protection
+* Intent data propagation
+* Metadata preservation
+* Deterministic response-generator injection
+
+## v0.75 Validation Baseline
+
+Dedicated Intent Understanding tests:
 
 ```text
 20 passed
@@ -1590,159 +1242,16 @@ Focused v0.72–v0.75 regression:
 0 failed
 ```
 
-Full ULTRON regression:
+Full ULTRON regression at the v0.75 milestone:
 
 ```text
 1954 passed
 0 failed
 ```
 
-Repository validation:
+These are the verified v0.75 baseline results.
 
-```text
-git diff --check
-
-PASS
-```
-
-The dedicated v0.75 tests cover:
-
-* Structured `Intent` result creation
-* Query normalization
-* Query validation
-* Context handling
-* Context-used metadata
-* Process alias behavior
-* Invalid JSON handling
-* Unsupported intent handling
-* Invalid confidence handling
-* Invalid metadata handling
-* Callable dependency validation
-* Prompt boundary protection
-* Information intent
-* Action intent
-* Creation intent
-* Continuation intent
-* Explanation intent
-* Conversation intent
-* Unknown intent
-
-These numbers are version-specific validation results, not a permanent guarantee for future commits.
-
----
-
-## v0.74 Validation
-
-Dedicated v0.74 AI Intelligence + AI Runtime tests:
-
-```text
-28 passed
-0 failed
-```
-
-Full ULTRON regression:
-
-```text
-1934 passed
-0 failed
-```
-
-Repository validation:
-
-```text
-git diff --check
-
-PASS
-```
-
-The dedicated v0.74 tests cover:
-
-* Explicit context injection
-* Context precedence
-* Context validation
-* Existing context-builder fallback
-* Runtime context forwarding
-* Query forwarding
-* Goal-context forwarding
-* Ranked-context forwarding
-* Token-limit forwarding
-* Query normalization
-* Runtime failure propagation
-* Runtime availability
-* Invalid dependency protection
-* Structured `IntelligenceResult` preservation
-
----
-
-## v0.73 Validation
-
-Dedicated AI Runtime tests:
-
-```text
-9 passed
-0 failed
-```
-
-Full ULTRON regression:
-
-```text
-1927 passed
-0 failed
-```
-
-Status:
-
-```text
-PASS
-```
-
----
-
-## v0.72 Validation
-
-Dedicated AI Engine tests:
-
-```text
-22 passed
-0 failed
-```
-
-Full ULTRON regression:
-
-```text
-1918 passed
-0 failed
-```
-
-Status:
-
-```text
-PASS
-```
-
----
-
-## v0.71 Validation
-
-Total dedicated v0.71 tests:
-
-```text
-105 passed
-0 failed
-```
-
-Full ULTRON regression suite:
-
-```text
-1917 passed
-0 failed
-```
-
-Status:
-
-```text
-PASS
-```
+The full regression suite will be revalidated after the complete v0.76 milestone is finalized.
 
 ---
 
@@ -1752,161 +1261,83 @@ Ultron has progressed through focused architectural milestones:
 
 ```text
 v0.37 → Agent Runtime
-
    ↓
-
 v0.38 → Agent Tool System
-
    ↓
-
 v0.39 → Tool Selector
-
    ↓
-
 v0.40 → Agent Planning
-
    ↓
-
 v0.41 → Agent Execution & Plan Orchestration
-
    ↓
-
 v0.42 → Agent Execution Controller
-
    ↓
-
 v0.43 → Orchestrator Execution Control
-
    ↓
-
 v0.44 → Execution Events & Event Store
-
    ↓
-
 v0.45 → Execution Observability
-
    ↓
-
 v0.46 → Execution Metrics
-
    ↓
-
 v0.47 → Persistent Execution History
-
    ↓
-
 v0.48 → Execution Recovery & State Restoration
-
    ↓
-
 v0.49 → Agent Runtime Context
-
    ↓
-
 v0.50 → Execution Context & Orchestration Integration
-
    ↓
-
 v0.51 → Multimodal Input Foundation
-
    ↓
-
 v0.52 → Voice Input Foundation
-
    ↓
-
 v0.53 → Voice Processing Foundation
-
    ↓
-
 v0.54 → Voice Processing Pipeline Foundation
-
    ↓
-
 v0.55 → Voice Processing Intelligence Foundation
-
    ↓
-
 v0.56 → STT Provider Abstraction
-
    ↓
-
 v0.57 → First STT Provider
-
    ↓
-
 v0.58 → Voice → Text Runtime Integration
-
    ↓
-
 v0.59 → Audio Capture Foundation
-
    ↓
-
 v0.60 → Voice Command Execution
-
    ↓
-
 v0.61 → TTS Provider Abstraction
-
    ↓
-
 v0.62 → First TTS Provider
-
    ↓
-
 v0.63 → Runtime TTS Integration
-
    ↓
-
 v0.64 → Voice Response Execution
-
    ↓
-
 v0.65 → Full Voice Conversation Loop
-
    ↓
-
 v0.66 → Audio Playback Foundation
-
    ↓
-
 v0.67 → Audio Output Device Integration
-
    ↓
-
 v0.68 → Voice Playback Execution
-
    ↓
-
 v0.69 → End-to-End Voice Assistant
-
    ↓
-
 v0.70 → AI Intelligence Foundation
-
    ↓
-
 v0.71 → AI Provider Abstraction
-
    ↓
-
 v0.72 → First AI Provider
-
    ↓
-
 v0.73 → AI Runtime
-
    ↓
-
 v0.74 → Context Injection
-
    ↓
-
 v0.75 → Intent Understanding
-
    ↓
-
 v0.76 → Agent Decision Layer
 ```
 
@@ -1914,43 +1345,163 @@ v0.76 → Agent Decision Layer
 
 # 📜 Version History
 
+## v0.76 — Agent Decision Layer
+
+The v0.76 milestone introduces a dedicated Agent Decision Layer between semantic intent understanding and existing agent execution infrastructure.
+
+The goal is to allow Ultron to determine the **high-level execution strategy** for an already-understood user intent without duplicating tool selection, planning, orchestration, or execution.
+
+### v0.76 Architecture
+
+```text
+User Query
+    ↓
+IntentUnderstanding
+    ↓
+Intent
+    ↓
+AgentDecisionLayer
+    ↓
+AgentDecision
+    ↓
+Existing Agent Infrastructure
+```
+
+### v0.76 Components
+
+```text
+modules/intelligence/agent_decision.py
+
+modules/intelligence/agent_decision_layer.py
+
+tests/intelligence/test_agent_decision.py
+
+tests/intelligence/test_agent_decision_layer.py
+```
+
+### Supported Decision Types
+
+```text
+respond
+execute
+plan
+clarify
+continue
+unknown
+```
+
+### AgentDecision Model
+
+The model contains:
+
+```text
+decision_type
+intent
+confidence
+metadata
+```
+
+The model is immutable and validates its internal state.
+
+### Agent Decision Responsibilities
+
+The component provides:
+
+* Intent validation
+* Decision prompt construction
+* AI Engine reuse
+* Structured JSON parsing
+* Decision validation
+* Confidence validation
+* Metadata validation
+* Structured `AgentDecision` creation
+* Deterministic dependency injection
+
+### Strict Architectural Boundary
+
+v0.76 intentionally does **not** implement:
+
+* Specific tool selection
+* Plan creation
+* Tool execution
+* Agent execution
+* Orchestration
+* Execution control
+
+The boundary is:
+
+```text
+Intent
+  ↓
+Agent Decision
+  ↓
+Existing Agent Infrastructure
+```
+
+### Existing Architecture Reuse
+
+The decision layer does not replace:
+
+```text
+ToolSelector
+AgentPlanner
+AgentOrchestrator
+ExecutionController
+AgentEngine
+```
+
+Instead, it prepares the high-level decision that allows those systems to remain responsible for their existing roles.
+
+### v0.76 Test Status
+
+Dedicated tests:
+
+```text
+33 passed
+0 failed
+```
+
+Breakdown:
+
+```text
+AgentDecision Model Tests
+15 passed
+
+AgentDecisionLayer Tests
+18 passed
+```
+
+Package export verification:
+
+```text
+v0.76 exports OK
+```
+
+The complete v0.76 milestone regression will be recorded after all v0.76 integration work is finalized.
+
+---
+
 ## v0.75 — Intent Understanding
 
-The v0.75 milestone introduces a dedicated Intent Understanding boundary for semantic classification of normalized user queries.
-
-The goal is to allow Ultron to understand what category of intent a user query represents before the future Agent Decision Layer determines what should happen next.
+The v0.75 milestone introduced a dedicated Intent Understanding boundary for semantic classification of normalized user queries.
 
 ### v0.75 Architecture
 
 ```text
 User Query
-
     ↓
-
 IntentUnderstanding
-
     ↓
-
 Intent Classification Prompt
-
     ↓
-
 Existing AI Engine
-
     ↓
-
 Configured AI Provider
-
     ↓
-
 Structured JSON
-
     ↓
-
 Validation
-
     ↓
-
 Intent
 ```
 
@@ -1976,368 +1527,56 @@ conversation
 unknown
 ```
 
-### Intent Model
-
-The `Intent` model contains:
+### v0.75 Test Status
 
 ```text
-intent_type
-query
-confidence
-metadata
+Dedicated Intent Understanding Tests
+20 passed
+
+Focused v0.72–v0.75 Regression
+78 passed
+
+Full ULTRON Regression
+1954 passed
+
+Failures
+0
+
+git diff --check
+PASS
 ```
 
-The model is immutable and validates its internal state.
-
-### Intent Understanding Responsibilities
-
-The component provides:
-
-* Query validation
-* Query normalization
-* Prompt construction
-* Semantic intent classification
-* Structured JSON parsing
-* Intent type validation
-* Confidence validation
-* Metadata validation
-* Context awareness
-* Structured `Intent` creation
-
-### AI Engine Reuse
-
-The component reuses the existing:
-
-```text
-core.ai_engine.generate_ai_response()
-```
-
-No new provider system or AI generation mechanism was introduced.
-
-### Context Awareness
-
-Optional context can be provided to the component:
-
-```text
-understand(
-    query,
-    context=None
-)
-```
-
-Context usage is recorded in intent metadata.
-
-### Deterministic Testing
-
-The response generator can be injected into `IntentUnderstanding`.
-
-This enables deterministic tests without external AI credentials or network dependencies.
-
-### Strict Architectural Boundary
-
-v0.75 intentionally does **not** implement:
-
-* Agent decisions
-* Tool selection
-* Concrete action determination
-* Planning
-* Orchestration
-* Execution
-
-The boundary is:
+### v0.75 Boundary
 
 ```text
 Intent Understanding
         ↓
 Structured Intent
         ↓
-Future Agent Decision Layer
+Agent Decision Layer
 ```
 
-### v0.75 Test Status
-
-Dedicated Intent Understanding tests:
-
-```text
-20 passed
-0 failed
-```
-
-Focused v0.72–v0.75 regression:
-
-```text
-78 passed
-0 failed
-```
-
-Full ULTRON regression:
-
-```text
-1954 passed
-0 failed
-```
-
-Repository validation:
-
-```text
-git diff --check
-
-PASS
-```
-
-### v0.75 Milestone Summary
-
-Ultron v0.75 establishes:
-
-```text
-Intent Model
-
-      +
-
-Intent Classification
-
-      +
-
-Supported Intent Categories
-
-      +
-
-Structured AI Output
-
-      +
-
-Intent Validation
-
-      +
-
-Confidence Validation
-
-      +
-
-Context Awareness
-
-      +
-
-Existing AI Engine Reuse
-
-      +
-
-Deterministic Testing
-
-      +
-
-Strict Execution Boundary
-```
-
-The architecture is now prepared for:
-
-```text
-Intent Understanding
-
-        ↓
-
-Agent Decision
-
-        ↓
-
-Agent Planning
-
-        ↓
-
-Agent Orchestration
-
-        ↓
-
-Execution
-```
-
-The Agent Decision Layer belongs to v0.76.
+The Agent Decision Layer is introduced in v0.76.
 
 ---
 
 ## v0.74 — Context Injection
 
-The v0.74 milestone introduces explicit Context Injection into Ultron's existing AI Intelligence and AI Runtime architecture.
+The v0.74 milestone introduced explicit Context Injection into the existing AI Intelligence and AI Runtime architecture.
 
-The goal is to allow higher-level components to provide prepared AI context directly while preserving the existing context builder as the default fallback.
-
-### v0.74 Architecture
-
-```text
-Incoming AI Request
-
-        ↓
-
-    AIRuntime
-
-        ↓
-
-   AIIntelligence
-
-        ↓
-
-   Context Resolution
-
-        ↓
-
-┌───────────────────────┐
-│ Explicit Context?     │
-└───────────┬───────────┘
-            │
-      ┌─────┴─────┐
-      YES         NO
-       │           │
-       ▼           ▼
-   Injected      Existing
-   Context       Context Builder
-       │           │
-       └──────┬─────┘
-              ↓
-          AI Engine
-              ↓
-          AI Provider
-```
-
-### Context Injection
-
-`AIIntelligence.generate()` now supports:
-
-```text
-context=None
-```
-
-When an explicit string context is supplied, it is passed directly to the existing AI response-generation path.
-
-### Context Precedence
-
-Explicit context takes precedence over generated context.
-
-This prevents duplicate context construction when a higher-level component has already prepared the required context.
-
-### Context Validation
-
-The intelligence layer validates injected context before generation.
-
-Supported values are:
-
-```text
-None
-str
-```
-
-Invalid context types produce a structured intelligence failure.
-
-### Existing Context Fallback
-
-When explicit context is absent, the existing:
-
-```text
-core/ai_context.py
-```
-
-builder continues to construct context from:
-
-* Current user query
-* Goal context
-* Topic
-* Entity
-* Intent
-* Technology
-* Pending question
-* Ranked previous conversation
-
-No second context-building system was introduced.
-
-### Runtime Integration
-
-`AIRuntime.run()` now accepts and forwards:
-
-```text
-context=None
-```
-
-The runtime remains a thin coordination boundary.
+The goal was to allow higher-level components to provide prepared AI context directly while preserving the existing context builder as the default fallback.
 
 ### v0.74 Test Status
 
-Dedicated AI Intelligence + AI Runtime tests:
-
 ```text
+Dedicated AI Intelligence + AI Runtime Tests
 28 passed
-0 failed
-```
 
-Full ULTRON regression:
-
-```text
+Full ULTRON Regression
 1934 passed
-0 failed
-```
 
-Repository validation:
-
-```text
 git diff --check
-
 PASS
-```
-
-### v0.74 Milestone Summary
-
-Ultron v0.74 establishes:
-
-```text
-Explicit Context Injection
-
-        +
-
-Context Validation
-
-        +
-
-Context Precedence
-
-        +
-
-Existing Context Builder Fallback
-
-        +
-
-Runtime Context Forwarding
-
-        +
-
-Backward Compatibility
-
-        +
-
-Deterministic Testing
-```
-
-The architecture is now prepared for:
-
-```text
-Context Injection
-
-        ↓
-
-Intent Understanding
-
-        ↓
-
-Agent Decision
-
-        ↓
-
-Agent Planning
-
-        ↓
-
-Agent Orchestration
-
-        ↓
-
-Execution
 ```
 
 ---
@@ -2346,128 +1585,18 @@ Execution
 
 The v0.73 milestone introduced a dedicated AI Runtime boundary above Ultron's existing AI Intelligence system.
 
-The goal was to provide a stable runtime entry point for AI execution without duplicating provider selection, context construction, intelligence processing, or agent execution responsibilities.
+The runtime provides a stable entry point without duplicating provider selection, context construction, intelligence processing, or execution responsibilities.
 
-### v0.73 Architecture
-
-```text
-Incoming AI Request
-
-        ↓
-
-    AIRuntime
-
-        ↓
-
-   AIIntelligence
-
-        ↓
-
-    AI Engine
-
-        ↓
-
-   AI Provider
-
-        ↓
-
-IntelligenceResult
-```
-
-### AI Runtime
-
-The runtime component is:
+### v0.73 Test Status
 
 ```text
-modules/intelligence/ai_runtime.py
-```
-
-`AIRuntime` provides:
-
-* Runtime initialization
-* AI Intelligence dependency injection
-* Runtime execution
-* Query forwarding
-* Goal-context forwarding
-* Ranked-context forwarding
-* Token-limit forwarding
-* Structured `IntelligenceResult` return
-* Runtime availability checking
-
-### Runtime Boundary
-
-The runtime intentionally delegates to the existing intelligence layer:
-
-```text
-AIRuntime
-
-    ↓
-
-AIIntelligence.generate()
-```
-
-It does not duplicate:
-
-```text
-core/ai_context.py
-core/ai_engine.py
-core/providers/
-```
-
-### Runtime Execution Contract
-
-The v0.73 contract was:
-
-```text
-run(
-    query,
-    goal_context=None,
-    ranked_context=None,
-    max_tokens=1024
-)
-```
-
-v0.74 extends this contract with:
-
-```text
-context=None
-```
-
-### Dependency Injection
-
-`AIRuntime` accepts an optional `AIIntelligence` instance.
-
-This allows deterministic tests without changing the runtime architecture or requiring external AI credentials.
-
-### Availability
-
-The runtime exposes:
-
-```text
-is_available()
-```
-
-Availability is delegated to `AIIntelligence`.
-
-### v0.73 Validation
-
-Dedicated AI Runtime tests:
-
-```text
+Dedicated AI Runtime Tests
 9 passed
-0 failed
-```
 
-Full ULTRON regression:
-
-```text
+Full ULTRON Regression
 1927 passed
-0 failed
-```
 
-Status:
-
-```text
+Status
 PASS
 ```
 
@@ -2477,112 +1606,23 @@ PASS
 
 The v0.72 milestone established the first concrete AI provider integration path on top of Ultron's provider-agnostic AI Provider abstraction.
 
-The goal was to formalize provider resolution inside the AI Engine while keeping provider-specific implementation isolated inside concrete providers.
-
-### v0.72 Architecture
-
-```text
-AI Intelligence
-       │
-       ▼
-AI Engine
-       │
-       ▼
-Supported Provider Registry
-       │
-       ├── MockProvider
-       │
-       └── AnthropicProvider
-```
-
-### Supported Provider Registry
-
-```text
-SUPPORTED_PROVIDERS
-
-mock       → MockProvider
-anthropic  → AnthropicProvider
-```
-
-### Provider Selection
-
-The configured provider is selected through:
-
-```text
-AI_MODE
-```
-
-Supported values:
+Supported providers:
 
 ```text
 mock
 anthropic
 ```
 
-Provider selection is case-insensitive and ignores surrounding whitespace.
-
-### Backward-Compatible Fallback
-
-Unknown or empty provider modes fall back to `MockProvider`.
-
-This preserves the existing AI Engine behavior.
-
-### AI Engine Responsibilities
-
-The AI Engine is responsible for:
-
-* Resolving the configured provider
-* Maintaining the supported provider registry
-* Instantiating the selected provider
-* Validating the provider abstraction
-* Delegating generation
-* Preserving `generate_ai_response()`
-
-### Anthropic as First Concrete Provider
-
-`AnthropicProvider` remains isolated inside:
-
-```text
-core/providers/anthropic_provider.py
-```
-
-The AI Engine does not directly implement Anthropic API calls.
-
-```text
-AI Engine
-
-    ↓
-
-AIProvider
-
-    ↓
-
-AnthropicProvider
-
-    ↓
-
-Anthropic API
-```
-
 ### v0.72 Test Status
 
-AI Engine Tests:
-
 ```text
+Dedicated AI Engine Tests
 22 passed
-0 failed
-```
 
-Full ULTRON Regression:
-
-```text
+Full ULTRON Regression
 1918 passed
-0 failed
-```
 
-Status:
-
-```text
+Status
 PASS
 ```
 
@@ -2590,93 +1630,46 @@ PASS
 
 ## v0.71 — AI Provider Abstraction
 
-The v0.71 milestone established the provider-agnostic AI Provider abstraction for Ultron.
-
-The goal was to create a stable contract between the AI Engine and concrete AI providers while keeping provider-specific API implementation isolated.
-
-### AIProvider
-
-The provider abstraction provides:
-
-* Provider identity
-* Provider capabilities
-* Provider configuration
-* Provider metadata
-* Availability validation
-* Prompt validation
-* Abstract AI generation contract
-* Provider error abstraction
-* Defensive configuration and metadata handling
+The v0.71 milestone established the provider-agnostic AI Provider abstraction.
 
 ### v0.71 Test Status
 
 ```text
-AI Provider Abstraction Tests: 35 passed
+AI Provider Abstraction Tests
+35 passed
 
-Mock Provider Tests: 22 passed
+Mock Provider Tests
+22 passed
 
-Anthropic Provider Tests: 27 passed
+Anthropic Provider Tests
+27 passed
 
-AI Engine Tests: 21 passed
-```
+AI Engine Tests
+21 passed
 
-Total dedicated tests:
-
-```text
+Total Dedicated Tests
 105 passed
-0 failed
-```
 
-Full ULTRON Regression:
-
-```text
+Full ULTRON Regression
 1917 passed
-0 failed
-```
-
-Status:
-
-```text
-PASS
 ```
 
 ---
 
 ## v0.70 — AI Intelligence Foundation
 
-The v0.70 milestone introduced the dedicated AI Intelligence Foundation for Ultron.
-
-The intelligence layer established a structured coordination boundary above the existing AI engine and provider systems.
-
-### v0.70 Architecture
+The v0.70 milestone introduced the dedicated AI Intelligence Foundation.
 
 ```text
 User Query
-    │
-    ▼
+    ↓
 AI Intelligence
-    │
-    ├── Query Validation
-    ├── Context Construction
-    ├── AI Response Generation
-    │
-    ▼
+    ↓
+AI Engine
+    ↓
+AI Provider
+    ↓
 IntelligenceResult
-```
-
-### v0.70 Test Status
-
-```text
-AI Intelligence Foundation Tests: 20 passed
-IntelligenceResult Tests: 8 passed
-AI Intelligence Tests: 12 passed
-Full ULTRON Regression: 1812 passed
-```
-
-Status:
-
-```text
-PASS
 ```
 
 ---
@@ -2685,7 +1678,7 @@ PASS
 
 Introduced the top-level end-to-end voice orchestration layer.
 
-### Key capabilities
+Key capabilities included:
 
 * EndToEndVoiceAssistant
 * Voice conversation integration
@@ -2696,18 +1689,8 @@ Introduced the top-level end-to-end voice orchestration layer.
 * Output-device resolution
 * Structured success/failure results
 * Failure-stage reporting
-* Defensive result-state handling
 * Availability checks
 * Reset support
-
-### Validation
-
-```text
-21 dedicated tests passed
-1792 full regression tests passed
-0 failures
-git diff --check clean
-```
 
 ---
 
@@ -2803,25 +1786,15 @@ Introduced real microphone capture and established the hardware-independent audi
 
 ```text
 Physical Microphone
-
         ↓
-
 MicrophoneCapture
-
         ↓
-
 AudioCapture
-
         ↓
-
 Raw PCM Audio
-
         ↓
-
 PCM → WAV
-
         ↓
-
 VoiceInput
 ```
 
@@ -2968,17 +1941,17 @@ Established the initial agent-runtime foundation documented in this development 
 
 # 🔮 Roadmap
 
-The current architecture provides a foundation for future capabilities.
-
 ## AI Intelligence
 
-* Context injection — **Completed in v0.74**
-* Intent understanding — **Completed in v0.75**
-* Agent decision layer — **Next: v0.76**
+* Context Injection — **Completed in v0.74**
+* Intent Understanding — **Completed in v0.75**
+* Agent Decision Layer — **v0.76 in development**
+* Intent → Decision integration
+* Intelligent agent routing
+* Direct-answer vs agent-task routing
 * Conversational reasoning
 * Provider-aware intelligence
-* Intelligent agent routing
-* Direct-answer vs agent-task decisions
+* Autonomous execution decisions
 
 ## Voice Intelligence
 
@@ -3017,94 +1990,46 @@ The current architecture provides a foundation for future capabilities.
 The long-term architectural direction is:
 
 ```text
-Understand
-
-   ↓
-
 Receive
-
    ↓
-
 Capture
-
    ↓
-
 Normalize
-
    ↓
-
 Process
-
    ↓
-
 Transcribe
-
    ↓
-
-Integrate
-
-   ↓
-
 Runtime
-
    ↓
-
 Contextualize
-
    ↓
-
 Understand Intent
-
    ↓
-
 Decide
-
    ↓
-
 Plan
-
    ↓
-
 Select
-
    ↓
-
 Orchestrate
-
    ↓
-
 Execute
-
    ↓
-
 Observe
-
    ↓
-
 Measure
-
    ↓
-
 Persist
-
    ↓
-
 Snapshot
-
    ↓
-
 Recover
-
    ↓
-
 Restore
-
    ↓
-
 Resume
-
    ↓
-
 Automate
 ```
 
@@ -3131,57 +2056,35 @@ The intended evolution is:
 
 ```text
 Personal AI Assistant
-
         ↓
-
 Agent Runtime
-
         ↓
-
 Multimodal Interface
-
         ↓
-
 Voice Intelligence
-
         ↓
-
 AI Intelligence
-
         ↓
-
 AI Runtime
-
         ↓
-
 Context Injection
-
         ↓
-
 Intent Understanding
-
         ↓
-
 Agent Decision
-
         ↓
-
+Agent Planning
+        ↓
+Tool Selection
+        ↓
 Context-Aware Execution
-
         ↓
-
 Persistent & Recoverable Runtime
-
         ↓
-
 Autonomous Agents
-
         ↓
-
 Durable Automation
-
         ↓
-
 AI Operating System Platform
 ```
 
@@ -3204,7 +2107,7 @@ The main README is intended to explain:
 * Its roadmap
 * Its long-term direction
 
-Detailed implementation notes and milestone-specific engineering logs should live in dedicated documentation rather than repeatedly expanding the main README.
+Detailed implementation notes and milestone-specific engineering logs should live in dedicated documentation.
 
 A future documentation structure can follow:
 
@@ -3212,19 +2115,13 @@ A future documentation structure can follow:
 README.md
 
 docs/
-
 ├── architecture/
 │   ├── overview.md
 │   └── milestones/
-
 ├── ai/
-
 ├── voice/
-
 ├── execution/
-
 ├── testing/
-
 └── roadmap.md
 ```
 
@@ -3232,59 +2129,45 @@ docs/
 
 # 🛡️ Architectural Guarantees
 
-Ultron's architecture is intentionally designed around these boundaries:
+Ultron's architecture is intentionally designed around:
 
 ```text
 Provider Isolation
-
         +
-
 Hardware Isolation
-
         +
-
 Runtime Isolation
-
         +
-
 Component Isolation
-
         +
-
 Observable Execution
-
         +
-
 Persistent State
-
         +
-
 Recoverable Runtime
-
         +
-
 Deterministic Testing
+        +
+Composition Over Duplication
 ```
 
-No single high-level component should become responsible for unrelated low-level concerns.
-
-The v0.75 Intent Understanding boundary additionally guarantees that semantic classification does not directly become execution.
+The v0.75 and v0.76 intelligence boundaries additionally establish:
 
 ```text
 Intent Understanding
-
         ≠
-
 Agent Decision
-
         ≠
-
 Planning
-
         ≠
-
+Tool Selection
+        ≠
+Orchestration
+        ≠
 Execution
 ```
+
+No single high-level component should become responsible for unrelated low-level concerns.
 
 ---
 
@@ -3294,29 +2177,19 @@ Ultron follows a milestone-driven development model:
 
 ```text
 Define Boundary
-
      ↓
-
 Implement Small Capability
-
      ↓
-
 Write Dedicated Tests
-
      ↓
-
+Run Focused Regression
+     ↓
 Run Full Regression
-
      ↓
-
 Validate Repository
-
      ↓
-
 Document Milestone
-
      ↓
-
 Move to Next Boundary
 ```
 
@@ -3326,32 +2199,51 @@ This approach keeps architectural growth incremental and makes regressions easie
 
 # ⚠️ Current Scope
 
-The v0.75 milestone establishes **Intent Understanding** on top of Ultron's existing AI Engine and provider architecture.
+The current milestone is **v0.76 — Agent Decision Layer**.
 
-The current implementation is responsible for semantic intent classification and structured intent creation.
+The completed v0.76 foundation provides:
 
-It does **not** yet provide the Agent Decision Layer.
+* `AgentDecision`
+* `DecisionType`
+* `AgentDecisionLayer`
+* Intent → Decision transformation
+* Structured decision parsing
+* Decision validation
+* Confidence validation
+* Metadata handling
+* Existing AI Engine reuse
+* Deterministic dependency injection
+* Package-level exports
+* 33 dedicated passing tests
 
-In particular, v0.75 does not own:
+The current v0.76 layer does **not** yet replace or duplicate:
 
 * Tool selection
-* Concrete action determination
+* Plan creation
 * Agent selection
 * Agent planning
-* Plan creation
 * Agent orchestration
 * Tool execution
+* Agent execution
 * Autonomous execution
 
-The next milestone is:
+The existing architecture remains responsible for these capabilities.
+
+The next v0.76 work is to validate and integrate the intelligence boundaries cleanly:
 
 ```text
-v0.76
-
-Agent Decision Layer
+IntentUnderstanding
+        ↓
+Intent
+        ↓
+AgentDecisionLayer
+        ↓
+AgentDecision
+        ↓
+Existing Agent Infrastructure
 ```
 
-The broader roadmap still includes:
+The broader roadmap includes:
 
 * Conversational reasoning
 * Intelligent agent routing
@@ -3374,127 +2266,111 @@ These are future extensions of the architecture established by the current miles
 
 ```text
 v0.37
-
 Agent Runtime
 
    ↓
 
 v0.44
-
 Execution Events
 
    ↓
 
 v0.48
-
 Recovery & State Restoration
 
    ↓
 
 v0.51
-
 Multimodal Input
 
    ↓
 
 v0.56
-
 STT Provider Abstraction
 
    ↓
 
 v0.59
-
 Real Audio Capture
 
    ↓
 
 v0.60
-
 Voice Command Execution
 
    ↓
 
 v0.61–v0.64
-
 TTS & Voice Response Architecture
 
    ↓
 
 v0.65
-
 Full Voice Conversation Loop
 
    ↓
 
 v0.66–v0.68
-
 Audio Playback Architecture
 
    ↓
 
 v0.69
-
 End-to-End Voice Assistant
 
    ↓
 
 v0.70
-
 AI Intelligence Foundation
 
    ↓
 
 v0.71
-
 AI Provider Abstraction
 
    ↓
 
 v0.72
-
 First AI Provider
 
    ↓
 
 v0.73
-
 AI Runtime
 
    ↓
 
 v0.74
-
 Context Injection
 
    ↓
 
 v0.75
-
 Intent Understanding
 
    ↓
 
 v0.76
-
 Agent Decision Layer
 
    ↓
 
 Future
+Decision → Planning → Selection → Execution Integration
 
+   ↓
+
+Future
 Advanced Voice + Multimodal Intelligence
 
    ↓
 
 Future
-
 Context-Aware Execution & Durable Automation
 
    ↓
 
 Long Term
-
 AI Operating System Platform
 ```
 
@@ -3508,145 +2384,71 @@ The project prioritizes:
 
 ```text
 Small Milestones
-
         →
-
 Clear Boundaries
-
         →
-
 Independent Components
-
         →
-
 Deterministic Testing
-
         →
-
 Hardware Isolation
-
         →
-
 Provider Isolation
-
         →
-
 Runtime Isolation
-
         →
-
 Observable Execution
-
         →
-
 Persistent State
-
         →
-
 Recoverable Runtime
-
         →
-
 Multimodal Intelligence
-
         →
-
 Context Injection
-
         →
-
 Intent Understanding
-
         →
-
 Agent Decision
-
         →
-
+Agent Planning
+        →
+Tool Selection
+        →
 Autonomous Execution
-
         →
-
 Durable Automation
 ```
 
-v0.75 marks the establishment of **Intent Understanding** as a dedicated semantic intelligence boundary on top of Ultron's existing AI architecture.
+v0.75 established **Intent Understanding** as a dedicated semantic intelligence boundary.
 
-The current v0.75 execution path is:
+v0.76 establishes the **Agent Decision Layer** as the next architectural boundary.
+
+The current intelligence path is:
 
 ```text
 User Query
-
     ↓
-
 Intent Understanding
-
     ↓
-
-Intent Classification
-
-    ↓
-
-Existing AI Engine
-
-    ↓
-
-AI Provider
-
-    ↓
-
 Structured Intent
-```
-
-The future agent path is:
-
-```text
-Structured Intent
-
     ↓
-
 Agent Decision Layer
-
     ↓
-
-Direct Answer / Agent Task
-
-    ↓
-
-Planning
-
-    ↓
-
-Tool Selection
-
-    ↓
-
-Orchestration
-
-    ↓
-
-Execution
+Structured Agent Decision
 ```
 
-The v0.75 milestone intentionally preserves separation between:
+The existing execution architecture then remains responsible for:
 
 ```text
-Intent Understanding
-
-        ≠
-
 Agent Decision
-
-        ≠
-
+    ↓
+Tool Selection
+    ↓
 Planning
-
-        ≠
-
+    ↓
 Orchestration
-
-        ≠
-
+    ↓
 Execution
 ```
 
@@ -3654,23 +2456,34 @@ The implementation reuses the existing:
 
 ```text
 AI Engine
-
     ↓
-
 AI Provider Architecture
 ```
 
 instead of introducing duplicate provider or generation systems.
 
-The current v0.75 validation state is:
+The verified v0.76 dedicated validation state is:
 
 ```text
-Dedicated Intent Understanding Tests
-20 passed
+AgentDecision Tests
+15 passed
 
-Focused v0.72–v0.75 Regression
-78 passed
+AgentDecisionLayer Tests
+18 passed
 
+Total Dedicated v0.76 Tests
+33 passed
+
+Failures
+0
+
+Package Export Verification
+PASS
+```
+
+The verified v0.75 full-regression baseline remains:
+
+```text
 Full ULTRON Regression
 1954 passed
 
@@ -3681,24 +2494,36 @@ git diff --check
 PASS
 ```
 
-Ultron is therefore positioned to move from:
+Ultron is now positioned to evolve from:
 
 ```text
 Context Injection
         ↓
 Intent Understanding
+        ↓
+Agent Decision
 ```
 
-into:
+toward:
 
 ```text
 Agent Decision
         ↓
 Agent Planning
         ↓
+Tool Selection
+        ↓
 Agent Orchestration
         ↓
-Autonomous Execution
+Execution
+        ↓
+Observation
+        ↓
+Persistence
+        ↓
+Recovery
+        ↓
+Automation
 ```
 
 with each capability introduced as an independently testable architectural boundary.
