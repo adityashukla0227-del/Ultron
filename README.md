@@ -2,7 +2,7 @@
 
 ## Modular Personal AI Assistant, Agent Runtime, Automation & Multimodal Platform
 
-Ultron is a modular AI system evolving from a personal assistant into a broader agent execution platform with multimodal input, voice interaction, planning, orchestration, execution control, observability, persistence, recovery, automation, and AI intelligence.
+Ultron is a modular AI system evolving from a personal assistant into a broader agent execution platform with multimodal input, voice interaction, planning, orchestration, execution control, observability, persistence, recovery, automation, AI intelligence, decision routing, response/action boundaries, and task abstractions.
 
 The architecture is designed around clear boundaries, replaceable components, deterministic testing, provider isolation, runtime isolation, hardware isolation, and composition over duplication.
 
@@ -10,28 +10,30 @@ The architecture is designed around clear boundaries, replaceable components, de
 
 # 📌 Current Status
 
-| Item                                           | Status                         |
-| ---------------------------------------------- | ------------------------------ |
-| **Current Version**                            | **v0.78**                      |
-| **Current Milestone**                          | **Response / Action Boundary** |
-| **Dedicated v0.78 Tests**                      | **19 passed**                  |
-| **Dedicated v0.77 Tests**                      | **23 passed**                  |
-| **v0.76 Dedicated Agent Decision Tests**       | **33 passed**                  |
-| **v0.75 Dedicated Intent Understanding Tests** | **20 passed**                  |
-| **v0.75 Focused Regression**                   | **78 passed**                  |
-| **Full ULTRON Regression**                     | **2029 passed**                |
-| **v0.78 Dedicated Failures**                   | **0**                          |
-| **Development State**                          | Active development             |
+| Item                                           | Status               |
+| ---------------------------------------------- | -------------------- |
+| **Current Version**                            | **v0.79**            |
+| **Current Milestone**                          | **Task Abstraction** |
+| **Dedicated v0.79 Tests**                      | **18 passed**        |
+| **Dedicated v0.78 Tests**                      | **19 passed**        |
+| **Dedicated v0.77 Tests**                      | **23 passed**        |
+| **v0.76 Dedicated Agent Decision Tests**       | **33 passed**        |
+| **v0.75 Dedicated Intent Understanding Tests** | **20 passed**        |
+| **v0.75 Focused Regression**                   | **78 passed**        |
+| **Full ULTRON Regression**                     | **2047 passed**      |
+| **v0.79 Dedicated Failures**                   | **0**                |
+| **Development State**                          | Active development   |
 
-v0.78 introduces the **Response / Action Boundary** as a dedicated architectural boundary between structured decision routes and downstream response-oriented or action-oriented systems.
+v0.79 introduces the **Task Abstraction** as a dedicated architectural representation of a logical unit of work.
 
 The milestone builds on:
 
 * v0.75 — Intent Understanding
 * v0.76 — Agent Decision Layer
 * v0.77 — Decision Routing Foundation
+* v0.78 — Response / Action Boundary
 
-The current intelligence architecture is:
+The current intelligence-to-task architecture is:
 
 ```text
 User Query
@@ -49,23 +51,13 @@ DecisionRouter
 Structured DecisionRoute
     ↓
 Response / Action Boundary
+    ↓
+Task Abstraction
 ```
 
-The Response / Action Boundary determines the **high-level downstream boundary** for an already-routed decision.
+The Task abstraction represents **what logical unit of work exists** after the higher-level intelligence pipeline has established the appropriate downstream path.
 
-It intentionally does **not**:
-
-* Select a specific tool
-* Create an execution plan
-* Execute tools
-* Execute agents
-* Orchestrate execution
-* Replace `ToolSelector`
-* Replace `AgentPlanner`
-* Replace `AgentOrchestrator`
-* Replace `AgentEngine`
-
-Those responsibilities remain in their existing architectural layers.
+v0.79 intentionally does **not** implement task execution or task lifecycle management.
 
 ---
 
@@ -86,6 +78,7 @@ The system separates responsibilities across:
 * Agent Decision
 * Decision Routing
 * Response / Action Boundary
+* Task Abstraction
 * Agents
 * Tools
 * Tool Selection
@@ -123,599 +116,369 @@ The goal is to allow each subsystem to evolve independently without forcing unre
 
 The high-level architecture represents the intended architectural direction while individual capabilities are introduced incrementally through independent milestones.
 
-The current intelligence-to-execution boundary is:
+The current intelligence-to-task boundary is:
 
 ```text
 User
-
  │
-
  ▼
-
 Multimodal Input
-
  ├── Text
-
  ├── Voice
-
  ├── Vision
-
  └── Gesture
-
  │
-
  ▼
-
 Input Router
-
  │
-
  ▼
-
 Normalized Input Result
-
  │
-
  ▼
-
 Conversation Engine
-
  │
-
  ▼
-
 AI Runtime
-
  │
-
  ▼
-
 AI Intelligence
-
  │
-
  ├── Query Validation
-
  ├── Context Injection
-
  └── Context Construction
-
  │
-
  ▼
-
 Intent Understanding
-
 [v0.75]
-
  │
-
  ▼
-
 Structured Intent
-
  │
-
  ▼
-
 Agent Decision Layer
-
 [v0.76]
-
  │
-
  ▼
-
 Structured Agent Decision
-
  │
-
  ▼
-
 Decision Router
-
 [v0.77]
-
  │
-
  ▼
-
 Structured Decision Route
-
  │
-
  ▼
-
 Response / Action Boundary
-
 [v0.78]
-
  │
-
- ├── RESPONSE
-
- ├── ACTION
-
- └── UNKNOWN
-
+ ├── response
+ ├── action
+ └── unknown
  │
-
  ▼
-
+Task Abstraction
+[v0.79]
+ │
+ ▼
 Existing Agent Infrastructure
-
  │
-
  ├── Direct Response
-
- │
-
  ├── ToolSelector
-
- │
-
  └── AgentPlanner
-
-         │
-
-         ▼
-
+        │
+        ▼
      Agent Plan
-
-         │
-
-         ▼
-
+        │
+        ▼
 Agent Orchestrator
-
-         │
-
-         ▼
-
+        │
+        ▼
 Execution Controller
-
-         │
-
-         ▼
-
+        │
+        ▼
 Execution Context
-
  ├── Context Queries
-
  ├── Execution State
-
  ├── Step State
-
  ├── Results
-
  ├── Retry State
-
  └── Runtime Metadata
-
-         │
-
-         ▼
-
+        │
+        ▼
 Execution
-
  ├── Events
-
  ├── Observability
-
  ├── Metrics
-
  ├── Persistence
-
  └── State Snapshots
-
-         │
-
-         ▼
-
+        │
+        ▼
 Recovery Infrastructure
 ```
 
-The critical intelligence boundary is now:
+The critical intelligence-to-task flow is:
 
 ```text
 Intent Understanding
-
         ↓
-
 Structured Intent
-
         ↓
-
 Agent Decision Layer
-
         ↓
-
 Structured Agent Decision
-
         ↓
-
 Decision Router
-
         ↓
-
 Structured Decision Route
-
         ↓
-
 Response / Action Boundary
-
         ↓
-
-Existing Response / Tool / Planning / Execution Systems
+Task Abstraction
+        ↓
+Existing Planning / Tool / Execution Systems
 ```
 
-The Response / Action Boundary does not replace the existing execution architecture.
+The Task abstraction does not replace the existing execution architecture.
 
 ---
 
-# 🧭 Response / Action Boundary — v0.78
+# 🧭 Task Abstraction — v0.79
 
-v0.78 introduces the **Response / Action Boundary**.
+v0.79 introduces the **Task Abstraction**.
 
-The purpose of this milestone is to establish a stable architectural boundary between:
+The purpose of this milestone is to establish a stable representation for a logical unit of work without introducing execution or lifecycle behavior.
 
-```text
-Structured Decision Route
-
-        ↓
-
-Response-Oriented / Action-Oriented System
-```
-
-The boundary consumes an existing `DecisionRoute` and classifies it into a high-level downstream category.
-
-The process is deterministic and does not require another AI call.
-
-The v0.78 flow is:
+The v0.79 conceptual flow is:
 
 ```text
 AgentDecision
-      ↓
+     ↓
 DecisionRouter
-      ↓
+     ↓
 DecisionRoute
-      ↓
+     ↓
 ResponseActionBoundary
-      ↓
-High-Level Boundary
+     ↓
+Task
 ```
 
-The boundary is intentionally lightweight.
+A Task answers:
 
-It does not perform the work represented by the route.
+```text
+What logical unit of work exists?
+```
+
+It does not answer:
+
+```text
+How should the work be executed?
+```
+
+Execution remains the responsibility of the existing agent/runtime architecture.
 
 ---
 
-# 🧩 v0.78 Components
+# 🧩 v0.79 Components
 
 ```text
-modules/intelligence/
+modules/task/
+├── __init__.py
+└── task.py
 
-└── response_action_boundary.py
-
-tests/intelligence/
-
-└── test_response_action_boundary.py
+tests/task/
+└── test_task.py
 ```
 
-The v0.78 intelligence package exposes the new boundary through:
+The task package exposes:
 
 ```text
-modules/intelligence/__init__.py
+modules/task/__init__.py
+```
+
+with:
+
+```text
+Task
+TaskError
+TaskType
 ```
 
 ---
 
-# 🎯 ResponseActionBoundary
+# 🎯 Task Model
 
-`ResponseActionBoundary` provides the architectural hand-off between routing and downstream response/action systems.
+The core Task model represents an immutable logical unit of work.
 
-Its responsibility is to classify an existing `DecisionRoute` into one of three high-level boundaries:
+Its structure is:
 
 ```text
-response
+Task
+├── task_id
+├── task_type
+├── description
+├── source
+└── metadata
+```
+
+The model contains:
+
+* Task identity
+* High-level task type
+* Task description
+* Task source
+* Task metadata
+* Validation
+* Safe serialization
+
+The supported task types are:
+
+```text
 action
+planning
+automation
+conversation
 unknown
 ```
 
-The current mapping is:
+The Task model validates:
+
+* `task_id`
+* `task_type`
+* `description`
+* `source`
+* `metadata`
+
+The model is immutable at the dataclass level.
+
+It also provides safe serialization through:
 
 ```text
-RESPONSE       → response
-EXECUTION      → action
-PLANNING       → action
-CLARIFICATION  → response
-CONTINUATION   → response
-UNKNOWN        → unknown
+Task.to_dict()
 ```
-
-This mapping is deterministic.
-
-No AI provider is called.
-
-No new decision is generated.
-
-No tool is selected.
-
-No plan is created.
-
-No execution is performed.
 
 ---
 
-# 🧩 v0.78 Boundary Model
+# 🧠 Task Abstraction Boundary
 
-The v0.78 abstraction is:
+The v0.79 abstraction is:
 
 ```text
 DecisionRoute
       ↓
 ResponseActionBoundary
       ↓
-response / action / unknown
+Task
+      ↓
+Future Task Lifecycle
 ```
 
-The boundary preserves the original `DecisionRoute`.
-
-It does not mutate or replace the route.
+The Task preserves the identity and semantic information required to represent a unit of work.
 
 Conceptually:
 
 ```text
-DecisionRoute
-      │
-      ├── route_type
-      ├── decision
-      └── metadata
-             │
-             ▼
-ResponseActionBoundary
-             │
-             ├── response
-             ├── action
-             └── unknown
+Task
+ │
+ ├── task_id
+ ├── task_type
+ ├── description
+ ├── source
+ └── metadata
 ```
 
-This keeps the routing model separate from downstream architectural handling.
+The Task model does not perform downstream work.
 
 ---
 
-# 🧠 v0.78 Route Classification
+# 🚫 Task Does Not Own
 
-## RESPONSE
+v0.79 intentionally does **not** own:
 
-A `RESPONSE` route belongs to a response-oriented downstream path.
-
-```text
-AgentDecision
-      ↓
-DecisionRouter
-      ↓
-DecisionRoute
-      ↓
-ResponseActionBoundary
-      ↓
-response
-```
-
-The boundary does not generate the response.
-
-Actual response generation remains outside the boundary.
-
----
-
-## EXECUTION
-
-An `EXECUTION` route belongs to an action-oriented path.
-
-```text
-AgentDecision
-      ↓
-DecisionRouter
-      ↓
-DecisionRoute
-      ↓
-ResponseActionBoundary
-      ↓
-action
-      ↓
-Existing Action / Execution Infrastructure
-```
-
-The `action` classification does **not** mean that a tool is immediately executed.
-
-Concrete tool selection remains the responsibility of `ToolSelector`.
-
-Execution remains the responsibility of the existing execution architecture.
-
-```text
-Decision Route
-      ↓
-ToolSelector
-      ↓
-AgentEngine
-      ↓
-Execution
-```
-
----
-
-## PLANNING
-
-A `PLANNING` route is also action-oriented because planning represents downstream work rather than a direct response.
-
-```text
-AgentDecision
-      ↓
-DecisionRouter
-      ↓
-DecisionRoute
-      ↓
-ResponseActionBoundary
-      ↓
-action
-      ↓
-AgentPlanner
-      ↓
-AgentPlan
-```
-
-The Response / Action Boundary does not create the plan.
-
-`AgentPlanner` remains responsible for planning.
-
----
-
-## CLARIFICATION
-
-A `CLARIFICATION` route belongs to a response-oriented boundary.
-
-```text
-AgentDecision
-      ↓
-DecisionRouter
-      ↓
-DecisionRoute
-      ↓
-ResponseActionBoundary
-      ↓
-response
-      ↓
-Clarification System
-```
-
-The boundary does not generate or ask the clarification itself.
-
----
-
-## CONTINUATION
-
-A `CONTINUATION` route belongs to a response-oriented boundary at this architectural stage.
-
-```text
-Existing Task
-
-      ↓
-
-New User Input
-
-      ↓
-
-Intent
-
-      ↓
-
-AgentDecision
-
-      ↓
-
-DecisionRouter
-
-      ↓
-
-DecisionRoute
-
-      ↓
-
-ResponseActionBoundary
-
-      ↓
-
-response
-```
-
-The boundary does not mutate or execute the existing task.
-
----
-
-## UNKNOWN
-
-An `UNKNOWN` route produces a safe unknown boundary.
-
-```text
-AgentDecision
-      ↓
-DecisionRouter
-      ↓
-DecisionRoute
-      ↓
-ResponseActionBoundary
-      ↓
-unknown
-```
-
-This prevents the system from forcing an unsupported downstream path.
-
----
-
-# 🚫 Response / Action Boundary Does Not Own
-
-The v0.78 boundary intentionally does **not** own:
-
-* Specific tool selection
-* Tool execution
-* Agent execution
-* Plan creation
+* Task execution
+* Tool selection
+* Agent selection
+* Execution plan creation
 * Plan validation
 * Plan execution
-* Agent selection
+* Task lifecycle
+* Task state transitions
+* Retries
+* Recovery
+* Cancellation
+* Timeouts
+* Resource control
+* AI provider communication
+* AI generation
 * Orchestration
-* Execution control
-* Runtime event management
+* Execution events
 * Execution metrics
 * Persistence
-* Recovery
-* AI provider communication
-* Response generation
-* Clarification generation
-* Task mutation
+* Autonomous execution
 
 The architectural separation remains:
 
 ```text
 Intent Understanding
-
         ≠
-
 Agent Decision
-
         ≠
-
 Decision Routing
-
         ≠
-
 Response / Action Boundary
-
         ≠
-
+Task Abstraction
+        ≠
 Tool Selection
-
         ≠
-
 Planning
-
         ≠
-
 Orchestration
-
         ≠
-
 Execution
 ```
 
-This prevents the high-level intelligence pipeline from becoming overloaded with low-level runtime responsibilities.
+This prevents the Task model from becoming a second execution system.
 
 ---
 
-# 🔗 v0.75 → v0.76 → v0.77 → v0.78 Intelligence Pipeline
+# 🧩 Task vs Agent Decision vs Agent Plan
 
-The intelligence architecture now progresses through four dedicated boundaries.
+Ultron intentionally separates these concepts.
+
+```text
+AgentDecision
+    ↓
+What high-level path should Ultron take?
+
+DecisionRoute
+    ↓
+Which architectural route should receive it?
+
+ResponseActionBoundary
+    ↓
+Is the downstream path response-oriented or action-oriented?
+
+Task
+    ↓
+What logical unit of work exists?
+
+AgentPlan
+    ↓
+What execution steps are required?
+
+AgentEngine
+    ↓
+How is the work actually executed?
+```
+
+This distinction is important for keeping the architecture modular.
+
+---
+
+# 🔗 v0.75 → v0.76 → v0.77 → v0.78 → v0.79 Pipeline
+
+The intelligence architecture now progresses through five dedicated boundaries.
 
 ## v0.75 — Understand
 
@@ -787,218 +550,87 @@ The question answered is:
 Which high-level downstream boundary should receive the routed request?
 ```
 
+---
+
+## v0.79 — Represent Work
+
+```text
+ResponseActionBoundary
+    ↓
+Task
+```
+
+The question answered is:
+
+```text
+What logical unit of work exists?
+```
+
 Therefore:
 
 ```text
 Understand
-
     ↓
-
 Decide
-
     ↓
-
 Route
-
     ↓
-
-Establish Response / Action Boundary
-
+Establish Boundary
     ↓
-
+Represent Work
+    ↓
 Plan / Select / Respond / Execute
 ```
 
 ---
 
-# 🧠 Agent Decision Layer Architecture
-
-v0.76 introduced a dedicated Agent Decision Layer for determining the high-level path that Ultron should take after understanding user intent.
-
-The component consumes the structured `Intent` produced by v0.75 and produces an immutable `AgentDecision`.
-
-## v0.76 Components
-
-```text
-modules/intelligence/agent_decision.py
-
-modules/intelligence/agent_decision_layer.py
-
-tests/intelligence/test_agent_decision.py
-
-tests/intelligence/test_agent_decision_layer.py
-```
-
-The architecture is:
-
-```text
-Structured Intent
-
-       ↓
-
-AgentDecisionLayer
-
-       ↓
-
-Decision Prompt
-
-       ↓
-
-Existing AI Engine
-
-       ↓
-
-Configured AI Provider
-
-       ↓
-
-Structured JSON
-
-       ↓
-
-Decision Validation
-
-       ↓
-
-AgentDecision
-```
-
----
-
-# 🤖 AgentDecision Model
-
-The structured decision result is represented by the `AgentDecision` model.
-
-```text
-AgentDecision
-
-├── decision_type
-
-├── intent
-
-├── confidence
-
-└── metadata
-```
-
-The model is immutable and validates:
-
-* Decision type
-* Intent instance
-* Confidence type
-* Confidence range
-* Metadata type
-
-The original `Intent` is preserved inside the decision.
-
-This allows downstream systems to access both:
-
-```text
-Intent
-
-+
-
-High-Level Decision
-```
-
-without reconstructing semantic information.
-
----
-
-# 🎯 Supported Decision Types
-
-v0.76 supports six high-level decision categories:
-
-```text
-respond
-execute
-plan
-clarify
-continue
-unknown
-```
-
-These map to v0.77 routes:
-
-```text
-respond   → response
-execute   → execution
-plan      → planning
-clarify   → clarification
-continue  → continuation
-unknown   → unknown
-```
-
-Those routes are then classified by v0.78:
-
-```text
-response       → response
-execution      → action
-planning       → action
-clarification  → response
-continuation   → response
-unknown        → unknown
-```
-
----
-
-# 🧩 Existing Agent Architecture Preservation
+# 🧠 Existing Agent Architecture Preservation
 
 Ultron already contains dedicated systems for tool selection, planning, orchestration, and execution.
 
-v0.76, v0.77, and v0.78 compose those systems instead of duplicating them.
+v0.75 through v0.79 compose those systems instead of duplicating them.
 
 The architecture remains:
 
 ```text
+Intent
+   ↓
 AgentDecision
-
-      ↓
-
-DecisionRouter
-
-      ↓
-
+   ↓
 DecisionRoute
-
-      ↓
-
+   ↓
 ResponseActionBoundary
-
-      │
-
-      ├── response
-      │
-      │     ↓
-      │
-      │   Response Systems
-      │
-      └── action
-            ↓
-       Existing Agent Systems
-            │
-            ├── ToolSelector
-            │       ↓
-            │   AgentEngine
-            │
-            └── AgentPlanner
-                    ↓
-                 AgentPlan
-                    ↓
-             AgentOrchestrator
-                    ↓
-             ExecutionController
-                    ↓
-                AgentEngine
-                    ↓
-                Execution
+   ↓
+Task
+   │
+   ├── response path
+   │
+   └── action path
+          ↓
+     Existing Agent Systems
+          │
+          ├── ToolSelector
+          │       ↓
+          │   AgentEngine
+          │
+          └── AgentPlanner
+                  ↓
+               AgentPlan
+                  ↓
+           AgentOrchestrator
+                  ↓
+           ExecutionController
+                  ↓
+              AgentEngine
+                  ↓
+              Execution
 ```
+
+The Task abstraction does not replace these systems.
 
 ### ToolSelector
 
 `ToolSelector` remains responsible for concrete tool selection.
-
-It determines which registered tool matches the execution requirement.
 
 ### AgentPlanner
 
@@ -1019,70 +651,163 @@ It determines which registered tool matches the execution requirement.
 Therefore:
 
 ```text
-DecisionRouter
-
-      ≠
-
-ResponseActionBoundary
-
-      ≠
-
+Task
+   ≠
+AgentPlan
+   ≠
 ToolSelector
-
-      ≠
-
-AgentPlanner
-
-      ≠
-
+   ≠
 AgentOrchestrator
-
-      ≠
-
+   ≠
 ExecutionController
-
-      ≠
-
+   ≠
 AgentEngine
 ```
 
 ---
 
+# 🧠 v0.78 Response / Action Boundary
+
+v0.78 introduced the **Response / Action Boundary**.
+
+Its purpose is to establish a stable architectural boundary between structured decision routes and downstream response-oriented or action-oriented systems.
+
+The v0.78 flow is:
+
+```text
+AgentDecision
+     ↓
+DecisionRouter
+     ↓
+DecisionRoute
+     ↓
+ResponseActionBoundary
+     ↓
+High-Level Boundary
+```
+
+The mapping is:
+
+```text
+RESPONSE       → response
+EXECUTION      → action
+PLANNING       → action
+CLARIFICATION  → response
+CONTINUATION   → response
+UNKNOWN        → unknown
+```
+
+The boundary is deterministic.
+
+It does not:
+
+* Select tools
+* Create plans
+* Execute tools
+* Execute agents
+* Orchestrate execution
+* Generate responses
+* Call AI providers
+* Mutate tasks
+
+---
+
+# 🧠 v0.77 Decision Routing
+
+v0.77 introduced the dedicated Decision Routing Foundation.
+
+The mapping is:
+
+```text
+RESPOND   → response
+EXECUTE   → execution
+PLAN      → planning
+CLARIFY   → clarification
+CONTINUE  → continuation
+UNKNOWN   → unknown
+```
+
+The `DecisionRoute` model contains:
+
+```text
+route_type
+decision
+metadata
+```
+
+The routing process is deterministic and preserves the originating `AgentDecision`.
+
+---
+
+# 🧠 v0.76 Agent Decision Layer
+
+v0.76 introduced the dedicated Agent Decision Layer between semantic intent understanding and downstream architecture.
+
+The architecture is:
+
+```text
+Structured Intent
+       ↓
+AgentDecisionLayer
+       ↓
+Decision Prompt
+       ↓
+Existing AI Engine
+       ↓
+Configured AI Provider
+       ↓
+Structured JSON
+       ↓
+Decision Validation
+       ↓
+AgentDecision
+```
+
+Supported decision types:
+
+```text
+respond
+execute
+plan
+clarify
+continue
+unknown
+```
+
+The `AgentDecision` model contains:
+
+```text
+decision_type
+intent
+confidence
+metadata
+```
+
+The original `Intent` is preserved inside the decision.
+
+---
+
 # 🧠 v0.75 Intent Understanding
 
-v0.75 introduced the dedicated **Intent Understanding** boundary for semantic classification of normalized user queries.
+v0.75 introduced the dedicated **Intent Understanding** boundary.
 
 The architecture is:
 
 ```text
 User Query
-
     ↓
-
 IntentUnderstanding
-
     ↓
-
 Intent Classification Prompt
-
     ↓
-
 Existing AI Engine
-
     ↓
-
 Configured AI Provider
-
     ↓
-
 Structured JSON
-
     ↓
-
 Intent Validation
-
     ↓
-
 Structured Intent
 ```
 
@@ -1090,45 +815,27 @@ Supported intent categories:
 
 ```text
 information
-
 action
-
 creation
-
 continuation
-
 explanation
-
 conversation
-
 unknown
 ```
 
-The v0.75 component does not determine execution decisions.
-
-It establishes:
+Intent Understanding determines:
 
 ```text
 What does the user mean?
 ```
 
-while v0.76 establishes:
+It does not determine:
 
-```text
-What high-level path should Ultron take?
-```
-
-v0.77 establishes:
-
-```text
-Where should that decision be routed?
-```
-
-and v0.78 establishes:
-
-```text
-Which response/action boundary should receive that route?
-```
+* Specific tools
+* Execution plans
+* Tool execution
+* Agent execution
+* Orchestration
 
 ---
 
@@ -1145,91 +852,57 @@ understand(
 
 When context is provided, it is included in the classification prompt.
 
-The resulting `Intent` records:
-
-```text
-context_used = True / False
-```
-
-The context improves semantic understanding but does not cause intent understanding to select tools or execute actions.
+The resulting `Intent` records whether context was used.
 
 The current flow is:
 
 ```text
 Context
-
    ↓
-
 Intent Understanding
-
    ↓
-
 Intent
-
    ↓
-
 Agent Decision
-
    ↓
-
 Decision Route
-
    ↓
-
 Response / Action Boundary
+   ↓
+Task
 ```
 
 ---
 
 # 🤖 AI Engine Reuse
 
-v0.75 Intent Understanding and v0.76 Agent Decision Layer both reuse the existing AI Engine.
+The intelligence layers reuse the existing AI Engine.
 
 The architecture remains:
 
 ```text
 IntentUnderstanding
-
       ↓
-
-core.ai_engine.generate_ai_response()
+AI Engine
+      ↓
+AI Provider
 ```
 
 and:
 
 ```text
 AgentDecisionLayer
-
       ↓
-
-core.ai_engine.generate_ai_response()
+AI Engine
+      ↓
+AI Provider
 ```
-
-No second AI-generation mechanism was introduced.
 
 v0.77 does not introduce another AI-generation mechanism because routing is deterministic.
 
-v0.78 also does not introduce another AI-generation mechanism because boundary classification is deterministic.
+v0.78 does not introduce another AI-generation mechanism because boundary classification is deterministic.
 
-```text
-DecisionRouter
-
-      ↓
-
-Deterministic Mapping
-
-      ↓
-
-DecisionRoute
-
-      ↓
-
-ResponseActionBoundary
-
-      ↓
-
-Deterministic Boundary Classification
-```
+v0.79 does not introduce another AI-generation mechanism because Task creation is a structural abstraction.
 
 This follows Ultron's composition-over-duplication principle.
 
@@ -1241,35 +914,21 @@ The AI provider architecture remains:
 
 ```text
 AI Runtime
-
      ↓
-
 AI Intelligence
-
      ↓
-
 AI Engine
-
      ↓
-
 Supported Provider Registry
-
      ↓
-
 AIProvider
-
      ↓
-
 Concrete Provider
-
  ├── MockProvider
-
  └── AnthropicProvider
 ```
 
 Higher-level intelligence components do not directly depend on provider-specific SDKs.
-
-The intelligence layers reuse the existing provider abstraction.
 
 ---
 
@@ -1285,47 +944,29 @@ It:
 * Supports development without API credentials
 * Enables isolated testing
 
-This allows intelligence components to be tested without relying on external AI services.
-
 ---
 
 # 🧠 Anthropic AI Provider
 
 `AnthropicProvider` remains the concrete Anthropic implementation behind the provider abstraction.
 
-Provider-specific Anthropic API logic remains isolated inside the provider.
+Provider-specific API logic remains isolated inside the provider.
 
-Responsibilities include:
-
-* Anthropic client configuration
-* API key handling
-* Model configuration
-* Provider capability declaration
-* Availability validation
-* Claude response generation
-* Provider error handling
-
-The Agent Decision Layer does not directly communicate with Anthropic.
+The architecture is:
 
 ```text
 AgentDecisionLayer
-
        ↓
-
 AI Engine
-
        ↓
-
 AI Provider
-
        ↓
-
 AnthropicProvider
-
        ↓
-
 Anthropic API
 ```
+
+The Agent Decision Layer does not directly communicate with Anthropic.
 
 ---
 
@@ -1335,19 +976,12 @@ The AI Engine resolves the configured provider and delegates generation.
 
 ```text
 AI Intelligence
-
       ↓
-
 AI Engine
-
       ↓
-
 AI_MODE
-
       ↓
-
 SUPPORTED_PROVIDERS
-
  ├── mock
  │    ↓
  │ MockProvider
@@ -1356,9 +990,9 @@ SUPPORTED_PROVIDERS
       ↓
   AnthropicProvider
       ↓
-    AIProvider
+   AIProvider
       ↓
-    generate()
+   generate()
       ↓
    AI Response
 ```
@@ -1376,33 +1010,29 @@ Unknown or empty provider modes continue to fall back to `MockProvider` for safe
 
 # 🧠 AI Runtime Architecture
 
-v0.73 introduced the dedicated AI Runtime boundary.
+The AI Runtime provides a stable entry point above the AI Intelligence layer.
 
-v0.74 extended it with explicit Context Injection.
+The progression is:
 
-v0.75 added Intent Understanding as a separate intelligence capability.
-
-v0.76 added Agent Decision as a separate intelligence capability.
-
-v0.77 added Decision Routing.
-
-v0.78 adds the Response / Action Boundary without changing the existing AI Runtime contract.
+```text
+v0.73 → AI Runtime
+v0.74 → Context Injection
+v0.75 → Intent Understanding
+v0.76 → Agent Decision
+v0.77 → Decision Routing
+v0.78 → Response / Action Boundary
+v0.79 → Task Abstraction
+```
 
 The runtime remains:
 
 ```text
 AIRuntime
-
     ↓
-
 AIIntelligence
-
     ↓
-
 AI Engine
-
     ↓
-
 AI Provider
 ```
 
@@ -1413,15 +1043,14 @@ The AI Runtime does not own:
 * Intent classification
 * Agent decisions
 * Decision routing
-* Response/action boundary classification
+* Response/action classification
+* Task lifecycle
 * Tool selection
 * Planning
 * Orchestration
 * Tool execution
 * Voice processing
 * Audio playback
-
-This preserves runtime isolation.
 
 ---
 
@@ -1431,101 +1060,57 @@ The voice architecture remains integrated with the broader AI and agent architec
 
 ```text
 Human Voice
-
     ↓
-
 Audio Capture
-
     ↓
-
 Microphone Capture
-
     ↓
-
 VoiceInput
-
     ↓
-
 Voice Processing
-
     ↓
-
 STT Provider
-
     ↓
-
 Transcription
-
     ↓
-
 Runtime Query
-
     ↓
-
 AI Runtime
-
     ↓
-
 AI Intelligence
-
     ↓
-
 Intent Understanding
-
     ↓
-
 Agent Decision
-
     ↓
-
 Decision Router
-
     ↓
-
 Response / Action Boundary
-
     ↓
-
+Task
+    ↓
 Agent / Response Routing
-
     ↓
-
 Existing Agent Infrastructure
-
     ↓
-
 AI Response
-
     ↓
-
 VoiceResponseExecutor
-
     ↓
-
 TTSRuntimeIntegration
-
     ↓
-
 TTSProvider
-
     ↓
-
 Synthesized Audio
-
     ↓
-
 VoicePlaybackExecutor
-
     ↓
-
 AudioOutputDeviceManager
-
     ↓
-
 Audio Output
 ```
 
-Voice remains an additional input/output path rather than a replacement for the core agent architecture.
+Voice remains an additional input/output path rather than a replacement for the core architecture.
 
 ---
 
@@ -1535,17 +1120,11 @@ Voice remains an additional input/output path rather than a replacement for the 
 
 ```text
 Physical Microphone
-
         ↓
-
 MicrophoneCapture
-
         ↓
-
 AudioCapture
-
         ↓
-
 VoiceInput
 ```
 
@@ -1553,29 +1132,17 @@ VoiceInput
 
 ```text
 VoiceInput
-
     ↓
-
 VoiceProcessingPipeline
-
     ↓
-
 VoiceProcessor
-
     ↓
-
 STTProvider
-
     ↓
-
 Concrete STT Provider
-
     ↓
-
 MultimodalInputResult
-
     ↓
-
 Runtime Integration
 ```
 
@@ -1583,45 +1150,27 @@ Runtime Integration
 
 ```text
 Runtime Query
-
     ↓
-
 Intent Understanding
-
     ↓
-
 Agent Decision
-
     ↓
-
 Decision Router
-
     ↓
-
 Response / Action Boundary
-
     ↓
-
+Task
+    ↓
 Capability / Tool Resolution
-
     ↓
-
 Agent Planner
-
     ↓
-
 Agent Plan
-
     ↓
-
 Agent Orchestrator
-
     ↓
-
 Agent Execution
-
     ↓
-
 Tool Execution
 ```
 
@@ -1629,25 +1178,15 @@ Tool Execution
 
 ```text
 Runtime Response
-
     ↓
-
 VoiceResponseExecutor
-
     ↓
-
 TTSRuntimeIntegration
-
     ↓
-
 TTSProvider
-
     ↓
-
 Concrete TTS Provider
-
     ↓
-
 Synthesized Audio
 ```
 
@@ -1655,29 +1194,17 @@ Synthesized Audio
 
 ```text
 Synthesized Audio
-
         ↓
-
 VoicePlaybackExecutor
-
         ↓
-
 AudioOutputDeviceManager
-
         ↓
-
 Active Device
-
         ↓
-
 Default Device Fallback
-
         ↓
-
 Playback Backend
-
         ↓
-
 Audio Output
 ```
 
@@ -1691,17 +1218,11 @@ Each version introduces a focused architectural capability.
 
 ```text
 Small Milestones
-
       ↓
-
 Clear Boundaries
-
       ↓
-
 Independent Components
-
       ↓
-
 Deterministic Testing
 ```
 
@@ -1711,13 +1232,9 @@ External AI, STT, and TTS providers remain behind abstractions.
 
 ```text
 Core Architecture
-
        ↓
-
 Provider Interface
-
        ↓
-
 Concrete Provider
 ```
 
@@ -1727,17 +1244,11 @@ Physical microphone and output-device handling remain behind dedicated abstracti
 
 ```text
 Application Logic
-
        ↓
-
 Hardware Abstraction
-
        ↓
-
 Concrete Audio Backend
-
        ↓
-
 Physical Device
 ```
 
@@ -1761,13 +1272,9 @@ For example:
 
 ```text
 IntentUnderstanding
-
        ↓
-
 AI Engine
-
        ↓
-
 AI Provider
 ```
 
@@ -1775,13 +1282,9 @@ and:
 
 ```text
 AgentDecisionLayer
-
        ↓
-
 AI Engine
-
        ↓
-
 AI Provider
 ```
 
@@ -1789,25 +1292,17 @@ and:
 
 ```text
 AgentDecision
-
        ↓
-
 DecisionRouter
-
        ↓
-
 DecisionRoute
-
        ↓
-
 ResponseActionBoundary
-
        ↓
-
+Task
+       ↓
 Existing ToolSelector / AgentPlanner
-
        ↓
-
 Existing Execution Architecture
 ```
 
@@ -1819,13 +1314,61 @@ No duplicate tool-selection, planning, orchestration, or execution system is int
 
 Testing is a core part of Ultron's architecture.
 
-## v0.78 Validation Snapshot
+## v0.79 Validation Snapshot
+
+Dedicated Task Abstraction tests:
+
+```text
+18 passed
+0 failed
+```
+
+The v0.79 tests cover:
+
+* Task creation
+* Task source
+* Task metadata
+* Task immutability
+* Task ID validation
+* Empty task ID rejection
+* Task type validation
+* Description validation
+* Empty description rejection
+* Source validation
+* Metadata validation
+* Task serialization
+* Metadata copy behavior during serialization
+* All supported task types
+
+Full ULTRON regression after v0.79:
+
+```text
+2047 passed
+0 failed
+```
+
+Repository validation:
+
+```text
+git diff --check
+
+PASS
+```
+
+Package export validation:
+
+```text
+v0.79 task exports OK
+```
+
+---
+
+# 🧪 v0.78 Validation Snapshot
 
 Dedicated Response / Action Boundary tests:
 
 ```text
 19 passed
-
 0 failed
 ```
 
@@ -1844,11 +1387,10 @@ The v0.78 tests cover:
 * Deterministic boundary behavior
 * Route immutability preservation
 
-Full ULTRON regression after v0.78:
+Historical full ULTRON regression after v0.78:
 
 ```text
 2029 passed
-
 0 failed
 ```
 
@@ -1874,7 +1416,6 @@ Dedicated Decision Router tests:
 
 ```text
 23 passed
-
 0 failed
 ```
 
@@ -1895,7 +1436,6 @@ Historical full ULTRON regression after v0.77:
 
 ```text
 2010 passed
-
 0 failed
 ```
 
@@ -1907,7 +1447,6 @@ Dedicated Agent Decision tests:
 
 ```text
 33 passed
-
 0 failed
 ```
 
@@ -1915,35 +1454,14 @@ Breakdown:
 
 ```text
 AgentDecision Model Tests
-
 15 passed
 
 AgentDecisionLayer Tests
-
 18 passed
 
 Total Dedicated v0.76 Tests
-
 33 passed
 ```
-
-The v0.76 tests cover:
-
-* Structured `AgentDecision` creation
-* Decision serialization
-* Decision type validation
-* Intent validation
-* Confidence validation
-* Metadata validation
-* Model immutability
-* All supported decision types
-* Invalid AI responses
-* Invalid JSON
-* Unsupported decisions
-* Prompt boundary protection
-* Intent data propagation
-* Metadata preservation
-* Deterministic response-generator injection
 
 ---
 
@@ -1953,7 +1471,6 @@ Dedicated Intent Understanding tests:
 
 ```text
 20 passed
-
 0 failed
 ```
 
@@ -1961,7 +1478,6 @@ Focused v0.72–v0.75 regression:
 
 ```text
 78 passed
-
 0 failed
 ```
 
@@ -1969,19 +1485,10 @@ Historical full ULTRON regression at the v0.75 milestone:
 
 ```text
 1954 passed
-
 0 failed
 ```
 
 These remain the verified historical v0.75 baseline results.
-
-The current full regression state has advanced to:
-
-```text
-2029 passed
-```
-
-with v0.78 included.
 
 ---
 
@@ -1991,317 +1498,266 @@ Ultron has progressed through focused architectural milestones:
 
 ```text
 v0.37 → Agent Runtime
-
    ↓
-
 v0.38 → Agent Tool System
-
    ↓
-
 v0.39 → Tool Selector
-
    ↓
-
 v0.40 → Agent Planning
-
    ↓
-
 v0.41 → Agent Execution & Plan Orchestration
-
    ↓
-
 v0.42 → Agent Execution Controller
-
    ↓
-
 v0.43 → Orchestrator Execution Control
-
    ↓
-
 v0.44 → Execution Events & Event Store
-
    ↓
-
 v0.45 → Execution Observability
-
    ↓
-
 v0.46 → Execution Metrics
-
    ↓
-
 v0.47 → Persistent Execution History
-
    ↓
-
 v0.48 → Execution Recovery & State Restoration
-
    ↓
-
 v0.49 → Agent Runtime Context
-
    ↓
-
 v0.50 → Execution Context & Orchestration Integration
-
    ↓
-
 v0.51 → Multimodal Input Foundation
-
    ↓
-
 v0.52 → Voice Input Foundation
-
    ↓
-
 v0.53 → Voice Processing Foundation
-
    ↓
-
 v0.54 → Voice Processing Pipeline Foundation
-
    ↓
-
 v0.55 → Voice Processing Intelligence Foundation
-
    ↓
-
 v0.56 → STT Provider Abstraction
-
    ↓
-
 v0.57 → First STT Provider
-
    ↓
-
 v0.58 → Voice → Text Runtime Integration
-
    ↓
-
 v0.59 → Audio Capture Foundation
-
    ↓
-
 v0.60 → Voice Command Execution
-
    ↓
-
 v0.61 → TTS Provider Abstraction
-
    ↓
-
 v0.62 → First TTS Provider
-
    ↓
-
 v0.63 → Runtime TTS Integration
-
    ↓
-
 v0.64 → Voice Response Execution
-
    ↓
-
 v0.65 → Full Voice Conversation Loop
-
    ↓
-
 v0.66 → Audio Playback Foundation
-
    ↓
-
 v0.67 → Audio Output Device Integration
-
    ↓
-
 v0.68 → Voice Playback Execution
-
    ↓
-
 v0.69 → End-to-End Voice Assistant
-
    ↓
-
 v0.70 → AI Intelligence Foundation
-
    ↓
-
 v0.71 → AI Provider Abstraction
-
    ↓
-
 v0.72 → First AI Provider
-
    ↓
-
 v0.73 → AI Runtime
-
    ↓
-
 v0.74 → Context Injection
-
    ↓
-
 v0.75 → Intent Understanding
-
    ↓
-
 v0.76 → Agent Decision Layer
-
    ↓
-
 v0.77 → Decision Routing Foundation
-
    ↓
-
 v0.78 → Response / Action Boundary
+   ↓
+v0.79 → Task Abstraction
 ```
 
 ---
 
 # 📜 Version History
 
+## v0.79 — Task Abstraction
+
+The v0.79 milestone introduces the dedicated **Task Abstraction**.
+
+The goal is to establish a stable representation of a logical unit of work without introducing task execution or lifecycle behavior.
+
+### v0.79 Architecture
+
+```text
+User Query
+    ↓
+IntentUnderstanding
+    ↓
+Intent
+    ↓
+AgentDecisionLayer
+    ↓
+AgentDecision
+    ↓
+DecisionRouter
+    ↓
+DecisionRoute
+    ↓
+ResponseActionBoundary
+    ↓
+Task
+    ↓
+Future Task Lifecycle
+```
+
+### v0.79 Components
+
+```text
+modules/task/task.py
+modules/task/__init__.py
+
+tests/task/test_task.py
+```
+
+### Task Model
+
+```text
+Task
+├── task_id
+├── task_type
+├── description
+├── source
+└── metadata
+```
+
+### Supported Task Types
+
+```text
+action
+planning
+automation
+conversation
+unknown
+```
+
+### v0.79 Responsibilities
+
+The Task abstraction provides:
+
+* Task identity
+* Task type
+* Task description
+* Task source
+* Task metadata
+* Input validation
+* Immutable model structure
+* Safe serialization
+* Package-level exports
+
+### Strict Architectural Boundary
+
+v0.79 intentionally does **not** implement:
+
+* Task execution
+* Tool selection
+* Agent selection
+* Plan creation
+* Plan execution
+* Task lifecycle
+* Retry
+* Recovery
+* Cancellation
+* Timeout handling
+* Resource control
+* Orchestration
+* AI provider communication
+* Response generation
+* Execution events
+* Execution metrics
+* Persistence
+
+The boundary is:
+
+```text
+Response / Action Boundary
+        ↓
+Task
+        ↓
+Future Task Lifecycle
+```
+
+### v0.79 Test Status
+
+```text
+Task Abstraction Tests
+
+18 passed
+0 failed
+
+Full ULTRON Regression
+
+2047 passed
+0 failed
+
+git diff --check
+
+PASS
+
+v0.79 task exports
+
+PASS
+```
+
+---
+
 ## v0.78 — Response / Action Boundary
 
-The v0.78 milestone introduces a dedicated **Response / Action Boundary** between structured decision routes and downstream response-oriented or action-oriented systems.
+The v0.78 milestone introduced a dedicated **Response / Action Boundary** between structured decision routes and downstream response-oriented or action-oriented systems.
 
-The goal is to establish a stable hand-off boundary without duplicating response generation, tool selection, planning, orchestration, or execution systems.
+The goal was to establish a stable hand-off boundary without duplicating response generation, tool selection, planning, orchestration, or execution systems.
 
 ### v0.78 Architecture
 
 ```text
 User Query
-
     ↓
-
 IntentUnderstanding
-
     ↓
-
 Intent
-
     ↓
-
 AgentDecisionLayer
-
     ↓
-
 AgentDecision
-
     ↓
-
 DecisionRouter
-
     ↓
-
 DecisionRoute
-
     ↓
-
 ResponseActionBoundary
-
     ↓
-
 response / action / unknown
-
     ↓
-
 Existing Downstream Systems
-```
-
-### v0.78 Components
-
-```text
-modules/intelligence/response_action_boundary.py
-
-tests/intelligence/test_response_action_boundary.py
-```
-
-The intelligence package exports:
-
-```text
-ResponseActionBoundary
-```
-
-through:
-
-```text
-modules/intelligence/__init__.py
 ```
 
 ### Boundary Classification
 
 ```text
 response       → response
-
 execution      → action
-
 planning       → action
-
 clarification  → response
-
 continuation   → response
-
 unknown        → unknown
 ```
-
-### v0.78 Responsibilities
-
-The component provides:
-
-* `DecisionRoute` validation
-* High-level response/action classification
-* Original route preservation
-* Deterministic processing
-* Stable downstream architectural boundary
-* Safe invalid-input handling
-
-### Strict Architectural Boundary
-
-v0.78 intentionally does **not** implement:
-
-* Specific tool selection
-* Plan creation
-* Tool execution
-* Agent execution
-* Orchestration
-* Execution control
-* Response generation
-* Clarification generation
-* Task mutation
-* AI provider communication
-
-The boundary is:
-
-```text
-DecisionRoute
-
-      ↓
-
-Response / Action Boundary
-
-      ↓
-
-Existing Downstream Architecture
-```
-
-### Existing Architecture Reuse
-
-The v0.78 boundary does not replace:
-
-```text
-ToolSelector
-
-AgentPlanner
-
-AgentOrchestrator
-
-ExecutionController
-
-AgentEngine
-```
-
-Instead, it establishes the high-level response/action hand-off above those systems.
 
 ### v0.78 Test Status
 
@@ -2309,13 +1765,11 @@ Instead, it establishes the high-level response/action hand-off above those syst
 Response / Action Boundary Tests
 
 19 passed
-
 0 failed
 
 Full ULTRON Regression
 
 2029 passed
-
 0 failed
 
 git diff --check
@@ -2329,65 +1783,14 @@ PASS
 
 The v0.77 milestone introduced a dedicated Decision Routing Foundation between high-level agent decisions and downstream architectural paths.
 
-The goal was to establish a stable routing boundary without duplicating tool selection, planning, orchestration, or execution systems.
-
-### v0.77 Architecture
-
-```text
-User Query
-
-    ↓
-
-IntentUnderstanding
-
-    ↓
-
-Intent
-
-    ↓
-
-AgentDecisionLayer
-
-    ↓
-
-AgentDecision
-
-    ↓
-
-DecisionRouter
-
-    ↓
-
-DecisionRoute
-
-    ↓
-
-Response / Action Boundary
-```
-
-### v0.77 Components
-
-```text
-modules/intelligence/decision_route.py
-
-modules/intelligence/decision_router.py
-
-tests/intelligence/test_decision_router.py
-```
-
 ### Supported Routes
 
 ```text
 response
-
 execution
-
 planning
-
 clarification
-
 continuation
-
 unknown
 ```
 
@@ -2395,72 +1798,11 @@ unknown
 
 ```text
 respond   → response
-
 execute   → execution
-
 plan      → planning
-
 clarify   → clarification
-
 continue  → continuation
-
 unknown   → unknown
-```
-
-### DecisionRoute Model
-
-The model contains:
-
-```text
-route_type
-
-decision
-
-metadata
-```
-
-The model is immutable and validates its internal state.
-
-### DecisionRouter Responsibilities
-
-The component provides:
-
-* Decision validation
-* Deterministic decision-to-route mapping
-* Structured `DecisionRoute` creation
-* Decision preservation
-* Metadata handling
-* Safe serialization through the route model
-* Stable routing boundary
-
-### Strict Architectural Boundary
-
-v0.77 intentionally does **not** implement:
-
-* Specific tool selection
-* Plan creation
-* Tool execution
-* Agent execution
-* Orchestration
-* Execution control
-* AI provider communication
-
-The boundary is:
-
-```text
-Intent
-
-  ↓
-
-Agent Decision
-
-  ↓
-
-Decision Route
-
-  ↓
-
-Response / Action Boundary
 ```
 
 ### v0.77 Test Status
@@ -2469,13 +1811,11 @@ Response / Action Boundary
 Decision Router Tests
 
 23 passed
-
 0 failed
 
-Full ULTRON Regression
+Historical Full ULTRON Regression
 
 2010 passed
-
 0 failed
 ```
 
@@ -2483,107 +1823,17 @@ Full ULTRON Regression
 
 ## v0.76 — Agent Decision Layer
 
-The v0.76 milestone introduced a dedicated Agent Decision Layer between semantic intent understanding and existing agent execution infrastructure.
-
-The goal was to allow Ultron to determine the high-level execution strategy for an already-understood user intent without duplicating tool selection, planning, orchestration, or execution.
-
-### v0.76 Architecture
-
-```text
-User Query
-
-    ↓
-
-IntentUnderstanding
-
-    ↓
-
-Intent
-
-    ↓
-
-AgentDecisionLayer
-
-    ↓
-
-AgentDecision
-
-    ↓
-
-DecisionRouter
-
-    ↓
-
-Existing Agent Infrastructure
-```
-
-### v0.76 Components
-
-```text
-modules/intelligence/agent_decision.py
-
-modules/intelligence/agent_decision_layer.py
-
-tests/intelligence/test_agent_decision.py
-
-tests/intelligence/test_agent_decision_layer.py
-```
+The v0.76 milestone introduced a dedicated Agent Decision Layer between semantic intent understanding and existing agent infrastructure.
 
 ### Supported Decision Types
 
 ```text
 respond
-
 execute
-
 plan
-
 clarify
-
 continue
-
 unknown
-```
-
-### AgentDecision Model
-
-The model contains:
-
-```text
-decision_type
-
-intent
-
-confidence
-
-metadata
-```
-
-The model is immutable and validates its internal state.
-
-### Strict Architectural Boundary
-
-v0.76 intentionally does **not** implement:
-
-* Specific tool selection
-* Plan creation
-* Tool execution
-* Agent execution
-* Orchestration
-* Execution control
-
-The boundary is:
-
-```text
-Intent
-
-  ↓
-
-Agent Decision
-
-  ↓
-
-Decision Router
 ```
 
 ### v0.76 Test Status
@@ -2592,7 +1842,6 @@ Decision Router
 Dedicated Tests
 
 33 passed
-
 0 failed
 
 AgentDecision Model Tests
@@ -2610,65 +1859,15 @@ AgentDecisionLayer Tests
 
 The v0.75 milestone introduced a dedicated Intent Understanding boundary for semantic classification of normalized user queries.
 
-### v0.75 Architecture
-
-```text
-User Query
-
-    ↓
-
-IntentUnderstanding
-
-    ↓
-
-Intent Classification Prompt
-
-    ↓
-
-Existing AI Engine
-
-    ↓
-
-Configured AI Provider
-
-    ↓
-
-Structured JSON
-
-    ↓
-
-Validation
-
-    ↓
-
-Intent
-```
-
-### v0.75 Components
-
-```text
-modules/intelligence/intent.py
-
-modules/intelligence/intent_understanding.py
-
-tests/intelligence/test_intent_understanding.py
-```
-
 ### Supported Intent Types
 
 ```text
 information
-
 action
-
 creation
-
 continuation
-
 explanation
-
 conversation
-
 unknown
 ```
 
@@ -2686,24 +1885,6 @@ Focused v0.72–v0.75 Regression
 Historical v0.75 Full ULTRON Regression
 
 1954 passed
-
-Failures
-
-0
-```
-
-### v0.75 Boundary
-
-```text
-Intent Understanding
-
-        ↓
-
-Structured Intent
-
-        ↓
-
-Agent Decision Layer
 ```
 
 ---
@@ -2711,10 +1892,6 @@ Agent Decision Layer
 ## v0.74 — Context Injection
 
 The v0.74 milestone introduced explicit Context Injection into the existing AI Intelligence and AI Runtime architecture.
-
-The goal was to allow higher-level components to provide prepared AI context directly while preserving the existing context builder as the default fallback.
-
-### v0.74 Test Status
 
 ```text
 Dedicated AI Intelligence + AI Runtime Tests
@@ -2736,10 +1913,6 @@ PASS
 
 The v0.73 milestone introduced a dedicated AI Runtime boundary above Ultron's existing AI Intelligence system.
 
-The runtime provides a stable entry point without duplicating provider selection, context construction, intelligence processing, or execution responsibilities.
-
-### v0.73 Test Status
-
 ```text
 Dedicated AI Runtime Tests
 
@@ -2748,27 +1921,20 @@ Dedicated AI Runtime Tests
 Full ULTRON Regression
 
 1927 passed
-
-Status
-
-PASS
 ```
 
 ---
 
 ## v0.72 — First AI Provider
 
-The v0.72 milestone established the first concrete AI provider integration path on top of Ultron's provider-agnostic AI Provider abstraction.
+The v0.72 milestone established the first concrete AI provider integration path.
 
 Supported providers:
 
 ```text
 mock
-
 anthropic
 ```
-
-### v0.72 Test Status
 
 ```text
 Dedicated AI Engine Tests
@@ -2786,31 +1952,23 @@ Full ULTRON Regression
 
 The v0.71 milestone established the provider-agnostic AI Provider abstraction.
 
-### v0.71 Test Status
-
 ```text
 AI Provider Abstraction Tests
-
 35 passed
 
 Mock Provider Tests
-
 22 passed
 
 Anthropic Provider Tests
-
 27 passed
 
 AI Engine Tests
-
 21 passed
 
 Total Dedicated Tests
-
 105 passed
 
 Full ULTRON Regression
-
 1917 passed
 ```
 
@@ -2822,21 +1980,13 @@ The v0.70 milestone introduced the dedicated AI Intelligence Foundation.
 
 ```text
 User Query
-
     ↓
-
 AI Intelligence
-
     ↓
-
 AI Engine
-
     ↓
-
 AI Provider
-
     ↓
-
 IntelligenceResult
 ```
 
@@ -2951,30 +2101,6 @@ Connected voice-derived runtime queries to the existing agent planning, orchestr
 ## v0.59 — Audio Capture Foundation
 
 Introduced real microphone capture and established the hardware-independent audio-capture boundary.
-
-```text
-Physical Microphone
-
-        ↓
-
-MicrophoneCapture
-
-        ↓
-
-AudioCapture
-
-        ↓
-
-Raw PCM Audio
-
-        ↓
-
-PCM → WAV
-
-        ↓
-
-VoiceInput
-```
 
 ---
 
@@ -3119,16 +2245,16 @@ Established the initial agent-runtime foundation documented in this development 
 
 # 🔮 Roadmap
 
-The roadmap continues from the current v0.78 Response / Action Boundary toward a complete core runtime architecture.
+The roadmap continues from the current v0.79 Task Abstraction toward a complete core runtime architecture.
 
-## Intelligence & Decision Flow
+## Intelligence, Task & Execution Foundations
 
 * Context Injection — **Completed in v0.74**
 * Intent Understanding — **Completed in v0.75**
 * Agent Decision Layer — **Completed in v0.76**
 * Decision Routing Foundation — **Completed in v0.77**
 * Response / Action Boundary — **Completed in v0.78**
-* Task Abstraction — **v0.79**
+* Task Abstraction — **Completed in v0.79**
 * Task Lifecycle Foundation — **v0.80**
 * Task Context & State — **v0.81**
 * Task Input / Output Contracts — **v0.82**
@@ -3195,93 +2321,51 @@ The long-term architectural direction is:
 
 ```text
 Receive
-
    ↓
-
 Capture
-
    ↓
-
 Normalize
-
    ↓
-
 Process
-
    ↓
-
 Transcribe
-
    ↓
-
 Runtime
-
    ↓
-
 Contextualize
-
    ↓
-
 Understand Intent
-
    ↓
-
 Decide
-
    ↓
-
 Route
-
    ↓
-
 Establish Boundary
-
    ↓
-
+Represent Task
+   ↓
 Plan
-
    ↓
-
 Select
-
    ↓
-
 Orchestrate
-
    ↓
-
 Execute
-
    ↓
-
 Observe
-
    ↓
-
 Measure
-
    ↓
-
 Persist
-
    ↓
-
 Snapshot
-
    ↓
-
 Recover
-
    ↓
-
 Restore
-
    ↓
-
 Resume
-
    ↓
-
 Automate
 ```
 
@@ -3298,6 +2382,7 @@ This direction leads toward a broader platform combining:
 * Agent decisions
 * Decision routing
 * Response/action boundaries
+* Task abstractions
 * Autonomous decision-making
 * Automation
 
@@ -3311,73 +2396,43 @@ The intended evolution is:
 
 ```text
 Personal AI Assistant
-
         ↓
-
 Agent Runtime
-
         ↓
-
 Multimodal Interface
-
         ↓
-
 Voice Intelligence
-
         ↓
-
 AI Intelligence
-
         ↓
-
 AI Runtime
-
         ↓
-
 Context Injection
-
         ↓
-
 Intent Understanding
-
         ↓
-
 Agent Decision
-
         ↓
-
 Decision Routing
-
         ↓
-
 Response / Action Boundary
-
         ↓
-
+Task Abstraction
+        ↓
+Task Lifecycle
+        ↓
 Agent Planning
-
         ↓
-
 Tool Selection
-
         ↓
-
 Context-Aware Execution
-
         ↓
-
 Persistent & Recoverable Runtime
-
         ↓
-
 Autonomous Agents
-
         ↓
-
 Durable Automation
-
         ↓
-
 AI Operating System Platform
 ```
 
@@ -3395,6 +2450,7 @@ The main README is intended to explain:
 * Its major capabilities
 * Its voice architecture
 * Its AI architecture
+* Its task architecture
 * Its testing philosophy
 * Its version progression
 * Its roadmap
@@ -3408,21 +2464,13 @@ A future documentation structure can follow:
 README.md
 
 docs/
-
 ├── architecture/
-
 │   ├── overview.md
-
 │   └── milestones/
-
 ├── ai/
-
 ├── voice/
-
 ├── execution/
-
 ├── testing/
-
 └── roadmap.md
 ```
 
@@ -3434,71 +2482,43 @@ Ultron's architecture is intentionally designed around:
 
 ```text
 Provider Isolation
-
         +
-
 Hardware Isolation
-
         +
-
 Runtime Isolation
-
         +
-
 Component Isolation
-
         +
-
 Observable Execution
-
         +
-
 Persistent State
-
         +
-
 Recoverable Runtime
-
         +
-
 Deterministic Testing
-
         +
-
 Composition Over Duplication
 ```
 
-The intelligence architecture additionally establishes:
+The intelligence and task architecture additionally establishes:
 
 ```text
 Intent Understanding
-
         ≠
-
 Agent Decision
-
         ≠
-
 Decision Routing
-
         ≠
-
 Response / Action Boundary
-
         ≠
-
+Task Abstraction
+        ≠
 Planning
-
         ≠
-
 Tool Selection
-
         ≠
-
 Orchestration
-
         ≠
-
 Execution
 ```
 
@@ -3512,45 +2532,25 @@ Ultron follows a milestone-driven development model:
 
 ```text
 Define Boundary
-
      ↓
-
 Inspect Existing Architecture
-
      ↓
-
 Design Lock
-
      ↓
-
 Implement Small Capability
-
      ↓
-
 Write Dedicated Tests
-
      ↓
-
 Run Focused Regression
-
      ↓
-
 Run Full Regression
-
      ↓
-
 Validate Repository
-
      ↓
-
 Document Milestone
-
      ↓
-
 Commit & Push
-
      ↓
-
 Move to Next Boundary
 ```
 
@@ -3560,22 +2560,27 @@ This approach keeps architectural growth incremental and makes regressions easie
 
 # ⚠️ Current Scope
 
-The current milestone is **v0.78 — Response / Action Boundary**.
+The current milestone is **v0.79 — Task Abstraction**.
 
-The completed v0.78 foundation provides:
+The completed v0.79 foundation provides:
 
-* `ResponseActionBoundary`
-* `DecisionRoute` validation
-* High-level response/action classification
-* Deterministic boundary processing
-* Original route preservation
-* Safe invalid-input handling
+* `Task`
+* `TaskType`
+* `TaskError`
+* Task identity
+* Task classification
+* Task description
+* Task source
+* Task metadata
+* Validation
+* Immutable model structure
+* Safe serialization
 * Package-level export
-* 19 dedicated passing tests
-* Full regression validation with 2029 passing tests
+* 18 dedicated passing tests
+* Full regression validation with 2047 passing tests
 * Clean `git diff --check`
 
-The v0.78 layer does **not** replace or duplicate:
+The v0.79 layer does **not** replace or duplicate:
 
 * Tool selection
 * Plan creation
@@ -3584,48 +2589,36 @@ The v0.78 layer does **not** replace or duplicate:
 * Agent orchestration
 * Tool execution
 * Agent execution
+* Task lifecycle
+* Retry
+* Recovery
+* Cancellation
+* Timeout control
 * Autonomous execution
 * Response generation
 
-The existing architecture remains responsible for these capabilities.
-
-The current intelligence-to-boundary flow is:
+The current intelligence-to-task flow is:
 
 ```text
 IntentUnderstanding
-
         ↓
-
 Intent
-
         ↓
-
 AgentDecisionLayer
-
         ↓
-
 AgentDecision
-
         ↓
-
 DecisionRouter
-
         ↓
-
 DecisionRoute
-
         ↓
-
 ResponseActionBoundary
-
         ↓
-
-response / action / unknown
+Task
 ```
 
 The broader roadmap continues toward:
 
-* Task abstraction
 * Task lifecycle
 * Task state
 * Task contracts
@@ -3656,157 +2649,81 @@ These milestones are intended to strengthen the core architecture before broader
 
 ```text
 v0.37
-
 Agent Runtime
-
    ↓
-
 v0.44
-
 Execution Events
-
    ↓
-
 v0.48
-
 Recovery & State Restoration
-
    ↓
-
 v0.51
-
 Multimodal Input
-
    ↓
-
 v0.56
-
 STT Provider Abstraction
-
    ↓
-
 v0.59
-
 Real Audio Capture
-
    ↓
-
 v0.60
-
 Voice Command Execution
-
    ↓
-
 v0.61–v0.64
-
 TTS & Voice Response Architecture
-
    ↓
-
 v0.65
-
 Full Voice Conversation Loop
-
    ↓
-
 v0.66–v0.68
-
 Audio Playback Architecture
-
    ↓
-
 v0.69
-
 End-to-End Voice Assistant
-
    ↓
-
 v0.70
-
 AI Intelligence Foundation
-
    ↓
-
 v0.71
-
 AI Provider Abstraction
-
    ↓
-
 v0.72
-
 First AI Provider
-
    ↓
-
 v0.73
-
 AI Runtime
-
    ↓
-
 v0.74
-
 Context Injection
-
    ↓
-
 v0.75
-
 Intent Understanding
-
    ↓
-
 v0.76
-
 Agent Decision Layer
-
    ↓
-
 v0.77
-
 Decision Routing Foundation
-
    ↓
-
 v0.78
-
 Response / Action Boundary
-
    ↓
-
 v0.79
-
 Task Abstraction
-
    ↓
-
 v0.80
-
 Task Lifecycle Foundation
-
    ↓
-
 v0.81–v0.90
-
 Task + Execution Reliability Foundations
-
    ↓
-
 v0.91–v0.95
-
 Extensibility + Capability Foundations
-
    ↓
-
 v0.96–v0.99
-
 Unified Runtime + Core Integration
-
    ↓
-
 v1.0
-
 ULTRON Core Foundation
 ```
 
@@ -3820,89 +2737,49 @@ The project prioritizes:
 
 ```text
 Small Milestones
-
         →
-
 Clear Boundaries
-
         →
-
 Independent Components
-
         →
-
 Deterministic Testing
-
         →
-
 Hardware Isolation
-
         →
-
 Provider Isolation
-
         →
-
 Runtime Isolation
-
         →
-
 Observable Execution
-
         →
-
 Persistent State
-
         →
-
 Recoverable Runtime
-
         →
-
 Multimodal Intelligence
-
         →
-
 Context Injection
-
         →
-
 Intent Understanding
-
         →
-
 Agent Decision
-
         →
-
 Decision Routing
-
         →
-
 Response / Action Boundary
-
         →
-
 Task Abstraction
-
         →
-
+Task Lifecycle
+        →
 Agent Planning
-
         →
-
 Tool Selection
-
         →
-
 Orchestration
-
         →
-
 Autonomous Execution
-
         →
-
 Durable Automation
 ```
 
@@ -3912,77 +2789,51 @@ v0.76 established the **Agent Decision Layer** as the high-level decision bounda
 
 v0.77 established the **Decision Routing Foundation** as the architectural boundary between high-level decisions and downstream system paths.
 
-v0.78 establishes the **Response / Action Boundary** between structured routes and downstream response-oriented or action-oriented systems.
+v0.78 established the **Response / Action Boundary** between structured routes and downstream response-oriented or action-oriented systems.
 
-The current intelligence path is:
+v0.79 establishes the **Task Abstraction** as a dedicated representation of a logical unit of work.
+
+The current intelligence-to-task path is:
 
 ```text
 User Query
-
     ↓
-
 Intent Understanding
-
     ↓
-
 Structured Intent
-
     ↓
-
 Agent Decision Layer
-
     ↓
-
 Structured Agent Decision
-
     ↓
-
 Decision Router
-
     ↓
-
 Structured Decision Route
-
     ↓
-
 Response / Action Boundary
+    ↓
+Task Abstraction
 ```
 
-The existing execution architecture then remains responsible for:
+The existing execution architecture remains responsible for:
 
 ```text
-Decision Route
-
+Task
     ↓
-
-Response / Action Boundary
-
+Task Lifecycle
     ↓
-
 Tool Selection
-
     ↓
-
 Planning
-
     ↓
-
 Orchestration
-
     ↓
-
 Execution
-
     ↓
-
 Observation
-
     ↓
-
 Persistence
-
     ↓
-
 Recovery
 ```
 
@@ -3990,34 +2841,30 @@ The intelligence layers continue to reuse the existing:
 
 ```text
 AI Engine
-
     ↓
-
 AI Provider Architecture
 ```
 
 instead of introducing duplicate provider or generation systems.
 
-The verified current v0.78 validation state is:
+The verified current v0.79 validation state is:
 
 ```text
-Response / Action Boundary Tests
+Task Abstraction Tests
 
-19 passed
-
+18 passed
 0 failed
 
 Full ULTRON Regression
 
-2029 passed
-
+2047 passed
 0 failed
 
 git diff --check
 
 PASS
 
-v0.78 intelligence export
+v0.79 task exports
 
 PASS
 ```
@@ -4026,73 +2873,92 @@ The architecture is now positioned to move from:
 
 ```text
 Understand
-
     ↓
-
 Decide
-
     ↓
-
 Route
-
     ↓
-
 Establish Boundary
+    ↓
+Represent Work
 ```
 
 toward:
 
 ```text
-Task Abstraction
-
-    ↓
-
 Task Lifecycle
-
     ↓
-
 Task State
-
     ↓
-
 Task Contracts
-
     ↓
-
 Execution Results
-
     ↓
-
 Execution Feedback
-
     ↓
-
 Runtime Events
-
     ↓
-
 Reliability & Recovery
-
     ↓
-
 Capability & Plugin Architecture
-
     ↓
-
 Unified Runtime
-
     ↓
-
 Core Integration
-
     ↓
-
 ULTRON Core Foundation
 ```
 
 Each capability is introduced as an independently testable architectural boundary so that future voice, vision, automation, smart-device control, agent capabilities, and broader platform functionality can be layered on top without unnecessarily replacing the core architecture.
 
+---
+
+# 🚀 ULTRON Core Direction
+
+```text
+Understand
+    ↓
+Decide
+    ↓
+Route
+    ↓
+Establish Boundary
+    ↓
+Represent Task
+    ↓
+Manage Task
+    ↓
+Define Contracts
+    ↓
+Produce Results
+    ↓
+Provide Feedback
+    ↓
+Handle Failure
+    ↓
+Recover
+    ↓
+Control Resources
+    ↓
+Apply Execution Policy
+    ↓
+Register Capabilities
+    ↓
+Load Modules
+    ↓
+Resolve Services
+    ↓
+Validate Health
+    ↓
+Unify Runtime
+    ↓
+Integrate Core
+    ↓
+ULTRON Core Foundation
 ```
 
-Bhai, **ye README ab v0.78 ke actual verified state ke saath aligned hai**. Save karne ke baad next hum `git diff`/status verify karke **v0.78 commit** kar sakte hain.
-```
+ULTRON is intentionally being built from the architectural foundation upward.
+
+The objective is not to make every capability part of a single milestone.
+
+The objective is to establish a strong, modular core where future capabilities can be added without repeatedly redesigning the underlying architecture.
