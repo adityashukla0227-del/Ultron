@@ -10,45 +10,44 @@ The architecture is designed around clear boundaries, replaceable components, de
 
 # 📌 Current Status
 
-| Item                                           | Status                   |
-| ---------------------------------------------- | ------------------------ |
-| **Current Version**                            | **v0.76**                |
-| **Current Milestone**                          | **Agent Decision Layer** |
-| **Dedicated v0.76 Tests**                      | **33 passed**            |
-| **v0.75 Dedicated Intent Understanding Tests** | **20 passed**            |
-| **v0.75 Focused Regression**                   | **78 passed**            |
-| **v0.75 Full ULTRON Regression Baseline**      | **1954 passed**          |
-| **v0.76 Dedicated Failures**                   | **0**                    |
-| **Development State**                          | Active development       |
+| Item                                           | Status                          |
+| ---------------------------------------------- | ------------------------------- |
+| **Current Version**                            | **v0.77**                       |
+| **Current Milestone**                          | **Decision Routing Foundation** |
+| **Dedicated v0.77 Tests**                      | **23 passed**                   |
+| **v0.76 Dedicated Agent Decision Tests**       | **33 passed**                   |
+| **v0.75 Dedicated Intent Understanding Tests** | **20 passed**                   |
+| **v0.75 Focused Regression**                   | **78 passed**                   |
+| **Full ULTRON Regression**                     | **2010 passed**                 |
+| **v0.77 Dedicated Failures**                   | **0**                           |
+| **Development State**                          | Active development              |
 
-v0.76 introduces the **Agent Decision Layer** as a dedicated intelligence boundary between semantic intent understanding and existing agent execution infrastructure.
+v0.77 introduces the **Decision Routing Foundation** as a dedicated architectural boundary between high-level agent decisions and downstream response, execution, planning, clarification, and continuation paths.
 
-The milestone builds on the `Intent` model and `IntentUnderstanding` component introduced in v0.75.
+The milestone builds on:
 
-The v0.76 architecture is:
+* v0.75 — Intent Understanding
+* v0.76 — Agent Decision Layer
+
+The current intelligence architecture is:
 
 ```text
 User Query
-     ↓
+    ↓
 IntentUnderstanding
-     ↓
+    ↓
 Structured Intent
-     ↓
+    ↓
 AgentDecisionLayer
-     ↓
+    ↓
 Structured AgentDecision
-     ↓
-Existing Agent Systems
-     ├── Direct Response
-     ├── ToolSelector
-     └── AgentPlanner
-            ↓
-      AgentEngine
-            ↓
-        Execution
+    ↓
+DecisionRouter
+    ↓
+Structured DecisionRoute
 ```
 
-The v0.76 Agent Decision Layer determines the **high-level execution strategy**.
+The Decision Router determines **where the already-decided request should be routed at a high level**.
 
 It intentionally does **not**:
 
@@ -59,6 +58,7 @@ It intentionally does **not**:
 * Orchestrate execution
 * Replace `ToolSelector`
 * Replace `AgentPlanner`
+* Replace `AgentOrchestrator`
 * Replace `AgentEngine`
 
 Those responsibilities remain in their existing architectural layers.
@@ -77,8 +77,10 @@ The system separates responsibilities across:
 * AI Runtime
 * AI Providers
 * AI Engine
+* Context Injection
 * Intent Understanding
-* Agent Decision Layer
+* Agent Decision
+* Decision Routing
 * Agents
 * Tools
 * Tool Selection
@@ -149,20 +151,27 @@ AI Intelligence
  │
  ▼
 Intent Understanding
- [v0.75]
+[v0.75]
  │
  ▼
 Structured Intent
  │
  ▼
 Agent Decision Layer
- [v0.76]
+[v0.76]
  │
- ├── RESPOND
- ├── EXECUTE
- ├── PLAN
- ├── CLARIFY
- ├── CONTINUE
+ ▼
+Structured Agent Decision
+ │
+ ▼
+Decision Router
+[v0.77]
+ │
+ ├── RESPONSE
+ ├── EXECUTION
+ ├── PLANNING
+ ├── CLARIFICATION
+ ├── CONTINUATION
  └── UNKNOWN
  │
  ▼
@@ -170,9 +179,9 @@ Existing Agent Infrastructure
  │
  ├── Direct Response
  │
- ├── Tool Selector
+ ├── ToolSelector
  │
- └── Agent Planner
+ └── AgentPlanner
         │
         ▼
     Agent Plan
@@ -204,7 +213,7 @@ Execution
 Recovery Infrastructure
 ```
 
-The critical v0.76 boundary is:
+The critical intelligence boundary is now:
 
 ```text
 Intent Understanding
@@ -215,16 +224,412 @@ Agent Decision Layer
         ↓
 Structured Agent Decision
         ↓
-Existing Tool / Planning / Execution Systems
+Decision Router
+        ↓
+Structured Decision Route
+        ↓
+Existing Tool / Planning / Response / Execution Systems
 ```
 
-The Agent Decision Layer does not replace the existing execution architecture.
+The Decision Router does not replace the existing execution architecture.
+
+---
+
+# 🧭 Decision Routing Foundation — v0.77
+
+v0.77 introduces the **Decision Routing Foundation**.
+
+The purpose of this milestone is to establish a stable boundary between:
+
+```text
+High-Level Agent Decision
+        ↓
+Downstream Architectural Route
+```
+
+The router consumes an existing `AgentDecision` and produces a structured `DecisionRoute`.
+
+The routing process is deterministic and does not require another AI call.
+
+---
+
+# 🧩 v0.77 Components
+
+```text
+modules/intelligence/
+├── decision_route.py
+└── decision_router.py
+
+tests/intelligence/
+└── test_decision_router.py
+```
+
+The v0.77 intelligence package also exposes the routing components through:
+
+```text
+modules/intelligence/__init__.py
+```
+
+---
+
+# 🛣️ DecisionRoute Model
+
+The `DecisionRoute` model represents the destination of an already-understood and already-decided request.
+
+Its structure is:
+
+```text
+DecisionRoute
+├── route_type
+├── decision
+└── metadata
+```
+
+Supported route types are:
+
+```text
+response
+execution
+planning
+clarification
+continuation
+unknown
+```
+
+The model:
+
+* Stores the selected route type
+* Preserves the originating `AgentDecision`
+* Stores routing metadata
+* Validates route state
+* Provides safe serialization
+* Is immutable
+
+The model does **not**:
+
+* Select tools
+* Create plans
+* Execute agents
+* Execute tools
+* Perform routing logic
+
+Routing logic belongs to `DecisionRouter`.
+
+---
+
+# 🔀 DecisionRouter
+
+`DecisionRouter` is the deterministic routing layer introduced in v0.77.
+
+Its responsibility is to translate:
+
+```text
+DecisionType
+      ↓
+RouteType
+```
+
+The mapping is:
+
+```text
+RESPOND   → RESPONSE
+EXECUTE   → EXECUTION
+PLAN      → PLANNING
+CLARIFY   → CLARIFICATION
+CONTINUE  → CONTINUATION
+UNKNOWN   → UNKNOWN
+```
+
+The router does not call an AI provider.
+
+It does not create another intelligence layer.
+
+It performs deterministic architectural routing based on the existing `AgentDecision`.
+
+---
+
+# 🎯 v0.77 Routing Flow
+
+```text
+User Query
+    ↓
+IntentUnderstanding
+    ↓
+Intent
+    ↓
+AgentDecisionLayer
+    ↓
+AgentDecision
+    ↓
+DecisionRouter
+    ↓
+DecisionRoute
+```
+
+The result then points toward the appropriate downstream architectural path:
+
+```text
+DecisionRoute
+      │
+      ├── RESPONSE
+      │
+      ├── EXECUTION
+      │
+      ├── PLANNING
+      │
+      ├── CLARIFICATION
+      │
+      ├── CONTINUATION
+      │
+      └── UNKNOWN
+```
+
+---
+
+# 🧠 Route Responsibilities
+
+## RESPONSE
+
+Indicates that the request belongs to a response-oriented path.
+
+```text
+AgentDecision
+      ↓
+DecisionRouter
+      ↓
+RESPONSE
+      ↓
+Response Boundary
+```
+
+The router does not generate the response.
+
+---
+
+## EXECUTION
+
+Indicates that the request requires an execution-oriented path.
+
+```text
+AgentDecision
+      ↓
+DecisionRouter
+      ↓
+EXECUTION
+      ↓
+Existing Execution Infrastructure
+```
+
+The `EXECUTION` route does **not** mean that a tool is immediately executed.
+
+Concrete tool selection remains the responsibility of `ToolSelector`.
+
+Execution remains the responsibility of the existing execution architecture.
+
+```text
+Decision Route
+      ↓
+ToolSelector
+      ↓
+AgentEngine
+      ↓
+Execution
+```
+
+---
+
+## PLANNING
+
+Indicates that the request requires planning or multi-step work.
+
+```text
+AgentDecision
+      ↓
+DecisionRouter
+      ↓
+PLANNING
+      ↓
+AgentPlanner
+      ↓
+AgentPlan
+```
+
+The Decision Router does not create the plan.
+
+`AgentPlanner` remains responsible for planning.
+
+---
+
+## CLARIFICATION
+
+Indicates that the request should enter a clarification path.
+
+```text
+AgentDecision
+      ↓
+DecisionRouter
+      ↓
+CLARIFICATION
+      ↓
+Clarification Boundary
+```
+
+The router does not generate or ask the clarification itself.
+
+---
+
+## CONTINUATION
+
+Indicates that the request belongs to an existing task or workflow continuation path.
+
+```text
+Existing Task
+      ↓
+New User Input
+      ↓
+Intent
+      ↓
+AgentDecision
+      ↓
+DecisionRouter
+      ↓
+CONTINUATION
+```
+
+The router identifies the architectural route but does not directly mutate or execute the existing task.
+
+---
+
+## UNKNOWN
+
+Indicates that the route cannot be safely determined.
+
+```text
+AgentDecision
+      ↓
+DecisionRouter
+      ↓
+UNKNOWN
+```
+
+This provides a safe routing fallback without forcing an unsupported downstream path.
+
+---
+
+# 🚫 Decision Router Does Not Own
+
+The v0.77 Decision Router intentionally does **not** own:
+
+* Specific tool selection
+* Tool execution
+* Agent execution
+* Plan creation
+* Plan validation
+* Plan execution
+* Agent selection
+* Orchestration
+* Execution control
+* Runtime event management
+* Execution metrics
+* Persistence
+* Recovery
+* AI provider communication
+
+The architectural separation is:
+
+```text
+Intent Understanding
+        ≠
+Agent Decision
+        ≠
+Decision Routing
+        ≠
+Tool Selection
+        ≠
+Planning
+        ≠
+Orchestration
+        ≠
+Execution
+```
+
+This separation prevents high-level intelligence components from becoming overloaded with low-level runtime responsibilities.
+
+---
+
+# 🔗 v0.75 → v0.76 → v0.77 Intelligence Pipeline
+
+The intelligence architecture now progresses through three dedicated boundaries.
+
+## v0.75 — Understand
+
+```text
+User Query
+    ↓
+IntentUnderstanding
+    ↓
+Intent
+```
+
+The question answered is:
+
+```text
+What does the user mean?
+```
+
+---
+
+## v0.76 — Decide
+
+```text
+Intent
+    ↓
+AgentDecisionLayer
+    ↓
+AgentDecision
+```
+
+The question answered is:
+
+```text
+What high-level path should Ultron take?
+```
+
+---
+
+## v0.77 — Route
+
+```text
+AgentDecision
+    ↓
+DecisionRouter
+    ↓
+DecisionRoute
+```
+
+The question answered is:
+
+```text
+Which architectural route should receive this decision?
+```
+
+Therefore:
+
+```text
+Understand
+    ↓
+Decide
+    ↓
+Route
+    ↓
+Plan / Select / Respond / Execute
+```
 
 ---
 
 # 🧠 Agent Decision Layer Architecture
 
-v0.76 introduces a dedicated **Agent Decision Layer** for determining the high-level path that Ultron should take after understanding user intent.
+v0.76 introduced a dedicated Agent Decision Layer for determining the high-level path that Ultron should take after understanding user intent.
 
 The component consumes the structured `Intent` produced by v0.75 and produces an immutable `AgentDecision`.
 
@@ -309,237 +714,16 @@ continue
 unknown
 ```
 
-## Respond
-
-The request can be answered directly without entering an execution workflow.
+These map directly to v0.77 routes:
 
 ```text
-User Query
-    ↓
-Intent
-    ↓
-RESPOND
-    ↓
-Direct Response
+respond   → response
+execute   → execution
+plan      → planning
+clarify   → clarification
+continue  → continuation
+unknown   → unknown
 ```
-
-The decision layer does not itself generate the response.
-
----
-
-## Execute
-
-The request requires an execution-oriented path.
-
-```text
-User Query
-    ↓
-Intent
-    ↓
-EXECUTE
-    ↓
-Existing Execution Infrastructure
-```
-
-`EXECUTE` does **not** mean that a tool is immediately executed.
-
-Tool selection and execution remain separate responsibilities.
-
-```text
-Agent Decision
-      ↓
-ToolSelector
-      ↓
-AgentEngine
-      ↓
-Execution
-```
-
----
-
-## Plan
-
-The request requires planning or multi-step work.
-
-```text
-User Query
-    ↓
-Intent
-    ↓
-PLAN
-    ↓
-AgentPlanner
-    ↓
-Agent Plan
-```
-
-The Agent Decision Layer does not create the plan.
-
----
-
-## Clarify
-
-The request does not contain enough information for a safe high-level decision.
-
-```text
-User Query
-    ↓
-Intent
-    ↓
-CLARIFY
-    ↓
-Clarification Path
-```
-
-This prevents Ultron from forcing an uncertain execution decision.
-
----
-
-## Continue
-
-The user is continuing an existing task or workflow.
-
-```text
-Existing Task
-      ↓
-New User Input
-      ↓
-Intent
-      ↓
-CONTINUE
-```
-
-The decision layer identifies the continuation path but does not directly mutate or execute the existing task.
-
----
-
-## Unknown
-
-The decision cannot be safely determined.
-
-```text
-Ambiguous Intent
-      ↓
-UNKNOWN
-```
-
-This provides a safe fallback rather than forcing an unsupported decision.
-
----
-
-# 🧠 Agent Decision Responsibilities
-
-The v0.76 Agent Decision Layer is responsible for:
-
-* Validating `Intent` input
-* Building a decision-classification prompt
-* Reusing the existing AI Engine
-* Requesting structured decision output
-* Parsing JSON
-* Validating decision type
-* Validating confidence
-* Validating metadata
-* Producing `AgentDecision`
-* Preserving the originating `Intent`
-* Providing deterministic dependency injection
-
----
-
-# 🚫 Agent Decision Layer Does Not Own
-
-The component intentionally does **not** own:
-
-* Specific tool selection
-* Tool execution
-* Agent execution
-* Plan creation
-* Plan validation
-* Plan execution
-* Orchestration
-* Execution control
-* Runtime event management
-* Execution metrics
-* Persistence
-* Recovery
-
-The architectural boundary is:
-
-```text
-Agent Decision
-      ≠
-Tool Selection
-      ≠
-Planning
-      ≠
-Orchestration
-      ≠
-Execution
-```
-
-This preserves the existing agent architecture.
-
----
-
-# 🔗 Intent → Decision Flow
-
-v0.75 and v0.76 now form a clean intelligence pipeline:
-
-```text
-User Query
-    ↓
-IntentUnderstanding
-    ↓
-Intent
-    ↓
-AgentDecisionLayer
-    ↓
-AgentDecision
-```
-
-For example:
-
-```text
-User:
-"Calculator kholo"
-
-        ↓
-
-IntentUnderstanding
-
-        ↓
-
-Intent
-{
-    intent_type: "action",
-    query: "Calculator kholo",
-    confidence: 0.95
-}
-
-        ↓
-
-AgentDecisionLayer
-
-        ↓
-
-AgentDecision
-{
-    decision_type: "execute",
-    confidence: 0.92
-}
-```
-
-The decision layer stops at the high-level decision.
-
-It does not decide:
-
-```text
-Which tool?
-Which parameters?
-Which plan?
-Which execution step?
-```
-
-Those decisions belong to the existing agent infrastructure.
 
 ---
 
@@ -547,26 +731,34 @@ Those decisions belong to the existing agent infrastructure.
 
 Ultron already contains dedicated systems for tool selection, planning, orchestration, and execution.
 
-v0.76 composes those systems instead of duplicating them.
+v0.76 and v0.77 compose those systems instead of duplicating them.
 
 The architecture remains:
 
 ```text
-Agent Decision Layer
-        ↓
+AgentDecision
+      ↓
+DecisionRouter
+      ↓
+DecisionRoute
+      ↓
 Existing Agent Systems
-        ↓
-ToolSelector
-        ↓
-AgentPlanner
-        ↓
-AgentOrchestrator
-        ↓
-ExecutionController
-        ↓
-AgentEngine
-        ↓
-Execution
+      │
+      ├── ToolSelector
+      │       ↓
+      │   AgentEngine
+      │
+      └── AgentPlanner
+              ↓
+          AgentPlan
+              ↓
+       AgentOrchestrator
+              ↓
+       ExecutionController
+              ↓
+          AgentEngine
+              ↓
+          Execution
 ```
 
 ### ToolSelector
@@ -581,25 +773,29 @@ It determines which registered tool matches the execution requirement.
 
 ### AgentOrchestrator
 
-The existing orchestration layer remains responsible for coordinating execution.
+`AgentOrchestrator` remains responsible for coordinating plan execution.
 
 ### ExecutionController
 
-The existing execution-controller boundary continues to control execution lifecycle.
+`ExecutionController` continues to control execution lifecycle.
 
 ### AgentEngine
 
-`AgentEngine` remains responsible for actual agent/tool execution.
+`AgentEngine` remains responsible for actual agent and tool execution.
 
 Therefore:
 
 ```text
-AgentDecisionLayer
-       ≠
+DecisionRouter
+      ≠
 ToolSelector
-       ≠
+      ≠
 AgentPlanner
-       ≠
+      ≠
+AgentOrchestrator
+      ≠
+ExecutionController
+      ≠
 AgentEngine
 ```
 
@@ -613,19 +809,19 @@ The architecture is:
 
 ```text
 User Query
-     ↓
+    ↓
 IntentUnderstanding
-     ↓
+    ↓
 Intent Classification Prompt
-     ↓
+    ↓
 Existing AI Engine
-     ↓
+    ↓
 Configured AI Provider
-     ↓
+    ↓
 Structured JSON
-     ↓
+    ↓
 Intent Validation
-     ↓
+    ↓
 Structured Intent
 ```
 
@@ -655,62 +851,10 @@ while v0.76 establishes:
 What high-level path should Ultron take?
 ```
 
----
-
-# 🧠 v0.75 → v0.76 Boundary
-
-The separation is intentional:
+and v0.77 establishes:
 
 ```text
-v0.75
-
-User Query
-    ↓
-Intent Understanding
-    ↓
-Intent
-```
-
-followed by:
-
-```text
-v0.76
-
-Intent
-    ↓
-Agent Decision Layer
-    ↓
-AgentDecision
-```
-
-followed by future integration:
-
-```text
-AgentDecision
-    ↓
-ToolSelector / AgentPlanner
-    ↓
-AgentOrchestrator
-    ↓
-AgentEngine
-    ↓
-Execution
-```
-
-This creates a clear progression:
-
-```text
-Understand
-    ↓
-Decide
-    ↓
-Plan
-    ↓
-Select
-    ↓
-Orchestrate
-    ↓
-Execute
+Where should that decision be routed?
 ```
 
 ---
@@ -736,9 +880,7 @@ context_used = True / False
 
 The context improves semantic understanding but does not cause intent understanding to select tools or execute actions.
 
-The Agent Decision Layer receives the already-understood `Intent`.
-
-Therefore:
+The current flow is:
 
 ```text
 Context
@@ -748,13 +890,15 @@ Intent Understanding
 Intent
    ↓
 Agent Decision
+   ↓
+Decision Route
 ```
 
 ---
 
 # 🤖 AI Engine Reuse
 
-Both v0.75 Intent Understanding and v0.76 Agent Decision Layer reuse the existing AI Engine.
+v0.75 Intent Understanding and v0.76 Agent Decision Layer both reuse the existing AI Engine.
 
 The architecture remains:
 
@@ -774,43 +918,43 @@ core.ai_engine.generate_ai_response()
 
 No second AI-generation mechanism was introduced.
 
+v0.77 does not introduce another AI-generation mechanism because routing is deterministic.
+
+```text
+DecisionRouter
+      ↓
+Deterministic Mapping
+      ↓
+DecisionRoute
+```
+
 This follows Ultron's composition-over-duplication principle.
 
 ---
 
 # 🤖 AI Provider Architecture
 
-v0.71 established the provider abstraction.
-
-v0.72 established the first concrete provider-resolution path.
-
-v0.73 introduced the AI Runtime.
-
-v0.74 introduced Context Injection.
-
-v0.75 introduced Intent Understanding.
-
-v0.76 introduces the Agent Decision Layer.
-
-The provider architecture remains:
+The AI provider architecture remains:
 
 ```text
 AI Runtime
-      ↓
+     ↓
 AI Intelligence
-      ↓
+     ↓
 AI Engine
-      ↓
+     ↓
 Supported Provider Registry
-      ↓
+     ↓
 AIProvider
-      ↓
+     ↓
 Concrete Provider
  ├── MockProvider
  └── AnthropicProvider
 ```
 
 Higher-level intelligence components do not directly depend on provider-specific SDKs.
+
+The intelligence layers reuse the existing provider abstraction.
 
 ---
 
@@ -826,7 +970,7 @@ It:
 * Supports development without API credentials
 * Enables isolated testing
 
-This allows v0.75 and v0.76 intelligence components to be tested without relying on external AI services.
+This allows intelligence components to be tested without relying on external AI services.
 
 ---
 
@@ -880,16 +1024,14 @@ SUPPORTED_PROVIDERS
  │
  └── anthropic
       ↓
-   AnthropicProvider
+  AnthropicProvider
       ↓
-AIProvider
+   AIProvider
       ↓
-generate()
+   generate()
       ↓
-AI Response
+   AI Response
 ```
-
-The AI Engine does not implement provider-specific API logic.
 
 Supported provider modes:
 
@@ -908,9 +1050,11 @@ v0.73 introduced the dedicated AI Runtime boundary.
 
 v0.74 extended it with explicit Context Injection.
 
-v0.75 added Intent Understanding without moving decision logic into the runtime.
+v0.75 added Intent Understanding as a separate intelligence capability.
 
-v0.76 adds Agent Decision as a separate intelligence capability rather than changing the existing runtime contract.
+v0.76 added Agent Decision as a separate intelligence capability.
+
+v0.77 adds Decision Routing without changing the existing AI Runtime contract.
 
 The runtime remains:
 
@@ -930,6 +1074,7 @@ The AI Runtime does not own:
 * Context construction
 * Intent classification
 * Agent decisions
+* Decision routing
 * Tool selection
 * Planning
 * Orchestration
@@ -969,6 +1114,8 @@ AI Intelligence
 Intent Understanding
     ↓
 Agent Decision
+    ↓
+Decision Router
     ↓
 Agent / Response Routing
     ↓
@@ -1035,6 +1182,8 @@ Runtime Query
 Intent Understanding
     ↓
 Agent Decision
+    ↓
+Decision Router
     ↓
 Capability / Tool Resolution
     ↓
@@ -1163,17 +1312,21 @@ AI Engine
 AI Provider
 ```
 
-and later:
+and:
 
 ```text
 AgentDecision
+       ↓
+DecisionRouter
+       ↓
+DecisionRoute
        ↓
 Existing ToolSelector / AgentPlanner
        ↓
 Existing Execution Architecture
 ```
 
-No duplicate tool-selection, planning, or execution system is introduced.
+No duplicate tool-selection, planning, orchestration, or execution system is introduced.
 
 ---
 
@@ -1181,7 +1334,45 @@ No duplicate tool-selection, planning, or execution system is introduced.
 
 Testing is a core part of Ultron's architecture.
 
-## v0.76 Validation Snapshot
+## v0.77 Validation Snapshot
+
+Dedicated Decision Router tests:
+
+```text
+23 passed
+0 failed
+```
+
+The v0.77 tests cover:
+
+* Decision-to-route mapping
+* All supported route types
+* Structured `DecisionRoute` creation
+* Decision preservation
+* Route serialization
+* Metadata handling
+* Invalid decision validation
+* Deterministic routing behavior
+* Process alias behavior
+* Package export compatibility
+
+Full ULTRON regression after v0.77:
+
+```text
+2010 passed
+0 failed
+```
+
+Repository validation:
+
+```text
+git diff --check
+PASS
+```
+
+---
+
+# 🧪 v0.76 Validation Snapshot
 
 Dedicated Agent Decision tests:
 
@@ -1190,7 +1381,7 @@ Dedicated Agent Decision tests:
 0 failed
 ```
 
-These consist of:
+Breakdown:
 
 ```text
 AgentDecision Model Tests
@@ -1198,15 +1389,12 @@ AgentDecision Model Tests
 
 AgentDecisionLayer Tests
 18 passed
+
+Total Dedicated v0.76 Tests
+33 passed
 ```
 
-Package export verification:
-
-```text
-v0.76 exports OK
-```
-
-The v0.76 dedicated tests cover:
+The v0.76 tests cover:
 
 * Structured `AgentDecision` creation
 * Decision serialization
@@ -1219,14 +1407,14 @@ The v0.76 dedicated tests cover:
 * Invalid AI responses
 * Invalid JSON
 * Unsupported decisions
-* Confidence validation
-* Metadata validation
 * Prompt boundary protection
 * Intent data propagation
 * Metadata preservation
 * Deterministic response-generator injection
 
-## v0.75 Validation Baseline
+---
+
+# 🧪 v0.75 Validation Snapshot
 
 Dedicated Intent Understanding tests:
 
@@ -1249,9 +1437,15 @@ Full ULTRON regression at the v0.75 milestone:
 0 failed
 ```
 
-These are the verified v0.75 baseline results.
+These remain the verified historical v0.75 baseline results.
 
-The full regression suite will be revalidated after the complete v0.76 milestone is finalized.
+The current full regression state has advanced to:
+
+```text
+2010 passed
+```
+
+with v0.77 included.
 
 ---
 
@@ -1339,17 +1533,159 @@ v0.74 → Context Injection
 v0.75 → Intent Understanding
    ↓
 v0.76 → Agent Decision Layer
+   ↓
+v0.77 → Decision Routing Foundation
 ```
 
 ---
 
 # 📜 Version History
 
+## v0.77 — Decision Routing Foundation
+
+The v0.77 milestone introduces a dedicated Decision Routing Foundation between high-level agent decisions and downstream architectural paths.
+
+The goal is to establish a stable routing boundary without duplicating tool selection, planning, orchestration, or execution systems.
+
+### v0.77 Architecture
+
+```text
+User Query
+    ↓
+IntentUnderstanding
+    ↓
+Intent
+    ↓
+AgentDecisionLayer
+    ↓
+AgentDecision
+    ↓
+DecisionRouter
+    ↓
+DecisionRoute
+    ↓
+Existing Agent Infrastructure
+```
+
+### v0.77 Components
+
+```text
+modules/intelligence/decision_route.py
+
+modules/intelligence/decision_router.py
+
+tests/intelligence/test_decision_router.py
+```
+
+### Supported Routes
+
+```text
+response
+execution
+planning
+clarification
+continuation
+unknown
+```
+
+### Decision Mapping
+
+```text
+respond   → response
+execute   → execution
+plan      → planning
+clarify   → clarification
+continue  → continuation
+unknown   → unknown
+```
+
+### DecisionRoute Model
+
+The model contains:
+
+```text
+route_type
+decision
+metadata
+```
+
+The model is immutable and validates its internal state.
+
+### DecisionRouter Responsibilities
+
+The component provides:
+
+* Decision validation
+* Deterministic decision-to-route mapping
+* Structured `DecisionRoute` creation
+* Decision preservation
+* Metadata handling
+* Safe serialization through the route model
+* Stable routing boundary
+
+### Strict Architectural Boundary
+
+v0.77 intentionally does **not** implement:
+
+* Specific tool selection
+* Plan creation
+* Tool execution
+* Agent execution
+* Orchestration
+* Execution control
+* AI provider communication
+
+The boundary is:
+
+```text
+Intent
+  ↓
+Agent Decision
+  ↓
+Decision Route
+  ↓
+Existing Agent Infrastructure
+```
+
+### Existing Architecture Reuse
+
+The routing layer does not replace:
+
+```text
+ToolSelector
+AgentPlanner
+AgentOrchestrator
+ExecutionController
+AgentEngine
+```
+
+Instead, it establishes the missing boundary above those existing systems.
+
+### v0.77 Test Status
+
+```text
+Decision Router Tests
+
+23 passed
+0 failed
+
+Full ULTRON Regression
+
+2010 passed
+0 failed
+
+git diff --check
+
+PASS
+```
+
+---
+
 ## v0.76 — Agent Decision Layer
 
-The v0.76 milestone introduces a dedicated Agent Decision Layer between semantic intent understanding and existing agent execution infrastructure.
+The v0.76 milestone introduced a dedicated Agent Decision Layer between semantic intent understanding and existing agent execution infrastructure.
 
-The goal is to allow Ultron to determine the **high-level execution strategy** for an already-understood user intent without duplicating tool selection, planning, orchestration, or execution.
+The goal was to allow Ultron to determine the high-level execution strategy for an already-understood user intent without duplicating tool selection, planning, orchestration, or execution.
 
 ### v0.76 Architecture
 
@@ -1403,20 +1739,6 @@ metadata
 
 The model is immutable and validates its internal state.
 
-### Agent Decision Responsibilities
-
-The component provides:
-
-* Intent validation
-* Decision prompt construction
-* AI Engine reuse
-* Structured JSON parsing
-* Decision validation
-* Confidence validation
-* Metadata validation
-* Structured `AgentDecision` creation
-* Deterministic dependency injection
-
 ### Strict Architectural Boundary
 
 v0.76 intentionally does **not** implement:
@@ -1435,49 +1757,27 @@ Intent
   ↓
 Agent Decision
   ↓
+Decision Router
+  ↓
 Existing Agent Infrastructure
 ```
 
-### Existing Architecture Reuse
-
-The decision layer does not replace:
-
-```text
-ToolSelector
-AgentPlanner
-AgentOrchestrator
-ExecutionController
-AgentEngine
-```
-
-Instead, it prepares the high-level decision that allows those systems to remain responsible for their existing roles.
-
 ### v0.76 Test Status
 
-Dedicated tests:
-
 ```text
+Dedicated Tests
+
 33 passed
 0 failed
-```
 
-Breakdown:
-
-```text
 AgentDecision Model Tests
+
 15 passed
 
 AgentDecisionLayer Tests
+
 18 passed
 ```
-
-Package export verification:
-
-```text
-v0.76 exports OK
-```
-
-The complete v0.76 milestone regression will be recorded after all v0.76 integration work is finalized.
 
 ---
 
@@ -1531,19 +1831,20 @@ unknown
 
 ```text
 Dedicated Intent Understanding Tests
+
 20 passed
 
 Focused v0.72–v0.75 Regression
+
 78 passed
 
-Full ULTRON Regression
+Historical v0.75 Full ULTRON Regression
+
 1954 passed
 
 Failures
-0
 
-git diff --check
-PASS
+0
 ```
 
 ### v0.75 Boundary
@@ -1556,7 +1857,7 @@ Structured Intent
 Agent Decision Layer
 ```
 
-The Agent Decision Layer is introduced in v0.76.
+The Agent Decision Layer was introduced in v0.76.
 
 ---
 
@@ -1570,12 +1871,15 @@ The goal was to allow higher-level components to provide prepared AI context dir
 
 ```text
 Dedicated AI Intelligence + AI Runtime Tests
+
 28 passed
 
 Full ULTRON Regression
+
 1934 passed
 
 git diff --check
+
 PASS
 ```
 
@@ -1591,12 +1895,15 @@ The runtime provides a stable entry point without duplicating provider selection
 
 ```text
 Dedicated AI Runtime Tests
+
 9 passed
 
 Full ULTRON Regression
+
 1927 passed
 
 Status
+
 PASS
 ```
 
@@ -1617,12 +1924,15 @@ anthropic
 
 ```text
 Dedicated AI Engine Tests
+
 22 passed
 
 Full ULTRON Regression
+
 1918 passed
 
 Status
+
 PASS
 ```
 
@@ -1941,17 +2251,43 @@ Established the initial agent-runtime foundation documented in this development 
 
 # 🔮 Roadmap
 
-## AI Intelligence
+The roadmap continues from the current v0.77 routing boundary toward a complete core runtime architecture.
+
+## Intelligence & Decision Flow
 
 * Context Injection — **Completed in v0.74**
 * Intent Understanding — **Completed in v0.75**
-* Agent Decision Layer — **v0.76 in development**
-* Intent → Decision integration
-* Intelligent agent routing
-* Direct-answer vs agent-task routing
-* Conversational reasoning
-* Provider-aware intelligence
-* Autonomous execution decisions
+* Agent Decision Layer — **Completed in v0.76**
+* Decision Routing Foundation — **Completed in v0.77**
+* Response / Action Boundary — **v0.78**
+* Task Abstraction — **v0.79**
+* Task Lifecycle Foundation — **v0.80**
+* Task Context & State — **v0.81**
+* Task Input / Output Contracts — **v0.82**
+* Execution Result Abstraction — **v0.83**
+* Execution Feedback Interface — **v0.84**
+* Runtime Event Integration — **v0.85**
+* Error & Failure Abstraction — **v0.86**
+* Retry & Recovery Foundation — **v0.87**
+* Cancellation & Interruption Foundation — **v0.88**
+* Timeout & Resource Control — **v0.89**
+* Execution Policy Foundation — **v0.90**
+
+## Extensibility
+
+* Capability Registry — **v0.91**
+* Plugin / Module Contract — **v0.92**
+* Dependency & Service Registry — **v0.93**
+* Configuration & Environment Foundation — **v0.94**
+* Health & Capability Checks — **v0.95**
+
+## Unified Runtime
+
+* Unified Runtime Context — **v0.96**
+* Unified Lifecycle Foundation — **v0.97**
+* Observability & Diagnostics Foundation — **v0.98**
+* Core Integration Boundary — **v0.99**
+* ULTRON Core Foundation — **v1.0**
 
 ## Voice Intelligence
 
@@ -2008,6 +2344,8 @@ Understand Intent
    ↓
 Decide
    ↓
+Route
+   ↓
 Plan
    ↓
 Select
@@ -2043,6 +2381,7 @@ This direction leads toward a broader platform combining:
 * Recovery
 * Context-aware execution
 * Intent understanding
+* Decision routing
 * Autonomous decision-making
 * Automation
 
@@ -2072,6 +2411,8 @@ Context Injection
 Intent Understanding
         ↓
 Agent Decision
+        ↓
+Decision Routing
         ↓
 Agent Planning
         ↓
@@ -2133,37 +2474,67 @@ Ultron's architecture is intentionally designed around:
 
 ```text
 Provider Isolation
+
         +
+
 Hardware Isolation
+
         +
+
 Runtime Isolation
+
         +
+
 Component Isolation
+
         +
+
 Observable Execution
+
         +
+
 Persistent State
+
         +
+
 Recoverable Runtime
+
         +
+
 Deterministic Testing
+
         +
+
 Composition Over Duplication
 ```
 
-The v0.75 and v0.76 intelligence boundaries additionally establish:
+The intelligence architecture additionally establishes:
 
 ```text
 Intent Understanding
+
         ≠
+
 Agent Decision
+
         ≠
+
+Decision Routing
+
+        ≠
+
 Planning
+
         ≠
+
 Tool Selection
+
         ≠
+
 Orchestration
+
         ≠
+
 Execution
 ```
 
@@ -2178,6 +2549,10 @@ Ultron follows a milestone-driven development model:
 ```text
 Define Boundary
      ↓
+Inspect Existing Architecture
+     ↓
+Design Lock
+     ↓
 Implement Small Capability
      ↓
 Write Dedicated Tests
@@ -2190,6 +2565,8 @@ Validate Repository
      ↓
 Document Milestone
      ↓
+Commit & Push
+     ↓
 Move to Next Boundary
 ```
 
@@ -2199,24 +2576,26 @@ This approach keeps architectural growth incremental and makes regressions easie
 
 # ⚠️ Current Scope
 
-The current milestone is **v0.76 — Agent Decision Layer**.
+The current milestone is **v0.77 — Decision Routing Foundation**.
 
-The completed v0.76 foundation provides:
+The completed v0.77 foundation provides:
 
-* `AgentDecision`
-* `DecisionType`
-* `AgentDecisionLayer`
-* Intent → Decision transformation
-* Structured decision parsing
-* Decision validation
-* Confidence validation
+* `DecisionRoute`
+* `DecisionRouteError`
+* `RouteType`
+* `DecisionRouter`
+* AgentDecision → DecisionRoute transformation
+* Deterministic routing
+* Structured route representation
+* Route validation
+* Decision preservation
 * Metadata handling
-* Existing AI Engine reuse
-* Deterministic dependency injection
+* Safe serialization
 * Package-level exports
-* 33 dedicated passing tests
+* 23 dedicated passing tests
+* Full regression validation with 2010 passing tests
 
-The current v0.76 layer does **not** yet replace or duplicate:
+The v0.77 layer does **not** replace or duplicate:
 
 * Tool selection
 * Plan creation
@@ -2229,7 +2608,7 @@ The current v0.76 layer does **not** yet replace or duplicate:
 
 The existing architecture remains responsible for these capabilities.
 
-The next v0.76 work is to validate and integrate the intelligence boundaries cleanly:
+The current intelligence-to-routing flow is:
 
 ```text
 IntentUnderstanding
@@ -2240,25 +2619,47 @@ AgentDecisionLayer
         ↓
 AgentDecision
         ↓
-Existing Agent Infrastructure
+DecisionRouter
+        ↓
+DecisionRoute
 ```
 
-The broader roadmap includes:
+The next architectural boundary is:
 
-* Conversational reasoning
-* Intelligent agent routing
-* Direct-answer vs agent-task decisions
-* Continuous voice interaction
-* Wake-word detection
-* Streaming
-* Barge-in / interruption handling
-* Advanced conversational context
-* Multi-provider voice support
-* Vision and gesture intelligence
-* More autonomous behavior
-* Durable automation
+```text
+v0.78
 
-These are future extensions of the architecture established by the current milestones.
+DecisionRoute
+      ↓
+Response / Action Boundary
+```
+
+The broader roadmap continues toward:
+
+* Task abstraction
+* Task lifecycle
+* Task state
+* Task contracts
+* Execution results
+* Execution feedback
+* Runtime events
+* Error handling
+* Retry and recovery
+* Cancellation
+* Timeout and resource control
+* Execution policy
+* Capability registry
+* Plugin contracts
+* Service registry
+* Configuration foundation
+* Health checks
+* Unified runtime context
+* Unified lifecycle
+* Observability and diagnostics
+* Core integration
+* ULTRON Core Foundation
+
+These milestones are intended to strengthen the core architecture before broader autonomous capabilities are layered on top.
 
 ---
 
@@ -2355,23 +2756,43 @@ Agent Decision Layer
 
    ↓
 
-Future
-Decision → Planning → Selection → Execution Integration
+v0.77
+Decision Routing Foundation
 
    ↓
 
-Future
-Advanced Voice + Multimodal Intelligence
+v0.78
+Response / Action Boundary
 
    ↓
 
-Future
-Context-Aware Execution & Durable Automation
+v0.79
+Task Abstraction
 
    ↓
 
-Long Term
-AI Operating System Platform
+v0.80
+Task Lifecycle Foundation
+
+   ↓
+
+v0.81–v0.90
+Task + Execution Reliability Foundations
+
+   ↓
+
+v0.91–v0.95
+Extensibility + Capability Foundations
+
+   ↓
+
+v0.96–v0.99
+Unified Runtime + Core Integration
+
+   ↓
+
+v1.0
+ULTRON Core Foundation
 ```
 
 ---
@@ -2411,9 +2832,15 @@ Intent Understanding
         →
 Agent Decision
         →
+Decision Routing
+        →
+Task Abstraction
+        →
 Agent Planning
         →
 Tool Selection
+        →
+Orchestration
         →
 Autonomous Execution
         →
@@ -2422,7 +2849,9 @@ Durable Automation
 
 v0.75 established **Intent Understanding** as a dedicated semantic intelligence boundary.
 
-v0.76 establishes the **Agent Decision Layer** as the next architectural boundary.
+v0.76 established the **Agent Decision Layer** as the high-level decision boundary.
+
+v0.77 establishes the **Decision Routing Foundation** as the architectural boundary between high-level decisions and downstream system paths.
 
 The current intelligence path is:
 
@@ -2436,12 +2865,16 @@ Structured Intent
 Agent Decision Layer
     ↓
 Structured Agent Decision
+    ↓
+Decision Router
+    ↓
+Structured Decision Route
 ```
 
 The existing execution architecture then remains responsible for:
 
 ```text
-Agent Decision
+Decision Route
     ↓
 Tool Selection
     ↓
@@ -2450,9 +2883,15 @@ Planning
 Orchestration
     ↓
 Execution
+    ↓
+Observation
+    ↓
+Persistence
+    ↓
+Recovery
 ```
 
-The implementation reuses the existing:
+The intelligence layers continue to reuse the existing:
 
 ```text
 AI Engine
@@ -2462,68 +2901,62 @@ AI Provider Architecture
 
 instead of introducing duplicate provider or generation systems.
 
-The verified v0.76 dedicated validation state is:
+The verified current v0.77 validation state is:
 
 ```text
-AgentDecision Tests
-15 passed
+Decision Router Tests
 
-AgentDecisionLayer Tests
-18 passed
+23 passed
+0 failed
 
-Total Dedicated v0.76 Tests
-33 passed
-
-Failures
-0
-
-Package Export Verification
-PASS
-```
-
-The verified v0.75 full-regression baseline remains:
-
-```text
 Full ULTRON Regression
-1954 passed
 
-Failures
-0
+2010 passed
+0 failed
 
 git diff --check
+
 PASS
 ```
 
-Ultron is now positioned to evolve from:
+The architecture is now positioned to move from:
 
 ```text
-Context Injection
-        ↓
-Intent Understanding
-        ↓
-Agent Decision
+Understand
+    ↓
+Decide
+    ↓
+Route
 ```
 
 toward:
 
 ```text
-Agent Decision
-        ↓
-Agent Planning
-        ↓
-Tool Selection
-        ↓
-Agent Orchestration
-        ↓
-Execution
-        ↓
-Observation
-        ↓
-Persistence
-        ↓
-Recovery
-        ↓
-Automation
+Response / Action Boundary
+    ↓
+Task Abstraction
+    ↓
+Task Lifecycle
+    ↓
+Task State
+    ↓
+Task Contracts
+    ↓
+Execution Results
+    ↓
+Execution Feedback
+    ↓
+Runtime Events
+    ↓
+Reliability & Recovery
+    ↓
+Capability & Plugin Architecture
+    ↓
+Unified Runtime
+    ↓
+Core Integration
+    ↓
+ULTRON Core Foundation
 ```
 
-with each capability introduced as an independently testable architectural boundary.
+Each capability is introduced as an independently testable architectural boundary so that future voice, vision, automation, smart-device control, agent capabilities, and broader platform functionality can be layered on top without unnecessarily replacing the core architecture.
