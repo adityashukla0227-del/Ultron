@@ -2,315 +2,194 @@
 
 ## Modular Personal AI Assistant, Agent Runtime, Automation & Multimodal Platform
 
-Ultron is a modular AI system evolving from a personal assistant into a broader agent execution platform with multimodal input, voice interaction, planning, orchestration, execution control, observability, persistence, recovery, automation, AI intelligence, decision routing, response/action boundaries, and task abstractions.
+ULTRON is a modular AI assistant and agent platform designed to evolve into a general-purpose AI operating system.
 
-The architecture is designed around clear boundaries, replaceable components, deterministic testing, provider isolation, runtime isolation, hardware isolation, and composition over duplication.
+The architecture is built around a strict separation of:
+
+* Intelligence
+* Intent Understanding
+* Agent Decision Making
+* Decision Routing
+* Response / Action Boundaries
+* Task Representation
+* Task Lifecycle
+* Planning
+* Tool Selection
+* Execution
+* Observability
+* Automation
+* Multimodal Interaction
+* Future Capability Modules
+
+The core design principle is:
+
+> **Build the platform for future capabilities before building the capabilities themselves.**
+
+ULTRON is intentionally developed as a layered foundation so future systems such as Voice, Vision, Smart Home, Website Building, Social Media Automation, Coding Agents, Mobile/Desktop Control, External APIs, and other autonomous capabilities can be added without rebuilding the core runtime.
 
 ---
 
 # 📌 Current Status
 
-| Item                                           | Status               |
-| ---------------------------------------------- | -------------------- |
-| **Current Version**                            | **v0.79**            |
-| **Current Milestone**                          | **Task Abstraction** |
-| **Dedicated v0.79 Tests**                      | **18 passed**        |
-| **Dedicated v0.78 Tests**                      | **19 passed**        |
-| **Dedicated v0.77 Tests**                      | **23 passed**        |
-| **v0.76 Dedicated Agent Decision Tests**       | **33 passed**        |
-| **v0.75 Dedicated Intent Understanding Tests** | **20 passed**        |
-| **v0.75 Focused Regression**                   | **78 passed**        |
-| **Full ULTRON Regression**                     | **2047 passed**      |
-| **v0.79 Dedicated Failures**                   | **0**                |
-| **Development State**                          | Active development   |
+| Area                          | Status                        |
+| ----------------------------- | ----------------------------- |
+| **Current Version**           | **v0.80**                     |
+| **Current Milestone**         | **Task Lifecycle Foundation** |
+| v0.80 Dedicated Tests         | **27 passed**                 |
+| v0.79 Dedicated Tests         | 18 passed                     |
+| v0.78 Dedicated Tests         | 19 passed                     |
+| v0.77 Dedicated Tests         | 23 passed                     |
+| v0.76 Dedicated Tests         | 33 passed                     |
+| v0.75 Dedicated Tests         | 20 passed                     |
+| v0.75 Focused Regression      | 78 passed                     |
+| **Full ULTRON Regression**    | **2074 passed**               |
+| v0.80 Dedicated Failures      | **0**                         |
+| Task Module Export Validation | **PASS**                      |
+| Development State             | **Active Development**        |
 
-v0.79 introduces the **Task Abstraction** as a dedicated architectural representation of a logical unit of work.
+ULTRON currently has a stable intelligence-to-task foundation:
 
-The milestone builds on:
+```text
+User Query
+    ↓
+Intent Understanding
+    ↓
+Structured Intent
+    ↓
+Agent Decision Layer
+    ↓
+Structured Agent Decision
+    ↓
+Decision Router
+    ↓
+Structured Decision Route
+    ↓
+Response / Action Boundary
+    ↓
+Task Abstraction
+    ↓
+Task Lifecycle
+```
 
-* v0.75 — Intent Understanding
-* v0.76 — Agent Decision Layer
-* v0.77 — Decision Routing Foundation
-* v0.78 — Response / Action Boundary
+The next foundation milestone is:
+
+> **v0.81 — Task Context & State**
+
+---
+
+# 🧠 ULTRON Core Philosophy
+
+ULTRON is not being developed as a collection of disconnected features.
+
+The project follows a foundation-first architecture.
+
+Instead of:
+
+```text
+Feature → Feature → Feature → Feature
+```
+
+ULTRON is being developed as:
+
+```text
+Foundation
+    ↓
+Contracts
+    ↓
+Runtime
+    ↓
+Execution
+    ↓
+Capabilities
+    ↓
+User-facing Features
+```
+
+This means future capabilities should consume existing ULTRON contracts instead of introducing independent execution systems.
+
+The long-term objective is to make ULTRON capable of supporting:
+
+* AI conversations
+* Autonomous agents
+* Voice interaction
+* Vision
+* Automation
+* Coding agents
+* Website / application generation
+* Social media automation
+* Smart home control
+* Mobile / desktop control
+* External APIs
+* Developer tools
+* Agent creation
+* Multi-step workflows
+* Future multimodal systems
+
+without requiring a redesign of the core architecture.
+
+---
+
+# 🏗️ Core Architecture
 
 The current intelligence-to-task architecture is:
 
 ```text
 User Query
     ↓
-IntentUnderstanding
-    ↓
-Structured Intent
-    ↓
-AgentDecisionLayer
-    ↓
-Structured AgentDecision
-    ↓
-DecisionRouter
-    ↓
-Structured DecisionRoute
-    ↓
-Response / Action Boundary
-    ↓
-Task Abstraction
-```
-
-The Task abstraction represents **what logical unit of work exists** after the higher-level intelligence pipeline has established the appropriate downstream path.
-
-v0.79 intentionally does **not** implement task execution or task lifecycle management.
-
----
-
-# 🧠 What Ultron Is
-
-Ultron is built as a collection of independent architectural layers rather than a single tightly coupled AI application.
-
-The system separates responsibilities across:
-
-* Conversation
-* Memory
-* AI Intelligence
-* AI Runtime
-* AI Providers
-* AI Engine
-* Context Injection
-* Intent Understanding
-* Agent Decision
-* Decision Routing
-* Response / Action Boundary
-* Task Abstraction
-* Agents
-* Tools
-* Tool Selection
-* Planning
-* Orchestration
-* Execution Control
-* Execution Events
-* Observability
-* Metrics
-* Persistence
-* State Snapshots
-* Runtime Context
-* Context Queries
-* Recovery
-* Automation
-* Multimodal Input
-* Input Routing
-* Input Results
-* Voice Input
-* Voice Processing
-* Speech-to-Text
-* Audio Capture
-* Microphone Capture
-* Voice Command Execution
-* Text-to-Speech
-* Voice Response Execution
-* Audio Playback
-* Audio Output Device Management
-
-The goal is to allow each subsystem to evolve independently without forcing unrelated layers to know about implementation details.
-
----
-
-# 🏗️ Architecture Overview
-
-The high-level architecture represents the intended architectural direction while individual capabilities are introduced incrementally through independent milestones.
-
-The current intelligence-to-task boundary is:
-
-```text
-User
- │
- ▼
-Multimodal Input
- ├── Text
- ├── Voice
- ├── Vision
- └── Gesture
- │
- ▼
-Input Router
- │
- ▼
-Normalized Input Result
- │
- ▼
-Conversation Engine
- │
- ▼
-AI Runtime
- │
- ▼
-AI Intelligence
- │
- ├── Query Validation
- ├── Context Injection
- └── Context Construction
- │
- ▼
 Intent Understanding
-[v0.75]
- │
- ▼
+    ↓
 Structured Intent
- │
- ▼
+    ↓
 Agent Decision Layer
-[v0.76]
- │
- ▼
+    ↓
 Structured Agent Decision
- │
- ▼
+    ↓
 Decision Router
-[v0.77]
- │
- ▼
+    ↓
 Structured Decision Route
- │
- ▼
+    ↓
 Response / Action Boundary
-[v0.78]
- │
- ├── response
- ├── action
- └── unknown
- │
- ▼
+    ↓
 Task Abstraction
-[v0.79]
- │
- ▼
-Existing Agent Infrastructure
- │
- ├── Direct Response
- ├── ToolSelector
- └── AgentPlanner
-        │
-        ▼
-     Agent Plan
-        │
-        ▼
-Agent Orchestrator
-        │
-        ▼
-Execution Controller
-        │
-        ▼
-Execution Context
- ├── Context Queries
- ├── Execution State
- ├── Step State
- ├── Results
- ├── Retry State
- └── Runtime Metadata
-        │
-        ▼
-Execution
- ├── Events
- ├── Observability
- ├── Metrics
- ├── Persistence
- └── State Snapshots
-        │
-        ▼
-Recovery Infrastructure
+    ↓
+Task Lifecycle
 ```
 
-The critical intelligence-to-task flow is:
-
-```text
-Intent Understanding
-        ↓
-Structured Intent
-        ↓
-Agent Decision Layer
-        ↓
-Structured Agent Decision
-        ↓
-Decision Router
-        ↓
-Structured Decision Route
-        ↓
-Response / Action Boundary
-        ↓
-Task Abstraction
-        ↓
-Existing Planning / Tool / Execution Systems
-```
-
-The Task abstraction does not replace the existing execution architecture.
-
----
-
-# 🧭 Task Abstraction — v0.79
-
-v0.79 introduces the **Task Abstraction**.
-
-The purpose of this milestone is to establish a stable representation for a logical unit of work without introducing execution or lifecycle behavior.
-
-The v0.79 conceptual flow is:
-
-```text
-AgentDecision
-     ↓
-DecisionRouter
-     ↓
-DecisionRoute
-     ↓
-ResponseActionBoundary
-     ↓
-Task
-```
-
-A Task answers:
-
-```text
-What logical unit of work exists?
-```
-
-It does not answer:
-
-```text
-How should the work be executed?
-```
-
-Execution remains the responsibility of the existing agent/runtime architecture.
-
----
-
-# 🧩 v0.79 Components
-
-```text
-modules/task/
-├── __init__.py
-└── task.py
-
-tests/task/
-└── test_task.py
-```
-
-The task package exposes:
-
-```text
-modules/task/__init__.py
-```
-
-with:
+Future architecture will continue from the task layer:
 
 ```text
 Task
-TaskError
-TaskType
+    ↓
+Task Lifecycle
+    ↓
+Task Context & State
+    ↓
+Task Input / Output Contracts
+    ↓
+Execution Result
+    ↓
+Execution Feedback
+    ↓
+Runtime Events
+    ↓
+Execution Systems
 ```
+
+The foundation roadmap intentionally separates logical task management from execution management.
 
 ---
 
-# 🎯 Task Model
+# 🧩 Current Task Architecture
 
-The core Task model represents an immutable logical unit of work.
+## Task
 
-Its structure is:
+The `Task` abstraction was introduced in **v0.79**.
+
+It answers:
+
+> **What work exists?**
+
+A Task represents a logical unit of work.
 
 ```text
 Task
@@ -321,1248 +200,1026 @@ Task
 └── metadata
 ```
 
-The model contains:
+The Task model is immutable and descriptive.
 
-* Task identity
-* High-level task type
-* Task description
-* Task source
-* Task metadata
-* Validation
-* Safe serialization
-
-The supported task types are:
-
-```text
-action
-planning
-automation
-conversation
-unknown
-```
-
-The Task model validates:
-
-* `task_id`
-* `task_type`
-* `description`
-* `source`
-* `metadata`
-
-The model is immutable at the dataclass level.
-
-It also provides safe serialization through:
-
-```text
-Task.to_dict()
-```
+It does not execute anything.
 
 ---
 
-# 🧠 Task Abstraction Boundary
+# 🔄 Task Lifecycle
 
-The v0.79 abstraction is:
+## v0.80 — Task Lifecycle Foundation
 
-```text
-DecisionRoute
-      ↓
-ResponseActionBoundary
-      ↓
-Task
-      ↓
-Future Task Lifecycle
-```
+v0.80 introduces the `TaskLifecycle` system.
 
-The Task preserves the identity and semantic information required to represent a unit of work.
+It answers:
 
-Conceptually:
+> **What state is that work currently in?**
+
+The architecture is now:
 
 ```text
 Task
- │
- ├── task_id
- ├── task_type
- ├── description
- ├── source
- └── metadata
+    ↓
+TaskLifecycle
+    ↓
+Future Task Context & State
 ```
 
-The Task model does not perform downstream work.
+The `Task` remains responsible for representing the work.
+
+The `TaskLifecycle` is responsible for controlling the current lifecycle state of that work.
+
+This keeps task identity and lifecycle state separated.
 
 ---
 
-# 🚫 Task Does Not Own
+# 🔁 Task Lifecycle State Machine
 
-v0.79 intentionally does **not** own:
-
-* Task execution
-* Tool selection
-* Agent selection
-* Execution plan creation
-* Plan validation
-* Plan execution
-* Task lifecycle
-* Task state transitions
-* Retries
-* Recovery
-* Cancellation
-* Timeouts
-* Resource control
-* AI provider communication
-* AI generation
-* Orchestration
-* Execution events
-* Execution metrics
-* Persistence
-* Autonomous execution
-
-The architectural separation remains:
+ULTRON v0.80 defines the following lifecycle states:
 
 ```text
-Intent Understanding
-        ≠
-Agent Decision
-        ≠
-Decision Routing
-        ≠
-Response / Action Boundary
-        ≠
-Task Abstraction
-        ≠
-Tool Selection
-        ≠
-Planning
-        ≠
-Orchestration
-        ≠
-Execution
-```
-
-This prevents the Task model from becoming a second execution system.
-
----
-
-# 🧩 Task vs Agent Decision vs Agent Plan
-
-Ultron intentionally separates these concepts.
-
-```text
-AgentDecision
-    ↓
-What high-level path should Ultron take?
-
-DecisionRoute
-    ↓
-Which architectural route should receive it?
-
-ResponseActionBoundary
-    ↓
-Is the downstream path response-oriented or action-oriented?
-
-Task
-    ↓
-What logical unit of work exists?
-
-AgentPlan
-    ↓
-What execution steps are required?
-
-AgentEngine
-    ↓
-How is the work actually executed?
-```
-
-This distinction is important for keeping the architecture modular.
-
----
-
-# 🔗 v0.75 → v0.76 → v0.77 → v0.78 → v0.79 Pipeline
-
-The intelligence architecture now progresses through five dedicated boundaries.
-
-## v0.75 — Understand
-
-```text
-User Query
-    ↓
-IntentUnderstanding
-    ↓
-Intent
-```
-
-The question answered is:
-
-```text
-What does the user mean?
-```
-
----
-
-## v0.76 — Decide
-
-```text
-Intent
-    ↓
-AgentDecisionLayer
-    ↓
-AgentDecision
-```
-
-The question answered is:
-
-```text
-What high-level path should Ultron take?
-```
-
----
-
-## v0.77 — Route
-
-```text
-AgentDecision
-    ↓
-DecisionRouter
-    ↓
-DecisionRoute
-```
-
-The question answered is:
-
-```text
-Which architectural route should receive this decision?
-```
-
----
-
-## v0.78 — Establish Boundary
-
-```text
-DecisionRoute
-    ↓
-ResponseActionBoundary
-    ↓
-response / action / unknown
-```
-
-The question answered is:
-
-```text
-Which high-level downstream boundary should receive the routed request?
-```
-
----
-
-## v0.79 — Represent Work
-
-```text
-ResponseActionBoundary
-    ↓
-Task
-```
-
-The question answered is:
-
-```text
-What logical unit of work exists?
-```
-
-Therefore:
-
-```text
-Understand
-    ↓
-Decide
-    ↓
-Route
-    ↓
-Establish Boundary
-    ↓
-Represent Work
-    ↓
-Plan / Select / Respond / Execute
-```
-
----
-
-# 🧠 Existing Agent Architecture Preservation
-
-Ultron already contains dedicated systems for tool selection, planning, orchestration, and execution.
-
-v0.75 through v0.79 compose those systems instead of duplicating them.
-
-The architecture remains:
-
-```text
-Intent
+CREATED
    ↓
-AgentDecision
+INITIALIZED
    ↓
-DecisionRoute
-   ↓
-ResponseActionBoundary
-   ↓
-Task
-   │
-   ├── response path
-   │
-   └── action path
-          ↓
-     Existing Agent Systems
-          │
-          ├── ToolSelector
-          │       ↓
-          │   AgentEngine
-          │
-          └── AgentPlanner
-                  ↓
-               AgentPlan
-                  ↓
-           AgentOrchestrator
-                  ↓
-           ExecutionController
-                  ↓
-              AgentEngine
-                  ↓
-              Execution
+RUNNING
+   ├──→ PAUSED
+   │      ├──→ RUNNING
+   │      └──→ CANCELLED
+   ├──→ COMPLETED
+   ├──→ FAILED
+   └──→ CANCELLED
 ```
 
-The Task abstraction does not replace these systems.
+## States
 
-### ToolSelector
+### CREATED
 
-`ToolSelector` remains responsible for concrete tool selection.
+Initial state of a newly created task.
 
-### AgentPlanner
+### INITIALIZED
 
-`AgentPlanner` remains responsible for creating and managing executable plans.
+The task has been initialized and is ready to enter execution-related processing.
 
-### AgentOrchestrator
+### RUNNING
 
-`AgentOrchestrator` remains responsible for coordinating plan execution.
+The task is currently active within its lifecycle.
 
-### ExecutionController
+### PAUSED
 
-`ExecutionController` continues to control execution lifecycle.
+The task lifecycle has temporarily stopped active progress.
 
-### AgentEngine
-
-`AgentEngine` remains responsible for actual agent and tool execution.
-
-Therefore:
+A paused task may:
 
 ```text
-Task
-   ≠
-AgentPlan
-   ≠
-ToolSelector
-   ≠
-AgentOrchestrator
-   ≠
-ExecutionController
-   ≠
-AgentEngine
+PAUSED → RUNNING
 ```
+
+or:
+
+```text
+PAUSED → CANCELLED
+```
+
+### COMPLETED
+
+The task has successfully reached the end of its lifecycle.
+
+This is a terminal state.
+
+### FAILED
+
+The task lifecycle has reached a failed state.
+
+This is a terminal state.
+
+### CANCELLED
+
+The task lifecycle has been cancelled.
+
+This is a terminal state.
 
 ---
 
-# 🧠 v0.78 Response / Action Boundary
+# 🔒 Terminal States
 
-v0.78 introduced the **Response / Action Boundary**.
-
-Its purpose is to establish a stable architectural boundary between structured decision routes and downstream response-oriented or action-oriented systems.
-
-The v0.78 flow is:
+The following states are terminal:
 
 ```text
-AgentDecision
-     ↓
-DecisionRouter
-     ↓
-DecisionRoute
-     ↓
-ResponseActionBoundary
-     ↓
-High-Level Boundary
+COMPLETED
+FAILED
+CANCELLED
 ```
 
-The mapping is:
+Terminal states have no outgoing transitions.
+
+For example:
 
 ```text
-RESPONSE       → response
-EXECUTION      → action
-PLANNING       → action
-CLARIFICATION  → response
-CONTINUATION   → response
-UNKNOWN        → unknown
+COMPLETED → anything
 ```
 
-The boundary is deterministic.
+is invalid.
 
-It does not:
-
-* Select tools
-* Create plans
-* Execute tools
-* Execute agents
-* Orchestrate execution
-* Generate responses
-* Call AI providers
-* Mutate tasks
-
----
-
-# 🧠 v0.77 Decision Routing
-
-v0.77 introduced the dedicated Decision Routing Foundation.
-
-The mapping is:
+Likewise:
 
 ```text
-RESPOND   → response
-EXECUTE   → execution
-PLAN      → planning
-CLARIFY   → clarification
-CONTINUE  → continuation
-UNKNOWN   → unknown
-```
-
-The `DecisionRoute` model contains:
-
-```text
-route_type
-decision
-metadata
-```
-
-The routing process is deterministic and preserves the originating `AgentDecision`.
-
----
-
-# 🧠 v0.76 Agent Decision Layer
-
-v0.76 introduced the dedicated Agent Decision Layer between semantic intent understanding and downstream architecture.
-
-The architecture is:
-
-```text
-Structured Intent
-       ↓
-AgentDecisionLayer
-       ↓
-Decision Prompt
-       ↓
-Existing AI Engine
-       ↓
-Configured AI Provider
-       ↓
-Structured JSON
-       ↓
-Decision Validation
-       ↓
-AgentDecision
-```
-
-Supported decision types:
-
-```text
-respond
-execute
-plan
-clarify
-continue
-unknown
-```
-
-The `AgentDecision` model contains:
-
-```text
-decision_type
-intent
-confidence
-metadata
-```
-
-The original `Intent` is preserved inside the decision.
-
----
-
-# 🧠 v0.75 Intent Understanding
-
-v0.75 introduced the dedicated **Intent Understanding** boundary.
-
-The architecture is:
-
-```text
-User Query
-    ↓
-IntentUnderstanding
-    ↓
-Intent Classification Prompt
-    ↓
-Existing AI Engine
-    ↓
-Configured AI Provider
-    ↓
-Structured JSON
-    ↓
-Intent Validation
-    ↓
-Structured Intent
-```
-
-Supported intent categories:
-
-```text
-information
-action
-creation
-continuation
-explanation
-conversation
-unknown
-```
-
-Intent Understanding determines:
-
-```text
-What does the user mean?
-```
-
-It does not determine:
-
-* Specific tools
-* Execution plans
-* Tool execution
-* Agent execution
-* Orchestration
-
----
-
-# 🧠 Context Awareness
-
-Intent Understanding accepts optional context:
-
-```text
-understand(
-    query,
-    context=None
-)
-```
-
-When context is provided, it is included in the classification prompt.
-
-The resulting `Intent` records whether context was used.
-
-The current flow is:
-
-```text
-Context
-   ↓
-Intent Understanding
-   ↓
-Intent
-   ↓
-Agent Decision
-   ↓
-Decision Route
-   ↓
-Response / Action Boundary
-   ↓
-Task
-```
-
----
-
-# 🤖 AI Engine Reuse
-
-The intelligence layers reuse the existing AI Engine.
-
-The architecture remains:
-
-```text
-IntentUnderstanding
-      ↓
-AI Engine
-      ↓
-AI Provider
+FAILED → RUNNING
 ```
 
 and:
 
 ```text
-AgentDecisionLayer
-      ↓
-AI Engine
-      ↓
-AI Provider
+CANCELLED → RUNNING
 ```
 
-v0.77 does not introduce another AI-generation mechanism because routing is deterministic.
+are invalid.
 
-v0.78 does not introduce another AI-generation mechanism because boundary classification is deterministic.
+This prevents uncontrolled lifecycle mutation.
 
-v0.79 does not introduce another AI-generation mechanism because Task creation is a structural abstraction.
+---
 
-This follows Ultron's composition-over-duplication principle.
+# 🧱 v0.80 Responsibilities
+
+`TaskLifecycle` owns:
+
+* Lifecycle state representation
+* Valid state transitions
+* Transition validation
+* Transition enforcement
+* Terminal state detection
+* Safe lifecycle serialization
+* Task association
+* Package-level lifecycle exports
+
+It does **not** own execution.
+
+---
+
+# 🚫 v0.80 Explicit Non-Responsibilities
+
+The v0.80 Task Lifecycle does **not**:
+
+* Execute tasks
+* Select tools
+* Select agents
+* Create execution plans
+* Manage execution state
+* Manage retries
+* Manage recovery
+* Manage timeouts
+* Persist events
+* Call AI providers
+* Orchestrate execution
+* Control external capabilities
+
+Those responsibilities belong to later architecture layers.
+
+This boundary is intentional.
+
+---
+
+# 🧠 Task vs Task Lifecycle
+
+The separation is:
+
+```text
+Task
+├── task_id
+├── task_type
+├── description
+├── source
+└── metadata
+
+TaskLifecycle
+├── task
+├── state
+└── transition rules
+```
+
+In simple terms:
+
+```text
+Task
+"What work exists?"
+
+TaskLifecycle
+"What state is that work currently in?"
+```
+
+This prevents the Task model from becoming a large mutable object containing unrelated runtime behavior.
+
+---
+
+# ⚙️ Task Lifecycle API
+
+The lifecycle exposes controlled operations such as:
+
+```python
+lifecycle.state
+lifecycle.is_terminal
+lifecycle.can_transition(...)
+lifecycle.transition(...)
+lifecycle.to_dict()
+```
+
+Example conceptual usage:
+
+```python
+task = Task(
+    task_id="task-001",
+    task_type=TaskType.ACTION,
+    description="Perform an action",
+)
+
+lifecycle = TaskLifecycle(task)
+
+lifecycle.transition(TaskState.INITIALIZED)
+lifecycle.transition(TaskState.RUNNING)
+lifecycle.transition(TaskState.COMPLETED)
+```
+
+The Task itself remains immutable.
+
+The lifecycle owns the mutable state.
+
+---
+
+# 🧭 Intelligence → Task Flow
+
+ULTRON's current intelligence pipeline is:
+
+```text
+User Query
+    ↓
+Intent Understanding
+    ↓
+Structured Intent
+    ↓
+Agent Decision Layer
+    ↓
+Structured Agent Decision
+    ↓
+Decision Router
+    ↓
+Structured Decision Route
+    ↓
+Response / Action Boundary
+    ↓
+Task Abstraction
+    ↓
+Task Lifecycle
+```
+
+Each layer has a distinct responsibility.
+
+---
+
+# 🎯 Intent Understanding
+
+Introduced in v0.75.
+
+Intent Understanding converts a natural-language user request into structured intent.
+
+Examples of intent categories include:
+
+```text
+QUERY
+ACTION
+CREATION
+CONTINUATION
+EXPLANATION
+```
+
+Intent Understanding does not select tools or execute tasks.
+
+---
+
+# 🧠 Agent Decision Layer
+
+Introduced in v0.76.
+
+The Agent Decision Layer determines what kind of high-level action should follow from the understood intent.
+
+It produces a structured agent decision.
+
+It does not directly execute tools.
+
+---
+
+# 🛣️ Decision Routing
+
+Introduced in v0.77.
+
+Decision Routing converts structured agent decisions into deterministic routes.
+
+The routing layer determines the next architectural direction without executing it.
+
+---
+
+# 🚧 Response / Action Boundary
+
+Introduced in v0.78.
+
+The Response / Action Boundary establishes whether the system should:
+
+```text
+RESPOND
+```
+
+or move toward:
+
+```text
+ACTION / EXECUTION
+```
+
+Conceptually:
+
+```text
+Decision
+    ↓
+Response / Action Boundary
+    ├── Response
+    └── Action
+```
+
+This prevents response generation and execution behavior from becoming mixed together.
+
+---
+
+# 🧱 Task Abstraction
+
+Introduced in v0.79.
+
+The Task layer establishes a formal representation of logical work.
+
+The boundary is:
+
+```text
+Response / Action Boundary
+            ↓
+           Task
+            ↓
+    Future Task Lifecycle
+```
+
+v0.79 intentionally stopped before lifecycle management.
+
+---
+
+# 🔄 Task Lifecycle Foundation
+
+Introduced in v0.80.
+
+The v0.80 boundary extends the previous architecture:
+
+```text
+Response / Action Boundary
+            ↓
+           Task
+            ↓
+      TaskLifecycle
+```
+
+The Task Lifecycle does not yet connect the task system to execution.
+
+That integration belongs to later milestones.
+
+---
+
+# ⚖️ Task Lifecycle ≠ Execution Lifecycle
+
+ULTRON deliberately maintains a distinction between:
+
+```text
+Task Lifecycle
+```
+
+and:
+
+```text
+Execution Lifecycle
+```
+
+A Task represents logical work.
+
+A TaskLifecycle represents the state of that logical work.
+
+Execution systems represent the actual execution process.
+
+Existing execution infrastructure already contains execution-specific concepts such as:
+
+* `ExecutionContext`
+* `ExecutionController`
+* `ExecutionStateSnapshot`
+* Execution Events
+* Execution Metrics
+* Execution Observability
+* Agent Plans
+* Tool Selection
+* Orchestration
+
+The existing `ExecutionStateSnapshot` is therefore **not reused** as Task Lifecycle state.
+
+Conceptually:
+
+```text
+Task Domain
+    ↓
+Task
+    ↓
+TaskLifecycle
+
+Execution Domain
+    ↓
+AgentPlan
+    ↓
+ExecutionContext
+    ↓
+ExecutionController
+    ↓
+ExecutionStateSnapshot
+    ↓
+Execution Events
+    ↓
+Execution Metrics
+```
+
+This separation prevents the Task layer from becoming coupled to the existing execution engine too early.
+
+---
+
+# 🏗️ Existing Agent Infrastructure
+
+ULTRON already contains a mature execution architecture.
+
+The execution foundation includes:
+
+```text
+Agent Runtime
+    ↓
+Planner
+    ↓
+Orchestrator
+    ↓
+Execution Controller
+    ↓
+Lifecycle / Event Store
+    ↓
+Execution Observability
+    ↓
+Execution Metrics
+```
+
+Task Lifecycle does not replace these systems.
+
+Instead, future versions will establish controlled integration between task-level abstractions and existing execution infrastructure.
+
+The intended future relationship is:
+
+```text
+Task
+   ↓
+TaskLifecycle
+   ↓
+Task Context
+   ↓
+Planning / Tool / Execution Systems
+```
+
+The v0.80 release intentionally stops before creating that integration.
+
+---
+
+# 📦 v0.80 Components
+
+Current task module:
+
+```text
+modules/task/
+├── __init__.py
+├── task.py
+└── task_lifecycle.py
+```
+
+Tests:
+
+```text
+tests/task/
+├── test_task.py
+└── test_task_lifecycle.py
+```
+
+---
+
+# 📤 Task Module Exports
+
+The task package now exports:
+
+```python
+Task
+TaskError
+TaskType
+
+TaskLifecycle
+TaskLifecycleError
+TaskState
+```
+
+Package validation:
+
+```text
+Task module exports OK
+```
+
+---
+
+# 🧪 v0.80 Testing
+
+## Dedicated Task Lifecycle Tests
+
+```text
+27 passed
+0 failed
+```
+
+The dedicated lifecycle test suite validates:
+
+* Default CREATED state
+* Task identity preservation
+* Valid lifecycle transitions
+* Running transitions
+* Paused transitions
+* Invalid transitions
+* Terminal states
+* Type validation
+* Task validation
+* Initial state validation
+* Lifecycle serialization
+* Terminal serialization
+* Task immutability through lifecycle
+* Lifecycle boundary behavior
+
+---
+
+# 🧪 Full ULTRON Regression
+
+After v0.80 implementation:
+
+```text
+2074 passed
+0 failed
+```
+
+This confirms that the Task Lifecycle Foundation was added without breaking the existing ULTRON test suite.
+
+---
+
+# 🧪 Historical Test Baselines
+
+| Version   | Dedicated Tests | Full Regression |
+| --------- | --------------: | --------------: |
+| v0.75     |              20 |            2047 |
+| v0.76     |              33 |            2047 |
+| v0.77     |              23 |            2047 |
+| v0.78     |              19 |            2047 |
+| v0.79     |              18 |            2047 |
+| **v0.80** |          **27** |        **2074** |
+
+---
+
+# 🎙️ Multimodal Foundation
+
+ULTRON also contains a developing multimodal architecture.
+
+Current areas include:
+
+```text
+modules/multimodal/
+```
+
+The architecture includes foundations for:
+
+* Audio capture
+* Audio input
+* Speech-to-text
+* Voice processing
+* Voice pipelines
+* Audio output
+* Playback
+* Multimodal routing
+
+The voice roadmap is intentionally separate from the current task foundation.
+
+---
+
+# 🎙️ Voice Roadmap
+
+```text
+v0.56 → STT Provider Abstraction
+v0.57 → First STT Provider
+v0.58 → Voice → Text Runtime Integration
+v0.59 → Audio Capture Foundation
+v0.60 → Voice Command Execution
+v0.61 → TTS Provider Abstraction
+v0.62 → First TTS Provider
+v0.63 → Runtime TTS Integration
+v0.64 → Voice Response Execution
+v0.65 → Full Voice Conversation Loop
+v0.66 → Audio Playback Foundation
+v0.67 → Audio Output Device Integration
+v0.68 → Voice Playback Execution
+v0.69 → End-to-End Voice Assistant
+```
+
+Voice remains a capability layer that will eventually consume the core platform contracts.
 
 ---
 
 # 🤖 AI Provider Architecture
 
-The AI provider architecture remains:
+ULTRON includes an AI provider abstraction that separates the core runtime from individual AI providers.
+
+Current AI architecture includes:
 
 ```text
-AI Runtime
-     ↓
-AI Intelligence
-     ↓
 AI Engine
-     ↓
-Supported Provider Registry
-     ↓
-AIProvider
-     ↓
-Concrete Provider
- ├── MockProvider
- └── AnthropicProvider
+    ↓
+AI Provider Abstraction
+    ↓
+Provider Implementation
 ```
 
-Higher-level intelligence components do not directly depend on provider-specific SDKs.
+Existing provider architecture includes:
+
+* Mock Provider
+* Anthropic Provider
+* Configurable AI mode
+* Environment-based API configuration
+
+The provider architecture is designed so future providers can be added without rewriting the core intelligence runtime.
 
 ---
 
-# 🤖 Mock AI Provider
-
-`MockProvider` provides a deterministic development and testing implementation.
-
-It:
-
-* Implements `AIProvider`
-* Requires no external API
-* Provides deterministic responses
-* Supports development without API credentials
-* Enables isolated testing
-
----
-
-# 🧠 Anthropic AI Provider
-
-`AnthropicProvider` remains the concrete Anthropic implementation behind the provider abstraction.
-
-Provider-specific API logic remains isolated inside the provider.
-
-The architecture is:
+# 🧠 AI Intelligence Roadmap
 
 ```text
-AgentDecisionLayer
-       ↓
-AI Engine
-       ↓
-AI Provider
-       ↓
-AnthropicProvider
-       ↓
-Anthropic API
-```
-
-The Agent Decision Layer does not directly communicate with Anthropic.
-
----
-
-# ⚙️ AI Engine Integration
-
-The AI Engine resolves the configured provider and delegates generation.
-
-```text
-AI Intelligence
-      ↓
-AI Engine
-      ↓
-AI_MODE
-      ↓
-SUPPORTED_PROVIDERS
- ├── mock
- │    ↓
- │ MockProvider
- │
- └── anthropic
-      ↓
-  AnthropicProvider
-      ↓
-   AIProvider
-      ↓
-   generate()
-      ↓
-   AI Response
-```
-
-Supported provider modes:
-
-```text
-mock
-anthropic
-```
-
-Unknown or empty provider modes continue to fall back to `MockProvider` for safe development behavior.
-
----
-
-# 🧠 AI Runtime Architecture
-
-The AI Runtime provides a stable entry point above the AI Intelligence layer.
-
-The progression is:
-
-```text
+v0.70 → AI Intelligence Foundation
+v0.71 → AI Provider Abstraction
+v0.72 → First AI Provider
 v0.73 → AI Runtime
 v0.74 → Context Injection
 v0.75 → Intent Understanding
-v0.76 → Agent Decision
-v0.77 → Decision Routing
+v0.76 → Agent Decision Layer
+v0.77 → Decision Routing Foundation
 v0.78 → Response / Action Boundary
 v0.79 → Task Abstraction
+v0.80 → Task Lifecycle Foundation
 ```
-
-The runtime remains:
-
-```text
-AIRuntime
-    ↓
-AIIntelligence
-    ↓
-AI Engine
-    ↓
-AI Provider
-```
-
-The AI Runtime does not own:
-
-* Provider-specific API handling
-* Context construction
-* Intent classification
-* Agent decisions
-* Decision routing
-* Response/action classification
-* Task lifecycle
-* Tool selection
-* Planning
-* Orchestration
-* Tool execution
-* Voice processing
-* Audio playback
 
 ---
 
-# 🎙️ End-to-End Voice Architecture
+# 🧱 Foundation Roadmap
 
-The voice architecture remains integrated with the broader AI and agent architecture:
+ULTRON is now moving from intelligence foundations toward a complete platform foundation.
+
+## Phase 1 — Intelligence → Execution Bridge
 
 ```text
-Human Voice
-    ↓
-Audio Capture
-    ↓
-Microphone Capture
-    ↓
-VoiceInput
-    ↓
-Voice Processing
-    ↓
-STT Provider
-    ↓
-Transcription
-    ↓
-Runtime Query
-    ↓
-AI Runtime
-    ↓
-AI Intelligence
-    ↓
-Intent Understanding
-    ↓
-Agent Decision
-    ↓
-Decision Router
-    ↓
-Response / Action Boundary
-    ↓
+v0.77 → Decision Routing Foundation          ✅
+v0.78 → Response / Action Boundary           ✅
+v0.79 → Task Abstraction                     ✅
+v0.80 → Task Lifecycle Foundation            ✅
+v0.81 → Task Context & State                 ⏳
+v0.82 → Task Input / Output Contracts        ⏳
+v0.83 → Execution Result Abstraction         ⏳
+v0.84 → Execution Feedback Interface         ⏳
+v0.85 → Runtime Event Integration             ⏳
+```
+
+Target pipeline:
+
+```text
+Query
+ ↓
+Intelligence
+ ↓
+Intent
+ ↓
+Decision
+ ↓
+Routing
+ ↓
 Task
-    ↓
-Agent / Response Routing
-    ↓
-Existing Agent Infrastructure
-    ↓
-AI Response
-    ↓
-VoiceResponseExecutor
-    ↓
-TTSRuntimeIntegration
-    ↓
-TTSProvider
-    ↓
-Synthesized Audio
-    ↓
-VoicePlaybackExecutor
-    ↓
-AudioOutputDeviceManager
-    ↓
-Audio Output
-```
-
-Voice remains an additional input/output path rather than a replacement for the core architecture.
-
----
-
-# 🔊 Voice Subsystem Boundaries
-
-## Input
-
-```text
-Physical Microphone
-        ↓
-MicrophoneCapture
-        ↓
-AudioCapture
-        ↓
-VoiceInput
-```
-
-## Speech-to-Text
-
-```text
-VoiceInput
-    ↓
-VoiceProcessingPipeline
-    ↓
-VoiceProcessor
-    ↓
-STTProvider
-    ↓
-Concrete STT Provider
-    ↓
-MultimodalInputResult
-    ↓
-Runtime Integration
-```
-
-## Voice Command Execution
-
-```text
-Runtime Query
-    ↓
-Intent Understanding
-    ↓
-Agent Decision
-    ↓
-Decision Router
-    ↓
-Response / Action Boundary
-    ↓
-Task
-    ↓
-Capability / Tool Resolution
-    ↓
-Agent Planner
-    ↓
-Agent Plan
-    ↓
-Agent Orchestrator
-    ↓
-Agent Execution
-    ↓
-Tool Execution
-```
-
-## Text-to-Speech
-
-```text
-Runtime Response
-    ↓
-VoiceResponseExecutor
-    ↓
-TTSRuntimeIntegration
-    ↓
-TTSProvider
-    ↓
-Concrete TTS Provider
-    ↓
-Synthesized Audio
-```
-
-## Audio Playback
-
-```text
-Synthesized Audio
-        ↓
-VoicePlaybackExecutor
-        ↓
-AudioOutputDeviceManager
-        ↓
-Active Device
-        ↓
-Default Device Fallback
-        ↓
-Playback Backend
-        ↓
-Audio Output
+ ↓
+Lifecycle
+ ↓
+Context
+ ↓
+Execution
+ ↓
+Result
+ ↓
+Feedback
 ```
 
 ---
 
-# 🧩 Core Design Principles
-
-## 1. Small Milestones
-
-Each version introduces a focused architectural capability.
+# 🛡️ Phase 2 — Reliability Foundation
 
 ```text
-Small Milestones
-      ↓
-Clear Boundaries
-      ↓
-Independent Components
-      ↓
-Deterministic Testing
+v0.86 → Error & Failure Abstraction
+v0.87 → Retry & Recovery Foundation
+v0.88 → Cancellation & Interruption Foundation
+v0.89 → Timeout & Resource Control
+v0.90 → Execution Policy Foundation
 ```
 
-## 2. Provider Isolation
-
-External AI, STT, and TTS providers remain behind abstractions.
+The error abstraction is intended to eventually provide a unified model for:
 
 ```text
-Core Architecture
-       ↓
-Provider Interface
-       ↓
-Concrete Provider
+AI Error
+Tool Error
+Planning Error
+Execution Error
+Voice Error
+Vision Error
+Future Capability Errors
 ```
 
-## 3. Hardware Isolation
+---
 
-Physical microphone and output-device handling remain behind dedicated abstractions.
+# 🧩 Phase 3 — Extensibility Foundation
 
 ```text
-Application Logic
-       ↓
-Hardware Abstraction
-       ↓
-Concrete Audio Backend
-       ↓
-Physical Device
+v0.91 → Capability Registry
+v0.92 → Plugin / Module Contract
+v0.93 → Dependency & Service Registry
+v0.94 → Configuration & Environment Foundation
+v0.95 → Health & Capability Checks
 ```
 
-## 4. Runtime Isolation
+This phase will establish the platform-level mechanisms required for future capabilities and modules.
 
-Runtime components coordinate established interfaces instead of reaching directly into unrelated internals.
+---
 
-## 5. Observable Execution
+# 🏛️ Phase 4 — Core Platform Foundation
 
-Execution is designed around explicit lifecycle state, events, metrics, results, and failure information.
+```text
+v0.96 → Unified Runtime Context
+v0.97 → Unified Lifecycle Foundation
+v0.98 → Observability & Diagnostics Foundation
+v0.99 → Core Integration Boundary
+v1.0  → ULTRON Core Foundation
+```
 
-## 6. Persistent & Recoverable Execution
+---
 
-Persistence, state snapshots, runtime context, and recovery remain separate architectural concerns.
+# 🎯 v1.0 Philosophy
 
-## 7. Composition Over Duplication
+ULTRON v1.0 does **not** mean that every future user-facing capability is complete.
 
-Higher-level components compose existing capabilities rather than reimplementing them.
+Instead:
+
+> **v1.0 means the core operating foundation is stable enough to support future capabilities without requiring a fundamental architectural rebuild.**
+
+The goal is:
+
+```text
+Strong Core
+    ↓
+Stable Contracts
+    ↓
+Composable Capabilities
+    ↓
+Future Features
+```
+
+After v1.0, systems such as:
+
+* Voice
+* Vision
+* Smart Home
+* Website Builder
+* Coding Agent
+* Social Media Automation
+* Mobile Control
+* Desktop Control
+* External APIs
+* Advanced Automation
+* Agent Builder
+
+can be developed as capabilities on top of the established core.
+
+---
+
+# 🔐 Architecture Principles
+
+ULTRON development follows several strict principles.
+
+## 1. No Duplicate Systems
+
+Before adding a new subsystem, the existing architecture is inspected first.
+
+If an existing abstraction already solves the required problem, it should be extended or reused rather than duplicated.
+
+---
+
+## 2. Separation of Responsibility
+
+Each layer should have one clear responsibility.
 
 For example:
 
 ```text
-IntentUnderstanding
-       ↓
-AI Engine
-       ↓
-AI Provider
-```
+Intent
+→ Understand
 
-and:
+Decision
+→ Decide
 
-```text
-AgentDecisionLayer
-       ↓
-AI Engine
-       ↓
-AI Provider
-```
+Route
+→ Route
 
-and:
+Boundary
+→ Separate response from action
 
-```text
-AgentDecision
-       ↓
-DecisionRouter
-       ↓
-DecisionRoute
-       ↓
-ResponseActionBoundary
-       ↓
 Task
-       ↓
-Existing ToolSelector / AgentPlanner
-       ↓
-Existing Execution Architecture
-```
+→ Represent work
 
-No duplicate tool-selection, planning, orchestration, or execution system is introduced.
+TaskLifecycle
+→ Manage task state
 
----
-
-# 🧪 Testing
-
-Testing is a core part of Ultron's architecture.
-
-## v0.79 Validation Snapshot
-
-Dedicated Task Abstraction tests:
-
-```text
-18 passed
-0 failed
-```
-
-The v0.79 tests cover:
-
-* Task creation
-* Task source
-* Task metadata
-* Task immutability
-* Task ID validation
-* Empty task ID rejection
-* Task type validation
-* Description validation
-* Empty description rejection
-* Source validation
-* Metadata validation
-* Task serialization
-* Metadata copy behavior during serialization
-* All supported task types
-
-Full ULTRON regression after v0.79:
-
-```text
-2047 passed
-0 failed
-```
-
-Repository validation:
-
-```text
-git diff --check
-
-PASS
-```
-
-Package export validation:
-
-```text
-v0.79 task exports OK
+Execution
+→ Execute work
 ```
 
 ---
 
-# 🧪 v0.78 Validation Snapshot
+## 3. Immutable Core Models Where Appropriate
 
-Dedicated Response / Action Boundary tests:
+Important descriptive models remain immutable where possible.
+
+Examples include:
+
+* Task
+* AgentPlan
+* Execution State Snapshots
+* Structured intelligence models
+
+Mutable behavior belongs in controlled runtime components.
+
+---
+
+## 4. Contract-First Development
+
+Future capabilities should depend on stable contracts instead of directly coupling themselves to implementation details.
+
+---
+
+## 5. Test Before Expansion
+
+Every architectural milestone should include dedicated tests.
+
+The full regression suite must also pass before a milestone is considered complete.
+
+---
+
+## 6. Existing Architecture Preservation
+
+New milestones must not unnecessarily rewrite stable systems.
+
+The goal is incremental architectural evolution.
+
+---
+
+## 7. Feature After Foundation
+
+ULTRON deliberately prioritizes platform architecture before large user-facing feature expansion.
+
+The principle is:
+
+> **Build the system that can build the features.**
+
+---
+
+# 📊 Current Architecture Map
+
+The current platform can be viewed as:
 
 ```text
-19 passed
-0 failed
-```
-
-The v0.78 tests cover:
-
-* `ResponseActionBoundary` initialization
-* `DecisionRoute` validation
-* Response boundary classification
-* Action boundary classification
-* Planning classification
-* Clarification classification
-* Continuation classification
-* Unknown route handling
-* Decision route preservation
-* Invalid input validation
-* Deterministic boundary behavior
-* Route immutability preservation
-
-Historical full ULTRON regression after v0.78:
-
-```text
-2029 passed
-0 failed
-```
-
-Repository validation:
-
-```text
-git diff --check
-
-PASS
-```
-
-Intelligence package export validation:
-
-```text
-v0.78 intelligence export OK
+                         ULTRON
+                           │
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+   Intelligence       Multimodal          Automation
+        │                  │                  │
+        ↓                  ↓                  ↓
+ Intent Understanding   Voice / Audio      Automation Engine
+        │
+        ↓
+ Agent Decision
+        │
+        ↓
+ Decision Router
+        │
+        ↓
+ Response / Action Boundary
+        │
+        ↓
+ Task
+        │
+        ↓
+ Task Lifecycle
+        │
+        ↓
+ Future Task Context
+        │
+        ↓
+ Execution Foundation
+        │
+        ├── Planning
+        ├── Tool Selection
+        ├── Orchestration
+        ├── Execution Controller
+        ├── Event Store
+        ├── Observability
+        └── Metrics
 ```
 
 ---
 
-# 🧪 v0.77 Validation Snapshot
+# 🗂️ Core Project Structure
 
-Dedicated Decision Router tests:
-
-```text
-23 passed
-0 failed
-```
-
-The v0.77 tests cover:
-
-* Decision-to-route mapping
-* All supported route types
-* Structured `DecisionRoute` creation
-* Decision preservation
-* Route serialization
-* Metadata handling
-* Invalid decision validation
-* Deterministic routing behavior
-* Process alias behavior
-* Package export compatibility
-
-Historical full ULTRON regression after v0.77:
+The architecture currently contains major domains such as:
 
 ```text
-2010 passed
-0 failed
+modules/
+├── agent/
+│   ├── agent_engine
+│   ├── execution_controller
+│   ├── orchestrator
+│   ├── plan
+│   ├── planner
+│   ├── registry
+│   ├── runtime_context
+│   ├── event persistence
+│   ├── metrics
+│   ├── observability
+│   ├── tool registry
+│   └── tool selector
+│
+├── intelligence/
+│   ├── ai_intelligence.py
+│   ├── ai_runtime.py
+│   ├── intelligence_result.py
+│   ├── intent.py
+│   ├── intent_understanding.py
+│   ├── agent_decision.py
+│   ├── agent_decision_layer.py
+│   ├── decision_route.py
+│   ├── decision_router.py
+│   └── response_action_boundary.py
+│
+├── task/
+│   ├── __init__.py
+│   ├── task.py
+│   └── task_lifecycle.py
+│
+├── multimodal/
+│   ├── audio capture
+│   ├── audio input
+│   ├── STT
+│   ├── voice pipeline
+│   ├── TTS
+│   └── audio output
+│
+├── automation/
+│   ├── actions
+│   ├── engine
+│   ├── manager
+│   ├── runner
+│   ├── scheduler
+│   ├── storage
+│   └── worker
+│
+└── core/
+    ├── AI client
+    ├── AI context
+    ├── AI engine
+    ├── configuration
+    ├── settings
+    ├── memory
+    ├── profile
+    └── conversation
 ```
-
----
-
-# 🧪 v0.76 Validation Snapshot
-
-Dedicated Agent Decision tests:
-
-```text
-33 passed
-0 failed
-```
-
-Breakdown:
-
-```text
-AgentDecision Model Tests
-15 passed
-
-AgentDecisionLayer Tests
-18 passed
-
-Total Dedicated v0.76 Tests
-33 passed
-```
-
----
-
-# 🧪 v0.75 Validation Snapshot
-
-Dedicated Intent Understanding tests:
-
-```text
-20 passed
-0 failed
-```
-
-Focused v0.72–v0.75 regression:
-
-```text
-78 passed
-0 failed
-```
-
-Historical full ULTRON regression at the v0.75 milestone:
-
-```text
-1954 passed
-0 failed
-```
-
-These remain the verified historical v0.75 baseline results.
 
 ---
 
 # 📈 Version Progression
 
-Ultron has progressed through focused architectural milestones:
-
 ```text
-v0.37 → Agent Runtime
-   ↓
-v0.38 → Agent Tool System
-   ↓
-v0.39 → Tool Selector
-   ↓
-v0.40 → Agent Planning
-   ↓
-v0.41 → Agent Execution & Plan Orchestration
-   ↓
-v0.42 → Agent Execution Controller
-   ↓
-v0.43 → Orchestrator Execution Control
-   ↓
-v0.44 → Execution Events & Event Store
-   ↓
-v0.45 → Execution Observability
-   ↓
-v0.46 → Execution Metrics
-   ↓
-v0.47 → Persistent Execution History
-   ↓
-v0.48 → Execution Recovery & State Restoration
-   ↓
-v0.49 → Agent Runtime Context
-   ↓
-v0.50 → Execution Context & Orchestration Integration
-   ↓
-v0.51 → Multimodal Input Foundation
-   ↓
-v0.52 → Voice Input Foundation
-   ↓
-v0.53 → Voice Processing Foundation
-   ↓
-v0.54 → Voice Processing Pipeline Foundation
-   ↓
-v0.55 → Voice Processing Intelligence Foundation
-   ↓
-v0.56 → STT Provider Abstraction
-   ↓
-v0.57 → First STT Provider
-   ↓
-v0.58 → Voice → Text Runtime Integration
-   ↓
-v0.59 → Audio Capture Foundation
-   ↓
-v0.60 → Voice Command Execution
-   ↓
-v0.61 → TTS Provider Abstraction
-   ↓
-v0.62 → First TTS Provider
-   ↓
-v0.63 → Runtime TTS Integration
-   ↓
-v0.64 → Voice Response Execution
-   ↓
-v0.65 → Full Voice Conversation Loop
-   ↓
-v0.66 → Audio Playback Foundation
-   ↓
-v0.67 → Audio Output Device Integration
-   ↓
-v0.68 → Voice Playback Execution
-   ↓
-v0.69 → End-to-End Voice Assistant
-   ↓
 v0.70 → AI Intelligence Foundation
    ↓
 v0.71 → AI Provider Abstraction
@@ -1582,1383 +1239,536 @@ v0.77 → Decision Routing Foundation
 v0.78 → Response / Action Boundary
    ↓
 v0.79 → Task Abstraction
+   ↓
+v0.80 → Task Lifecycle Foundation
+   ↓
+v0.81 → Task Context & State
 ```
 
 ---
 
-# 📜 Version History
+# 📚 Version History
+
+## v0.80 — Task Lifecycle Foundation
+
+### Added
+
+* `TaskLifecycle`
+* `TaskLifecycleError`
+* `TaskState`
+* Controlled task lifecycle state machine
+* Lifecycle transition validation
+* Terminal state detection
+* Lifecycle serialization
+* Task module package exports
+* Dedicated Task Lifecycle test suite
+
+### Lifecycle States
+
+```text
+CREATED
+INITIALIZED
+RUNNING
+PAUSED
+COMPLETED
+FAILED
+CANCELLED
+```
+
+### Valid Transitions
+
+```text
+CREATED → INITIALIZED
+
+INITIALIZED → RUNNING
+
+RUNNING → PAUSED
+RUNNING → COMPLETED
+RUNNING → FAILED
+RUNNING → CANCELLED
+
+PAUSED → RUNNING
+PAUSED → CANCELLED
+```
+
+### Terminal States
+
+```text
+COMPLETED
+FAILED
+CANCELLED
+```
+
+### Validation
+
+```text
+27 dedicated tests passed
+2074 full regression tests passed
+0 dedicated failures
+0 full regression failures
+Task module exports validated
+```
+
+### Architectural Boundary
+
+```text
+Task
+  ↓
+TaskLifecycle
+  ↓
+Future Task Context & State
+```
+
+v0.80 intentionally does not connect Task Lifecycle to execution systems.
+
+---
 
 ## v0.79 — Task Abstraction
 
-The v0.79 milestone introduces the dedicated **Task Abstraction**.
+Introduced the core `Task` abstraction.
 
-The goal is to establish a stable representation of a logical unit of work without introducing task execution or lifecycle behavior.
-
-### v0.79 Architecture
-
-```text
-User Query
-    ↓
-IntentUnderstanding
-    ↓
-Intent
-    ↓
-AgentDecisionLayer
-    ↓
-AgentDecision
-    ↓
-DecisionRouter
-    ↓
-DecisionRoute
-    ↓
-ResponseActionBoundary
-    ↓
-Task
-    ↓
-Future Task Lifecycle
-```
-
-### v0.79 Components
-
-```text
-modules/task/task.py
-modules/task/__init__.py
-
-tests/task/test_task.py
-```
-
-### Task Model
-
-```text
-Task
-├── task_id
-├── task_type
-├── description
-├── source
-└── metadata
-```
-
-### Supported Task Types
-
-```text
-action
-planning
-automation
-conversation
-unknown
-```
-
-### v0.79 Responsibilities
-
-The Task abstraction provides:
+Task represents a logical unit of work and stores:
 
 * Task identity
 * Task type
-* Task description
-* Task source
-* Task metadata
-* Input validation
-* Immutable model structure
-* Safe serialization
-* Package-level exports
+* Description
+* Source
+* Metadata
 
-### Strict Architectural Boundary
+Task remains immutable and descriptive.
 
-v0.79 intentionally does **not** implement:
-
-* Task execution
-* Tool selection
-* Agent selection
-* Plan creation
-* Plan execution
-* Task lifecycle
-* Retry
-* Recovery
-* Cancellation
-* Timeout handling
-* Resource control
-* Orchestration
-* AI provider communication
-* Response generation
-* Execution events
-* Execution metrics
-* Persistence
-
-The boundary is:
+Validation:
 
 ```text
-Response / Action Boundary
-        ↓
-Task
-        ↓
-Future Task Lifecycle
-```
-
-### v0.79 Test Status
-
-```text
-Task Abstraction Tests
-
-18 passed
-0 failed
-
-Full ULTRON Regression
-
-2047 passed
-0 failed
-
-git diff --check
-
-PASS
-
-v0.79 task exports
-
-PASS
+18 dedicated tests passed
+2047 full regression tests passed
 ```
 
 ---
 
 ## v0.78 — Response / Action Boundary
 
-The v0.78 milestone introduced a dedicated **Response / Action Boundary** between structured decision routes and downstream response-oriented or action-oriented systems.
-
-The goal was to establish a stable hand-off boundary without duplicating response generation, tool selection, planning, orchestration, or execution systems.
-
-### v0.78 Architecture
+Established a formal separation between:
 
 ```text
-User Query
-    ↓
-IntentUnderstanding
-    ↓
-Intent
-    ↓
-AgentDecisionLayer
-    ↓
-AgentDecision
-    ↓
-DecisionRouter
-    ↓
-DecisionRoute
-    ↓
-ResponseActionBoundary
-    ↓
-response / action / unknown
-    ↓
-Existing Downstream Systems
+Response
 ```
 
-### Boundary Classification
+and:
 
 ```text
-response       → response
-execution      → action
-planning       → action
-clarification  → response
-continuation   → response
-unknown        → unknown
+Action / Execution
 ```
 
-### v0.78 Test Status
-
-```text
-Response / Action Boundary Tests
-
-19 passed
-0 failed
-
-Full ULTRON Regression
-
-2029 passed
-0 failed
-
-git diff --check
-
-PASS
-```
+This prevents conversational responses from becoming implicitly coupled to execution behavior.
 
 ---
 
 ## v0.77 — Decision Routing Foundation
 
-The v0.77 milestone introduced a dedicated Decision Routing Foundation between high-level agent decisions and downstream architectural paths.
+Introduced deterministic routing from structured agent decisions to structured decision routes.
 
-### Supported Routes
-
-```text
-response
-execution
-planning
-clarification
-continuation
-unknown
-```
-
-### Decision Mapping
-
-```text
-respond   → response
-execute   → execution
-plan      → planning
-clarify   → clarification
-continue  → continuation
-unknown   → unknown
-```
-
-### v0.77 Test Status
-
-```text
-Decision Router Tests
-
-23 passed
-0 failed
-
-Historical Full ULTRON Regression
-
-2010 passed
-0 failed
-```
+The routing layer establishes the architectural path following the Agent Decision Layer.
 
 ---
 
 ## v0.76 — Agent Decision Layer
 
-The v0.76 milestone introduced a dedicated Agent Decision Layer between semantic intent understanding and existing agent infrastructure.
+Introduced structured agent decision making after intent understanding.
 
-### Supported Decision Types
-
-```text
-respond
-execute
-plan
-clarify
-continue
-unknown
-```
-
-### v0.76 Test Status
-
-```text
-Dedicated Tests
-
-33 passed
-0 failed
-
-AgentDecision Model Tests
-
-15 passed
-
-AgentDecisionLayer Tests
-
-18 passed
-```
+The layer determines the high-level direction of an interaction without directly executing tools.
 
 ---
 
 ## v0.75 — Intent Understanding
 
-The v0.75 milestone introduced a dedicated Intent Understanding boundary for semantic classification of normalized user queries.
+Introduced structured intent understanding.
 
-### Supported Intent Types
-
-```text
-information
-action
-creation
-continuation
-explanation
-conversation
-unknown
-```
-
-### v0.75 Test Status
+The pipeline became:
 
 ```text
-Dedicated Intent Understanding Tests
-
-20 passed
-
-Focused v0.72–v0.75 Regression
-
-78 passed
-
-Historical v0.75 Full ULTRON Regression
-
-1954 passed
+User Query
+    ↓
+AI Runtime
+    ↓
+AI Intelligence
+    ↓
+Context
+    ↓
+Intent Understanding
+    ↓
+Structured Intent
 ```
+
+Intent categories include:
+
+```text
+QUERY
+ACTION
+CREATION
+CONTINUATION
+EXPLANATION
+```
+
+Intent Understanding deliberately does not perform tool selection or execution.
 
 ---
 
 ## v0.74 — Context Injection
 
-The v0.74 milestone introduced explicit Context Injection into the existing AI Intelligence and AI Runtime architecture.
-
-```text
-Dedicated AI Intelligence + AI Runtime Tests
-
-28 passed
-
-Full ULTRON Regression
-
-1934 passed
-
-git diff --check
-
-PASS
-```
+Introduced structured context injection into the intelligence pipeline.
 
 ---
 
 ## v0.73 — AI Runtime
 
-The v0.73 milestone introduced a dedicated AI Runtime boundary above Ultron's existing AI Intelligence system.
-
-```text
-Dedicated AI Runtime Tests
-
-9 passed
-
-Full ULTRON Regression
-
-1927 passed
-```
+Introduced the runtime layer responsible for coordinating AI intelligence processing.
 
 ---
 
 ## v0.72 — First AI Provider
 
-The v0.72 milestone established the first concrete AI provider integration path.
-
-Supported providers:
-
-```text
-mock
-anthropic
-```
-
-```text
-Dedicated AI Engine Tests
-
-22 passed
-
-Full ULTRON Regression
-
-1918 passed
-```
+Connected the first production AI provider implementation.
 
 ---
 
 ## v0.71 — AI Provider Abstraction
 
-The v0.71 milestone established the provider-agnostic AI Provider abstraction.
-
-```text
-AI Provider Abstraction Tests
-35 passed
-
-Mock Provider Tests
-22 passed
-
-Anthropic Provider Tests
-27 passed
-
-AI Engine Tests
-21 passed
-
-Total Dedicated Tests
-105 passed
-
-Full ULTRON Regression
-1917 passed
-```
+Established provider abstraction so the AI runtime does not depend on one provider implementation.
 
 ---
 
 ## v0.70 — AI Intelligence Foundation
 
-The v0.70 milestone introduced the dedicated AI Intelligence Foundation.
+Established the initial AI intelligence architecture.
+
+---
+
+# 🧪 Development & Testing Philosophy
+
+ULTRON uses automated regression testing as an architectural safety mechanism.
+
+The goal is not simply to make a feature work.
+
+The goal is:
 
 ```text
-User Query
+New Architecture
     ↓
-AI Intelligence
+Dedicated Tests
     ↓
-AI Engine
+Existing Regression Suite
     ↓
-AI Provider
+No Regression
     ↓
-IntelligenceResult
+Documentation
+    ↓
+Milestone Complete
 ```
 
----
-
-## v0.69 — End-to-End Voice Assistant
-
-Introduced the top-level end-to-end voice orchestration layer.
-
-Key capabilities included:
-
-* EndToEndVoiceAssistant
-* Voice conversation integration
-* Agent execution integration
-* TTS integration
-* Synthesized-audio extraction
-* Voice playback integration
-* Output-device resolution
-* Structured success/failure results
-* Failure-stage reporting
-* Availability checks
-* Reset support
+Each milestone should preserve the behavior of previously completed systems.
 
 ---
 
-## v0.68 — Voice Playback Execution
+# 🔍 Development Workflow
 
-Introduced `VoicePlaybackExecutor`.
-
-Key capabilities included:
-
-* Provider-independent playback execution
-* Audio validation
-* Active-device resolution
-* Default-device fallback
-* Output-device availability validation
-* Injected playback backend
-* Playback lifecycle tracking
-* Structured playback results
-* Failure handling
-* Optional stop/pause/resume backend operations
-* Device information access
-* Reset support
-
----
-
-## v0.67 — Audio Output Device Integration
-
-Introduced the output-device abstraction and manager.
-
-Key capabilities included:
-
-* AudioOutputDevice
-* AudioOutputDeviceManager
-* Device registration
-* Device unregistration
-* Device lookup
-* Available-device listing
-* Default-device tracking
-* Active-device selection
-* Availability checks
-* Sample-rate support checks
-* Audio-format support checks
-* Device metadata
-* Registry clearing
-* Single-default-device guarantee
-
----
-
-## v0.66 — Audio Playback Foundation
-
-Introduced the audio playback boundary required before concrete output execution.
-
----
-
-## v0.65 — Full Voice Conversation Loop
-
-Extended the architecture toward a complete voice conversation loop.
-
----
-
-## v0.64 — Voice Response Execution
-
-Introduced a dedicated boundary for executing runtime-generated response text through the TTS runtime layer.
-
----
-
-## v0.63 — Runtime TTS Integration
-
-Connected TTS capability to runtime execution.
-
----
-
-## v0.62 — First TTS Provider
-
-Introduced the first concrete implementation behind the TTS provider abstraction.
-
----
-
-## v0.61 — TTS Provider Abstraction
-
-Established the provider-independent TTS interface.
-
----
-
-## v0.60 — Voice Command Execution
-
-Connected voice-derived runtime queries to the existing agent planning, orchestration, and tool-execution infrastructure.
-
----
-
-## v0.59 — Audio Capture Foundation
-
-Introduced real microphone capture and established the hardware-independent audio-capture boundary.
-
----
-
-## v0.58 — Voice → Text Runtime Integration
-
-Connected voice processing and transcription to runtime query creation.
-
----
-
-## v0.57 — First STT Provider
-
-Introduced the first concrete STT provider behind the provider abstraction.
-
----
-
-## v0.56 — STT Provider Abstraction
-
-Established the provider-independent STT interface.
-
----
-
-## v0.55 — Voice Processing Intelligence Foundation
-
-Established the processing-strategy layer for voice input.
-
----
-
-## v0.54 — Voice Processing Pipeline Foundation
-
-Established the structured pipeline used to process voice input.
-
----
-
-## v0.53 — Voice Processing Foundation
-
-Established the core voice-processing boundary.
-
----
-
-## v0.52 — Voice Input Foundation
-
-Established voice as a first-class multimodal input path.
-
----
-
-## v0.51 — Multimodal Input Foundation
-
-Established the initial multimodal input architecture.
-
-The input model supports:
-
-* Text
-* Voice
-* Vision
-* Gesture
-
----
-
-## v0.50 — Execution Context & Orchestration Integration
-
-Extended execution context and connected context-aware execution with orchestration.
-
----
-
-## v0.49 — Agent Runtime Context
-
-Introduced runtime context for agent execution.
-
----
-
-## v0.48 — Execution Recovery & State Restoration
-
-Introduced execution recovery and state-restoration foundations.
-
----
-
-## v0.47 — Persistent Execution History
-
-Introduced persistent execution-history foundations.
-
----
-
-## v0.46 — Execution Metrics
-
-Introduced execution metrics.
-
----
-
-## v0.45 — Execution Observability
-
-Introduced execution observability.
-
----
-
-## v0.44 — Execution Events & Event Store
-
-Introduced execution events and event storage.
-
----
-
-## v0.43 — Orchestrator Execution Control
-
-Strengthened execution control at the orchestration boundary.
-
----
-
-## v0.42 — Agent Execution Controller
-
-Introduced a dedicated execution-controller layer.
-
----
-
-## v0.41 — Agent Execution & Plan Orchestration
-
-Connected planning with execution and orchestration.
-
----
-
-## v0.40 — Agent Planning
-
-Introduced structured agent planning.
-
----
-
-## v0.39 — Tool Selector
-
-Introduced tool-selection capability.
-
----
-
-## v0.38 — Agent Tool System
-
-Introduced the agent tool system.
-
----
-
-## v0.37 — Agent Runtime
-
-Established the initial agent-runtime foundation documented in this development sequence.
-
----
-
-# 🔮 Roadmap
-
-The roadmap continues from the current v0.79 Task Abstraction toward a complete core runtime architecture.
-
-## Intelligence, Task & Execution Foundations
-
-* Context Injection — **Completed in v0.74**
-* Intent Understanding — **Completed in v0.75**
-* Agent Decision Layer — **Completed in v0.76**
-* Decision Routing Foundation — **Completed in v0.77**
-* Response / Action Boundary — **Completed in v0.78**
-* Task Abstraction — **Completed in v0.79**
-* Task Lifecycle Foundation — **v0.80**
-* Task Context & State — **v0.81**
-* Task Input / Output Contracts — **v0.82**
-* Execution Result Abstraction — **v0.83**
-* Execution Feedback Interface — **v0.84**
-* Runtime Event Integration — **v0.85**
-* Error & Failure Abstraction — **v0.86**
-* Retry & Recovery Foundation — **v0.87**
-* Cancellation & Interruption Foundation — **v0.88**
-* Timeout & Resource Control — **v0.89**
-* Execution Policy Foundation — **v0.90**
-
-## Extensibility
-
-* Capability Registry — **v0.91**
-* Plugin / Module Contract — **v0.92**
-* Dependency & Service Registry — **v0.93**
-* Configuration & Environment Foundation — **v0.94**
-* Health & Capability Checks — **v0.95**
-
-## Unified Runtime
-
-* Unified Runtime Context — **v0.96**
-* Unified Lifecycle Foundation — **v0.97**
-* Observability & Diagnostics Foundation — **v0.98**
-* Core Integration Boundary — **v0.99**
-* ULTRON Core Foundation — **v1.0**
-
-## Voice Intelligence
-
-* Continuous voice interaction
-* Wake-word detection
-* Conversation persistence
-* Voice session management
-* Interrupt / barge-in handling
-* Streaming audio
-* Low-latency voice responses
-* Advanced voice context
-* Multi-voice support
-* Multi-provider voice support
-* Voice-agent intelligence
-
-## Multimodal Intelligence
-
-* Vision intelligence
-* Gesture intelligence
-* Context-aware multimodal execution
-* Multimodal reasoning
-
-## Runtime & Automation
-
-* Stronger contextual execution
-* State restoration improvements
-* Crash recovery
-* Execution resumption
-* Durable automation
-* Autonomous execution
-
----
-
-# 🧭 Long-Term Direction
-
-The long-term architectural direction is:
+The preferred ULTRON development workflow is:
 
 ```text
-Receive
-   ↓
-Capture
-   ↓
-Normalize
-   ↓
-Process
-   ↓
-Transcribe
-   ↓
-Runtime
-   ↓
-Contextualize
-   ↓
-Understand Intent
-   ↓
-Decide
-   ↓
-Route
-   ↓
-Establish Boundary
-   ↓
-Represent Task
-   ↓
-Plan
-   ↓
-Select
-   ↓
-Orchestrate
-   ↓
-Execute
-   ↓
-Observe
-   ↓
-Measure
-   ↓
-Persist
-   ↓
-Snapshot
-   ↓
-Recover
-   ↓
-Restore
-   ↓
-Resume
-   ↓
-Automate
+1. Inspect existing architecture
+        ↓
+2. Identify existing abstractions
+        ↓
+3. Define architectural boundary
+        ↓
+4. Design lock
+        ↓
+5. Implement minimal change
+        ↓
+6. Add dedicated tests
+        ↓
+7. Run full regression
+        ↓
+8. Inspect diff
+        ↓
+9. Update documentation
+        ↓
+10. Commit milestone
 ```
 
-This direction leads toward a broader platform combining:
-
-* AI interaction
-* Agent execution
-* Multimodal interfaces
-* Voice intelligence
-* Persistent state
-* Recovery
-* Context-aware execution
-* Intent understanding
-* Agent decisions
-* Decision routing
-* Response/action boundaries
-* Task abstractions
-* Autonomous decision-making
-* Automation
+This workflow minimizes architectural duplication and accidental regressions.
 
 ---
 
-# 🤖 AI Operating System Vision
+# 🛣️ Current Scope
 
-AI Operating System is the long-term direction of Ultron, not a claim that the final platform is already complete.
+## v0.80 — Task Lifecycle Foundation
 
-The intended evolution is:
-
-```text
-Personal AI Assistant
-        ↓
-Agent Runtime
-        ↓
-Multimodal Interface
-        ↓
-Voice Intelligence
-        ↓
-AI Intelligence
-        ↓
-AI Runtime
-        ↓
-Context Injection
-        ↓
-Intent Understanding
-        ↓
-Agent Decision
-        ↓
-Decision Routing
-        ↓
-Response / Action Boundary
-        ↓
-Task Abstraction
-        ↓
-Task Lifecycle
-        ↓
-Agent Planning
-        ↓
-Tool Selection
-        ↓
-Context-Aware Execution
-        ↓
-Persistent & Recoverable Runtime
-        ↓
-Autonomous Agents
-        ↓
-Durable Automation
-        ↓
-AI Operating System Platform
-```
-
-The target is a reliable, extensible, observable, persistent, context-aware, recoverable, multimodal and voice-capable execution platform.
-
----
-
-# 📚 Documentation Philosophy
-
-The main README is intended to explain:
-
-* What Ultron is
-* Its current state
-* Its architecture
-* Its major capabilities
-* Its voice architecture
-* Its AI architecture
-* Its task architecture
-* Its testing philosophy
-* Its version progression
-* Its roadmap
-* Its long-term direction
-
-Detailed implementation notes and milestone-specific engineering logs should live in dedicated documentation.
-
-A future documentation structure can follow:
-
-```text
-README.md
-
-docs/
-├── architecture/
-│   ├── overview.md
-│   └── milestones/
-├── ai/
-├── voice/
-├── execution/
-├── testing/
-└── roadmap.md
-```
-
----
-
-# 🛡️ Architectural Guarantees
-
-Ultron's architecture is intentionally designed around:
-
-```text
-Provider Isolation
-        +
-Hardware Isolation
-        +
-Runtime Isolation
-        +
-Component Isolation
-        +
-Observable Execution
-        +
-Persistent State
-        +
-Recoverable Runtime
-        +
-Deterministic Testing
-        +
-Composition Over Duplication
-```
-
-The intelligence and task architecture additionally establishes:
-
-```text
-Intent Understanding
-        ≠
-Agent Decision
-        ≠
-Decision Routing
-        ≠
-Response / Action Boundary
-        ≠
-Task Abstraction
-        ≠
-Planning
-        ≠
-Tool Selection
-        ≠
-Orchestration
-        ≠
-Execution
-```
-
-No single high-level component should become responsible for unrelated low-level concerns.
-
----
-
-# 📊 Development Model
-
-Ultron follows a milestone-driven development model:
-
-```text
-Define Boundary
-     ↓
-Inspect Existing Architecture
-     ↓
-Design Lock
-     ↓
-Implement Small Capability
-     ↓
-Write Dedicated Tests
-     ↓
-Run Focused Regression
-     ↓
-Run Full Regression
-     ↓
-Validate Repository
-     ↓
-Document Milestone
-     ↓
-Commit & Push
-     ↓
-Move to Next Boundary
-```
-
-This approach keeps architectural growth incremental and makes regressions easier to detect.
-
----
-
-# ⚠️ Current Scope
-
-The current milestone is **v0.79 — Task Abstraction**.
-
-The completed v0.79 foundation provides:
-
-* `Task`
-* `TaskType`
-* `TaskError`
-* Task identity
-* Task classification
-* Task description
-* Task source
-* Task metadata
-* Validation
-* Immutable model structure
-* Safe serialization
-* Package-level export
-* 18 dedicated passing tests
-* Full regression validation with 2047 passing tests
-* Clean `git diff --check`
-
-The v0.79 layer does **not** replace or duplicate:
-
-* Tool selection
-* Plan creation
-* Agent selection
-* Agent planning
-* Agent orchestration
-* Tool execution
-* Agent execution
-* Task lifecycle
-* Retry
-* Recovery
-* Cancellation
-* Timeout control
-* Autonomous execution
-* Response generation
-
-The current intelligence-to-task flow is:
-
-```text
-IntentUnderstanding
-        ↓
-Intent
-        ↓
-AgentDecisionLayer
-        ↓
-AgentDecision
-        ↓
-DecisionRouter
-        ↓
-DecisionRoute
-        ↓
-ResponseActionBoundary
-        ↓
-Task
-```
-
-The broader roadmap continues toward:
-
-* Task lifecycle
-* Task state
-* Task contracts
-* Execution results
-* Execution feedback
-* Runtime events
-* Error handling
-* Retry and recovery
-* Cancellation
-* Timeout and resource control
-* Execution policy
-* Capability registry
-* Plugin contracts
-* Service registry
-* Configuration foundation
-* Health checks
-* Unified runtime context
-* Unified lifecycle
-* Observability and diagnostics
-* Core integration
-* ULTRON Core Foundation
-
-These milestones are intended to strengthen the core architecture before broader autonomous capabilities are layered on top.
-
----
-
-# 🏁 Milestone Summary
-
-```text
-v0.37
-Agent Runtime
-   ↓
-v0.44
-Execution Events
-   ↓
-v0.48
-Recovery & State Restoration
-   ↓
-v0.51
-Multimodal Input
-   ↓
-v0.56
-STT Provider Abstraction
-   ↓
-v0.59
-Real Audio Capture
-   ↓
-v0.60
-Voice Command Execution
-   ↓
-v0.61–v0.64
-TTS & Voice Response Architecture
-   ↓
-v0.65
-Full Voice Conversation Loop
-   ↓
-v0.66–v0.68
-Audio Playback Architecture
-   ↓
-v0.69
-End-to-End Voice Assistant
-   ↓
-v0.70
-AI Intelligence Foundation
-   ↓
-v0.71
-AI Provider Abstraction
-   ↓
-v0.72
-First AI Provider
-   ↓
-v0.73
-AI Runtime
-   ↓
-v0.74
-Context Injection
-   ↓
-v0.75
-Intent Understanding
-   ↓
-v0.76
-Agent Decision Layer
-   ↓
-v0.77
-Decision Routing Foundation
-   ↓
-v0.78
-Response / Action Boundary
-   ↓
-v0.79
-Task Abstraction
-   ↓
-v0.80
-Task Lifecycle Foundation
-   ↓
-v0.81–v0.90
-Task + Execution Reliability Foundations
-   ↓
-v0.91–v0.95
-Extensibility + Capability Foundations
-   ↓
-v0.96–v0.99
-Unified Runtime + Core Integration
-   ↓
-v1.0
-ULTRON Core Foundation
-```
-
----
-
-# 🚀 Final Position
-
-Ultron is being built as an architecture-first AI platform.
-
-The project prioritizes:
-
-```text
-Small Milestones
-        →
-Clear Boundaries
-        →
-Independent Components
-        →
-Deterministic Testing
-        →
-Hardware Isolation
-        →
-Provider Isolation
-        →
-Runtime Isolation
-        →
-Observable Execution
-        →
-Persistent State
-        →
-Recoverable Runtime
-        →
-Multimodal Intelligence
-        →
-Context Injection
-        →
-Intent Understanding
-        →
-Agent Decision
-        →
-Decision Routing
-        →
-Response / Action Boundary
-        →
-Task Abstraction
-        →
-Task Lifecycle
-        →
-Agent Planning
-        →
-Tool Selection
-        →
-Orchestration
-        →
-Autonomous Execution
-        →
-Durable Automation
-```
-
-v0.75 established **Intent Understanding** as a dedicated semantic intelligence boundary.
-
-v0.76 established the **Agent Decision Layer** as the high-level decision boundary.
-
-v0.77 established the **Decision Routing Foundation** as the architectural boundary between high-level decisions and downstream system paths.
-
-v0.78 established the **Response / Action Boundary** between structured routes and downstream response-oriented or action-oriented systems.
-
-v0.79 establishes the **Task Abstraction** as a dedicated representation of a logical unit of work.
+The current milestone establishes controlled lifecycle management for logical tasks.
 
 The current intelligence-to-task path is:
 
 ```text
 User Query
-    ↓
+ ↓
 Intent Understanding
-    ↓
+ ↓
 Structured Intent
-    ↓
+ ↓
 Agent Decision Layer
-    ↓
+ ↓
 Structured Agent Decision
-    ↓
+ ↓
 Decision Router
-    ↓
+ ↓
 Structured Decision Route
-    ↓
+ ↓
 Response / Action Boundary
-    ↓
+ ↓
 Task Abstraction
+ ↓
+Task Lifecycle
 ```
 
-The existing execution architecture remains responsible for:
+The Task layer represents work.
+
+The Task Lifecycle controls its logical state.
+
+The execution architecture remains separate.
+
+---
+
+# 🚧 What v0.80 Does Not Do
+
+v0.80 does not:
+
+* Execute tasks
+* Select tools
+* Select agents
+* Generate execution plans
+* Manage execution state
+* Perform retries
+* Perform recovery
+* Manage timeouts
+* Persist lifecycle events
+* Call AI providers
+* Connect Task Lifecycle directly to AgentEngine
+
+Those capabilities will be introduced only when their architectural milestones are reached.
+
+---
+
+# 🎯 Next Milestone — v0.81
+
+## Task Context & State
+
+The next milestone will build on:
 
 ```text
 Task
     ↓
-Task Lifecycle
-    ↓
-Tool Selection
-    ↓
-Planning
-    ↓
-Orchestration
-    ↓
-Execution
-    ↓
-Observation
-    ↓
-Persistence
-    ↓
-Recovery
+TaskLifecycle
 ```
 
-The intelligence layers continue to reuse the existing:
+and establish the foundation for:
 
 ```text
-AI Engine
-    ↓
-AI Provider Architecture
-```
-
-instead of introducing duplicate provider or generation systems.
-
-The verified current v0.79 validation state is:
-
-```text
-Task Abstraction Tests
-
-18 passed
-0 failed
-
-Full ULTRON Regression
-
-2047 passed
-0 failed
-
-git diff --check
-
-PASS
-
-v0.79 task exports
-
-PASS
-```
-
-The architecture is now positioned to move from:
-
-```text
-Understand
-    ↓
-Decide
-    ↓
-Route
-    ↓
-Establish Boundary
-    ↓
-Represent Work
-```
-
-toward:
-
-```text
-Task Lifecycle
+Task Context
     ↓
 Task State
-    ↓
-Task Contracts
-    ↓
-Execution Results
-    ↓
-Execution Feedback
-    ↓
-Runtime Events
-    ↓
-Reliability & Recovery
-    ↓
-Capability & Plugin Architecture
-    ↓
-Unified Runtime
-    ↓
-Core Integration
-    ↓
-ULTRON Core Foundation
 ```
 
-Each capability is introduced as an independently testable architectural boundary so that future voice, vision, automation, smart-device control, agent capabilities, and broader platform functionality can be layered on top without unnecessarily replacing the core architecture.
+The exact architecture will be inspected and design-locked before implementation.
+
+The goal is to continue the foundation without prematurely connecting task abstractions to execution behavior.
 
 ---
 
-# 🚀 ULTRON Core Direction
+# 🧭 Long-Term ULTRON Core Direction
+
+The long-term core direction is:
 
 ```text
-Understand
-    ↓
-Decide
-    ↓
-Route
-    ↓
-Establish Boundary
-    ↓
+Understand User
+        ↓
+Understand Intent
+        ↓
+Make Decision
+        ↓
+Route Decision
+        ↓
+Determine Response / Action
+        ↓
 Represent Task
-    ↓
+        ↓
 Manage Task
-    ↓
+        ↓
+Define Task Context
+        ↓
 Define Contracts
-    ↓
-Produce Results
-    ↓
-Provide Feedback
-    ↓
-Handle Failure
-    ↓
+        ↓
+Produce Execution Result
+        ↓
+Process Feedback
+        ↓
+Integrate Runtime Events
+        ↓
+Handle Errors
+        ↓
 Recover
-    ↓
+        ↓
 Control Resources
-    ↓
-Apply Execution Policy
-    ↓
-Register Capabilities
-    ↓
-Load Modules
-    ↓
-Resolve Services
-    ↓
-Validate Health
-    ↓
-Unify Runtime
-    ↓
-Integrate Core
-    ↓
-ULTRON Core Foundation
+        ↓
+Manage Capabilities
+        ↓
+Manage Modules
+        ↓
+Operate as a Unified AI Platform
 ```
 
-ULTRON is intentionally being built from the architectural foundation upward.
+---
 
-The objective is not to make every capability part of a single milestone.
+# 🌐 Future Capability Layer
 
-The objective is to establish a strong, modular core where future capabilities can be added without repeatedly redesigning the underlying architecture.
+Once the core foundation is stable, future capabilities can be built above it.
+
+Potential capability domains include:
+
+```text
+Voice
+Vision
+Smart Home
+Website Builder
+Application Builder
+Coding Agent
+Social Media Automation
+Business Automation
+Mobile Control
+Desktop Control
+External APIs
+Developer APIs
+Agent Builder
+Workflow Automation
+Multimodal Agents
+```
+
+These are intentionally treated as future capabilities rather than being embedded directly into the core foundation.
+
+---
+
+# 🏛️ ULTRON Architectural Goal
+
+The ultimate architectural goal is:
+
+```text
+                    ULTRON CORE
+                         │
+        ┌────────────────┼────────────────┐
+        │                │                │
+    Intelligence      Runtime        Capabilities
+        │                │                │
+        ↓                ↓                ↓
+     Intent           Tasks          Voice
+     Decision         Lifecycle      Vision
+     Routing          Context        Automation
+     Contracts        Execution      Smart Home
+     Feedback         Results        Coding
+        │                │                │
+        └────────────────┼────────────────┘
+                         ↓
+                  Unified AI Platform
+```
+
+The core should remain stable while capabilities evolve independently.
+
+---
+
+# 🚀 Final Position
+
+ULTRON has now progressed from intelligence foundations into the task domain.
+
+The progression is:
+
+```text
+v0.75
+Intent Understanding
+        ↓
+v0.76
+Agent Decision Layer
+        ↓
+v0.77
+Decision Routing
+        ↓
+v0.78
+Response / Action Boundary
+        ↓
+v0.79
+Task Abstraction
+        ↓
+v0.80
+Task Lifecycle Foundation
+```
+
+v0.79 established:
+
+> **What work exists?**
+
+v0.80 establishes:
+
+> **What state is that work currently in?**
+
+The current architecture therefore ends at:
+
+```text
+Response / Action Boundary
+        ↓
+Task
+        ↓
+TaskLifecycle
+```
+
+The next architectural step is:
+
+```text
+Task Context & State
+```
+
+The existing execution architecture remains intact and separate.
+
+ULTRON is being built toward a foundation where future capabilities can be added without rebuilding the core.
+
+The objective is not to make v1.0 contain every feature.
+
+The objective is to make v1.0 contain a **strong, stable, extensible ULTRON Core** capable of supporting everything that comes after it.
+
+---
+
+# 🇮🇳 ULTRON Vision
+
+ULTRON is being developed as a long-term AI platform with an India-first mindset and global capability ambitions.
+
+The long-term vision is to create an AI system that can understand users, reason about their intent, manage tasks, coordinate execution, interact through multiple modalities, automate workflows, and eventually serve as a unified AI operating layer across software and devices.
+
+The foundation comes first.
+
+The capabilities come next.
+
+```text
+Foundation
+    ↓
+Intelligence
+    ↓
+Runtime
+    ↓
+Execution
+    ↓
+Capabilities
+    ↓
+ULTRON
+```
+
+**v0.80 — Task Lifecycle Foundation**
+
+**2074 tests passing.**
+
+**Foundation continues.**
