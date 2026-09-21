@@ -1,9 +1,9 @@
 """
 Ultron Task Module
-Version: v0.81
+Version: v0.82
 
-Provides the core Task abstraction, task types,
-task lifecycle foundation, and task-scoped context/state.
+Provides the core Task abstraction, task lifecycle foundation,
+task-scoped context/state, and task input/output contracts.
 """
 
 from .task import (
@@ -23,6 +23,21 @@ from .task_context import (
     TaskContextError,
 )
 
+from .task_input import (
+    TaskInputContract,
+    TaskInputContractError,
+)
+
+from .task_output import (
+    TaskOutputContract,
+    TaskOutputContractError,
+)
+
+from .task_contract import (
+    TaskContract,
+    TaskContractError,
+)
+
 __all__ = [
     "Task",
     "TaskError",
@@ -32,4 +47,10 @@ __all__ = [
     "TaskState",
     "TaskContext",
     "TaskContextError",
+    "TaskInputContract",
+    "TaskInputContractError",
+    "TaskOutputContract",
+    "TaskOutputContractError",
+    "TaskContract",
+    "TaskContractError",
 ]
