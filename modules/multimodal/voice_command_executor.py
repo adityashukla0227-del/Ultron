@@ -1,15 +1,16 @@
 """
 ULTRON Voice Command Executor
 
-v0.60 — Voice Command Execution
+v0.83 — Voice Command Execution Integration
 
 Responsibilities:
 - Read a command from AgentRuntimeContext
 - Resolve the command to an existing AgentTool
 - Create an execution plan
 - Delegate execution to AgentOrchestrator
+- Consume the standardized ExecutionResult
 - Synchronize runtime context state
-- Return a structured execution result
+- Return a structured voice execution result
 
 The VoiceCommandExecutor does NOT:
 - Perform STT
@@ -17,6 +18,7 @@ The VoiceCommandExecutor does NOT:
 - Create a new execution engine
 - Replace AgentPlanner
 - Replace AgentOrchestrator
+- Create or control ExecutionResult
 """
 
 from typing import Any, Dict, Optional
@@ -31,6 +33,9 @@ from modules.agent.agent_planner import (
 )
 from modules.agent.agent_runtime_context import (
     AgentRuntimeContext,
+)
+from modules.agent.execution_result import (
+    ExecutionResult,
 )
 
 
@@ -129,6 +134,10 @@ class VoiceCommandExecutor:
         The command is resolved through the existing AgentEngine /
         ToolSelector architecture. A plan is then created and delegated
         to AgentOrchestrator for execution.
+
+        AgentOrchestrator returns an ExecutionResult. This method
+        consumes that result and preserves the existing external
+        voice-command response dictionary contract.
 
         Returns:
             Structured execution result.
@@ -277,7 +286,7 @@ class VoiceCommandExecutor:
             # Validate Orchestrator Result
             # ------------------------------------------------
 
-            if not isinstance(result, dict):
+            if not isinstance(result, ExecutionResult):
                 context.set_status("failed")
 
                 return self._failure_result(
@@ -286,19 +295,29 @@ class VoiceCommandExecutor:
                     tool_name=tool_name,
                     error=(
                         "AgentOrchestrator returned "
-                        "an invalid result."
+                        "an invalid execution result."
                     ),
                 )
 
-            execution_id = self._execution_id(
-                plan
+            # ------------------------------------------------
+            # Execution Identity
+            # ------------------------------------------------
+
+            execution_id = result.execution_id
+
+            # ------------------------------------------------
+            # Execution Metadata
+            # ------------------------------------------------
+
+            progress = result.metadata.get(
+                "progress"
             )
 
             # ------------------------------------------------
             # Successful Execution
             # ------------------------------------------------
 
-            if result.get("success") is True:
+            if result.success is True:
                 context.set_status(
                     "completed"
                 )
@@ -310,9 +329,9 @@ class VoiceCommandExecutor:
                     "plan_id": plan.id,
                     "execution_id": execution_id,
                     "tool_name": tool_name,
-                    "result": result.get("result"),
+                    "result": result.result,
                     "status": "completed",
-                    "progress": result.get("progress"),
+                    "progress": progress,
                 }
 
             # ------------------------------------------------
@@ -330,12 +349,13 @@ class VoiceCommandExecutor:
                 "plan_id": plan.id,
                 "execution_id": execution_id,
                 "tool_name": tool_name,
-                "error": result.get(
-                    "error",
-                    "Voice command execution failed.",
+                "error": (
+                    result.error
+                    if result.error is not None
+                    else "Voice command execution failed."
                 ),
                 "status": "failed",
-                "progress": result.get("progress"),
+                "progress": progress,
             }
 
         # ----------------------------------------------------
@@ -379,6 +399,10 @@ class VoiceCommandExecutor:
     ) -> Dict[str, Any]:
         """
         Build a normalized failure result.
+
+        This is the external VoiceCommandExecutor response contract.
+        It is intentionally separate from ExecutionResult because
+        callers of the voice layer already consume this structure.
         """
 
         return {

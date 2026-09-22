@@ -185,7 +185,7 @@ def test_execution_context_is_created_automatically():
         plan,
     )
 
-    assert result["success"] is True
+    assert result.success is True
 
     context = orchestrator.get_execution_context()
 
@@ -231,8 +231,8 @@ def test_execution_context_identity_matches_execution():
         agent.id
     )
 
-    assert result["plan_id"] == plan.id
-    assert result["agent_id"] == agent.id
+    assert result.metadata["plan_id"] == plan.id
+    assert result.metadata["agent_id"] == agent.id
 
 
 # ============================================================
@@ -261,7 +261,7 @@ def test_context_total_steps_matches_plan():
         plan,
     )
 
-    assert result["success"] is True
+    assert result.success is True
 
     context = orchestrator.get_execution_context()
 
@@ -295,7 +295,7 @@ def test_successful_execution_completes_context():
         plan,
     )
 
-    assert result["success"] is True
+    assert result.success is True
 
     context = orchestrator.get_execution_context()
 
@@ -345,7 +345,7 @@ def test_successful_steps_store_results_in_context():
         plan,
     )
 
-    assert result["success"] is True
+    assert result.success is True
 
     context = orchestrator.get_execution_context()
 
@@ -392,7 +392,7 @@ def test_failed_execution_fails_context():
         plan,
     )
 
-    assert result["success"] is False
+    assert result.success is False
 
     context = orchestrator.get_execution_context()
 
@@ -889,7 +889,7 @@ def test_context_queries_reflect_successful_execution():
         plan,
     )
 
-    assert result["success"] is True
+    assert result.success is True
 
     context = orchestrator.get_execution_context()
 
@@ -935,7 +935,7 @@ def test_context_queries_reflect_failed_execution():
         plan,
     )
 
-    assert result["success"] is False
+    assert result.success is False
 
     context = orchestrator.get_execution_context()
 
@@ -980,7 +980,7 @@ def test_context_last_result_matches_last_completed_step():
         plan,
     )
 
-    assert result["success"] is True
+    assert result.success is True
 
     context = orchestrator.get_execution_context()
 
@@ -1018,7 +1018,7 @@ def test_completed_context_is_terminal():
         plan,
     )
 
-    assert result["success"] is True
+    assert result.success is True
 
     context = orchestrator.get_execution_context()
 
@@ -1061,7 +1061,7 @@ def test_failed_context_is_terminal():
         plan,
     )
 
-    assert result["success"] is False
+    assert result.success is False
 
     context = orchestrator.get_execution_context()
 
@@ -1102,7 +1102,7 @@ def test_successful_context_processed_steps_match_results():
         plan,
     )
 
-    assert result["success"] is True
+    assert result.success is True
 
     context = orchestrator.get_execution_context()
 

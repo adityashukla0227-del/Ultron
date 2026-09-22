@@ -527,7 +527,7 @@ def test_execute_plan_success():
         plan,
     )
 
-    assert result["success"] is True
+    assert result.success is True
     assert plan.is_completed()
 
     assert step_one.is_completed()
@@ -632,7 +632,7 @@ def test_execute_plan_stops_on_failed_step():
         plan,
     )
 
-    assert result["success"] is False
+    assert result.success is False
     assert plan.is_failed()
 
     assert step_one.is_completed()
@@ -674,10 +674,10 @@ def test_execute_plan_safe_returns_failure_instead_of_raising():
         plan,
     )
 
-    assert result["success"] is False
-    assert result["plan_id"] == plan.id
-    assert result["agent_id"] == agent.id
-    assert result["error"] is not None
+    assert result.success is False
+    assert result.metadata["plan_id"] == plan.id
+    assert result.metadata["agent_id"] == agent.id
+    assert result.error is not None
 
 
 # ============================================================

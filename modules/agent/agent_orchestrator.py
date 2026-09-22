@@ -18,6 +18,12 @@ v0.50 additions:
 - Terminal-state hardening
 - Safe context/controller synchronization
 
+v0.83 integration:
+- Standardized overall execution outcomes through ExecutionResult
+- Centralized terminal execution result construction
+- Execution metadata for plan, agent, and progress
+- Preserved ToolResult as the step-level execution result
+
 Responsibilities:
 - Validate execution plans
 - Start plan execution
@@ -35,6 +41,7 @@ Responsibilities:
 - Emit structured execution events
 - Complete or fail plans
 - Provide safe plan execution
+- Return standardized ExecutionResult objects
 
 The AgentOrchestrator does NOT create plans.
 Planning belongs to AgentPlanner.
@@ -50,6 +57,9 @@ ExecutionContext.
 
 Execution observability belongs to
 ExecutionEventEmitter.
+
+Overall execution outcomes belong to
+ExecutionResult.
 """
 
 from __future__ import annotations
@@ -70,6 +80,9 @@ from modules.agent.agent_planner import (
 from modules.agent.execution_context import (
     ExecutionContext,
     ExecutionContextError,
+)
+from modules.agent.execution_result import (
+    ExecutionResult,
 )
 from modules.agent.execution_event_emitter import (
     ExecutionEventEmitter,
@@ -104,6 +117,9 @@ class AgentOrchestrator:
             |
             v
        ToolRegistry
+
+    Overall execution outcomes are represented by ExecutionResult.
+    Individual tool outcomes remain represented by ToolResult.
     """
 
     def __init__(
@@ -303,30 +319,36 @@ class AgentOrchestrator:
         *,
         success: bool,
         error: str | None,
-    ) -> Dict[str, Any]:
+    ) -> ExecutionResult:
         """
         Build a consistent terminal execution result.
 
-        Keeping result construction centralized prevents subtle
-        differences between failure paths.
+        ExecutionResult represents the complete outcome of the
+        orchestration layer.
+
+        Plan identity, agent identity, and progress remain metadata
+        so the result model stays generic and execution-focused.
         """
 
-        return {
-            "success": bool(success),
-            "plan_id": getattr(
-                plan,
-                "id",
-                None,
-            ),
-            "agent_id": getattr(
-                agent,
-                "id",
-                None,
-            ),
-            "result": None,
-            "error": error,
-            "progress": self.planner.get_progress(plan),
-        }
+        return ExecutionResult(
+            execution_id=self._execution_id(plan),
+            success=bool(success),
+            result=None,
+            error=error,
+            metadata={
+                "plan_id": getattr(
+                    plan,
+                    "id",
+                    None,
+                ),
+                "agent_id": getattr(
+                    agent,
+                    "id",
+                    None,
+                ),
+                "progress": self.planner.get_progress(plan),
+            },
+        )
 
     # ========================================================
     # Execution Context
@@ -985,6 +1007,9 @@ class AgentOrchestrator:
         Execute a single plan step.
 
         Tool execution is delegated to AgentEngine.
+
+        Returns:
+            ToolResult representing the individual tool outcome.
         """
 
         if not isinstance(agent, Agent):
@@ -1244,7 +1269,7 @@ class AgentOrchestrator:
         self,
         agent: Agent,
         plan: AgentPlan,
-    ) -> Dict[str, Any]:
+    ) -> ExecutionResult:
         """Execute all plan steps sequentially."""
 
         self.validate_plan(
@@ -1649,17 +1674,20 @@ class AgentOrchestrator:
             agent,
         )
 
-        return {
-            "success": True,
-            "plan_id": plan.id,
-            "agent_id": agent.id,
-            "result": [
+        return ExecutionResult(
+            execution_id=self._execution_id(plan),
+            success=True,
+            result=[
                 step.result
                 for step in plan.completed_steps()
             ],
-            "error": None,
-            "progress": self.planner.get_progress(plan),
-        }
+            error=None,
+            metadata={
+                "plan_id": plan.id,
+                "agent_id": agent.id,
+                "progress": self.planner.get_progress(plan),
+            },
+        )
 
     # ========================================================
     # Safe Plan Execution
@@ -1669,7 +1697,7 @@ class AgentOrchestrator:
         self,
         agent: Agent,
         plan: AgentPlan,
-    ) -> Dict[str, Any]:
+    ) -> ExecutionResult:
         """Execute a plan without propagating orchestration errors."""
 
         try:
@@ -1733,26 +1761,39 @@ class AgentOrchestrator:
                     error,
                 )
 
-            return {
-                "success": False,
-                "plan_id": getattr(
-                    plan,
-                    "id",
-                    None,
-                ),
-                "agent_id": getattr(
-                    agent,
-                    "id",
-                    None,
-                ),
-                "result": None,
-                "error": error,
-                "progress": (
-                    self.planner.get_progress(plan)
+            return ExecutionResult(
+                execution_id=(
+                    self._execution_id(plan)
                     if isinstance(plan, AgentPlan)
-                    else None
+                    else str(
+                        getattr(
+                            plan,
+                            "id",
+                            "unknown",
+                        )
+                    )
                 ),
-            }
+                success=False,
+                result=None,
+                error=error,
+                metadata={
+                    "plan_id": getattr(
+                        plan,
+                        "id",
+                        None,
+                    ),
+                    "agent_id": getattr(
+                        agent,
+                        "id",
+                        None,
+                    ),
+                    "progress": (
+                        self.planner.get_progress(plan)
+                        if isinstance(plan, AgentPlan)
+                        else None
+                    ),
+                },
+            )
 
     # ========================================================
     # Pause
