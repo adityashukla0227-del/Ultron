@@ -1,76 +1,37 @@
-# 🚀 ULTRON
+# 🤖 ULTRON
 
 ## Modular Personal AI Assistant, Agent Runtime, Automation & Multimodal Platform
 
-ULTRON is a modular AI assistant and agent platform designed to evolve into a general-purpose AI operating system.
-
-The architecture is built around a strict separation of:
-
-* Intelligence
-* Intent Understanding
-* Agent Decision Making
-* Decision Routing
-* Response / Action Boundaries
-* Task Representation
-* Task Lifecycle
-* Task Context & State
-* Task Input / Output Contracts
-* Planning
-* Tool Selection
-* Execution
-* Execution Results
-* Execution Feedback
-* Observability
-* Automation
-* Multimodal Interaction
-* Future Capability Modules
-
-The core design principle is:
-
-> **Build the platform for future capabilities before building the capabilities themselves.**
-
-ULTRON is intentionally developed as a layered foundation so future systems such as Voice, Vision, Smart Home, Website Building, Social Media Automation, Coding Agents, Mobile/Desktop Control, External APIs, and other autonomous capabilities can be added without rebuilding the core runtime.
+> **ULTRON is being engineered as a modular AI operating platform focused on intelligent interaction, agent execution, automation, multimodal capabilities, and a strong architectural foundation.**
 
 ---
 
-# 📌 Current Status
+## 🚀 Current Status
 
-| Area                          |                           Status |
-| ----------------------------- | -------------------------------: |
-| **Current Version**           |                        **v0.83** |
-| **Current Milestone**         | **Execution Result Abstraction** |
-| v0.83 Dedicated Tests         |                    **15 passed** |
-| v0.82 Dedicated Tests         |                    **38 passed** |
-| v0.81 Dedicated Tests         |                        31 passed |
-| v0.80 Dedicated Tests         |                        27 passed |
-| v0.79 Dedicated Tests         |                        18 passed |
-| v0.78 Dedicated Tests         |                        19 passed |
-| v0.77 Dedicated Tests         |                        23 passed |
-| v0.76 Dedicated Tests         |                        33 passed |
-| v0.75 Dedicated Tests         |                        20 passed |
-| v0.75 Focused Regression      |                        78 passed |
-| **Full ULTRON Regression**    |                  **2158 passed** |
-| v0.83 Dedicated Failures      |                            **0** |
-| Full Regression Failures      |                            **0** |
-| Task Module Export Validation |                         **PASS** |
-| Development State             |           **Active Development** |
+| Metric | Status |
+|---|---|
+| **Current Version** | **v0.84** |
+| **Current Milestone** | **Execution Feedback Interface** |
+| **v0.84 Dedicated Tests** | **46 passed** |
+| **Full ULTRON Regression** | **2204 passed** |
+| **v0.84 Dedicated Failures** | **0** |
+| **Python** | **3.13+** |
+| **Architecture Status** | **Foundation Development** |
 
-ULTRON currently has a structured intelligence-to-execution foundation:
+### Current Architecture Pipeline
 
 ```text
 User Query
     ↓
+AI Runtime
+    ↓
+AI Intelligence
+    ↓
+Context
+    ↓
 Intent Understanding
     ↓
-Structured Intent
-    ↓
-Agent Decision Layer
-    ↓
-Structured Agent Decision
-    ↓
-Decision Router
-    ↓
-Structured Decision Route
+Decision Routing
     ↓
 Response / Action Boundary
     ↓
@@ -82,1036 +43,14 @@ Task Context & State
     ↓
 Task Input / Output Contracts
     ↓
-Execution
-    ↓
-Execution Result
-```
-
-The current foundation milestone is:
-
-> **v0.83 — Execution Result Abstraction**
-
----
-
-# 🧠 ULTRON Core Philosophy
-
-ULTRON is not being developed as a collection of disconnected features.
-
-The project follows a foundation-first architecture.
-
-Instead of:
-
-```text
-Feature → Feature → Feature → Feature
-```
-
-ULTRON is being developed as:
-
-```text
-Foundation
-    ↓
-Contracts
-    ↓
-Runtime
-    ↓
-Execution
-    ↓
-Results
-    ↓
-Feedback
-    ↓
-Capabilities
-    ↓
-User-facing Features
-```
-
-This means future capabilities should consume existing ULTRON contracts instead of introducing independent execution systems.
-
-The long-term objective is to make ULTRON capable of supporting:
-
-* AI conversations
-* Autonomous agents
-* Voice interaction
-* Vision
-* Automation
-* Coding agents
-* Website / application generation
-* Social media automation
-* Smart home control
-* Mobile / desktop control
-* External APIs
-* Developer tools
-* Agent creation
-* Multi-step workflows
-* Future multimodal systems
-
-without requiring a redesign of the core architecture.
-
----
-
-# 🏗️ Core Architecture
-
-The current intelligence-to-execution architecture is:
-
-```text
-User Query
-    ↓
-Intent Understanding
-    ↓
-Structured Intent
-    ↓
-Agent Decision Layer
-    ↓
-Structured Agent Decision
-    ↓
-Decision Router
-    ↓
-Structured Decision Route
-    ↓
-Response / Action Boundary
-    ↓
-Task Abstraction
-    ↓
-Task Lifecycle
-    ↓
-Task Context & State
-    ↓
-Task Input / Output Contracts
-    ↓
-Execution
-    ↓
-Execution Result
-    ↓
-Execution Feedback
-```
-
-The execution foundation continues through:
-
-```text
-Task
-    ↓
-Task Lifecycle
-    ↓
-Task Context & State
-    ↓
-Task Input / Output Contracts
-    ↓
-Execution
-    ↓
 Execution Result
     ↓
 Execution Feedback
     ↓
-Runtime Events
-    ↓
-Execution Systems
-```
+Consumer / UI / Voice / API
+````
 
-The foundation roadmap intentionally separates logical task management, task contracts, execution management, execution outcomes, and future feedback processing.
-
----
-
-# 🧩 Current Task Architecture
-
-## Task
-
-The `Task` abstraction was introduced in **v0.79**.
-
-It answers:
-
-> **What work exists?**
-
-A Task represents a logical unit of work.
-
-```text
-Task
-
-├── task_id
-├── task_type
-├── description
-├── source
-└── metadata
-```
-
-The Task model is immutable and descriptive.
-
-It does not execute anything.
-
----
-
-# 🔄 Task Lifecycle
-
-## v0.80 — Task Lifecycle Foundation
-
-v0.80 introduced the `TaskLifecycle` system.
-
-It answers:
-
-> **What state is that work currently in?**
-
-The architecture became:
-
-```text
-Task
-    ↓
-TaskLifecycle
-```
-
-The `Task` remains responsible for representing the work.
-
-The `TaskLifecycle` is responsible for controlling the current lifecycle state of that work.
-
-This keeps task identity and lifecycle state separated.
-
----
-
-# 🔁 Task Lifecycle State Machine
-
-ULTRON v0.80 defines the following lifecycle states:
-
-```text
-CREATED
-   ↓
-INITIALIZED
-   ↓
-RUNNING
-   ├──→ PAUSED
-   │      ├──→ RUNNING
-   │      └──→ CANCELLED
-   │
-   ├──→ COMPLETED
-   │
-   ├──→ FAILED
-   │
-   └──→ CANCELLED
-```
-
-## States
-
-### CREATED
-
-Initial state of a newly created task.
-
-### INITIALIZED
-
-The task has been initialized and is ready to enter execution-related processing.
-
-### RUNNING
-
-The task is currently active within its lifecycle.
-
-### PAUSED
-
-The task lifecycle has temporarily stopped active progress.
-
-A paused task may transition to:
-
-```text
-PAUSED → RUNNING
-```
-
-or:
-
-```text
-PAUSED → CANCELLED
-```
-
-### COMPLETED
-
-The task has successfully reached the end of its lifecycle.
-
-This is a terminal state.
-
-### FAILED
-
-The task lifecycle has reached a failed state.
-
-This is a terminal state.
-
-### CANCELLED
-
-The task lifecycle has been cancelled.
-
-This is a terminal state.
-
----
-
-# 🔒 Terminal States
-
-The following states are terminal:
-
-```text
-COMPLETED
-FAILED
-CANCELLED
-```
-
-Terminal states have no outgoing transitions.
-
-For example:
-
-```text
-COMPLETED → anything
-```
-
-is invalid.
-
-Likewise:
-
-```text
-FAILED → RUNNING
-CANCELLED → RUNNING
-```
-
-are invalid.
-
-This prevents uncontrolled lifecycle mutation.
-
----
-
-# 🧱 v0.80 Responsibilities
-
-`TaskLifecycle` owns:
-
-* Lifecycle state representation
-* Valid state transitions
-* Transition validation
-* Transition enforcement
-* Terminal state detection
-* Safe lifecycle serialization
-* Task association
-* Package-level lifecycle exports
-
-It does **not** own execution.
-
----
-
-# 🚫 v0.80 Explicit Non-Responsibilities
-
-The v0.80 Task Lifecycle does **not**:
-
-* Execute tasks
-* Select tools
-* Select agents
-* Create execution plans
-* Manage execution state
-* Manage retries
-* Manage recovery
-* Manage timeouts
-* Persist events
-* Call AI providers
-* Orchestrate execution
-* Control external capabilities
-
-Those responsibilities belong to later architecture layers.
-
-This boundary is intentional.
-
----
-
-# 🧠 Task Context & State
-
-## v0.81 — Task Context & State
-
-v0.81 introduced the `TaskContext` system.
-
-It answers:
-
-> **What contextual information and task-specific state does this task need within its own scope?**
-
-The architecture became:
-
-```text
-Task
-    ↓
-TaskLifecycle
-    ↓
-TaskContext
-    ↓
-Task-specific Context + State
-```
-
-`TaskContext` is intentionally scoped to the logical task.
-
-It provides two distinct containers:
-
-```text
-TaskContext
-
-├── context
-│
-└── state
-```
-
-## Context
-
-Task-scoped contextual information that may be required while working with the task.
-
-Examples may include:
-
-```text
-language
-user-provided parameters
-task-specific configuration
-intermediate contextual information
-```
-
-## State
-
-Mutable task-specific state that can change during the task's lifecycle.
-
-Examples may include:
-
-```text
-progress markers
-task-specific flags
-intermediate state
-workflow-specific values
-```
-
-The exact meaning of individual context and state keys remains the responsibility of future contracts and capabilities.
-
----
-
-# 🔐 TaskContext Boundary
-
-The `TaskContext` owns:
-
-* Associated Task
-* Task-scoped context data
-* Task-scoped mutable state
-* Controlled context access
-* Controlled state access
-* Context removal
-* State removal
-* Defensive copies
-* Task context validation
-* Safe serialization
-
-It does **not** own:
-
-* Task execution
-* Task lifecycle management
-* Agent selection
-* Tool selection
-* Planning
-* Execution progress
-* Execution results
-* Retries
-* Recovery
-* Cancellation engine
-* Timeouts
-* AI provider calls
-* Event persistence
-* Execution orchestration
-
-This prevents `TaskContext` from becoming a generic "everything context" object.
-
----
-
-# 🛡️ Defensive Data Boundaries
-
-`TaskContext` protects its internal task-scoped data through defensive copying.
-
-Context snapshots are returned through:
-
-```python
-get_all_context()
-```
-
-State snapshots are returned through:
-
-```python
-get_all_state()
-```
-
-Serialization also returns independent data:
-
-```python
-to_dict()
-```
-
-Nested structures are protected through deep copying.
-
-This prevents callers from directly mutating internal context or state containers through returned dictionaries.
-
----
-
-# ⚖️ Task vs Task Lifecycle vs TaskContext
-
-The task architecture is:
-
-```text
-Task
-
-├── task_id
-├── task_type
-├── description
-├── source
-└── metadata
-
-
-TaskLifecycle
-
-├── task
-├── state
-└── transition rules
-
-
-TaskContext
-
-├── task
-├── context
-└── state
-```
-
-In simple terms:
-
-```text
-Task
-
-"What work exists?"
-
-
-TaskLifecycle
-
-"What state is that work currently in?"
-
-
-TaskContext
-
-"What contextual information and task-specific state
-does that work need?"
-```
-
-This separation prevents the Task model from becoming a large mutable object containing unrelated runtime behavior.
-
----
-
-# 📜 Task Input / Output Contracts
-
-## v0.82 — Task Input / Output Contracts
-
-v0.82 introduced formal task input and output contract abstractions.
-
-It answers:
-
-> **What input does the task expect, and what structured output does the task define?**
-
-The architecture became:
-
-```text
-Task
-    ↓
-TaskLifecycle
-    ↓
-TaskContext & State
-    ↓
-TaskContract
-    ├── TaskInputContract
-    └── TaskOutputContract
-```
-
-The contracts define expected structures without storing actual runtime data.
-
----
-
-# 📥 TaskInputContract
-
-`TaskInputContract` defines the expected input structure for a Task.
-
-It provides:
-
-* Input contract identity
-* Input contract description
-* Expected input schema
-* Contract validation
-* Defensive schema access
-* Safe serialization
-
-Conceptually:
-
-```text
-TaskInputContract
-
-├── name
-├── description
-└── schema
-```
-
-Example:
-
-```python
-TaskInputContract(
-    name="calculator_input",
-    description="Calculator input",
-    schema={
-        "expression": str,
-    },
-)
-```
-
-The contract describes what input is expected.
-
-It does **not** store the actual input.
-
-For example:
-
-```text
-Contract:
-
-{"expression": str}
-
-
-Actual input:
-
-{"expression": "25 * 4"}
-```
-
-These are deliberately separate concepts.
-
----
-
-# 📤 TaskOutputContract
-
-`TaskOutputContract` defines the expected output structure for a Task.
-
-It provides:
-
-* Output contract identity
-* Output contract description
-* Expected output schema
-* Contract validation
-* Defensive schema access
-* Safe serialization
-
-Conceptually:
-
-```text
-TaskOutputContract
-
-├── name
-├── description
-└── schema
-```
-
-Example:
-
-```python
-TaskOutputContract(
-    name="calculator_output",
-    description="Calculator output",
-    schema={
-        "value": float,
-    },
-)
-```
-
-The contract describes what output is expected.
-
-It does **not** store the actual execution output.
-
-For example:
-
-```text
-Contract:
-
-{"value": float}
-
-
-Actual output:
-
-{"value": 100.0}
-```
-
-Actual execution results belong to the execution-result architecture introduced in v0.83.
-
----
-
-# 🔗 TaskContract
-
-`TaskContract` binds a Task to its input and output contracts.
-
-Conceptually:
-
-```text
-TaskContract
-
-├── Task
-├── TaskInputContract
-└── TaskOutputContract
-```
-
-Example:
-
-```text
-Task
-
-"Calculate an expression"
-
-        ↓
-
-Input Contract
-
-{"expression": str}
-
-        ↓
-
-Task Processing
-
-        ↓
-
-Output Contract
-
-{"value": float}
-```
-
-`TaskContract` is responsible for defining the contract relationship.
-
-It does **not** execute the Task.
-
----
-
-# ⚖️ Contract ≠ Actual Data
-
-A critical v0.82 architectural distinction is:
-
-```text
-Contract
-    ↓
-Defines expected structure
-
-Actual Data
-    ↓
-Runtime input/output values
-
-Execution Result
-    ↓
-Represents actual execution outcome
-```
-
-For example:
-
-```text
-Task:
-
-Calculate an expression
-
-
-Input Contract:
-
-{"expression": str}
-
-
-Actual Input:
-
-{"expression": "25 * 4"}
-
-
-Output Contract:
-
-{"value": float}
-
-
-Actual Output:
-
-{"value": 100.0}
-```
-
-The v0.82 contract layer defines the expected structure.
-
-It does not execute or process the actual values.
-
----
-
-# 🚫 v0.82 Explicit Non-Responsibilities
-
-v0.82 does **not**:
-
-* Execute tasks
-* Store actual task input data
-* Store actual task output data
-* Execute tools
-* Create execution results
-* Manage task lifecycle
-* Manage task context/state
-* Select tools
-* Select agents
-* Create execution plans
-* Call AI providers
-* Manage retries
-* Handle recovery
-* Handle cancellation
-* Handle timeouts
-* Persist execution events
-* Orchestrate execution
-* Replace `ExecutionContext`
-* Replace `ExecutionStateSnapshot`
-
-The milestone only establishes the formal task input/output contract boundary.
-
----
-
-# 🎯 Execution Result Abstraction
-
-## v0.83 — Execution Result Abstraction
-
-v0.83 introduces the formal `ExecutionResult` abstraction.
-
-It answers:
-
-> **What was the overall outcome of an execution?**
-
-The architecture now progresses from task definition and contracts into standardized execution outcomes:
-
-```text
-Task
-    ↓
-TaskLifecycle
-    ↓
-TaskContext & State
-    ↓
-Task Input / Output Contracts
-    ↓
-Execution
-    ↓
-ExecutionResult
-```
-
-`ExecutionResult` represents the overall outcome of one execution.
-
-It is intentionally separate from individual tool results, execution lifecycle state, events, snapshots, and subsystem-specific result models.
-
----
-
-# 📦 ExecutionResult Structure
-
-The v0.83 `ExecutionResult` model contains:
-
-```text
-ExecutionResult
-
-├── execution_id
-├── success
-├── result
-├── error
-└── metadata
-```
-
-## execution_id
-
-Identifies the execution represented by the result.
-
-```python
-execution_id: str
-```
-
-The execution identity is required and must be a non-empty string.
-
----
-
-## success
-
-Represents whether the overall execution completed successfully.
-
-```python
-success: bool
-```
-
----
-
-## result
-
-Contains the execution result data.
-
-```python
-result: Any
-```
-
-The model does not impose a task-specific result structure.
-
-Task-specific structure remains governed by the relevant Task Output Contract.
-
----
-
-## error
-
-Contains execution error information when the execution is unsuccessful.
-
-```python
-error: Optional[str]
-```
-
-Successful results may contain:
-
-```python
-error=None
-```
-
----
-
-## metadata
-
-Contains extensible execution metadata.
-
-```python
-metadata: Dict[str, Any]
-```
-
-Current orchestrator integration stores execution information such as:
-
-```python
-{
-    "plan_id": "...",
-    "agent_id": "...",
-    "progress": {...},
-}
-```
-
-The metadata field deliberately prevents plan-specific and agent-specific information from becoming top-level `ExecutionResult` fields.
-
----
-
-# 🔒 ExecutionResult Immutability
-
-`ExecutionResult` is implemented as an immutable dataclass.
-
-The model uses:
-
-```python
-@dataclass(frozen=True)
-```
-
-This prevents direct reassignment of result fields after creation.
-
-Nested result and metadata structures are protected through defensive copying during serialization and metadata initialization.
-
-This keeps the result model descriptive rather than turning it into a mutable execution controller.
-
----
-
-# 🧪 ExecutionResult Validation
-
-`ExecutionResult` provides:
-
-```python
-validate()
-```
-
-Validation covers:
-
-* `execution_id` type
-* `execution_id` non-empty requirement
-* `success` type
-* `error` type
-* `metadata` structure
-
-Invalid result construction raises:
-
-```python
-ExecutionResultError
-```
-
-The result can also be serialized through:
-
-```python
-to_dict()
-```
-
-Serialization returns defensive copies so callers cannot mutate the internal metadata or result structures through the serialized representation.
-
----
-
-# ⚖️ ExecutionResult vs Existing Result Models
-
-ULTRON already contains several result abstractions for different subsystems.
-
-For example:
-
-```text
-ToolResult
-```
-
-represents an individual tool execution outcome.
-
-```text
-IntelligenceResult
-```
-
-represents an intelligence-layer processing result.
-
-```text
-InputResult
-```
-
-represents multimodal input-processing output.
-
-The v0.83 `ExecutionResult` solves a different problem:
-
-```text
-ToolResult
-
-→ Individual tool outcome
-
-
-IntelligenceResult
-
-→ Intelligence-layer outcome
-
-
-InputResult
-
-→ Multimodal input-processing outcome
-
-
-ExecutionResult
-
-→ Overall execution outcome
-```
-
-These abstractions are deliberately not merged.
-
----
-
-# ⚖️ ExecutionResult vs Execution State
-
-ULTRON also contains several execution-state abstractions.
-
-The architectural distinction is:
-
-```text
-ExecutionController
-
-→ Controls execution lifecycle
-
-
-ExecutionEvent
-
-→ Records what happened
-
-
-ExecutionStateSnapshot
-
-→ Represents execution state at a point in time
-
-
-ToolResult
-
-→ Represents an individual tool outcome
-
-
-ExecutionResult
-
-→ Represents the overall execution outcome
-```
-
-This distinction prevents execution state, events, and final results from becoming one oversized abstraction.
-
----
-
-# 🔗 v0.83 Execution Architecture
-
-The current execution architecture can be represented as:
+### Execution Architecture
 
 ```text
 AgentEngine
@@ -1122,1243 +61,225 @@ AgentOrchestrator
     ↓
 ExecutionResult
     ↓
-Execution Feedback
+ExecutionFeedbackAdapter
+    ↓
+ExecutionFeedback
+    ↓
+Consumer / UI / Voice / API
 ```
 
-The existing execution infrastructure remains responsible for execution itself.
-
-`ExecutionResult` represents the standardized outcome produced after orchestration.
-
----
-
-# 🤖 AgentOrchestrator Integration
-
-v0.83 integrates `ExecutionResult` into `AgentOrchestrator`.
-
-The orchestrator now returns:
-
-```python
-ExecutionResult
-```
-
-instead of raw execution-result dictionaries.
-
-Successful execution produces a result containing:
+Execution observability remains a separate path:
 
 ```text
-execution_id
-success=True
-result
-error=None
-metadata
-```
-
-The metadata includes information such as:
-
-```text
-plan_id
-agent_id
-progress
-```
-
-Failure paths also return `ExecutionResult`.
-
-This creates a stable execution-result boundary between the orchestrator and its callers.
-
----
-
-# 🎙️ VoiceCommandExecutor Integration
-
-The existing `VoiceCommandExecutor` consumes the standardized `ExecutionResult`.
-
-The architecture becomes:
-
-```text
-Voice Command
-    ↓
-VoiceCommandExecutor
-    ↓
-AgentPlanner
-    ↓
 AgentOrchestrator
     ↓
-ExecutionResult
+ExecutionEventEmitter
     ↓
-Voice Response Contract
-```
-
-The internal execution-result representation has been migrated from dictionary access to:
-
-```python
-result.success
-result.result
-result.error
-result.execution_id
-result.metadata
-```
-
-The external voice response dictionary contract remains intact.
-
-This preserves existing voice-layer behavior while allowing the execution architecture to use the standardized result model.
-
----
-
-# 🚫 v0.83 Explicit Non-Responsibilities
-
-`ExecutionResult` does **not**:
-
-* Execute tasks
-* Execute tools
-* Perform planning
-* Select tools
-* Select agents
-* Manage task lifecycle
-* Manage task context
-* Manage execution lifecycle
-* Control retries
-* Perform recovery
-* Manage cancellation
-* Manage timeouts
-* Emit execution events
-* Persist execution events
-* Manage execution feedback
-* Control external capabilities
-* Call AI providers
-* Replace `ExecutionController`
-* Replace `ExecutionContext`
-* Replace `ExecutionStateSnapshot`
-* Replace `ToolResult`
-* Replace `IntelligenceResult`
-* Replace `InputResult`
-
-The v0.83 milestone only establishes the standardized overall execution-result boundary.
-
----
-
-# 🧱 Execution Boundary
-
-The current conceptual boundary is:
-
-```text
-TaskContract
-    ↓
-Expected Input / Output
-
-ExecutionController
-    ↓
-Controls Execution Lifecycle
-
 ExecutionEvent
-    ↓
-Records What Happened
-
-ExecutionStateSnapshot
-    ↓
-Represents Execution State
-
-ToolResult
-    ↓
-Individual Tool Outcome
-
-ExecutionResult
-    ↓
-Overall Execution Outcome
-```
-
-This separation is a core architectural decision in ULTRON.
-
----
-
-# 🧭 Task Domain vs Execution Domain
-
-ULTRON deliberately maintains a boundary between task definition and execution runtime.
-
-## Task Domain
-
-```text
-Task
-    ↓
-TaskLifecycle
-    ↓
-TaskContext
-    ↓
-TaskContract
-```
-
-## Execution Domain
-
-```text
-AgentPlan
-    ↓
-ExecutionContext
-    ↓
-ExecutionController
-    ↓
-ExecutionStateSnapshot
-    ↓
-Execution Events
-    ↓
-ToolResult
-    ↓
-ExecutionResult
-```
-
-The v0.83 milestone connects these domains through a controlled execution-result boundary without merging their responsibilities.
-
----
-
-# 🧪 v0.83 Testing
-
-## Dedicated ExecutionResult Tests
-
-```text
-15 passed
-0 failed
-```
-
-The dedicated `ExecutionResult` tests validate:
-
-* Valid result creation
-* Successful execution results
-* Failed execution results
-* Metadata handling
-* Defensive metadata initialization
-* Defensive result serialization
-* `to_dict()` serialization
-* `validate()`
-* Immutable dataclass behavior
-* Invalid execution ID rejection
-* Invalid success type rejection
-* Invalid error type rejection
-* Invalid metadata rejection
-* None metadata normalization
-* Arbitrary result data handling
-
----
-
-# 🧪 v0.83 Orchestrator Regression
-
-The existing orchestrator test suites were migrated from dictionary-based execution-result access to the standardized `ExecutionResult` model.
-
-Focused validation:
-
-```text
-tests/test_agent_orchestrator.py
-
-17 passed
-```
-
-```text
-tests/test_agent_orchestrator_context.py
-
-31 passed
-```
-
-Combined:
-
-```text
-48 passed
-0 failed
 ```
 
 ---
 
-# 🧪 v0.83 Voice Regression
+# 🧠 What is ULTRON?
 
-The existing VoiceCommandExecutor suite was validated after migration to `ExecutionResult`.
+ULTRON is a modular personal AI assistant and agent platform designed to evolve toward an AI operating system capable of understanding user intent, reasoning about tasks, executing tools, managing execution state, interacting through multiple modalities, and eventually automating complex workflows.
 
-```text
-10 passed
-0 failed
-```
+The project is being developed **foundation-first**.
 
-The test suite confirms:
+Instead of building a collection of disconnected AI features, ULTRON focuses on establishing clean architectural boundaries between:
 
-* Successful voice command execution
-* Empty query rejection
-* Non-string query rejection
-* Unknown command handling
-* Missing agent handling
-* Single-step plan creation
-* Runtime context status synchronization
-* Progress propagation
-* Unknown tool protection
-* Query normalization
+* AI interaction
+* Intelligence
+* Context
+* Intent
+* Decision making
+* Tasks
+* Task lifecycle
+* Execution
+* Execution state
+* Execution events
+* Execution results
+* Execution feedback
+* Multimodal interaction
+* Automation
+* Observability
+* Future agent capabilities
 
----
-
-# 🧪 v0.83 Full ULTRON Regression
-
-After v0.83 implementation and integration:
-
-```text
-2158 passed
-0 failed
-```
-
-This confirms that the standardized execution-result abstraction was introduced without breaking the existing ULTRON test suite.
+The goal is to create a platform where future capabilities can be added without repeatedly redesigning the core architecture.
 
 ---
 
-# 🧱 Existing Execution Infrastructure
+# 🎯 Project Vision
 
-ULTRON already contains a mature execution architecture.
+ULTRON is being developed toward a long-term AI platform capable of:
 
-The execution foundation includes:
-
-```text
-Agent Runtime
-    ↓
-Planner
-    ↓
-Orchestrator
-    ↓
-Execution Controller
-    ↓
-Lifecycle / Event Store
-    ↓
-Execution Observability
-    ↓
-Execution Metrics
-```
-
-Existing execution infrastructure includes concepts such as:
-
-* `ExecutionContext`
-* `ExecutionStateSnapshot`
-* `ExecutionController`
-* Agent Plans
-* Tool Selection
-* Orchestration
-* Execution Events
-* Execution Metrics
-* Execution Observability
-* `ToolResult`
-
-The `ExecutionResult` layer does not replace these systems.
-
-It provides the standardized overall outcome boundary for execution.
-
----
-
-# 📦 v0.83 Components
-
-Current task module:
-
-```text
-modules/task/
-
-├── __init__.py
-├── task.py
-├── task_lifecycle.py
-├── task_context.py
-├── task_input.py
-├── task_output.py
-└── task_contract.py
-```
-
-Current execution-result component:
-
-```text
-modules/agent/
-
-└── execution_result.py
-```
-
-Tests:
-
-```text
-tests/
-
-├── agent/
-│   └── test_execution_result.py
-│
-├── task/
-│   ├── test_task.py
-│   ├── test_task_lifecycle.py
-│   ├── test_task_context.py
-│   ├── test_task_input.py
-│   ├── test_task_output.py
-│   └── test_task_contract.py
-│
-├── test_agent_orchestrator.py
-└── test_agent_orchestrator_context.py
-```
-
----
-
-# 📤 Task Module Exports
-
-The task package exports:
-
-```python
-Task
-TaskError
-TaskType
-
-TaskLifecycle
-TaskLifecycleError
-TaskState
-
-TaskContext
-TaskContextError
-
-TaskInputContract
-TaskInputContractError
-
-TaskOutputContract
-TaskOutputContractError
-
-TaskContract
-TaskContractError
-```
-
-Package-level export validation has been completed successfully.
-
----
-
-# 📤 Agent Execution Result Exports
-
-The agent package exports:
-
-```python
-ExecutionResult
-ExecutionResultError
-```
-
-This allows consumers to import the standardized execution-result abstraction through the agent package.
-
----
-
-# 🎙️ Multimodal Foundation
-
-ULTRON also contains a developing multimodal architecture.
-
-Current areas include:
-
-```text
-modules/multimodal/
-```
-
-The architecture includes foundations for:
-
-* Audio capture
-* Audio input
+* Natural language interaction
+* Hindi / English / Hinglish interaction
+* AI-powered reasoning
+* Agent planning
+* Tool selection
+* Tool execution
+* Task management
+* Long-running task execution
+* Voice interaction
 * Speech-to-text
-* Voice processing
-* Voice pipelines
-* Audio output
-* Playback
-* Multimodal routing
-
-The voice architecture remains a capability layer that consumes the core execution infrastructure.
-
----
-
-# 🎙️ Voice Roadmap
-
-```text
-v0.56 → STT Provider Abstraction
-v0.57 → First STT Provider
-v0.58 → Voice → Text Runtime Integration
-v0.59 → Audio Capture Foundation
-v0.60 → Voice Command Execution
-v0.61 → TTS Provider Abstraction
-v0.62 → First TTS Provider
-v0.63 → Runtime TTS Integration
-v0.64 → Voice Response Execution
-v0.65 → Full Voice Conversation Loop
-v0.66 → Audio Playback Foundation
-v0.67 → Audio Output Device Integration
-v0.68 → Voice Playback Execution
-v0.69 → End-to-End Voice Assistant
-```
-
-Voice remains a capability layer that consumes the core platform contracts and execution architecture.
-
----
-
-# 🤖 AI Provider Architecture
-
-ULTRON includes an AI provider abstraction that separates the core runtime from individual AI providers.
-
-Current AI architecture includes:
-
-```text
-AI Engine
-    ↓
-AI Provider Abstraction
-    ↓
-Provider Implementation
-```
-
-Existing provider architecture includes:
-
-* Mock Provider
-* Anthropic Provider
-* Configurable AI mode
-* Environment-based API configuration
-
-The provider architecture is designed so future providers can be added without rewriting the core intelligence runtime.
-
----
-
-# 🧠 AI Intelligence Roadmap
-
-```text
-v0.70 → AI Intelligence Foundation
-v0.71 → AI Provider Abstraction
-v0.72 → First AI Provider
-v0.73 → AI Runtime
-v0.74 → Context Injection
-v0.75 → Intent Understanding
-v0.76 → Agent Decision Layer
-v0.77 → Decision Routing Foundation
-v0.78 → Response / Action Boundary
-v0.79 → Task Abstraction
-v0.80 → Task Lifecycle Foundation
-v0.81 → Task Context & State
-v0.82 → Task Input / Output Contracts
-v0.83 → Execution Result Abstraction
-```
-
----
-
-# 🧱 Foundation Roadmap
-
-ULTRON is moving from intelligence foundations toward a complete platform foundation.
-
-## Phase 1 — Intelligence → Execution Bridge
-
-```text
-v0.77 → Decision Routing Foundation        ✅
-v0.78 → Response / Action Boundary          ✅
-v0.79 → Task Abstraction                    ✅
-v0.80 → Task Lifecycle Foundation           ✅
-v0.81 → Task Context & State                ✅
-v0.82 → Task Input / Output Contracts       ✅
-v0.83 → Execution Result Abstraction        ✅
-v0.84 → Execution Feedback Interface        ⏳
-v0.85 → Runtime Event Integration           ⏳
-```
-
-Current target pipeline:
-
-```text
-Query
-  ↓
-Intelligence
-  ↓
-Intent
-  ↓
-Decision
-  ↓
-Routing
-  ↓
-Task
-  ↓
-Lifecycle
-  ↓
-Context
-  ↓
-Contracts
-  ↓
-Execution
-  ↓
-Result
-  ↓
-Feedback
-```
-
----
-
-# 🛡️ Phase 2 — Reliability Foundation
-
-```text
-v0.86 → Error & Failure Abstraction
-v0.87 → Retry & Recovery Foundation
-v0.88 → Cancellation & Interruption Foundation
-v0.89 → Timeout & Resource Control
-v0.90 → Execution Policy Foundation
-```
-
-The error abstraction is intended to eventually provide a unified model for:
-
-```text
-AI Error
-Tool Error
-Planning Error
-Execution Error
-Voice Error
-Vision Error
-Future Capability Errors
-```
-
----
-
-# 🧩 Phase 3 — Extensibility Foundation
-
-```text
-v0.91 → Capability Registry
-v0.92 → Plugin / Module Contract
-v0.93 → Dependency & Service Registry
-v0.94 → Configuration & Environment Foundation
-v0.95 → Health & Capability Checks
-```
-
-This phase will establish the platform-level mechanisms required for future capabilities and modules.
-
----
-
-# 🏛️ Phase 4 — Core Platform Foundation
-
-```text
-v0.96 → Unified Runtime Context
-v0.97 → Unified Lifecycle Foundation
-v0.98 → Observability & Diagnostics Foundation
-v0.99 → Core Integration Boundary
-v1.0  → ULTRON Core Foundation
-```
-
----
-
-# 🎯 v1.0 Philosophy
-
-ULTRON v1.0 does **not** mean that every future user-facing capability is complete.
-
-Instead:
-
-> **v1.0 means the core operating foundation is stable enough to support future capabilities without requiring a fundamental architectural rebuild.**
-
-The goal is:
-
-```text
-Strong Core
-    ↓
-Stable Contracts
-    ↓
-Composable Runtime
-    ↓
-Composable Capabilities
-    ↓
-Future Features
-```
-
-After v1.0, systems such as:
-
-* Voice
+* Text-to-speech
 * Vision
-* Smart Home
-* Website Builder
-* Coding Agent
-* Social Media Automation
-* Mobile Control
-* Desktop Control
-* External APIs
-* Advanced Automation
-* Agent Builder
+* Multimodal interaction
+* Automation
+* Website and application workflows
+* Social media automation
+* Smart-device integration
+* API-driven AI services
+* Personal AI workflows
+* Developer-facing agent infrastructure
 
-can be developed as capabilities on top of the established core.
+The long-term vision is not simply to build another chatbot.
 
----
-
-# 🔐 Architecture Principles
-
-ULTRON development follows several strict principles.
-
-## 1. No Duplicate Systems
-
-Before adding a new subsystem, the existing architecture is inspected first.
-
-If an existing abstraction already solves the required problem, it should be extended or reused rather than duplicated.
+ULTRON is intended to become a **modular AI operating platform**.
 
 ---
 
-## 2. Separation of Responsibility
+# 🏗️ Architecture Philosophy
 
-Each layer should have one clear responsibility.
+ULTRON follows several core architectural principles.
 
-For example:
+### 1. Foundation First
+
+Core abstractions are implemented before high-level features.
+
+### 2. Single Responsibility
+
+Each module should have one clear architectural responsibility.
+
+### 3. No Duplicate Systems
+
+Existing systems are extended instead of creating parallel implementations.
+
+### 4. Explicit Boundaries
+
+Each layer should have a clearly defined responsibility and should not silently take ownership of another layer's responsibilities.
+
+### 5. Immutable Core Models
+
+Important state and result representations use immutable structures wherever practical.
+
+### 6. Defensive Serialization
+
+Structured models should not expose mutable internal state through serialized representations.
+
+### 7. Test-Driven Evolution
+
+Every architectural milestone receives dedicated tests and full regression testing.
+
+### 8. Backward Compatibility
+
+Existing behavior should remain stable unless a milestone explicitly changes the contract.
+
+### 9. Observability Without Coupling
+
+Execution events and observability remain separate from execution outcomes and consumer-facing feedback.
+
+### 10. Foundation Before Intelligence Expansion
+
+ULTRON's architecture is stabilized before large-scale autonomous behavior is introduced.
+
+---
+
+# 🧩 Core Architecture
 
 ```text
-Intent
-
-→ Understand
-
-
-Decision
-
-→ Decide
-
-
-Route
-
-→ Route
-
-
-Boundary
-
-→ Separate response from action
-
-
-Task
-
-→ Represent work
-
-
-TaskLifecycle
-
-→ Manage task lifecycle state
-
-
-TaskContext
-
-→ Manage task-scoped context and state
-
-
-TaskContract
-
-→ Define expected task input/output structure
-
-
-Execution
-
-→ Execute work
-
-
-ExecutionResult
-
-→ Represent overall execution outcome
-
-
-ExecutionFeedback
-
-→ Process execution feedback
+                    ┌─────────────────────┐
+                    │      User Query     │
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │     AI Runtime      │
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │  AI Intelligence    │
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │      Context        │
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │ Intent Understanding│
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │ Decision Routing    │
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │ Response / Action   │
+                    │      Boundary       │
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │   Task Abstraction  │
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │   Task Lifecycle    │
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │ Task Context & State│
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │ Input / Output      │
+                    │ Contracts           │
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │  Execution Result   │
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │ Execution Feedback  │
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │ Consumer / UI /     │
+                    │ Voice / API         │
+                    └─────────────────────┘
 ```
 
 ---
 
-## 3. Immutable Core Models Where Appropriate
+# 🤖 Agent Architecture
 
-Important descriptive models remain immutable where possible.
-
-Examples include:
-
-* Task
-* AgentPlan
-* Execution State Snapshots
-* Structured intelligence models
-* ExecutionResult
-
-Mutable behavior belongs in controlled runtime components.
-
----
-
-## 4. Contract-First Development
-
-Future capabilities should depend on stable contracts instead of directly coupling themselves to implementation details.
-
----
-
-## 5. Test Before Expansion
-
-Every architectural milestone should include dedicated tests.
-
-The full regression suite must also pass before a milestone is considered complete.
-
----
-
-## 6. Existing Architecture Preservation
-
-New milestones must not unnecessarily rewrite stable systems.
-
-The goal is incremental architectural evolution.
-
----
-
-## 7. Feature After Foundation
-
-ULTRON deliberately prioritizes platform architecture before large user-facing feature expansion.
-
-The principle is:
-
-> **Build the system that can build the features.**
-
----
-
-# 📊 Current Architecture Map
-
-The current platform can be viewed as:
+ULTRON separates agent reasoning and execution into distinct layers.
 
 ```text
-                              ULTRON
-
-                                 │
-
-          ┌──────────────────────┼──────────────────────┐
-          │                      │                      │
-    Intelligence            Runtime              Capabilities
-          │                      │                      │
-          ↓                      ↓                      ↓
-   Intent Understanding        Tasks                  Voice
-          │                    Lifecycle              Vision
-          ↓                    Context              Automation
-   Agent Decision              Contracts             Smart Home
-          │                    Execution              Coding
-          ↓                    Result                 Future Modules
-   Decision Router             Feedback
-          │                    Events
-          ↓                    Observability
- Response / Action             Metrics
-      Boundary
-          │
-          ↓
-        Task
-          │
-          ↓
-    Task Lifecycle
-          │
-          ↓
-    Task Context
-       │      │
-       │      └── Task State
-       │
-       └── Task Context Data
-          │
-          ↓
-     Task Contracts
-       │      │
-       │      ├── Input Contract
-       │      │
-       │      └── Output Contract
-       │
-       ↓
-      Execution
-       │
-       ↓
-  Execution Result
-       │
-       ↓
- Execution Feedback
-```
-
----
-
-# 🗂️ Core Project Structure
-
-The architecture currently contains major domains such as:
-
-```text
-modules/
-
-├── agent/
-│   ├── agent_engine
-│   ├── execution_controller
-│   ├── execution_result
-│   ├── orchestrator
-│   ├── plan
-│   ├── planner
-│   ├── registry
-│   ├── runtime_context
-│   ├── event persistence
-│   ├── metrics
-│   ├── observability
-│   ├── tool registry
-│   └── tool selector
-│
-├── intelligence/
-│   ├── ai_intelligence.py
-│   ├── ai_runtime.py
-│   ├── intelligence_result.py
-│   ├── intent.py
-│   ├── intent_understanding.py
-│   ├── agent_decision.py
-│   ├── agent_decision_layer.py
-│   ├── decision_route.py
-│   ├── decision_router.py
-│   └── response_action_boundary.py
-│
-├── task/
-│   ├── __init__.py
-│   ├── task.py
-│   ├── task_lifecycle.py
-│   ├── task_context.py
-│   ├── task_input.py
-│   ├── task_output.py
-│   └── task_contract.py
-│
-├── multimodal/
-│   ├── audio capture
-│   ├── audio input
-│   ├── STT
-│   ├── voice pipeline
-│   ├── TTS
-│   └── audio output
-│
-├── automation/
-│   ├── actions
-│   ├── engine
-│   ├── manager
-│   ├── runner
-│   ├── scheduler
-│   ├── storage
-│   └── worker
-│
-└── core/
-    ├── AI client
-    ├── AI context
-    ├── AI engine
-    ├── configuration
-    ├── settings
-    ├── memory
-    ├── profile
-    └── conversation
-```
-
----
-
-# 📈 Version Progression
-
-```text
-v0.70 → AI Intelligence Foundation
-   ↓
-v0.71 → AI Provider Abstraction
-   ↓
-v0.72 → First AI Provider
-   ↓
-v0.73 → AI Runtime
-   ↓
-v0.74 → Context Injection
-   ↓
-v0.75 → Intent Understanding
-   ↓
-v0.76 → Agent Decision Layer
-   ↓
-v0.77 → Decision Routing
-   ↓
-v0.78 → Response / Action Boundary
-   ↓
-v0.79 → Task Abstraction
-   ↓
-v0.80 → Task Lifecycle Foundation
-   ↓
-v0.81 → Task Context & State
-   ↓
-v0.82 → Task Input / Output Contracts
-   ↓
-v0.83 → Execution Result Abstraction
-```
-
----
-
-# 📚 Version History
-
-## v0.83 — Execution Result Abstraction
-
-### Added
-
-* `ExecutionResult`
-* `ExecutionResultError`
-* Standardized overall execution outcome model
-* Execution identity
-* Execution success state
-* Execution result payload
-* Execution error representation
-* Extensible execution metadata
-* Result validation
-* Defensive result serialization
-* Immutable execution-result model
-* Agent package execution-result exports
-* Dedicated `ExecutionResult` test suite
-
-### Architecture
-
-```text
-Task
-    ↓
-TaskLifecycle
-    ↓
-TaskContext
-    ↓
-Task Contracts
-    ↓
-Execution
-    ↓
-ExecutionResult
-```
-
-### Execution Result Structure
-
-```text
-ExecutionResult
-
-├── execution_id
-├── success
-├── result
-├── error
-└── metadata
-```
-
-### Integration
-
-`AgentOrchestrator` now produces standardized `ExecutionResult` objects.
-
-`VoiceCommandExecutor` consumes `ExecutionResult` while preserving its existing external response structure.
-
-### Architectural Boundary
-
-```text
+Agent
+  ↓
+AgentPlan
+  ↓
+AgentPlanner
+  ↓
+AgentOrchestrator
+  ↓
+AgentExecutionController
+  ↓
+AgentEngine
+  ↓
+Tool
+  ↓
 ToolResult
-
-→ Individual tool outcome
-
-
-ExecutionController
-
-→ Execution lifecycle control
-
-
-ExecutionEvent
-
-→ Execution occurrence
-
-
-ExecutionStateSnapshot
-
-→ Execution state representation
-
-
-ExecutionResult
-
-→ Overall execution outcome
 ```
 
-### Validation
-
-```text
-15 ExecutionResult tests passed
-
-48 orchestrator integration tests passed
-
-10 VoiceCommandExecutor tests passed
-
-2158 full regression tests passed
-
-0 dedicated failures
-
-0 full regression failures
-```
+The orchestration layer coordinates execution but does not collapse every responsibility into a single object.
 
 ---
 
-## v0.82 — Task Input / Output Contracts
+# 🧠 AI Intelligence Architecture
 
-### Added
-
-* `TaskInputContract`
-* `TaskInputContractError`
-* `TaskOutputContract`
-* `TaskOutputContractError`
-* `TaskContract`
-* `TaskContractError`
-* Expected task input schema abstraction
-* Expected task output schema abstraction
-* Task-to-contract association
-* Contract validation
-* Defensive schema access
-* Defensive serialization
-* Task module package exports
-* Dedicated TaskInputContract tests
-* Dedicated TaskOutputContract tests
-* Dedicated TaskContract tests
-
-### Task Contract Structure
-
-```text
-TaskContract
-
-├── Task
-│
-├── TaskInputContract
-│   ├── name
-│   ├── description
-│   └── schema
-│
-└── TaskOutputContract
-    ├── name
-    ├── description
-    └── schema
-```
-
-### Architectural Boundary
-
-```text
-Task
-    ↓
-TaskLifecycle
-    ↓
-TaskContext
-    ↓
-TaskContract
-    ├── Input Contract
-    └── Output Contract
-    ↓
-Execution
-```
-
-### Validation
-
-```text
-14 TaskInputContract tests passed
-14 TaskOutputContract tests passed
-10 TaskContract tests passed
-
-38 dedicated tests passed
-2143 full regression tests passed
-
-0 dedicated failures
-0 full regression failures
-
-Task module exports validated
-```
-
----
-
-## v0.81 — Task Context & State
-
-### Added
-
-* `TaskContext`
-* `TaskContextError`
-* Task-scoped context container
-* Task-scoped mutable state container
-* Controlled context access
-* Controlled state access
-* Context removal
-* State removal
-* Defensive context snapshots
-* Defensive state snapshots
-* TaskContext validation
-* Safe TaskContext serialization
-* Task module package exports
-* Dedicated TaskContext test suite
-
-### Validation
-
-```text
-31 dedicated tests passed
-2105 full regression tests passed
-
-0 dedicated failures
-0 full regression failures
-
-Task module exports validated
-```
-
----
-
-## v0.80 — Task Lifecycle Foundation
-
-### Added
-
-* `TaskLifecycle`
-* `TaskLifecycleError`
-* `TaskState`
-* Controlled task lifecycle state machine
-* Lifecycle transition validation
-* Terminal state detection
-* Lifecycle serialization
-* Task module package exports
-* Dedicated Task Lifecycle test suite
-
-### Lifecycle States
-
-```text
-CREATED
-INITIALIZED
-RUNNING
-PAUSED
-COMPLETED
-FAILED
-CANCELLED
-```
-
-### Validation
-
-```text
-27 dedicated tests passed
-2074 full regression tests passed
-
-0 dedicated failures
-0 full regression failures
-
-Task module exports validated
-```
-
----
-
-## v0.79 — Task Abstraction
-
-Introduced the core `Task` abstraction.
-
-Task represents a logical unit of work and stores:
-
-* Task identity
-* Task type
-* Description
-* Source
-* Metadata
-
-Task remains immutable and descriptive.
-
-Validation:
-
-```text
-18 dedicated tests passed
-2047 full regression tests passed
-```
-
----
-
-## v0.78 — Response / Action Boundary
-
-Established a formal separation between:
-
-```text
-Response
-```
-
-and:
-
-```text
-Action / Execution
-```
-
-This prevents conversational responses from becoming implicitly coupled to execution behavior.
-
----
-
-## v0.77 — Decision Routing Foundation
-
-Introduced deterministic routing from structured agent decisions to structured decision routes.
-
-The routing layer establishes the architectural path following the Agent Decision Layer.
-
----
-
-## v0.76 — Agent Decision Layer
-
-Introduced structured agent decision making after intent understanding.
-
-The layer determines the high-level direction of an interaction without directly executing tools.
-
----
-
-## v0.75 — Intent Understanding
-
-Introduced structured intent understanding.
-
-The pipeline became:
+Current intelligence flow:
 
 ```text
 User Query
@@ -2372,9 +293,11 @@ Context
 Intent Understanding
     ↓
 Structured Intent
+    ↓
+Decision Routing
 ```
 
-Intent categories include:
+Current intent categories include:
 
 ```text
 QUERY
@@ -2384,488 +307,1294 @@ CONTINUATION
 EXPLANATION
 ```
 
-Intent Understanding deliberately does not perform tool selection or execution.
+The intent layer identifies what the user is trying to accomplish.
+
+It does not directly execute tools.
 
 ---
 
-## v0.74 — Context Injection
+# 🧭 Decision Routing
 
-Introduced structured context injection into the intelligence pipeline.
-
----
-
-## v0.73 — AI Runtime
-
-Introduced the runtime layer responsible for coordinating AI intelligence processing.
-
----
-
-## v0.72 — First AI Provider
-
-Connected the first production AI provider implementation.
-
----
-
-## v0.71 — AI Provider Abstraction
-
-Established provider abstraction so the AI runtime does not depend on one provider implementation.
-
----
-
-## v0.70 — AI Intelligence Foundation
-
-Established the initial AI intelligence architecture.
-
----
-
-# 🧪 Development & Testing Philosophy
-
-ULTRON uses automated regression testing as an architectural safety mechanism.
-
-The goal is not simply to make a feature work.
-
-The goal is:
+Decision routing was introduced as the foundation for separating intent understanding from downstream action.
 
 ```text
-New Architecture
-    ↓
-Dedicated Tests
-    ↓
-Existing Regression Suite
-    ↓
-No Regression
-    ↓
-Documentation
-    ↓
-Milestone Complete
+Structured Intent
+       ↓
+DecisionRouter
+       ↓
+DecisionRoute
+       ↓
+Response / Action Boundary
 ```
 
-Each milestone should preserve the behavior of previously completed systems.
+The routing layer determines the architectural direction of a request without directly performing execution.
 
 ---
 
-# 🔍 Development Workflow
+# ⚖️ Response / Action Boundary
 
-The preferred ULTRON development workflow is:
+ULTRON explicitly separates:
+
+```text
+Response
+```
+
+from
+
+```text
+Action
+```
+
+This prevents the AI intelligence layer from automatically becoming an execution engine.
+
+The boundary provides a controlled transition from understanding to task creation and execution.
+
+---
+
+# 📋 Task Architecture
+
+ULTRON introduced a dedicated task abstraction before expanding execution behavior.
+
+```text
+Task
+├── task_id
+├── task_type
+├── input
+├── output
+└── metadata
+```
+
+Task abstraction provides a stable representation of work that can later be initialized, executed, paused, resumed, completed, failed, or cancelled.
+
+---
+
+# 🔄 Task Lifecycle
+
+Task lifecycle is represented independently from task definition.
+
+```text
+CREATED
+   ↓
+INITIALIZED
+   ↓
+RUNNING
+   ↓
+COMPLETED
+```
+
+Alternative terminal paths include:
+
+```text
+RUNNING
+   ↓
+FAILED
+```
+
+```text
+RUNNING
+   ↓
+CANCELLED
+```
+
+```text
+RUNNING
+   ↓
+PAUSED
+   ↓
+RUNNING
+```
+
+Task lifecycle ownership remains separate from execution result and feedback representation.
+
+---
+
+# 🧠 Task Context & State
+
+Task context and state provide structured information about the current task environment.
+
+```text
+Task
+ ↓
+TaskContext
+ ↓
+TaskState
+ ↓
+Execution
+```
+
+This allows future task execution systems to maintain structured state without placing runtime state inside consumer-facing result models.
+
+---
+
+# 📦 Task Input / Output Contracts
+
+Task contracts define expected task boundaries.
+
+```text
+TaskContract
+├── Expected Input
+└── Expected Output
+```
+
+The contract describes what a task expects and what it should produce.
+
+It does not execute the task.
+
+---
+
+# 📊 Execution Architecture
+
+ULTRON separates several concepts that are often incorrectly combined in agent systems.
+
+```text
+ToolResult
+    ↓
+Individual Tool Outcome
+```
+
+```text
+ExecutionResult
+    ↓
+Overall Execution Outcome
+```
+
+```text
+ExecutionEvent
+    ↓
+Observable Execution Event
+```
+
+```text
+ExecutionStateSnapshot
+    ↓
+Execution State Snapshot
+```
+
+```text
+ExecutionFeedback
+    ↓
+Consumer-Facing Execution Representation
+```
+
+These are intentionally separate architectural concepts.
+
+---
+
+# 🏁 Execution Result
+
+## v0.83 — Execution Result Abstraction
+
+`ExecutionResult` represents the canonical overall outcome of an execution.
+
+```text
+ExecutionResult
+├── execution_id
+├── success
+├── result
+├── error
+└── metadata
+```
+
+It provides:
+
+* execution identity
+* success/failure state
+* result data
+* error information
+* execution metadata
+* validation
+* defensive serialization
+* immutable representation
+
+`ExecutionResult` does **not**:
+
+* execute tools
+* manage lifecycle
+* emit events
+* handle retries
+* perform planning
+* select tools
+* generate consumer-specific feedback
+
+---
+
+# 📣 Execution Feedback
+
+## v0.84 — Execution Feedback Interface
+
+`ExecutionFeedback` provides a standardized consumer-facing representation of execution.
+
+```text
+ExecutionFeedback
+├── execution_id
+├── status
+├── message
+├── progress
+├── result
+├── error
+└── metadata
+```
+
+The model is immutable and validates its required fields.
+
+It provides:
+
+* execution identity
+* execution status
+* optional human-readable message
+* progress information
+* execution result
+* execution error
+* extensible metadata
+* validation
+* defensive serialization
+
+---
+
+# 🔌 Execution Feedback Adapter
+
+ULTRON uses a dedicated adapter to convert canonical execution outcomes into consumer-facing feedback.
+
+```text
+ExecutionResult
+       ↓
+ExecutionFeedbackAdapter
+       ↓
+ExecutionFeedback
+```
+
+The adapter:
+
+* accepts an `ExecutionResult`
+* maps successful execution to `completed`
+* maps unsuccessful execution to `failed`
+* extracts progress metadata
+* preserves non-progress metadata
+* preserves result data
+* preserves execution errors
+* creates a new `ExecutionFeedback`
+
+The adapter does **not**:
+
+* execute tasks
+* execute tools
+* manage lifecycle
+* emit events
+* handle retries
+* perform planning
+* select tools
+* modify the original `ExecutionResult`
+* create UI-specific responses
+
+---
+
+# 🔍 Execution Event Architecture
+
+Execution events remain independent from execution feedback.
+
+```text
+AgentOrchestrator
+       ↓
+ExecutionEventEmitter
+       ↓
+ExecutionEvent
+```
+
+An `ExecutionEvent` represents something that happened during execution.
+
+Examples include:
+
+```text
+execution_started
+execution_completed
+execution_failed
+execution_paused
+execution_resumed
+execution_cancelled
+
+step_started
+step_completed
+step_failed
+step_retried
+step_skipped
+```
+
+The event system is for observability.
+
+The feedback system is for standardized consumer-facing representation.
+
+These systems are intentionally not merged.
+
+---
+
+# 🔄 Complete Execution Feedback Flow
+
+```text
+AgentEngine
+    ↓
+ToolResult
+    ↓
+AgentOrchestrator
+    ↓
+ExecutionResult
+    ↓
+ExecutionFeedbackAdapter
+    ↓
+ExecutionFeedback
+    ↓
+Consumer
+```
+
+At the same time:
+
+```text
+AgentOrchestrator
+    ↓
+ExecutionEventEmitter
+    ↓
+ExecutionEvent
+```
+
+Therefore:
+
+```text
+ExecutionResult
+    ≠
+ExecutionEvent
+    ≠
+ExecutionStateSnapshot
+    ≠
+ExecutionFeedback
+```
+
+And:
+
+```text
+ToolResult
+    ≠
+ExecutionResult
+```
+
+This separation is a core architectural principle of ULTRON.
+
+---
+
+# 🎙️ Multimodal Architecture
+
+ULTRON is being designed for multimodal interaction.
+
+Current and planned areas include:
+
+```text
+Voice
+ ├── Speech-to-Text
+ ├── Voice Command Runtime
+ ├── Voice Execution
+ ├── Voice Intelligence
+ ├── Text-to-Speech
+ └── Audio Playback
+```
+
+Future multimodal capabilities include:
+
+```text
+Vision
+Gesture
+Camera
+Screen Understanding
+Audio
+Voice
+Multimodal Reasoning
+```
+
+The multimodal layer consumes stable architectural contracts instead of owning core execution logic.
+
+---
+
+# 🗣️ Voice Architecture
+
+Current voice architecture is designed around:
+
+```text
+Voice Input
+    ↓
+Speech-to-Text
+    ↓
+AI Runtime
+    ↓
+Intent
+    ↓
+Decision
+    ↓
+Task
+    ↓
+Execution
+    ↓
+ExecutionResult
+    ↓
+Voice Response
+```
+
+Voice-specific formatting remains outside the core `ExecutionResult` and `ExecutionFeedback` models.
+
+---
+
+# 🧰 Tool Architecture
+
+Tools are treated as executable capabilities rather than being embedded directly into intelligence logic.
+
+Conceptually:
+
+```text
+Agent
+ ↓
+Planner
+ ↓
+Tool Selection
+ ↓
+Tool Execution
+ ↓
+ToolResult
+```
+
+This allows future tools to be added without redesigning the intelligence layer.
+
+---
+
+# 👁️ Observability
+
+ULTRON maintains dedicated observability infrastructure.
+
+Current concepts include:
+
+* execution events
+* event storage
+* execution history
+* execution state
+* execution metrics
+* progress tracking
+
+Observability is intentionally separated from:
+
+* task definition
+* execution result
+* consumer feedback
+
+---
+
+# 📈 Execution Metrics
+
+ULTRON includes execution metrics infrastructure for tracking execution behavior.
+
+Metrics are intended to support:
+
+* execution duration
+* execution counts
+* failures
+* step performance
+* retries
+* execution analysis
+
+Metrics are observational and do not own execution itself.
+
+---
+
+# 🧪 Testing Philosophy
+
+ULTRON follows layered testing.
+
+```text
+Unit Tests
+    ↓
+Focused Architectural Tests
+    ↓
+Integration Tests
+    ↓
+Full Regression
+```
+
+Every architectural milestone receives dedicated tests before being considered complete.
+
+---
+
+# 🧪 v0.84 Testing
+
+### ExecutionFeedback
+
+```text
+22 tests
+22 passed
+0 failed
+```
+
+### ExecutionFeedbackAdapter
+
+```text
+21 tests
+21 passed
+0 failed
+```
+
+### Integration
+
+```text
+3 tests
+3 passed
+0 failed
+```
+
+### v0.84 Total
+
+```text
+46 / 46 passed
+```
+
+### Full ULTRON Regression
+
+```text
+2204 passed
+0 failed
+```
+
+The v0.84 implementation was validated without modifying the core `AgentOrchestrator` execution architecture.
+
+---
+
+# 🛡️ v0.84 Architectural Boundary
+
+The v0.84 boundary is:
+
+```text
+ExecutionResult
+        ↓
+ExecutionFeedbackAdapter
+        ↓
+ExecutionFeedback
+```
+
+The responsibilities are:
+
+```text
+ExecutionResult
+    = Canonical execution outcome
+
+ExecutionFeedbackAdapter
+    = Conversion boundary
+
+ExecutionFeedback
+    = Consumer-facing representation
+```
+
+The architecture does not introduce another execution engine, lifecycle controller, event system, or planning system.
+
+---
+
+# 📁 Project Structure
+
+```text
+ultron/
+│
+├── core/
+│   ├── ...
+│
+├── modules/
+│   │
+│   ├── agent/
+│   │   ├── agent_engine.py
+│   │   ├── agent_planner.py
+│   │   ├── agent_orchestrator.py
+│   │   ├── agent_execution_controller.py
+│   │   ├── execution_context.py
+│   │   ├── execution_event.py
+│   │   ├── execution_event_emitter.py
+│   │   ├── execution_event_store.py
+│   │   ├── execution_state_snapshot.py
+│   │   ├── execution_result.py
+│   │   ├── execution_feedback.py
+│   │   ├── execution_feedback_adapter.py
+│   │   └── ...
+│   │
+│   ├── intelligence/
+│   │   ├── ...
+│   │
+│   ├── multimodal/
+│   │   ├── voice_command_executor.py
+│   │   ├── ...
+│   │
+│   └── ...
+│
+├── tests/
+│   │
+│   ├── agent/
+│   │   ├── test_execution_result.py
+│   │   ├── test_execution_feedback.py
+│   │   ├── test_execution_feedback_adapter.py
+│   │   ├── test_execution_feedback_integration.py
+│   │   └── ...
+│   │
+│   ├── intelligence/
+│   │   └── ...
+│   │
+│   ├── multimodal/
+│   │   └── ...
+│   │
+│   └── ...
+│
+├── README.md
+├── requirements.txt
+└── ...
+```
+
+---
+
+# 📦 Agent Package Exports
+
+The agent package exposes the execution abstractions required by downstream modules.
+
+Current execution-related exports include:
+
+```python
+ExecutionResult
+ExecutionResultError
+
+ExecutionFeedback
+ExecutionFeedbackError
+
+ExecutionFeedbackAdapter
+ExecutionFeedbackAdapterError
+```
+
+These exports provide stable access to the canonical execution outcome and consumer-facing feedback boundary.
+
+---
+
+# 🗺️ AI Intelligence Roadmap
+
+```text
+v0.70 → Intelligence Foundation                 ✅
+v0.71 → Provider Abstraction                    ✅
+v0.72 → Claude Provider                         ✅
+v0.73 → AI Runtime Integration                  ✅
+v0.74 → Context Integration                     ✅
+v0.75 → Intent Understanding                    ✅
+v0.76 → Agent Decision Foundation               ✅
+v0.77 → Decision Routing Foundation             ✅
+v0.78 → Response / Action Boundary              ✅
+v0.79 → Task Abstraction                        ✅
+v0.80 → Task Lifecycle Foundation               ✅
+v0.81 → Task Context & State                    ✅
+v0.82 → Task Input / Output Contracts           ✅
+v0.83 → Execution Result Abstraction            ✅
+v0.84 → Execution Feedback Interface            ✅
+v0.85 → Runtime Event Integration               ⏳
+```
+
+---
+
+# 🧭 Foundation Roadmap
+
+## Completed
+
+```text
+v0.77 → Decision Routing Foundation
+v0.78 → Response / Action Boundary
+v0.79 → Task Abstraction
+v0.80 → Task Lifecycle Foundation
+v0.81 → Task Context & State
+v0.82 → Task Input / Output Contracts
+v0.83 → Execution Result Abstraction
+v0.84 → Execution Feedback Interface
+```
+
+## Upcoming
+
+```text
+v0.85 → Runtime Event Integration
+v0.86 → Reliability Foundation
+v0.87 → Failure Handling
+v0.88 → Recovery Architecture
+v0.89 → Execution Reliability
+v0.90 → Reliability Consolidation
+
+v0.91 → Extensibility Foundation
+v0.92 → Plugin Architecture
+v0.93 → Capability Registration
+v0.94 → Provider Extensibility
+v0.95 → Extensibility Consolidation
+
+v0.96 → Core Platform Hardening
+v0.97 → Platform Integration
+v0.98 → Architecture Consolidation
+v0.99 → Pre-v1.0 Stabilization
+v1.0  → Core Platform Foundation
+```
+
+---
+
+# 📊 Version Progression
+
+```text
+v0.24 → Command Suggestions
+v0.25 → Natural Language Commands
+v0.26 → Configuration Foundation
+v0.27 → Configuration Stabilization
+v0.28 → Smart Memory
+v0.29 → Memory Refinement
+v0.30 → Documentation Foundation
+v0.31 → AI Provider Integration
+
+v0.32 → AI Context
+v0.33 → AI Context Builder
+v0.34 → Agent Foundation
+v0.35 → Agent Identity
+v0.36 → Tool Foundation
+v0.37 → Tool Registry
+v0.38 → Tool System
+v0.39 → Tool Selector
+v0.40 → Agent Planning
+
+v0.41 → Execution Foundation
+v0.42 → Execution Controller
+v0.43 → Execution State
+v0.44 → Execution Event Store
+v0.45 → Observability
+v0.46 → Execution Metrics
+
+v0.47 → Execution Context
+v0.48 → Execution State Snapshot
+v0.49 → Execution Integration
+v0.50 → Agent Orchestrator Foundation
+
+v0.56 → STT Abstraction
+v0.57 → STT Provider
+v0.58 → Voice Runtime
+v0.59 → Voice Execution
+v0.60 → Advanced Voice Intelligence
+
+v0.61 → TTS Foundation
+v0.62 → TTS Provider
+v0.63 → TTS Runtime
+v0.64 → Voice Response
+v0.65 → Full Voice Loop
+
+v0.66 → Audio Playback Foundation
+v0.67 → Audio Device Integration
+v0.68 → Playback Management
+v0.69 → End-to-End Audio
+
+v0.70 → Intelligence Foundation
+v0.71 → Provider Abstraction
+v0.72 → Claude Provider
+v0.73 → AI Runtime
+v0.74 → Context
+v0.75 → Intent Understanding
+v0.76 → Agent Decision Foundation
+
+v0.77 → Decision Routing
+v0.78 → Response / Action Boundary
+v0.79 → Task Abstraction
+v0.80 → Task Lifecycle
+v0.81 → Task Context & State
+v0.82 → Task Input / Output Contracts
+v0.83 → Execution Result Abstraction
+v0.84 → Execution Feedback Interface
+```
+
+---
+
+# 📚 Version History
+
+## v0.84 — Execution Feedback Interface
+
+### Added
+
+* `ExecutionFeedback`
+* `ExecutionFeedbackError`
+* `ExecutionFeedbackAdapter`
+* `ExecutionFeedbackAdapterError`
+
+### ExecutionFeedback
+
+Introduced a standardized consumer-facing execution feedback model.
+
+The model contains:
+
+```text
+execution_id
+status
+message
+progress
+result
+error
+metadata
+```
+
+The model provides:
+
+* immutable representation
+* validation
+* defensive serialization
+* defensive result copying
+* defensive progress copying
+* defensive metadata copying
+
+### ExecutionFeedbackAdapter
+
+Introduced a pure conversion boundary:
+
+```text
+ExecutionResult
+       ↓
+ExecutionFeedbackAdapter
+       ↓
+ExecutionFeedback
+```
+
+The adapter:
+
+* validates the source type
+* maps success to `completed`
+* maps failure to `failed`
+* extracts progress metadata
+* preserves non-progress metadata
+* preserves result data
+* preserves error information
+* does not mutate the source `ExecutionResult`
+
+### Architecture
+
+```text
+AgentEngine
+    ↓
+ToolResult
+    ↓
+AgentOrchestrator
+    ↓
+ExecutionResult
+    ↓
+ExecutionFeedbackAdapter
+    ↓
+ExecutionFeedback
+    ↓
+Consumer / UI / Voice / API
+```
+
+Execution observability remains parallel:
+
+```text
+AgentOrchestrator
+    ↓
+ExecutionEventEmitter
+    ↓
+ExecutionEvent
+```
+
+### Boundary Rules
+
+```text
+ExecutionResult
+    = Canonical execution outcome
+
+ExecutionEvent
+    = Observable execution event
+
+ExecutionStateSnapshot
+    = Execution state snapshot
+
+ExecutionFeedback
+    = Consumer-facing execution representation
+
+ExecutionFeedbackAdapter
+    = Conversion boundary
+```
+
+### Testing
+
+```text
+ExecutionFeedback tests:          22 passed
+ExecutionFeedbackAdapter tests:   21 passed
+Integration tests:                 3 passed
+-----------------------------------------
+v0.84 focused total:              46 passed
+```
+
+Full ULTRON regression:
+
+```text
+2204 passed
+0 failed
+```
+
+---
+
+## v0.83 — Execution Result Abstraction
+
+Introduced the canonical `ExecutionResult` model.
+
+Key responsibilities:
+
+* execution identity
+* success state
+* result data
+* error information
+* metadata
+* validation
+* defensive serialization
+* immutable execution outcome
+
+The orchestrator now returns `ExecutionResult` for complete plan execution while individual tool execution continues to use `ToolResult`.
+
+---
+
+## v0.82 — Task Input / Output Contracts
+
+Introduced task-level input and output contracts.
+
+The milestone established explicit boundaries between task expectations and execution behavior.
+
+---
+
+## v0.81 — Task Context & State
+
+Introduced structured task context and task state representations.
+
+---
+
+## v0.80 — Task Lifecycle Foundation
+
+Introduced explicit task lifecycle states and lifecycle management.
+
+---
+
+## v0.79 — Task Abstraction
+
+Introduced the core `Task` abstraction and task type boundaries.
+
+---
+
+## v0.78 — Response / Action Boundary
+
+Separated conversational response behavior from action-oriented execution.
+
+---
+
+## v0.77 — Decision Routing Foundation
+
+Introduced decision routing between structured intent and downstream behavior.
+
+---
+
+# 🔐 Security & Configuration
+
+ULTRON follows a security-conscious development model.
+
+Secrets should never be committed to Git.
+
+Environment-based configuration is used for external AI providers and API credentials.
+
+Example:
+
+```text
+.env
+```
+
+should remain excluded from version control.
+
+Mock providers can be used during development so that the architecture can be tested without requiring production API credentials.
+
+---
+
+# 🧪 Development Workflow
+
+ULTRON development follows a controlled workflow:
 
 ```text
 1. Inspect existing architecture
         ↓
-2. Identify existing abstractions
+2. Identify ownership boundaries
         ↓
-3. Define architectural boundary
+3. Design the new abstraction
         ↓
-4. Design lock
+4. Lock the architecture
         ↓
-5. Implement minimal change
+5. Implement the smallest required change
         ↓
-6. Add dedicated tests
+6. Add focused tests
         ↓
-7. Run focused regression
+7. Run integration tests
         ↓
 8. Run full regression
         ↓
-9. Inspect diff
+9. Update README / changelog
         ↓
-10. Update documentation
+10. Run diff validation
         ↓
-11. Commit milestone
+11. Review git status
         ↓
-12. Push and verify clean tree
+12. Commit
+        ↓
+13. Push
 ```
 
-This workflow minimizes architectural duplication and accidental regressions.
+This workflow is intended to minimize regressions and architectural duplication.
 
 ---
 
-# 🛣️ Current Scope
+# 📌 Current Scope
 
-## v0.83 — Execution Result Abstraction
+## v0.84 — Execution Feedback Interface
 
-The current milestone establishes the formal execution-result abstraction.
-
-The current intelligence-to-execution path is:
+Current scope includes:
 
 ```text
-User Query
-    ↓
-Intent Understanding
-    ↓
-Structured Intent
-    ↓
-Agent Decision Layer
-    ↓
-Structured Agent Decision
-    ↓
-Decision Router
-    ↓
-Structured Decision Route
-    ↓
-Response / Action Boundary
-    ↓
-Task Abstraction
-    ↓
-Task Lifecycle
-    ↓
-Task Context & State
-    ↓
-Task Input / Output Contracts
-    ↓
-Execution
-    ↓
-Execution Result
-```
-
-The Task layer represents work.
-
-The Task Lifecycle controls logical task state.
-
-The TaskContext provides task-scoped context and state.
-
-The Task Contract layer defines expected input/output structure.
-
-The execution architecture performs actual execution.
-
-The `ExecutionResult` layer represents the overall execution outcome.
-
----
-
-# 🚧 What v0.83 Does Not Do
-
-v0.83 does not:
-
-* Execute tasks
-* Select tools
-* Select agents
-* Generate execution plans
-* Manage task lifecycle
-* Manage task context/state
-* Control execution lifecycle
-* Store execution events
-* Emit execution events
-* Perform retries
-* Perform recovery
-* Manage cancellation
-* Manage timeouts
-* Manage execution feedback
-* Call AI providers
-* Replace `ExecutionContext`
-* Replace `ExecutionStateSnapshot`
-* Replace `ExecutionController`
-* Replace `ToolResult`
-* Replace `IntelligenceResult`
-* Replace `InputResult`
-
-Those capabilities will be introduced only when their architectural milestones are reached.
-
----
-
-# 🎯 Next Milestone — v0.84
-
-## Execution Feedback Interface
-
-The next milestone will build on:
-
-```text
-Task
-    ↓
-TaskLifecycle
-    ↓
-TaskContext
-    ↓
-Task Input / Output Contracts
-    ↓
-Execution
-    ↓
 ExecutionResult
+        ↓
+ExecutionFeedbackAdapter
+        ↓
+ExecutionFeedback
 ```
 
-and establish a formal execution-feedback boundary.
+The milestone provides a stable consumer-facing execution feedback boundary.
 
-The intended direction is:
+It does not yet provide:
+
+* real-time streaming feedback
+* event-driven feedback subscriptions
+* persistent feedback storage
+* UI-specific feedback models
+* voice-specific feedback models
+* API-specific response formatting
+* automatic feedback delivery
+* runtime event integration
+
+Those concerns belong to later milestones.
+
+---
+
+# 🚫 What ExecutionFeedback Does Not Do
+
+`ExecutionFeedback` does **not**:
+
+* execute tasks
+* execute tools
+* manage execution lifecycle
+* manage runtime state
+* emit execution events
+* handle retries
+* perform recovery
+* perform planning
+* select tools
+* create execution plans
+* replace `ExecutionResult`
+* replace `ExecutionEvent`
+* replace `ExecutionStateSnapshot`
+* provide UI-specific rendering
+* provide voice-specific rendering
+* provide API-specific formatting
+
+It is a representation model.
+
+---
+
+# 🚧 What ULTRON Does Not Yet Do
+
+ULTRON is still under active foundation development.
+
+The current architecture does not yet represent the final product feature set.
+
+Not yet fully implemented:
+
+* autonomous long-running agents
+* production-grade persistent memory
+* full autonomous computer control
+* complete vision system
+* smart-home integration
+* full mobile ecosystem
+* full desktop operating-system integration
+* production-grade multi-agent collaboration
+* production-grade realtime streaming
+* large-scale distributed execution
+* full SaaS infrastructure
+* complete public API platform
+
+These capabilities are planned for later architectural phases.
+
+---
+
+# 🛣️ Next Milestone
+
+## v0.85 — Runtime Event Integration
+
+The next architectural milestone is focused on integrating runtime execution behavior with the existing event architecture while preserving the separation between:
 
 ```text
-Execution
-    ↓
 ExecutionResult
-    ↓
-Execution Feedback
-    ↓
-Runtime / Capability Consumers
+ExecutionEvent
+ExecutionStateSnapshot
+ExecutionFeedback
 ```
 
-v0.84 will focus on representing and exposing execution feedback without turning `ExecutionResult` into a feedback controller.
-
-The exact architecture will be inspected and design-locked before implementation.
+The objective is to extend runtime observability without collapsing event generation into execution feedback.
 
 ---
 
-# 🧭 Long-Term ULTRON Core Direction
+# 🌐 Long-Term Direction
 
-The long-term core direction is:
-
-```text
-Understand User
-      ↓
-Understand Intent
-      ↓
-Make Decision
-      ↓
-Route Decision
-      ↓
-Determine Response / Action
-      ↓
-Represent Task
-      ↓
-Manage Task
-      ↓
-Define Task Context
-      ↓
-Define Task Contracts
-      ↓
-Execute Task
-      ↓
-Produce Execution Result
-      ↓
-Process Feedback
-      ↓
-Integrate Runtime Events
-      ↓
-Handle Errors
-      ↓
-Recover
-      ↓
-Control Resources
-      ↓
-Manage Capabilities
-      ↓
-Manage Modules
-      ↓
-Operate as a Unified AI Platform
-```
-
----
-
-# 🌐 Future Capability Layer
-
-Once the core foundation is stable, future capabilities can be built above it.
-
-Potential capability domains include:
+ULTRON is being developed toward a modular AI operating platform that can eventually combine:
 
 ```text
+AI
++
+Agents
++
+Tasks
++
+Tools
++
+Automation
++
 Voice
++
 Vision
-Smart Home
-Website Builder
-Application Builder
-Coding Agent
-Social Media Automation
-Business Automation
-Mobile Control
-Desktop Control
-External APIs
-Developer APIs
-Agent Builder
-Workflow Automation
-Multimodal Agents
++
+Memory
++
+Multimodal Interaction
++
+Execution
++
+Observability
++
+APIs
 ```
 
-These are intentionally treated as future capabilities rather than being embedded directly into the core foundation.
+The architecture is being built so that these capabilities can evolve independently while remaining interoperable.
 
 ---
 
-# 🏛️ ULTRON Architectural Goal
+# 🧱 Foundation Principle
 
-The ultimate architectural goal is:
+ULTRON is intentionally being built in layers.
 
 ```text
-                         ULTRON CORE
-
-                              │
-
-        ┌─────────────────────┼─────────────────────┐
-        │                     │                     │
-   Intelligence            Runtime            Capabilities
-        │                     │                     │
-        ↓                     ↓                     ↓
-
-      Intent                Tasks                  Voice
-      Decision              Lifecycle              Vision
-      Routing               Context                Automation
-      Contracts             Contracts              Smart Home
-      Feedback              Execution              Coding
-                           Result                  Future Modules
-
-        └─────────────────────┼─────────────────────┘
-                              ↓
-                     Unified AI Platform
+Understand
+    ↓
+Decide
+    ↓
+Define Task
+    ↓
+Manage Task
+    ↓
+Execute
+    ↓
+Observe
+    ↓
+Represent Result
+    ↓
+Provide Feedback
 ```
 
-The core should remain stable while capabilities evolve independently.
+Each layer has a defined responsibility.
+
+The goal is to avoid turning the entire system into one large AI-driven execution module.
 
 ---
 
-# 🚀 Final Position
+# 🏆 Current Foundation Position
 
-ULTRON has progressed from intelligence foundations into a structured task and execution foundation.
-
-The progression is:
+As of **v0.84**, ULTRON has established a structured foundation covering:
 
 ```text
-v0.75
-
+AI Runtime
+      ↓
+AI Intelligence
+      ↓
+Context
+      ↓
 Intent Understanding
-
-        ↓
-
-v0.76
-
-Agent Decision Layer
-
-        ↓
-
-v0.77
-
+      ↓
 Decision Routing
-
-        ↓
-
-v0.78
-
+      ↓
 Response / Action Boundary
-
-        ↓
-
-v0.79
-
+      ↓
 Task Abstraction
-
-        ↓
-
-v0.80
-
-Task Lifecycle Foundation
-
-        ↓
-
-v0.81
-
+      ↓
+Task Lifecycle
+      ↓
 Task Context & State
-
-        ↓
-
-v0.82
-
+      ↓
 Task Input / Output Contracts
-
-        ↓
-
-v0.83
-
-Execution Result Abstraction
+      ↓
+Execution Result
+      ↓
+Execution Feedback
 ```
 
-v0.79 established:
-
-> **What work exists?**
-
-v0.80 established:
-
-> **What state is that work currently in?**
-
-v0.81 established:
-
-> **What contextual information and task-specific state does that work need?**
-
-v0.82 established:
-
-> **What input does the task expect, and what structured output does it define?**
-
-v0.83 establishes:
-
-> **What was the overall outcome of the execution?**
-
-The current architecture therefore reaches:
+The execution layer separately maintains:
 
 ```text
-Response / Action Boundary
-        ↓
+Execution Controller
+Execution Context
+Execution State Snapshot
+Execution Events
+Execution Event Store
+Execution Metrics
+```
+
+This creates a clear separation between:
+
+```text
+Decision
 Task
-        ↓
-TaskLifecycle
-        ↓
-TaskContext
-        ├── Context
-        │
-        └── State
-        ↓
-TaskContract
-        ├── Input Contract
-        │
-        └── Output Contract
-        ↓
 Execution
-        ↓
-ExecutionResult
-        ├── execution_id
-        ├── success
-        ├── result
-        ├── error
-        └── metadata
+State
+Events
+Results
+Feedback
 ```
 
-The next architectural step is:
-
-```text
-Execution Feedback Interface
-```
-
-The existing execution architecture remains intact and separate.
-
-ULTRON is being built toward a foundation where future capabilities can be added without rebuilding the core.
-
-The objective is not to make v1.0 contain every feature.
-
-The objective is to make v1.0 contain a:
-
-> **strong, stable, extensible ULTRON Core**
-
-capable of supporting everything that comes after it.
+The next architectural step is **Runtime Event Integration in v0.85**.
 
 ---
 
-# 🇮🇳 ULTRON Vision
-
-ULTRON is being developed as a long-term AI platform with an India-first mindset and global capability ambitions.
-
-The long-term vision is to create an AI system that can understand users, reason about their intent, manage tasks, coordinate execution, interact through multiple modalities, automate workflows, and eventually serve as a unified AI operating layer across software and devices.
-
-The foundation comes first.
-
-The capabilities come next.
+# 📊 Current Test Position
 
 ```text
-Foundation
-    ↓
-Intelligence
-    ↓
-Runtime
-    ↓
-Execution
-    ↓
-Results
-    ↓
-Feedback
-    ↓
-Capabilities
-    ↓
-ULTRON
+v0.84 Focused Tests
+────────────────────────
+ExecutionFeedback             22
+ExecutionFeedbackAdapter      21
+Integration                    3
+────────────────────────
+Total                         46
+
+Full Regression
+────────────────────────
+2204 passed
+0 failed
 ```
 
-# 🚀 v0.83 — Execution Result Abstraction
+---
 
-**2158 tests passing.**
+# ⚡ ULTRON
 
-**0 full regression failures.**
+> **Modular Personal AI Assistant, Agent Runtime, Automation & Multimodal Platform**
 
-**Foundation continues.**
+Built foundation-first.
+
+Designed for intelligent execution.
+
+Engineered for long-term extensibility.
+
+---
+
+**Current Version: v0.84**
+
+**Current Milestone: Execution Feedback Interface**
+
+**Tests: 2204 passed**
+
+**Next: v0.85 Runtime Event Integration**
+
+```
+```
