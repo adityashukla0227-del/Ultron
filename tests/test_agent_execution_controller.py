@@ -433,7 +433,7 @@ def test_fail_running_execution(
     assert controller.is_failed() is True
 
 
-def test_fail_records_error(
+def test_fail_updates_state_without_emitting_execution_event(
     controller,
     plan,
     agent,
@@ -447,10 +447,12 @@ def test_fail_records_error(
         "Tool execution failed."
     )
 
-    event = controller.get_history()[-1]
+    assert controller.state == "failed"
+    assert controller.is_failed() is True
 
-    assert event["event"] == "execution_failed"
-    assert event["error"] == "Tool execution failed."
+    history = controller.get_history()
+
+    assert history[-1]["event"] == "execution_started"
 
 
 def test_fail_idle_execution(

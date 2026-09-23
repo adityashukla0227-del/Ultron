@@ -24,6 +24,14 @@ v0.83 integration:
 - Execution metadata for plan, agent, and progress
 - Preserved ToolResult as the step-level execution result
 
+v0.85 integration:
+- Shared canonical ExecutionEventStore
+- Controller and emitter observe one event stream
+- Preserved explicit dependency injection
+- Controller-owned lifecycle events
+- Orchestrator-owned execution outcome events
+- Removed duplicate semantic event emission
+
 Responsibilities:
 - Validate execution plans
 - Start plan execution
@@ -87,6 +95,9 @@ from modules.agent.execution_result import (
 from modules.agent.execution_event_emitter import (
     ExecutionEventEmitter,
 )
+from modules.agent.execution_event_store import (
+    ExecutionEventStore,
+)
 from modules.agent.tool_result import ToolResult
 
 
@@ -120,6 +131,22 @@ class AgentOrchestrator:
 
     Overall execution outcomes are represented by ExecutionResult.
     Individual tool outcomes remain represented by ToolResult.
+
+    Event ownership:
+        Controller:
+            - execution_started
+            - execution_paused
+            - execution_resumed
+            - execution_cancelled
+            - step_started
+            - step_retried
+            - step_skipped
+
+        Orchestrator:
+            - execution_completed
+            - execution_failed
+            - step_completed
+            - step_failed
     """
 
     def __init__(
@@ -144,16 +171,36 @@ class AgentOrchestrator:
             else AgentPlanner()
         )
 
+        # ----------------------------------------------------
+        # Shared Execution Event Store
+        # ----------------------------------------------------
+        #
+        # The controller and emitter must observe one canonical
+        # event stream for the orchestrator.
+        #
+        # Explicitly injected dependencies are preserved.
+        # Missing dependencies are constructed here.
+        #
+        event_store = ExecutionEventStore()
+
         self.controller = (
             controller
             if controller is not None
-            else AgentExecutionController()
+            else AgentExecutionController(
+                event_store=event_store,
+            )
         )
 
         self.emitter = (
             emitter
             if emitter is not None
-            else ExecutionEventEmitter()
+            else ExecutionEventEmitter(
+                store=(
+                    self.controller.event_store
+                    if controller is not None
+                    else event_store
+                ),
+            )
         )
 
         self.context = context
@@ -729,23 +776,6 @@ class AgentOrchestrator:
         except Exception:
             pass
 
-    def _emit_execution_started(
-        self,
-        plan: AgentPlan,
-        agent: Agent,
-    ) -> None:
-        """Emit an execution_started event."""
-
-        self._emit(
-            "execution_started",
-            self._execution_id(plan),
-            message="Agent plan execution started.",
-            metadata={
-                "plan_id": plan.id,
-                "agent_id": agent.id,
-            },
-        )
-
     def _emit_execution_completed(
         self,
         plan: AgentPlan,
@@ -779,78 +809,6 @@ class AgentOrchestrator:
                 "plan_id": plan.id,
                 "agent_id": agent.id,
                 "error": error,
-            },
-        )
-
-    def _emit_execution_paused(
-        self,
-        plan: AgentPlan | None,
-    ) -> None:
-        """Emit an execution_paused event."""
-
-        if not isinstance(plan, AgentPlan):
-            return
-
-        self._emit(
-            "execution_paused",
-            self._execution_id(plan),
-            message="Agent plan execution paused.",
-            metadata={
-                "plan_id": plan.id,
-            },
-        )
-
-    def _emit_execution_resumed(
-        self,
-        plan: AgentPlan | None,
-    ) -> None:
-        """Emit an execution_resumed event."""
-
-        if not isinstance(plan, AgentPlan):
-            return
-
-        self._emit(
-            "execution_resumed",
-            self._execution_id(plan),
-            message="Agent plan execution resumed.",
-            metadata={
-                "plan_id": plan.id,
-            },
-        )
-
-    def _emit_execution_cancelled(
-        self,
-        plan: AgentPlan | None,
-    ) -> None:
-        """Emit an execution_cancelled event."""
-
-        if not isinstance(plan, AgentPlan):
-            return
-
-        self._emit(
-            "execution_cancelled",
-            self._execution_id(plan),
-            message="Agent plan execution cancelled.",
-            metadata={
-                "plan_id": plan.id,
-            },
-        )
-
-    def _emit_step_started(
-        self,
-        plan: AgentPlan,
-        step: AgentPlanStep,
-    ) -> None:
-        """Emit a step_started event."""
-
-        self._emit(
-            "step_started",
-            self._execution_id(plan),
-            step=step,
-            message=f"Step '{step.id}' started.",
-            metadata={
-                "step_id": step.id,
-                "tool_name": step.tool_name,
             },
         )
 
@@ -889,46 +847,6 @@ class AgentOrchestrator:
                 "step_id": step.id,
                 "tool_name": step.tool_name,
                 "error": error,
-            },
-        )
-
-    def _emit_step_retried(
-        self,
-        plan: AgentPlan | None,
-        step: AgentPlanStep,
-    ) -> None:
-        """Emit a step_retried event."""
-
-        if not isinstance(plan, AgentPlan):
-            return
-
-        self._emit(
-            "step_retried",
-            self._execution_id(plan),
-            step=step,
-            message=f"Step '{step.id}' retried.",
-            metadata={
-                "step_id": step.id,
-            },
-        )
-
-    def _emit_step_skipped(
-        self,
-        plan: AgentPlan | None,
-        step: AgentPlanStep,
-    ) -> None:
-        """Emit a step_skipped event."""
-
-        if not isinstance(plan, AgentPlan):
-            return
-
-        self._emit(
-            "step_skipped",
-            self._execution_id(plan),
-            step=step,
-            message=f"Step '{step.id}' skipped.",
-            metadata={
-                "step_id": step.id,
             },
         )
 
@@ -1048,6 +966,10 @@ class AgentOrchestrator:
         # ----------------------------------------------------
         # Controller Current Step
         # ----------------------------------------------------
+        #
+        # AgentExecutionController owns step_started emission.
+        # No duplicate emitter call is made here.
+        #
 
         if self.controller.is_running():
             try:
@@ -1086,12 +1008,6 @@ class AgentOrchestrator:
             raise AgentOrchestratorError(
                 error
             ) from exc
-
-        if observability_plan is not None:
-            self._emit_step_started(
-                observability_plan,
-                step,
-            )
 
         # ----------------------------------------------------
         # Execute Tool
@@ -1343,11 +1259,16 @@ class AgentOrchestrator:
         # ----------------------------------------------------
         # Start Controller
         # ----------------------------------------------------
+        #
+        # AgentExecutionController owns execution_started
+        # emission.
+        #
 
         try:
             self.controller.start(
                 plan,
                 agent,
+                execution_id=self._execution_id(plan),
             )
         except AgentExecutionControllerError as exc:
             error = self._safe_error_message(
@@ -1393,15 +1314,6 @@ class AgentOrchestrator:
             ) from exc
 
         # ----------------------------------------------------
-        # Start Event
-        # ----------------------------------------------------
-
-        self._emit_execution_started(
-            plan,
-            agent,
-        )
-
-        # ----------------------------------------------------
         # Execute Steps
         # ----------------------------------------------------
 
@@ -1410,6 +1322,9 @@ class AgentOrchestrator:
             # ----------------------------------------------
             # Cancellation
             # ----------------------------------------------
+            #
+            # Controller owns execution_cancelled emission.
+            #
 
             if self.controller.is_cancelled():
 
@@ -1421,10 +1336,6 @@ class AgentOrchestrator:
 
                 self._context_cancel()
 
-                self._emit_execution_cancelled(
-                    plan
-                )
-
                 return self._terminal_result(
                     plan,
                     agent,
@@ -1435,14 +1346,13 @@ class AgentOrchestrator:
             # ----------------------------------------------
             # Pause
             # ----------------------------------------------
+            #
+            # Controller owns execution_paused emission.
+            #
 
             if self.controller.is_paused():
 
                 self._context_pause()
-
-                self._emit_execution_paused(
-                    plan
-                )
 
                 return self._terminal_result(
                     plan,
@@ -1668,6 +1578,9 @@ class AgentOrchestrator:
         # ----------------------------------------------------
         # Final Completion Event
         # ----------------------------------------------------
+        #
+        # Orchestrator owns execution_completed emission.
+        #
 
         self._emit_execution_completed(
             plan,
@@ -1812,16 +1725,6 @@ class AgentOrchestrator:
         if result:
             self._context_pause()
 
-            controller_plan = getattr(
-                self.controller,
-                "plan",
-                None,
-            )
-
-            self._emit_execution_paused(
-                controller_plan
-            )
-
         return result
 
     # ========================================================
@@ -1841,16 +1744,6 @@ class AgentOrchestrator:
         if result:
             self._context_resume()
 
-            controller_plan = getattr(
-                self.controller,
-                "plan",
-                None,
-            )
-
-            self._emit_execution_resumed(
-                controller_plan
-            )
-
         return result
 
     # ========================================================
@@ -1869,16 +1762,6 @@ class AgentOrchestrator:
 
         if result:
             self._context_cancel()
-
-            controller_plan = getattr(
-                self.controller,
-                "plan",
-                None,
-            )
-
-            self._emit_execution_cancelled(
-                controller_plan
-            )
 
         return result
 
@@ -1915,11 +1798,6 @@ class AgentOrchestrator:
                 self.controller,
                 "plan",
                 None,
-            )
-
-            self._emit_step_retried(
-                controller_plan,
-                step,
             )
 
             if isinstance(controller_plan, AgentPlan):
@@ -1962,11 +1840,6 @@ class AgentOrchestrator:
                 self.controller,
                 "plan",
                 None,
-            )
-
-            self._emit_step_skipped(
-                controller_plan,
-                step,
             )
 
             if isinstance(controller_plan, AgentPlan):

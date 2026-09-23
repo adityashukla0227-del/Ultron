@@ -204,12 +204,14 @@ class AgentExecutionController:
         self,
         plan: AgentPlan,
         agent: Agent,
+        execution_id: Optional[str] = None,
     ) -> bool:
         """
         Start execution control for a plan.
 
-        A new execution identity is created every time an
-        execution is started.
+        Uses the supplied execution identity when provided.
+        Otherwise, a new execution identity is created for
+        backward compatibility.
         """
 
         self.validate_plan(
@@ -230,6 +232,17 @@ class AgentExecutionController:
                 "Cannot start a cancelled plan."
             )
 
+        if execution_id is not None:
+            if not isinstance(execution_id, str):
+                raise AgentExecutionControllerError(
+                    "execution_id must be a string."
+                )
+
+            if not execution_id.strip():
+                raise AgentExecutionControllerError(
+                    "execution_id must not be empty."
+                )
+
         self.current_plan_id = plan.id
 
         self.current_agent_id = agent.id
@@ -240,9 +253,12 @@ class AgentExecutionController:
 
         self.execution_history.clear()
 
-        self.execution_id = str(
-            uuid.uuid4()
-        )
+        if execution_id is None:
+            self.execution_id = str(
+                uuid.uuid4()
+            )
+        else:
+            self.execution_id = execution_id
 
         self.state = "running"
 
@@ -331,10 +347,6 @@ class AgentExecutionController:
 
         self.current_step_id = None
 
-        self._record_event(
-            "execution_completed"
-        )
-
         return True
 
     # ========================================================
@@ -356,11 +368,6 @@ class AgentExecutionController:
             return False
 
         self.state = "failed"
-
-        self._record_event(
-            "execution_failed",
-            error=error,
-        )
 
         return True
 

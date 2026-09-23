@@ -2,21 +2,21 @@
 
 ## Modular Personal AI Assistant, Agent Runtime, Automation & Multimodal Platform
 
-> **ULTRON is being engineered as a modular AI operating platform focused on intelligent interaction, agent execution, automation, multimodal capabilities, and a strong architectural foundation.**
+> **ULTRON is being engineered as a modular AI operating platform focused on intelligent interaction, agent execution, automation, multimodal capabilities, observability, and a strong architectural foundation.**
 
 ---
 
-## 🚀 Current Status
+# 🚀 Current Status
 
-| Metric | Status |
-|---|---|
-| **Current Version** | **v0.84** |
-| **Current Milestone** | **Execution Feedback Interface** |
-| **v0.84 Dedicated Tests** | **46 passed** |
-| **Full ULTRON Regression** | **2204 passed** |
-| **v0.84 Dedicated Failures** | **0** |
-| **Python** | **3.13+** |
-| **Architecture Status** | **Foundation Development** |
+| Metric                        | Status                        |
+| ----------------------------- | ----------------------------- |
+| **Current Version**           | **v0.85**                     |
+| **Current Milestone**         | **Runtime Event Integration** |
+| **v0.85 Targeted Regression** | **148 passed**                |
+| **Full ULTRON Regression**    | **2204 passed**               |
+| **Regression Failures**       | **0**                         |
+| **Python**                    | **3.13+**                     |
+| **Architecture Status**       | **Foundation Development**    |
 
 ### Current Architecture Pipeline
 
@@ -48,34 +48,48 @@ Execution Result
 Execution Feedback
     ↓
 Consumer / UI / Voice / API
-````
+```
 
 ### Execution Architecture
 
 ```text
-AgentEngine
-    ↓
-ToolResult
-    ↓
+Agent
+  ↓
+AgentPlan
+  ↓
+AgentPlanner
+  ↓
 AgentOrchestrator
-    ↓
+  ↓
+AgentExecutionController
+  ↓
+AgentEngine
+  ↓
+Tool
+  ↓
+ToolResult
+  ↓
 ExecutionResult
-    ↓
+  ↓
 ExecutionFeedbackAdapter
-    ↓
+  ↓
 ExecutionFeedback
-    ↓
+  ↓
 Consumer / UI / Voice / API
 ```
 
-Execution observability remains a separate path:
+### Execution Observability Path
 
 ```text
 AgentOrchestrator
-    ↓
+       ↓
 ExecutionEventEmitter
-    ↓
+       ↓
+ExecutionEventStore
+       ↓
 ExecutionEvent
+       ↓
+Observability / Metrics
 ```
 
 ---
@@ -95,6 +109,7 @@ Instead of building a collection of disconnected AI features, ULTRON focuses on 
 * Decision making
 * Tasks
 * Task lifecycle
+* Task context and state
 * Execution
 * Execution state
 * Execution events
@@ -170,7 +185,7 @@ Structured models should not expose mutable internal state through serialized re
 
 ### 7. Test-Driven Evolution
 
-Every architectural milestone receives dedicated tests and full regression testing.
+Every architectural milestone receives dedicated or focused tests and full regression testing.
 
 ### 8. Backward Compatibility
 
@@ -210,7 +225,7 @@ ULTRON's architecture is stabilized before large-scale autonomous behavior is in
                     └──────────┬──────────┘
                                ↓
                     ┌─────────────────────┐
-                    │ Decision Routing    │
+                    │  Decision Routing   │
                     └──────────┬──────────┘
                                ↓
                     ┌─────────────────────┐
@@ -339,7 +354,7 @@ ULTRON explicitly separates:
 Response
 ```
 
-from
+from:
 
 ```text
 Action
@@ -404,7 +419,7 @@ PAUSED
 RUNNING
 ```
 
-Task lifecycle ownership remains separate from execution result and feedback representation.
+Task lifecycle ownership remains separate from execution result, feedback, and observability.
 
 ---
 
@@ -461,7 +476,7 @@ Overall Execution Outcome
 ```text
 ExecutionEvent
     ↓
-Observable Execution Event
+Observable Runtime Event
 ```
 
 ```text
@@ -588,17 +603,197 @@ The adapter does **not**:
 
 ---
 
-# 🔍 Execution Event Architecture
+# 🔔 Runtime Event Architecture
 
-Execution events remain independent from execution feedback.
+## v0.85 — Runtime Event Integration
+
+v0.85 integrates runtime execution behavior with ULTRON's existing execution event architecture.
+
+The milestone preserves the separation between:
+
+```text
+ExecutionResult
+ExecutionEvent
+ExecutionStateSnapshot
+ExecutionFeedback
+```
+
+The canonical runtime observability path is:
 
 ```text
 AgentOrchestrator
        ↓
 ExecutionEventEmitter
        ↓
+ExecutionEventStore
+       ↓
 ExecutionEvent
 ```
+
+The `ExecutionEventStore` remains the canonical source of stored execution events.
+
+---
+
+# 🎯 Runtime Event Ownership
+
+ULTRON explicitly separates lifecycle event ownership from runtime outcome event ownership.
+
+### AgentExecutionController
+
+The controller owns lifecycle-oriented events:
+
+```text
+execution_started
+execution_paused
+execution_resumed
+execution_cancelled
+
+step_started
+step_retried
+step_skipped
+```
+
+The controller manages lifecycle transitions and state-oriented execution control.
+
+### AgentOrchestrator
+
+The orchestrator owns runtime outcome events:
+
+```text
+execution_completed
+execution_failed
+
+step_completed
+step_failed
+```
+
+The orchestrator knows the actual outcome of runtime execution and therefore owns outcome-event emission.
+
+### Event Emitter
+
+`ExecutionEventEmitter` remains responsible for structured event creation and forwarding.
+
+It does not own execution lifecycle or execution decisions.
+
+### Event Store
+
+`ExecutionEventStore` remains the canonical storage layer for execution events.
+
+No parallel event bus or duplicate event storage system is introduced.
+
+---
+
+# 🔄 v0.85 Runtime Event Flow
+
+### Successful Execution
+
+```text
+AgentExecutionController
+        ↓
+execution_started
+        ↓
+step_started
+        ↓
+AgentOrchestrator
+        ↓
+Tool Execution
+        ↓
+ToolResult
+        ↓
+step_completed
+        ↓
+execution_completed
+        ↓
+ExecutionResult
+```
+
+Expected event sequence:
+
+```text
+execution_started
+step_started
+step_completed
+execution_completed
+```
+
+### Failed Execution
+
+```text
+AgentExecutionController
+        ↓
+execution_started
+        ↓
+step_started
+        ↓
+AgentOrchestrator
+        ↓
+Tool Execution
+        ↓
+ToolResult / Runtime Failure
+        ↓
+step_failed
+        ↓
+execution_failed
+        ↓
+ExecutionResult
+```
+
+Expected event sequence:
+
+```text
+execution_started
+step_started
+step_failed
+execution_failed
+```
+
+A runtime outcome event is emitted exactly once by its designated owner.
+
+---
+
+# 🔗 Canonical Execution Identity
+
+v0.85 preserves a canonical execution identity across the runtime architecture.
+
+```text
+AgentPlan
+    ↓
+execution_id
+    ↓
+ExecutionController
+    ↓
+ExecutionEvent
+    ↓
+ExecutionResult
+```
+
+The execution ID remains consistent across execution control, runtime events, execution results, and execution context.
+
+This prevents event/result correlation problems between architectural layers.
+
+---
+
+# 🧱 Shared Event Store
+
+The controller and orchestrator use the same canonical `ExecutionEventStore`.
+
+```text
+                 ┌──────────────────────────┐
+                 │  ExecutionEventStore     │
+                 └────────────┬─────────────┘
+                              │
+                 ┌────────────┴─────────────┐
+                 ↓                          ↓
+      AgentExecutionController       AgentOrchestrator
+                 ↓                          ↓
+       Lifecycle Events              Outcome Events
+```
+
+This ensures that execution history remains unified instead of being split across multiple event stores.
+
+---
+
+# 🔍 Execution Event Architecture
 
 An `ExecutionEvent` represents something that happened during execution.
 
@@ -627,7 +822,7 @@ These systems are intentionally not merged.
 
 ---
 
-# 🔄 Complete Execution Feedback Flow
+# 🔄 Complete Execution Architecture
 
 ```text
 AgentEngine
@@ -648,16 +843,32 @@ Consumer
 At the same time:
 
 ```text
-AgentOrchestrator
-    ↓
+AgentExecutionController
+          ↓
+Lifecycle Events
+          ↓
 ExecutionEventEmitter
-    ↓
-ExecutionEvent
+          ↓
+ExecutionEventStore
+```
+
+And:
+
+```text
+AgentOrchestrator
+       ↓
+Outcome Events
+       ↓
+ExecutionEventEmitter
+       ↓
+ExecutionEventStore
 ```
 
 Therefore:
 
 ```text
+ToolResult
+    ≠
 ExecutionResult
     ≠
 ExecutionEvent
@@ -665,14 +876,6 @@ ExecutionEvent
 ExecutionStateSnapshot
     ≠
 ExecutionFeedback
-```
-
-And:
-
-```text
-ToolResult
-    ≠
-ExecutionResult
 ```
 
 This separation is a core architectural principle of ULTRON.
@@ -747,13 +950,13 @@ Conceptually:
 
 ```text
 Agent
- ↓
+  ↓
 Planner
- ↓
+  ↓
 Tool Selection
- ↓
+  ↓
 Tool Execution
- ↓
+  ↓
 ToolResult
 ```
 
@@ -773,6 +976,7 @@ Current concepts include:
 * execution state
 * execution metrics
 * progress tracking
+* runtime outcome tracking
 
 Observability is intentionally separated from:
 
@@ -813,41 +1017,48 @@ Integration Tests
 Full Regression
 ```
 
-Every architectural milestone receives dedicated tests before being considered complete.
+Every architectural milestone receives focused validation before being considered complete.
 
 ---
 
-# 🧪 v0.84 Testing
+# 🧪 v0.85 Testing
 
-### ExecutionFeedback
+### Runtime Event Integration
+
+The v0.85 implementation was validated through targeted execution, controller, orchestrator, emitter, and multimodal regression coverage.
 
 ```text
-22 tests
-22 passed
+Targeted Regression
+────────────────────────
+148 passed
 0 failed
 ```
 
-### ExecutionFeedbackAdapter
+### Runtime Success Verification
+
+The controlled successful execution path produced:
 
 ```text
-21 tests
-21 passed
-0 failed
+execution_started
+step_started
+step_completed
+execution_completed
 ```
 
-### Integration
+with consistent execution identity across the runtime event path.
+
+### Runtime Failure Verification
+
+The controlled failing execution path produced:
 
 ```text
-3 tests
-3 passed
-0 failed
+execution_started
+step_started
+step_failed
+execution_failed
 ```
 
-### v0.84 Total
-
-```text
-46 / 46 passed
-```
+with exactly one `execution_failed` event.
 
 ### Full ULTRON Regression
 
@@ -856,15 +1067,45 @@ Every architectural milestone receives dedicated tests before being considered c
 0 failed
 ```
 
-The v0.84 implementation was validated without modifying the core `AgentOrchestrator` execution architecture.
+The v0.85 runtime event integration was validated without introducing a duplicate event system.
 
 ---
 
-# 🛡️ v0.84 Architectural Boundary
+# 🛡️ v0.85 Architectural Boundary
 
-The v0.84 boundary is:
+The v0.85 boundary is:
 
 ```text
+Execution Lifecycle
+        ↓
+AgentExecutionController
+        ↓
+Lifecycle Events
+```
+
+and:
+
+```text
+Runtime Execution
+        ↓
+AgentOrchestrator
+        ↓
+Outcome Events
+```
+
+Both converge into:
+
+```text
+ExecutionEventEmitter
+        ↓
+ExecutionEventStore
+```
+
+while execution outcomes remain separate:
+
+```text
+AgentOrchestrator
+        ↓
 ExecutionResult
         ↓
 ExecutionFeedbackAdapter
@@ -872,20 +1113,7 @@ ExecutionFeedbackAdapter
 ExecutionFeedback
 ```
 
-The responsibilities are:
-
-```text
-ExecutionResult
-    = Canonical execution outcome
-
-ExecutionFeedbackAdapter
-    = Conversion boundary
-
-ExecutionFeedback
-    = Consumer-facing representation
-```
-
-The architecture does not introduce another execution engine, lifecycle controller, event system, or planning system.
+The architecture does not introduce another execution engine, lifecycle controller, event bus, event manager, or parallel event store.
 
 ---
 
@@ -893,6 +1121,7 @@ The architecture does not introduce another execution engine, lifecycle controll
 
 ```text
 ultron/
+
 │
 ├── core/
 │   ├── ...
@@ -971,22 +1200,22 @@ These exports provide stable access to the canonical execution outcome and consu
 # 🗺️ AI Intelligence Roadmap
 
 ```text
-v0.70 → Intelligence Foundation                 ✅
-v0.71 → Provider Abstraction                    ✅
-v0.72 → Claude Provider                         ✅
-v0.73 → AI Runtime Integration                  ✅
-v0.74 → Context Integration                     ✅
-v0.75 → Intent Understanding                    ✅
-v0.76 → Agent Decision Foundation               ✅
-v0.77 → Decision Routing Foundation             ✅
-v0.78 → Response / Action Boundary              ✅
-v0.79 → Task Abstraction                        ✅
-v0.80 → Task Lifecycle Foundation               ✅
-v0.81 → Task Context & State                    ✅
-v0.82 → Task Input / Output Contracts           ✅
-v0.83 → Execution Result Abstraction            ✅
-v0.84 → Execution Feedback Interface            ✅
-v0.85 → Runtime Event Integration               ⏳
+v0.70 → Intelligence Foundation              ✅
+v0.71 → Provider Abstraction                 ✅
+v0.72 → Claude Provider                      ✅
+v0.73 → AI Runtime Integration               ✅
+v0.74 → Context Integration                  ✅
+v0.75 → Intent Understanding                 ✅
+v0.76 → Agent Decision Foundation            ✅
+v0.77 → Decision Routing Foundation          ✅
+v0.78 → Response / Action Boundary           ✅
+v0.79 → Task Abstraction                     ✅
+v0.80 → Task Lifecycle Foundation            ✅
+v0.81 → Task Context & State                 ✅
+v0.82 → Task Input / Output Contracts        ✅
+v0.83 → Execution Result Abstraction         ✅
+v0.84 → Execution Feedback Interface         ✅
+v0.85 → Runtime Event Integration             ✅
 ```
 
 ---
@@ -1004,24 +1233,22 @@ v0.81 → Task Context & State
 v0.82 → Task Input / Output Contracts
 v0.83 → Execution Result Abstraction
 v0.84 → Execution Feedback Interface
+v0.85 → Runtime Event Integration
 ```
 
 ## Upcoming
 
 ```text
-v0.85 → Runtime Event Integration
 v0.86 → Reliability Foundation
 v0.87 → Failure Handling
 v0.88 → Recovery Architecture
 v0.89 → Execution Reliability
 v0.90 → Reliability Consolidation
-
 v0.91 → Extensibility Foundation
 v0.92 → Plugin Architecture
 v0.93 → Capability Registration
 v0.94 → Provider Extensibility
 v0.95 → Extensibility Consolidation
-
 v0.96 → Core Platform Hardening
 v0.97 → Platform Integration
 v0.98 → Architecture Consolidation
@@ -1042,7 +1269,6 @@ v0.28 → Smart Memory
 v0.29 → Memory Refinement
 v0.30 → Documentation Foundation
 v0.31 → AI Provider Integration
-
 v0.32 → AI Context
 v0.33 → AI Context Builder
 v0.34 → Agent Foundation
@@ -1052,14 +1278,12 @@ v0.37 → Tool Registry
 v0.38 → Tool System
 v0.39 → Tool Selector
 v0.40 → Agent Planning
-
 v0.41 → Execution Foundation
 v0.42 → Execution Controller
 v0.43 → Execution State
 v0.44 → Execution Event Store
 v0.45 → Observability
 v0.46 → Execution Metrics
-
 v0.47 → Execution Context
 v0.48 → Execution State Snapshot
 v0.49 → Execution Integration
@@ -1070,13 +1294,11 @@ v0.57 → STT Provider
 v0.58 → Voice Runtime
 v0.59 → Voice Execution
 v0.60 → Advanced Voice Intelligence
-
 v0.61 → TTS Foundation
 v0.62 → TTS Provider
 v0.63 → TTS Runtime
 v0.64 → Voice Response
 v0.65 → Full Voice Loop
-
 v0.66 → Audio Playback Foundation
 v0.67 → Audio Device Integration
 v0.68 → Playback Management
@@ -1089,7 +1311,6 @@ v0.73 → AI Runtime
 v0.74 → Context
 v0.75 → Intent Understanding
 v0.76 → Agent Decision Foundation
-
 v0.77 → Decision Routing
 v0.78 → Response / Action Boundary
 v0.79 → Task Abstraction
@@ -1098,49 +1319,128 @@ v0.81 → Task Context & State
 v0.82 → Task Input / Output Contracts
 v0.83 → Execution Result Abstraction
 v0.84 → Execution Feedback Interface
+v0.85 → Runtime Event Integration
 ```
 
 ---
 
 # 📚 Version History
 
+## v0.85 — Runtime Event Integration
+
+### Added / Integrated
+
+* Runtime event integration across execution control and orchestration
+* Shared canonical `ExecutionEventStore`
+* Canonical execution identity propagation
+* Controller-owned lifecycle events
+* Orchestrator-owned runtime outcome events
+* Runtime success-path event verification
+* Runtime failure-path event verification
+
+### Event Ownership
+
+Controller-owned:
+
+```text
+execution_started
+execution_paused
+execution_resumed
+execution_cancelled
+
+step_started
+step_retried
+step_skipped
+```
+
+Orchestrator-owned:
+
+```text
+execution_completed
+execution_failed
+
+step_completed
+step_failed
+```
+
+### Architecture
+
+```text
+AgentExecutionController
+        ↓
+Lifecycle Events
+        ↓
+ExecutionEventEmitter
+        ↓
+ExecutionEventStore
+```
+
+```text
+AgentOrchestrator
+        ↓
+Outcome Events
+        ↓
+ExecutionEventEmitter
+        ↓
+ExecutionEventStore
+```
+
+Execution outcomes remain separate:
+
+```text
+AgentOrchestrator
+        ↓
+ExecutionResult
+        ↓
+ExecutionFeedbackAdapter
+        ↓
+ExecutionFeedback
+```
+
+### Runtime Validation
+
+Successful execution:
+
+```text
+execution_started
+step_started
+step_completed
+execution_completed
+```
+
+Failed execution:
+
+```text
+execution_started
+step_started
+step_failed
+execution_failed
+```
+
+Runtime verification confirmed consistent execution IDs and exactly one terminal execution outcome event.
+
+### Testing
+
+```text
+Targeted Regression: 148 passed
+Full Regression:     2204 passed
+Failures:             0
+```
+
+---
+
 ## v0.84 — Execution Feedback Interface
 
-### Added
+Introduced:
 
 * `ExecutionFeedback`
 * `ExecutionFeedbackError`
 * `ExecutionFeedbackAdapter`
 * `ExecutionFeedbackAdapterError`
 
-### ExecutionFeedback
+`ExecutionFeedback` established a standardized consumer-facing execution representation.
 
-Introduced a standardized consumer-facing execution feedback model.
-
-The model contains:
-
-```text
-execution_id
-status
-message
-progress
-result
-error
-metadata
-```
-
-The model provides:
-
-* immutable representation
-* validation
-* defensive serialization
-* defensive result copying
-* defensive progress copying
-* defensive metadata copying
-
-### ExecutionFeedbackAdapter
-
-Introduced a pure conversion boundary:
+The architecture established:
 
 ```text
 ExecutionResult
@@ -1150,80 +1450,7 @@ ExecutionFeedbackAdapter
 ExecutionFeedback
 ```
 
-The adapter:
-
-* validates the source type
-* maps success to `completed`
-* maps failure to `failed`
-* extracts progress metadata
-* preserves non-progress metadata
-* preserves result data
-* preserves error information
-* does not mutate the source `ExecutionResult`
-
-### Architecture
-
-```text
-AgentEngine
-    ↓
-ToolResult
-    ↓
-AgentOrchestrator
-    ↓
-ExecutionResult
-    ↓
-ExecutionFeedbackAdapter
-    ↓
-ExecutionFeedback
-    ↓
-Consumer / UI / Voice / API
-```
-
-Execution observability remains parallel:
-
-```text
-AgentOrchestrator
-    ↓
-ExecutionEventEmitter
-    ↓
-ExecutionEvent
-```
-
-### Boundary Rules
-
-```text
-ExecutionResult
-    = Canonical execution outcome
-
-ExecutionEvent
-    = Observable execution event
-
-ExecutionStateSnapshot
-    = Execution state snapshot
-
-ExecutionFeedback
-    = Consumer-facing execution representation
-
-ExecutionFeedbackAdapter
-    = Conversion boundary
-```
-
-### Testing
-
-```text
-ExecutionFeedback tests:          22 passed
-ExecutionFeedbackAdapter tests:   21 passed
-Integration tests:                 3 passed
------------------------------------------
-v0.84 focused total:              46 passed
-```
-
-Full ULTRON regression:
-
-```text
-2204 passed
-0 failed
-```
+The feedback system remains separate from execution events and execution state.
 
 ---
 
@@ -1242,7 +1469,7 @@ Key responsibilities:
 * defensive serialization
 * immutable execution outcome
 
-The orchestrator now returns `ExecutionResult` for complete plan execution while individual tool execution continues to use `ToolResult`.
+The orchestrator returns `ExecutionResult` for complete plan execution while individual tool execution continues to use `ToolResult`.
 
 ---
 
@@ -1342,30 +1569,56 @@ This workflow is intended to minimize regressions and architectural duplication.
 
 # 📌 Current Scope
 
-## v0.84 — Execution Feedback Interface
+## v0.85 — Runtime Event Integration
 
 Current scope includes:
 
 ```text
+Execution Lifecycle
+        ↓
+AgentExecutionController
+        ↓
+Lifecycle Events
+        ↓
+ExecutionEventEmitter
+        ↓
+ExecutionEventStore
+```
+
+and:
+
+```text
+Runtime Execution
+        ↓
+AgentOrchestrator
+        ↓
+Outcome Events
+        ↓
+ExecutionEventEmitter
+        ↓
+ExecutionEventStore
+```
+
+The milestone provides a structured runtime event integration while preserving the existing separation between:
+
+```text
 ExecutionResult
-        ↓
-ExecutionFeedbackAdapter
-        ↓
+ExecutionEvent
+ExecutionStateSnapshot
 ExecutionFeedback
 ```
 
-The milestone provides a stable consumer-facing execution feedback boundary.
-
 It does not yet provide:
 
-* real-time streaming feedback
-* event-driven feedback subscriptions
-* persistent feedback storage
-* UI-specific feedback models
-* voice-specific feedback models
-* API-specific response formatting
-* automatic feedback delivery
-* runtime event integration
+* real-time event streaming
+* event subscriptions
+* persistent distributed event infrastructure
+* UI-specific event models
+* voice-specific event models
+* API-specific event formatting
+* automatic event delivery
+* advanced recovery
+* distributed execution coordination
 
 Those concerns belong to later milestones.
 
@@ -1396,6 +1649,25 @@ It is a representation model.
 
 ---
 
+# 🚫 What Execution Events Do Not Do
+
+`ExecutionEvent` does **not**:
+
+* execute tools
+* perform planning
+* select tools
+* manage task definitions
+* replace `ExecutionResult`
+* replace `ExecutionFeedback`
+* become a second execution state system
+* provide consumer-specific formatting
+
+Events describe what happened.
+
+They do not become the execution engine.
+
+---
+
 # 🚧 What ULTRON Does Not Yet Do
 
 ULTRON is still under active foundation development.
@@ -1416,6 +1688,7 @@ Not yet fully implemented:
 * large-scale distributed execution
 * full SaaS infrastructure
 * complete public API platform
+* advanced autonomous recovery
 
 These capabilities are planned for later architectural phases.
 
@@ -1423,18 +1696,30 @@ These capabilities are planned for later architectural phases.
 
 # 🛣️ Next Milestone
 
-## v0.85 — Runtime Event Integration
+## v0.86 — Reliability Foundation
 
-The next architectural milestone is focused on integrating runtime execution behavior with the existing event architecture while preserving the separation between:
+The next architectural milestone will begin the reliability phase of ULTRON.
+
+The reliability roadmap is:
 
 ```text
-ExecutionResult
-ExecutionEvent
-ExecutionStateSnapshot
-ExecutionFeedback
+v0.86 → Reliability Foundation
+v0.87 → Failure Handling
+v0.88 → Recovery Architecture
+v0.89 → Execution Reliability
+v0.90 → Reliability Consolidation
 ```
 
-The objective is to extend runtime observability without collapsing event generation into execution feedback.
+The objective is to strengthen execution behavior while preserving the established boundaries between:
+
+```text
+Task
+Execution
+State
+Events
+Results
+Feedback
+```
 
 ---
 
@@ -1502,7 +1787,7 @@ The goal is to avoid turning the entire system into one large AI-driven executio
 
 # 🏆 Current Foundation Position
 
-As of **v0.84**, ULTRON has established a structured foundation covering:
+As of **v0.85**, ULTRON has established a structured foundation covering:
 
 ```text
 AI Runtime
@@ -1541,6 +1826,30 @@ Execution Event Store
 Execution Metrics
 ```
 
+Runtime event integration now establishes explicit ownership between:
+
+```text
+Lifecycle Control
+      ↓
+AgentExecutionController
+```
+
+and:
+
+```text
+Runtime Outcomes
+      ↓
+AgentOrchestrator
+```
+
+Both converge into the canonical event infrastructure:
+
+```text
+ExecutionEventEmitter
+      ↓
+ExecutionEventStore
+```
+
 This creates a clear separation between:
 
 ```text
@@ -1553,23 +1862,25 @@ Results
 Feedback
 ```
 
-The next architectural step is **Runtime Event Integration in v0.85**.
+The next architectural step is **Reliability Foundation in v0.86**.
 
 ---
 
 # 📊 Current Test Position
 
 ```text
-v0.84 Focused Tests
-────────────────────────
-ExecutionFeedback             22
-ExecutionFeedbackAdapter      21
-Integration                    3
-────────────────────────
-Total                         46
+v0.85 Runtime Event Integration
+────────────────────────────────
 
-Full Regression
-────────────────────────
+Targeted Regression          148 passed
+Runtime Success Path          PASS
+Runtime Failure Path          PASS
+Duplicate Failure Event       FIXED
+
+────────────────────────────────
+
+Full ULTRON Regression
+
 2204 passed
 0 failed
 ```
@@ -1581,20 +1892,17 @@ Full Regression
 > **Modular Personal AI Assistant, Agent Runtime, Automation & Multimodal Platform**
 
 Built foundation-first.
-
 Designed for intelligent execution.
-
 Engineered for long-term extensibility.
 
 ---
 
-**Current Version: v0.84**
+**Current Version: v0.85**
 
-**Current Milestone: Execution Feedback Interface**
+**Current Milestone: Runtime Event Integration**
 
 **Tests: 2204 passed**
 
-**Next: v0.85 Runtime Event Integration**
+**Targeted Regression: 148 passed**
 
-```
-```
+**Next: v0.86 Reliability Foundation**
