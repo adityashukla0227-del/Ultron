@@ -10,10 +10,10 @@
 
 | Metric                        | Status                     |
 | ----------------------------- | -------------------------- |
-| **Current Version**           | **v0.86**                  |
-| **Current Milestone**         | **Reliability Foundation** |
-| **v0.86 Targeted Regression** | **16 passed**              |
-| **Full ULTRON Regression**    | **2220 passed**            |
+| **Current Version**           | **v0.87**                  |
+| **Current Milestone**         | **Failure Handling Foundation** |
+| **v0.87 Targeted Regression** | **9 passed**               |
+| **Full ULTRON Regression**    | **2229 passed**            |
 | **Regression Failures**       | **0**                      |
 | **Python**                    | **3.13+**                  |
 | **Architecture Status**       | **Foundation Development** |
@@ -1563,7 +1563,7 @@ v0.86 → Reliability Foundation
 ## Upcoming
 
 ```text
-v0.87 → Failure Handling
+v0.87 → Failure Handling Foundation
 
 v0.88 → Recovery Architecture
 
@@ -1718,6 +1718,53 @@ v0.86 → Reliability Foundation
 
 # 📚 Version History
 
+## v0.87 — Failure Handling Foundation
+
+### Overview
+
+v0.87 introduces the canonical **Execution Failure** representation for Ultron.
+
+The milestone establishes a structured and immutable failure model without duplicating the existing execution controller, orchestrator, lifecycle, event, or result systems.
+
+### Core Components
+
+- `ExecutionFailure`
+- `FailureScope`
+- `FailureCategory`
+
+### Failure Scopes
+
+- `STEP`
+- `EXECUTION`
+
+### Failure Categories
+
+- `EXCEPTION`
+- `TOOL_FAILURE`
+- `STEP_FAILURE`
+- `EXECUTION_FAILURE`
+- `UNKNOWN`
+
+### Design Principles
+
+- Immutable failure representation
+- Explicit execution and step scope
+- Explicit retryability
+- Structured metadata
+- Defensive serialization
+- No execution logic
+- No retry engine
+- No recovery engine
+- No lifecycle mutation
+- No event emission
+- No exception handling ownership
+
+### Regression
+
+- v0.87 targeted regression: **9 passed**
+- Full ULTRON regression: **2229 passed**
+
+---
 ## v0.86 — Reliability Foundation
 
 ### Added
@@ -2186,9 +2233,9 @@ These capabilities are planned for later architectural phases.
 
 # 🛣️ Next Milestone
 
-## v0.87 — Failure Handling
+## v0.88 — Recovery Architecture
 
-The next architectural milestone will begin the failure-handling phase of ULTRON.
+The next architectural milestone will begin the recovery architecture phase of ULTRON.
 
 The reliability roadmap is:
 
@@ -2430,31 +2477,31 @@ Feedback
 Reliability
 ```
 
-The next architectural step is **Failure Handling in v0.87**.
+The next architectural step is **Recovery Architecture in v0.88**.
 
 ---
 
 # 📊 Current Test Position
 
 ```text
-v0.86 Reliability Foundation
+v0.87 Failure Handling Foundation
 ────────────────────────────────
 
-Targeted Regression          16 passed
+Targeted Regression          9 passed
 
-Reliability Validation       PASS
+Failure Model Validation     PASS
 
 Snapshot Preservation        PASS
 
 Deterministic Validation     PASS
 
-Recoverability Validation    PASS
+Serialization Validation     PASS
 
 ────────────────────────────────
 
 Full ULTRON Regression
 
-2220 passed
+2229 passed
 
 0 failed
 ```
@@ -2475,12 +2522,12 @@ Validated for execution reliability.
 
 ---
 
-**Current Version: v0.86**
+**Current Version: v0.87**
 
-**Current Milestone: Reliability Foundation**
+**Current Milestone: Failure Handling Foundation**
 
-**Tests: 2220 passed**
+**Tests: 2229 passed**
 
-**Targeted Regression: 16 passed**
+**Targeted Regression: 9 passed**
 
-**Next: v0.87 Failure Handling**
+**Next: v0.88 Recovery Architecture**
