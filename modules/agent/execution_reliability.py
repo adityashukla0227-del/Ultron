@@ -1,22 +1,17 @@
 """
-Ultron Execution Reliability Foundation.
+Ultron Execution Reliability
 
-v0.86 — Reliability Foundation
+v0.89 — Execution Reliability
 
-Provides deterministic validation of execution state
-for future recovery workflows.
+Provides deterministic validation of execution state snapshots.
 
 This module does not:
-- execute plans
+- execute recovery
 - mutate execution state
-- control lifecycle
+- control the execution controller
 - emit events
 - persist execution data
-- perform recovery
-
-It only evaluates whether an ExecutionStateSnapshot
-is internally consistent and whether its lifecycle state
-is recoverable under the v0.86 reliability contract.
+- execute tools
 """
 
 from __future__ import annotations
@@ -28,34 +23,13 @@ from modules.agent.execution_state_snapshot import (
 )
 
 
-# ========================================================
-# Errors
-# ========================================================
-
-
 class ExecutionReliabilityError(Exception):
     """Base error for execution reliability operations."""
 
 
-# ========================================================
-# Result
-# ========================================================
-
-
 @dataclass(frozen=True)
 class ExecutionReliabilityResult:
-    """
-    Result of execution reliability validation.
-
-    Attributes:
-        execution_id: Execution identity.
-        status: Execution lifecycle status.
-        valid: Whether the snapshot is internally
-            consistent for reliability purposes.
-        recoverable: Whether the execution may be
-            considered recoverable under v0.86 rules.
-        reason: Deterministic explanation of the result.
-    """
+    """Result produced by execution reliability validation."""
 
     execution_id: str
     status: str
@@ -64,18 +38,13 @@ class ExecutionReliabilityResult:
     reason: str
 
 
-# ========================================================
-# Validator
-# ========================================================
-
-
 class ExecutionReliabilityValidator:
     """
-    Validate execution-state reliability.
+    Deterministic validator for execution state snapshots.
 
-    The validator is intentionally read-only and has no
-    orchestration, lifecycle, event, or persistence
-    responsibilities.
+    The validator is read-only and does not perform recovery,
+    lifecycle transitions, controller operations, event emission,
+    persistence, or tool execution.
     """
 
     RECOVERABLE_STATUSES = frozenset(
@@ -106,24 +75,13 @@ class ExecutionReliabilityValidator:
         """
         Validate an execution state snapshot.
 
-        Args:
-            snapshot: Immutable execution state snapshot.
-
-        Returns:
-            ExecutionReliabilityResult describing validity
-            and recoverability.
-
-        Raises:
-            TypeError: If snapshot is not an
-                ExecutionStateSnapshot.
+        Returns a deterministic reliability result without
+        modifying the supplied snapshot.
         """
 
-        if not isinstance(
-            snapshot,
-            ExecutionStateSnapshot,
-        ):
+        if not isinstance(snapshot, ExecutionStateSnapshot):
             raise TypeError(
-                "snapshot must be an ExecutionStateSnapshot."
+                "snapshot must be an ExecutionStateSnapshot"
             )
 
         if snapshot.status in self.RECOVERABLE_STATUSES:
@@ -139,9 +97,8 @@ class ExecutionReliabilityValidator:
                 valid=True,
                 recoverable=False,
                 reason=(
-                    f"Execution is in terminally "
-                    f"non-recoverable state: "
-                    f"{snapshot.status}."
+                    "Execution is not recoverable from "
+                    "its current lifecycle state."
                 ),
             )
 
@@ -150,21 +107,14 @@ class ExecutionReliabilityValidator:
             status=snapshot.status,
             valid=False,
             recoverable=False,
-            reason=(
-                f"Unsupported execution reliability "
-                f"state: {snapshot.status}."
-            ),
+            reason="Execution status is not supported.",
         )
-
-    # ====================================================
-    # Recoverable State Validation
-    # ====================================================
 
     def _validate_recoverable(
         self,
         snapshot: ExecutionStateSnapshot,
     ) -> ExecutionReliabilityResult:
-        """Validate a running or paused execution."""
+        """Validate a recoverable execution state."""
 
         if snapshot.current_step_id is None:
             return ExecutionReliabilityResult(
@@ -173,7 +123,7 @@ class ExecutionReliabilityValidator:
                 valid=False,
                 recoverable=False,
                 reason=(
-                    "Recoverable execution must preserve "
+                    "Recoverable execution must have "
                     "a current step."
                 ),
             )
@@ -185,7 +135,7 @@ class ExecutionReliabilityValidator:
                 valid=False,
                 recoverable=False,
                 reason=(
-                    "Recoverable execution must preserve "
+                    "Recoverable execution must have "
                     "a current step index."
                 ),
             )
@@ -195,21 +145,14 @@ class ExecutionReliabilityValidator:
             status=snapshot.status,
             valid=True,
             recoverable=True,
-            reason=(
-                "Execution state is internally consistent "
-                "and recoverable."
-            ),
+            reason="Execution state is valid and recoverable.",
         )
-
-    # ====================================================
-    # Terminal State Validation
-    # ====================================================
 
     def _validate_terminal(
         self,
         snapshot: ExecutionStateSnapshot,
     ) -> ExecutionReliabilityResult:
-        """Validate a completed or cancelled execution."""
+        """Validate a terminal execution state."""
 
         if snapshot.current_step_id is not None:
             return ExecutionReliabilityResult(
@@ -218,8 +161,8 @@ class ExecutionReliabilityValidator:
                 valid=False,
                 recoverable=False,
                 reason=(
-                    "Terminal execution must not preserve "
-                    "a current step."
+                    "Terminal execution must not "
+                    "have a current step."
                 ),
             )
 
@@ -230,8 +173,38 @@ class ExecutionReliabilityValidator:
                 valid=False,
                 recoverable=False,
                 reason=(
-                    "Terminal execution must not preserve "
-                    "a current step index."
+                    "Terminal execution must not "
+                    "have a current step index."
+                ),
+            )
+
+        if (
+            snapshot.status == "completed"
+            and snapshot.pending_steps != 0
+        ):
+            return ExecutionReliabilityResult(
+                execution_id=snapshot.execution_id,
+                status=snapshot.status,
+                valid=False,
+                recoverable=False,
+                reason=(
+                    "Completed execution must not "
+                    "have pending steps."
+                ),
+            )
+
+        if (
+            snapshot.status == "completed"
+            and snapshot.failed_steps != 0
+        ):
+            return ExecutionReliabilityResult(
+                execution_id=snapshot.execution_id,
+                status=snapshot.status,
+                valid=False,
+                recoverable=False,
+                reason=(
+                    "Completed execution must not "
+                    "have failed steps."
                 ),
             )
 
@@ -240,10 +213,7 @@ class ExecutionReliabilityValidator:
             status=snapshot.status,
             valid=True,
             recoverable=False,
-            reason=(
-                f"Execution is terminal: "
-                f"{snapshot.status}."
-            ),
+            reason="Execution has reached a terminal state.",
         )
 
 

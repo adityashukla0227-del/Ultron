@@ -1,7 +1,7 @@
 """
 Ultron Execution Reliability Tests.
 
-v0.86 — Reliability Foundation
+v0.89 — Execution Reliability
 
 Tests the execution reliability validation contract.
 """
@@ -207,13 +207,58 @@ def test_completed_execution_is_not_recoverable():
     assert result.status == "completed"
 
 
+def test_completed_execution_with_pending_steps_is_invalid():
+    """Completed execution must not retain pending steps."""
+
+    validator = ExecutionReliabilityValidator()
+
+    result = validator.validate(
+        make_snapshot(
+            status="completed",
+            current_step_id=None,
+            current_step_index=None,
+            pending_steps=1,
+        )
+    )
+
+    assert result.valid is False
+    assert result.recoverable is False
+    assert result.status == "completed"
+    assert result.reason == (
+        "Completed execution must not have pending steps."
+    )
+
+
+def test_completed_execution_with_failed_steps_is_invalid():
+    """Completed execution must not retain failed steps."""
+
+    validator = ExecutionReliabilityValidator()
+
+    result = validator.validate(
+        make_snapshot(
+            status="completed",
+            current_step_id=None,
+            current_step_index=None,
+            pending_steps=0,
+            failed_steps=1,
+        )
+    )
+
+    assert result.valid is False
+    assert result.recoverable is False
+    assert result.status == "completed"
+    assert result.reason == (
+        "Completed execution must not have failed steps."
+    )
+
+
 # ========================================================
 # Failed
 # ========================================================
 
 
 def test_failed_execution_is_not_recoverable():
-    """Failed execution is terminal under v0.86 semantics."""
+    """Failed execution is terminal under the reliability contract."""
 
     validator = ExecutionReliabilityValidator()
 
@@ -324,6 +369,7 @@ def test_validation_is_deterministic():
     """Same snapshot should produce equivalent validation results."""
 
     validator = ExecutionReliabilityValidator()
+
     snapshot = make_snapshot(
         status="paused",
         current_step_id="step-2",
