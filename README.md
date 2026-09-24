@@ -2,21 +2,21 @@
 
 ## Modular Personal AI Assistant, Agent Runtime, Automation & Multimodal Platform
 
-> **ULTRON is being engineered as a modular AI operating platform focused on intelligent interaction, agent execution, automation, multimodal capabilities, observability, and a strong architectural foundation.**
+> **ULTRON is being engineered as a modular AI operating platform focused on intelligent interaction, agent execution, automation, multimodal capabilities, observability, execution reliability, and a strong architectural foundation.**
 
 ---
 
 # 🚀 Current Status
 
-| Metric                        | Status                        |
-| ----------------------------- | ----------------------------- |
-| **Current Version**           | **v0.85**                     |
-| **Current Milestone**         | **Runtime Event Integration** |
-| **v0.85 Targeted Regression** | **148 passed**                |
-| **Full ULTRON Regression**    | **2204 passed**               |
-| **Regression Failures**       | **0**                         |
-| **Python**                    | **3.13+**                     |
-| **Architecture Status**       | **Foundation Development**    |
+| Metric                        | Status                     |
+| ----------------------------- | -------------------------- |
+| **Current Version**           | **v0.86**                  |
+| **Current Milestone**         | **Reliability Foundation** |
+| **v0.86 Targeted Regression** | **16 passed**              |
+| **Full ULTRON Regression**    | **2220 passed**            |
+| **Regression Failures**       | **0**                      |
+| **Python**                    | **3.13+**                  |
+| **Architecture Status**       | **Foundation Development** |
 
 ### Current Architecture Pipeline
 
@@ -92,11 +92,23 @@ ExecutionEvent
 Observability / Metrics
 ```
 
+### Execution Reliability Validation Path
+
+```text
+ExecutionStateSnapshot
+       ↓
+ExecutionReliabilityValidator
+       ↓
+ExecutionReliabilityResult
+       ↓
+Validity / Recoverability
+```
+
 ---
 
 # 🧠 What is ULTRON?
 
-ULTRON is a modular personal AI assistant and agent platform designed to evolve toward an AI operating system capable of understanding user intent, reasoning about tasks, executing tools, managing execution state, interacting through multiple modalities, and eventually automating complex workflows.
+ULTRON is a modular personal AI assistant and agent platform designed to evolve toward an AI operating system capable of understanding user intent, reasoning about tasks, executing tools, managing execution state, validating execution reliability, interacting through multiple modalities, and eventually automating complex workflows.
 
 The project is being developed **foundation-first**.
 
@@ -115,6 +127,7 @@ Instead of building a collection of disconnected AI features, ULTRON focuses on 
 * Execution events
 * Execution results
 * Execution feedback
+* Execution reliability
 * Multimodal interaction
 * Automation
 * Observability
@@ -195,7 +208,11 @@ Existing behavior should remain stable unless a milestone explicitly changes the
 
 Execution events and observability remain separate from execution outcomes and consumer-facing feedback.
 
-### 10. Foundation Before Intelligence Expansion
+### 10. Reliability Without Orchestration Coupling
+
+Reliability validation must inspect execution state without taking ownership of execution, lifecycle control, event emission, persistence, or orchestration.
+
+### 11. Foundation Before Intelligence Expansion
 
 ULTRON's architecture is stabilized before large-scale autonomous behavior is introduced.
 
@@ -316,9 +333,13 @@ Current intent categories include:
 
 ```text
 QUERY
+
 ACTION
+
 CREATION
+
 CONTINUATION
+
 EXPLANATION
 ```
 
@@ -419,7 +440,7 @@ PAUSED
 RUNNING
 ```
 
-Task lifecycle ownership remains separate from execution result, feedback, and observability.
+Task lifecycle ownership remains separate from execution result, feedback, observability, and reliability validation.
 
 ---
 
@@ -463,32 +484,50 @@ ULTRON separates several concepts that are often incorrectly combined in agent s
 
 ```text
 ToolResult
+
     ↓
+
 Individual Tool Outcome
 ```
 
 ```text
 ExecutionResult
+
     ↓
+
 Overall Execution Outcome
 ```
 
 ```text
 ExecutionEvent
+
     ↓
+
 Observable Runtime Event
 ```
 
 ```text
 ExecutionStateSnapshot
+
     ↓
+
 Execution State Snapshot
 ```
 
 ```text
 ExecutionFeedback
+
     ↓
+
 Consumer-Facing Execution Representation
+```
+
+```text
+ExecutionReliabilityResult
+
+    ↓
+
+Reliability / Recoverability Representation
 ```
 
 These are intentionally separate architectural concepts.
@@ -613,8 +652,11 @@ The milestone preserves the separation between:
 
 ```text
 ExecutionResult
+
 ExecutionEvent
+
 ExecutionStateSnapshot
+
 ExecutionFeedback
 ```
 
@@ -644,12 +686,17 @@ The controller owns lifecycle-oriented events:
 
 ```text
 execution_started
+
 execution_paused
+
 execution_resumed
+
 execution_cancelled
 
 step_started
+
 step_retried
+
 step_skipped
 ```
 
@@ -661,9 +708,11 @@ The orchestrator owns runtime outcome events:
 
 ```text
 execution_completed
+
 execution_failed
 
 step_completed
+
 step_failed
 ```
 
@@ -786,7 +835,7 @@ The controller and orchestrator use the same canonical `ExecutionEventStore`.
                  ↓                          ↓
       AgentExecutionController       AgentOrchestrator
                  ↓                          ↓
-       Lifecycle Events              Outcome Events
+         Lifecycle Events            Outcome Events
 ```
 
 This ensures that execution history remains unified instead of being split across multiple event stores.
@@ -806,7 +855,6 @@ execution_failed
 execution_paused
 execution_resumed
 execution_cancelled
-
 step_started
 step_completed
 step_failed
@@ -819,6 +867,154 @@ The event system is for observability.
 The feedback system is for standardized consumer-facing representation.
 
 These systems are intentionally not merged.
+
+---
+
+# 🛡️ Execution Reliability
+
+## v0.86 — Reliability Foundation
+
+v0.86 introduces a dedicated reliability validation boundary around the existing `ExecutionStateSnapshot`.
+
+The reliability layer is intentionally small and read-only:
+
+```text
+ExecutionStateSnapshot
+       ↓
+ExecutionReliabilityValidator
+       ↓
+ExecutionReliabilityResult
+       ↓
+Validity / Recoverability
+```
+
+The reliability layer validates execution-state consistency and determines whether an execution is currently recoverable.
+
+It does not perform recovery, mutate execution state, control lifecycle transitions, emit events, persist state, or orchestrate execution.
+
+### Reliability Components
+
+v0.86 introduces:
+
+```text
+ExecutionReliabilityError
+ExecutionReliabilityResult
+ExecutionReliabilityValidator
+```
+
+### ExecutionReliabilityResult
+
+The result represents the validation outcome.
+
+Conceptually:
+
+```text
+ExecutionReliabilityResult
+├── execution_id
+├── status
+├── valid
+├── recoverable
+└── reason
+```
+
+The result is immutable.
+
+### Recoverable States
+
+The following execution states are considered recoverable when their required execution-step information is consistent:
+
+```text
+RUNNING
+PAUSED
+```
+
+Recoverable states require a valid current step.
+
+### Non-Recoverable States
+
+The following states are not considered recoverable by v0.86:
+
+```text
+PENDING
+FAILED
+COMPLETED
+CANCELLED
+```
+
+Terminal states must not retain an active current step.
+
+### Reliability Validation Examples
+
+An inconsistent state such as:
+
+```text
+RUNNING
++
+No current step
+```
+
+is invalid.
+
+Similarly:
+
+```text
+COMPLETED
++
+Current step still present
+```
+
+is invalid.
+
+These cases result in:
+
+```text
+valid = False
+recoverable = False
+```
+
+### Read-Only Boundary
+
+The reliability validator:
+
+* validates an `ExecutionStateSnapshot`
+* determines reliability validity
+* determines recoverability
+* provides a deterministic reason
+* does not mutate the snapshot
+* does not mutate execution state
+* does not execute tasks
+* does not execute tools
+* does not restart execution
+* does not perform recovery
+* does not emit events
+* does not persist snapshots
+* does not manage lifecycle
+* does not handle retries
+* does not orchestrate execution
+
+The reliability layer is therefore a validation boundary, not a recovery engine.
+
+---
+
+# 🔄 Reliability and Future Recovery
+
+The v0.86 architecture intentionally prepares a boundary for future recovery systems.
+
+```text
+Snapshot
+   ↓
+Reliability Validation
+   ↓
+Recovery Decision
+   ↓
+Execution Controller
+   ↓
+Orchestrator
+```
+
+Automatic recovery is outside the scope of v0.86.
+
+Future milestones may build recovery behavior on top of the reliability contract without moving recovery responsibilities into the validator itself.
 
 ---
 
@@ -864,6 +1060,16 @@ ExecutionEventEmitter
 ExecutionEventStore
 ```
 
+Reliability validation remains separate:
+
+```text
+ExecutionStateSnapshot
+       ↓
+ExecutionReliabilityValidator
+       ↓
+ExecutionReliabilityResult
+```
+
 Therefore:
 
 ```text
@@ -876,6 +1082,8 @@ ExecutionEvent
 ExecutionStateSnapshot
     ≠
 ExecutionFeedback
+    ≠
+ExecutionReliabilityResult
 ```
 
 This separation is a core architectural principle of ULTRON.
@@ -902,11 +1110,17 @@ Future multimodal capabilities include:
 
 ```text
 Vision
+
 Gesture
+
 Camera
+
 Screen Understanding
+
 Audio
+
 Voice
+
 Multimodal Reasoning
 ```
 
@@ -977,12 +1191,14 @@ Current concepts include:
 * execution metrics
 * progress tracking
 * runtime outcome tracking
+* reliability validation
 
 Observability is intentionally separated from:
 
 * task definition
 * execution result
 * consumer feedback
+* reliability decisions
 
 ---
 
@@ -1021,22 +1237,71 @@ Every architectural milestone receives focused validation before being considere
 
 ---
 
-# 🧪 v0.85 Testing
+# 🧪 v0.86 Testing
 
-### Runtime Event Integration
+### Reliability Foundation
 
-The v0.85 implementation was validated through targeted execution, controller, orchestrator, emitter, and multimodal regression coverage.
+The v0.86 reliability implementation was validated through dedicated tests covering:
+
+* immutable `ExecutionReliabilityResult`
+* validator construction
+* snapshot type validation
+* running-state recoverability
+* paused-state recoverability
+* pending-state handling
+* failed-state handling
+* completed-state handling
+* cancelled-state handling
+* current-step consistency
+* terminal-state consistency
+* deterministic validation
+* snapshot immutability
+* reliability result correctness
+* invalid execution-state combinations
+* recoverability boundaries
 
 ```text
 Targeted Regression
 ────────────────────────
-148 passed
+
+16 passed
+
 0 failed
 ```
 
-### Runtime Success Verification
+### Recoverability Verification
 
-The controlled successful execution path produced:
+Recoverable states:
+
+```text
+RUNNING
+PAUSED
+```
+
+Non-recoverable states:
+
+```text
+PENDING
+FAILED
+COMPLETED
+CANCELLED
+```
+
+### Read-Only Verification
+
+The validator does not mutate:
+
+```text
+ExecutionStateSnapshot
+```
+
+Validation remains deterministic and side-effect free.
+
+### v0.85 Runtime Event Regression
+
+The existing v0.85 runtime event architecture remains validated.
+
+Successful execution:
 
 ```text
 execution_started
@@ -1045,11 +1310,7 @@ step_completed
 execution_completed
 ```
 
-with consistent execution identity across the runtime event path.
-
-### Runtime Failure Verification
-
-The controlled failing execution path produced:
+Failed execution:
 
 ```text
 execution_started
@@ -1058,22 +1319,32 @@ step_failed
 execution_failed
 ```
 
-with exactly one `execution_failed` event.
-
 ### Full ULTRON Regression
 
 ```text
-2204 passed
+2220 passed
 0 failed
 ```
 
-The v0.85 runtime event integration was validated without introducing a duplicate event system.
+The v0.86 reliability foundation was integrated without introducing regressions into the existing execution, event, feedback, or task architecture.
 
 ---
 
-# 🛡️ v0.85 Architectural Boundary
+# 🛡️ v0.86 Architectural Boundary
 
-The v0.85 boundary is:
+The v0.86 reliability boundary is:
+
+```text
+Execution State
+       ↓
+ExecutionStateSnapshot
+       ↓
+ExecutionReliabilityValidator
+       ↓
+ExecutionReliabilityResult
+```
+
+The existing lifecycle boundary remains:
 
 ```text
 Execution Lifecycle
@@ -1083,7 +1354,7 @@ AgentExecutionController
 Lifecycle Events
 ```
 
-and:
+Runtime execution remains:
 
 ```text
 Runtime Execution
@@ -1093,7 +1364,7 @@ AgentOrchestrator
 Outcome Events
 ```
 
-Both converge into:
+Both runtime event paths converge into:
 
 ```text
 ExecutionEventEmitter
@@ -1101,7 +1372,7 @@ ExecutionEventEmitter
 ExecutionEventStore
 ```
 
-while execution outcomes remain separate:
+Execution outcomes remain separate:
 
 ```text
 AgentOrchestrator
@@ -1113,7 +1384,17 @@ ExecutionFeedbackAdapter
 ExecutionFeedback
 ```
 
-The architecture does not introduce another execution engine, lifecycle controller, event bus, event manager, or parallel event store.
+Reliability validation does not replace or absorb any of these systems.
+
+It does not introduce:
+
+* another execution engine
+* another lifecycle controller
+* another orchestrator
+* another event bus
+* another event store
+* automatic recovery engine
+* parallel execution-state system
 
 ---
 
@@ -1138,6 +1419,7 @@ ultron/
 │   │   ├── execution_event_emitter.py
 │   │   ├── execution_event_store.py
 │   │   ├── execution_state_snapshot.py
+│   │   ├── execution_reliability.py
 │   │   ├── execution_result.py
 │   │   ├── execution_feedback.py
 │   │   ├── execution_feedback_adapter.py
@@ -1161,6 +1443,8 @@ ultron/
 │   │   ├── test_execution_feedback_integration.py
 │   │   └── ...
 │   │
+│   ├── test_execution_reliability.py
+│   │
 │   ├── intelligence/
 │   │   └── ...
 │   │
@@ -1180,20 +1464,33 @@ ultron/
 
 The agent package exposes the execution abstractions required by downstream modules.
 
-Current execution-related exports include:
+Current package-level execution-related exports include:
 
 ```python
 ExecutionResult
+
 ExecutionResultError
 
 ExecutionFeedback
+
 ExecutionFeedbackError
 
 ExecutionFeedbackAdapter
+
 ExecutionFeedbackAdapterError
 ```
 
-These exports provide stable access to the canonical execution outcome and consumer-facing feedback boundary.
+The v0.86 reliability module currently maintains its own explicit public API:
+
+```python
+ExecutionReliabilityError
+
+ExecutionReliabilityResult
+
+ExecutionReliabilityValidator
+```
+
+The reliability API remains intentionally standalone until broader package-level exposure is architecturally required.
 
 ---
 
@@ -1201,21 +1498,38 @@ These exports provide stable access to the canonical execution outcome and consu
 
 ```text
 v0.70 → Intelligence Foundation              ✅
+
 v0.71 → Provider Abstraction                 ✅
+
 v0.72 → Claude Provider                      ✅
+
 v0.73 → AI Runtime Integration               ✅
+
 v0.74 → Context Integration                  ✅
+
 v0.75 → Intent Understanding                 ✅
+
 v0.76 → Agent Decision Foundation            ✅
+
 v0.77 → Decision Routing Foundation          ✅
+
 v0.78 → Response / Action Boundary           ✅
+
 v0.79 → Task Abstraction                     ✅
+
 v0.80 → Task Lifecycle Foundation            ✅
+
 v0.81 → Task Context & State                 ✅
+
 v0.82 → Task Input / Output Contracts        ✅
+
 v0.83 → Execution Result Abstraction         ✅
+
 v0.84 → Execution Feedback Interface         ✅
+
 v0.85 → Runtime Event Integration             ✅
+
+v0.86 → Reliability Foundation                ✅
 ```
 
 ---
@@ -1226,33 +1540,55 @@ v0.85 → Runtime Event Integration             ✅
 
 ```text
 v0.77 → Decision Routing Foundation
+
 v0.78 → Response / Action Boundary
+
 v0.79 → Task Abstraction
+
 v0.80 → Task Lifecycle Foundation
+
 v0.81 → Task Context & State
+
 v0.82 → Task Input / Output Contracts
+
 v0.83 → Execution Result Abstraction
+
 v0.84 → Execution Feedback Interface
+
 v0.85 → Runtime Event Integration
+
+v0.86 → Reliability Foundation
 ```
 
 ## Upcoming
 
 ```text
-v0.86 → Reliability Foundation
 v0.87 → Failure Handling
+
 v0.88 → Recovery Architecture
+
 v0.89 → Execution Reliability
+
 v0.90 → Reliability Consolidation
+
 v0.91 → Extensibility Foundation
+
 v0.92 → Plugin Architecture
+
 v0.93 → Capability Registration
+
 v0.94 → Provider Extensibility
+
 v0.95 → Extensibility Consolidation
+
 v0.96 → Core Platform Hardening
+
 v0.97 → Platform Integration
+
 v0.98 → Architecture Consolidation
+
 v0.99 → Pre-v1.0 Stabilization
+
 v1.0  → Core Platform Foundation
 ```
 
@@ -1262,69 +1598,194 @@ v1.0  → Core Platform Foundation
 
 ```text
 v0.24 → Command Suggestions
+
 v0.25 → Natural Language Commands
+
 v0.26 → Configuration Foundation
+
 v0.27 → Configuration Stabilization
+
 v0.28 → Smart Memory
+
 v0.29 → Memory Refinement
+
 v0.30 → Documentation Foundation
+
 v0.31 → AI Provider Integration
+
 v0.32 → AI Context
+
 v0.33 → AI Context Builder
+
 v0.34 → Agent Foundation
+
 v0.35 → Agent Identity
+
 v0.36 → Tool Foundation
+
 v0.37 → Tool Registry
+
 v0.38 → Tool System
+
 v0.39 → Tool Selector
+
 v0.40 → Agent Planning
+
 v0.41 → Execution Foundation
+
 v0.42 → Execution Controller
+
 v0.43 → Execution State
+
 v0.44 → Execution Event Store
+
 v0.45 → Observability
+
 v0.46 → Execution Metrics
+
 v0.47 → Execution Context
+
 v0.48 → Execution State Snapshot
+
 v0.49 → Execution Integration
+
 v0.50 → Agent Orchestrator Foundation
 
 v0.56 → STT Abstraction
+
 v0.57 → STT Provider
+
 v0.58 → Voice Runtime
+
 v0.59 → Voice Execution
+
 v0.60 → Advanced Voice Intelligence
+
 v0.61 → TTS Foundation
+
 v0.62 → TTS Provider
+
 v0.63 → TTS Runtime
+
 v0.64 → Voice Response
+
 v0.65 → Full Voice Loop
+
 v0.66 → Audio Playback Foundation
+
 v0.67 → Audio Device Integration
+
 v0.68 → Playback Management
+
 v0.69 → End-to-End Audio
 
 v0.70 → Intelligence Foundation
+
 v0.71 → Provider Abstraction
+
 v0.72 → Claude Provider
+
 v0.73 → AI Runtime
+
 v0.74 → Context
+
 v0.75 → Intent Understanding
+
 v0.76 → Agent Decision Foundation
+
 v0.77 → Decision Routing
+
 v0.78 → Response / Action Boundary
+
 v0.79 → Task Abstraction
+
 v0.80 → Task Lifecycle
+
 v0.81 → Task Context & State
+
 v0.82 → Task Input / Output Contracts
+
 v0.83 → Execution Result Abstraction
+
 v0.84 → Execution Feedback Interface
+
 v0.85 → Runtime Event Integration
+
+v0.86 → Reliability Foundation
 ```
 
 ---
 
 # 📚 Version History
+
+## v0.86 — Reliability Foundation
+
+### Added
+
+* `ExecutionReliabilityError`
+* `ExecutionReliabilityResult`
+* `ExecutionReliabilityValidator`
+* Dedicated reliability validation tests
+* Execution-state reliability boundary
+* Recoverability validation for active execution states
+
+### Reliability Contract
+
+Recoverable states:
+
+```text
+RUNNING
+PAUSED
+```
+
+Non-recoverable states:
+
+```text
+PENDING
+FAILED
+COMPLETED
+CANCELLED
+```
+
+Recoverable states require valid current-step information.
+
+Terminal states must not retain an active current step.
+
+### Validation Behavior
+
+The reliability validator:
+
+* accepts an `ExecutionStateSnapshot`
+* validates state consistency
+* determines validity
+* determines recoverability
+* provides a deterministic reason
+* preserves snapshot immutability
+* produces an immutable reliability result
+
+### Architectural Boundary
+
+```text
+ExecutionStateSnapshot
+       ↓
+ExecutionReliabilityValidator
+       ↓
+ExecutionReliabilityResult
+```
+
+The validator does not perform recovery or execution.
+
+### Testing
+
+```text
+Targeted Regression: 16 passed
+
+Full Regression:     2220 passed
+
+Failures:            0
+```
+
+---
 
 ## v0.85 — Runtime Event Integration
 
@@ -1344,12 +1805,17 @@ Controller-owned:
 
 ```text
 execution_started
+
 execution_paused
+
 execution_resumed
+
 execution_cancelled
 
 step_started
+
 step_retried
+
 step_skipped
 ```
 
@@ -1357,9 +1823,11 @@ Orchestrator-owned:
 
 ```text
 execution_completed
+
 execution_failed
 
 step_completed
+
 step_failed
 ```
 
@@ -1423,8 +1891,10 @@ Runtime verification confirmed consistent execution IDs and exactly one terminal
 
 ```text
 Targeted Regression: 148 passed
+
 Full Regression:     2204 passed
-Failures:             0
+
+Failures:            0
 ```
 
 ---
@@ -1569,58 +2039,53 @@ This workflow is intended to minimize regressions and architectural duplication.
 
 # 📌 Current Scope
 
-## v0.85 — Runtime Event Integration
+## v0.86 — Reliability Foundation
 
-Current scope includes:
-
-```text
-Execution Lifecycle
-        ↓
-AgentExecutionController
-        ↓
-Lifecycle Events
-        ↓
-ExecutionEventEmitter
-        ↓
-ExecutionEventStore
-```
-
-and:
+Current scope includes the reliability validation boundary:
 
 ```text
-Runtime Execution
-        ↓
-AgentOrchestrator
-        ↓
-Outcome Events
-        ↓
-ExecutionEventEmitter
-        ↓
-ExecutionEventStore
-```
-
-The milestone provides a structured runtime event integration while preserving the existing separation between:
-
-```text
-ExecutionResult
-ExecutionEvent
 ExecutionStateSnapshot
-ExecutionFeedback
+       ↓
+ExecutionReliabilityValidator
+       ↓
+ExecutionReliabilityResult
 ```
+
+The milestone validates execution-state consistency and determines whether an execution is currently recoverable.
+
+Recoverable states:
+
+```text
+RUNNING
+PAUSED
+```
+
+Non-recoverable states:
+
+```text
+PENDING
+FAILED
+COMPLETED
+CANCELLED
+```
+
+The reliability layer remains read-only and deterministic.
 
 It does not yet provide:
 
-* real-time event streaming
-* event subscriptions
-* persistent distributed event infrastructure
-* UI-specific event models
-* voice-specific event models
-* API-specific event formatting
-* automatic event delivery
-* advanced recovery
+* automatic recovery
+* crash recovery execution
+* persistent recovery sessions
+* distributed recovery
+* recovery orchestration
+* failure remediation
+* retry policy redesign
+* event replay
+* checkpoint restoration
+* automatic state restoration
 * distributed execution coordination
 
-Those concerns belong to later milestones.
+These concerns belong to later milestones.
 
 ---
 
@@ -1668,6 +2133,31 @@ They do not become the execution engine.
 
 ---
 
+# 🚫 What ExecutionReliabilityValidator Does Not Do
+
+`ExecutionReliabilityValidator` does **not**:
+
+* execute tasks
+* execute tools
+* restart execution
+* perform automatic recovery
+* mutate `ExecutionStateSnapshot`
+* mutate controller state
+* manage lifecycle transitions
+* emit execution events
+* persist execution state
+* orchestrate execution
+* handle retries
+* perform failure remediation
+* replace `ExecutionStateSnapshot`
+* replace `ExecutionResult`
+* replace `ExecutionEvent`
+* replace `ExecutionFeedback`
+
+It is a read-only reliability validation boundary.
+
+---
+
 # 🚧 What ULTRON Does Not Yet Do
 
 ULTRON is still under active foundation development.
@@ -1696,29 +2186,40 @@ These capabilities are planned for later architectural phases.
 
 # 🛣️ Next Milestone
 
-## v0.86 — Reliability Foundation
+## v0.87 — Failure Handling
 
-The next architectural milestone will begin the reliability phase of ULTRON.
+The next architectural milestone will begin the failure-handling phase of ULTRON.
 
 The reliability roadmap is:
 
 ```text
-v0.86 → Reliability Foundation
+v0.86 → Reliability Foundation          ✅
+
 v0.87 → Failure Handling
+
 v0.88 → Recovery Architecture
+
 v0.89 → Execution Reliability
+
 v0.90 → Reliability Consolidation
 ```
 
-The objective is to strengthen execution behavior while preserving the established boundaries between:
+The objective is to extend execution reliability while preserving the established boundaries between:
 
 ```text
 Task
+
 Execution
+
 State
+
 Events
+
 Results
+
 Feedback
+
+Reliability
 ```
 
 ---
@@ -1729,27 +2230,53 @@ ULTRON is being developed toward a modular AI operating platform that can eventu
 
 ```text
 AI
+
 +
+
 Agents
+
 +
+
 Tasks
+
 +
+
 Tools
+
 +
+
 Automation
+
 +
+
 Voice
+
 +
+
 Vision
+
 +
+
 Memory
+
 +
+
 Multimodal Interaction
+
 +
+
 Execution
+
 +
+
 Observability
+
 +
+
+Reliability
+
++
+
 APIs
 ```
 
@@ -1763,19 +2290,37 @@ ULTRON is intentionally being built in layers.
 
 ```text
 Understand
+
     ↓
+
 Decide
+
     ↓
+
 Define Task
+
     ↓
+
 Manage Task
+
     ↓
+
 Execute
+
     ↓
+
 Observe
+
     ↓
+
+Validate Reliability
+
+    ↓
+
 Represent Result
+
     ↓
+
 Provide Feedback
 ```
 
@@ -1787,7 +2332,7 @@ The goal is to avoid turning the entire system into one large AI-driven executio
 
 # 🏆 Current Foundation Position
 
-As of **v0.85**, ULTRON has established a structured foundation covering:
+As of **v0.86**, ULTRON has established a structured foundation covering:
 
 ```text
 AI Runtime
@@ -1819,14 +2364,19 @@ The execution layer separately maintains:
 
 ```text
 Execution Controller
+
 Execution Context
+
 Execution State Snapshot
+
 Execution Events
+
 Execution Event Store
+
 Execution Metrics
 ```
 
-Runtime event integration now establishes explicit ownership between:
+Runtime event integration established explicit ownership between:
 
 ```text
 Lifecycle Control
@@ -1850,38 +2400,62 @@ ExecutionEventEmitter
 ExecutionEventStore
 ```
 
+v0.86 adds a read-only reliability validation boundary:
+
+```text
+ExecutionStateSnapshot
+      ↓
+ExecutionReliabilityValidator
+      ↓
+ExecutionReliabilityResult
+```
+
 This creates a clear separation between:
 
 ```text
 Decision
+
 Task
+
 Execution
+
 State
+
 Events
+
 Results
+
 Feedback
+
+Reliability
 ```
 
-The next architectural step is **Reliability Foundation in v0.86**.
+The next architectural step is **Failure Handling in v0.87**.
 
 ---
 
 # 📊 Current Test Position
 
 ```text
-v0.85 Runtime Event Integration
+v0.86 Reliability Foundation
 ────────────────────────────────
 
-Targeted Regression          148 passed
-Runtime Success Path          PASS
-Runtime Failure Path          PASS
-Duplicate Failure Event       FIXED
+Targeted Regression          16 passed
+
+Reliability Validation       PASS
+
+Snapshot Preservation        PASS
+
+Deterministic Validation     PASS
+
+Recoverability Validation    PASS
 
 ────────────────────────────────
 
 Full ULTRON Regression
 
-2204 passed
+2220 passed
+
 0 failed
 ```
 
@@ -1892,17 +2466,21 @@ Full ULTRON Regression
 > **Modular Personal AI Assistant, Agent Runtime, Automation & Multimodal Platform**
 
 Built foundation-first.
+
 Designed for intelligent execution.
+
 Engineered for long-term extensibility.
+
+Validated for execution reliability.
 
 ---
 
-**Current Version: v0.85**
+**Current Version: v0.86**
 
-**Current Milestone: Runtime Event Integration**
+**Current Milestone: Reliability Foundation**
 
-**Tests: 2204 passed**
+**Tests: 2220 passed**
 
-**Targeted Regression: 148 passed**
+**Targeted Regression: 16 passed**
 
-**Next: v0.86 Reliability Foundation**
+**Next: v0.87 Failure Handling**
