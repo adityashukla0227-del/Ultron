@@ -2,7 +2,7 @@
 
 ## Modular Personal AI Assistant, Agent Runtime, Automation & Multimodal Platform
 
-> **ULTRON is being engineered as a modular AI operating platform focused on intelligent interaction, agent execution, automation, multimodal capabilities, observability, execution reliability, and a strong architectural foundation.**
+> **ULTRON is being engineered as a modular AI operating platform focused on intelligent interaction, agent execution, automation, multimodal capabilities, observability, execution reliability, recovery architecture, and a strong architectural foundation.**
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric                        | Status                     |
 | ----------------------------- | -------------------------- |
-| **Current Version**           | **v0.87**                  |
-| **Current Milestone**         | **Failure Handling Foundation** |
-| **v0.87 Targeted Regression** | **9 passed**               |
-| **Full ULTRON Regression**    | **2229 passed**            |
+| **Current Version**           | **v0.88**                  |
+| **Current Milestone**         | **Recovery Architecture**  |
+| **v0.88 Targeted Regression** | **22 passed**              |
+| **Full ULTRON Regression**    | **2251 passed**            |
 | **Regression Failures**       | **0**                      |
 | **Python**                    | **3.13+**                  |
 | **Architecture Status**       | **Foundation Development** |
@@ -104,11 +104,29 @@ ExecutionReliabilityResult
 Validity / Recoverability
 ```
 
+### Execution Recovery Planning Path
+
+```text
+ExecutionStateSnapshot
+       +
+ExecutionFailure
+       ↓
+ExecutionReliabilityValidator
+       ↓
+ExecutionRecoveryPlanner
+       ↓
+ExecutionRecovery
+       ↓
+Existing AgentExecutionController
+```
+
+The recovery layer plans a structured recovery action without executing recovery itself.
+
 ---
 
 # 🧠 What is ULTRON?
 
-ULTRON is a modular personal AI assistant and agent platform designed to evolve toward an AI operating system capable of understanding user intent, reasoning about tasks, executing tools, managing execution state, validating execution reliability, interacting through multiple modalities, and eventually automating complex workflows.
+ULTRON is a modular personal AI assistant and agent platform designed to evolve toward an AI operating system capable of understanding user intent, reasoning about tasks, executing tools, managing execution state, validating execution reliability, planning recovery actions, interacting through multiple modalities, and eventually automating complex workflows.
 
 The project is being developed **foundation-first**.
 
@@ -127,7 +145,9 @@ Instead of building a collection of disconnected AI features, ULTRON focuses on 
 * Execution events
 * Execution results
 * Execution feedback
+* Execution failures
 * Execution reliability
+* Recovery planning
 * Multimodal interaction
 * Automation
 * Observability
@@ -212,7 +232,11 @@ Execution events and observability remain separate from execution outcomes and c
 
 Reliability validation must inspect execution state without taking ownership of execution, lifecycle control, event emission, persistence, or orchestration.
 
-### 11. Foundation Before Intelligence Expansion
+### 11. Recovery Without Execution Coupling
+
+Recovery planning determines a structured recovery action without executing that action or directly controlling the execution controller.
+
+### 12. Foundation Before Intelligence Expansion
 
 ULTRON's architecture is stabilized before large-scale autonomous behavior is introduced.
 
@@ -484,50 +508,50 @@ ULTRON separates several concepts that are often incorrectly combined in agent s
 
 ```text
 ToolResult
-
     ↓
-
 Individual Tool Outcome
 ```
 
 ```text
 ExecutionResult
-
     ↓
-
 Overall Execution Outcome
 ```
 
 ```text
 ExecutionEvent
-
     ↓
-
 Observable Runtime Event
 ```
 
 ```text
 ExecutionStateSnapshot
-
     ↓
-
 Execution State Snapshot
 ```
 
 ```text
 ExecutionFeedback
-
     ↓
-
 Consumer-Facing Execution Representation
 ```
 
 ```text
-ExecutionReliabilityResult
-
+ExecutionFailure
     ↓
+Structured Execution Failure Representation
+```
 
+```text
+ExecutionReliabilityResult
+    ↓
 Reliability / Recoverability Representation
+```
+
+```text
+ExecutionRecovery
+    ↓
+Structured Recovery Action
 ```
 
 These are intentionally separate architectural concepts.
@@ -850,15 +874,25 @@ Examples include:
 
 ```text
 execution_started
+
 execution_completed
+
 execution_failed
+
 execution_paused
+
 execution_resumed
+
 execution_cancelled
+
 step_started
+
 step_completed
+
 step_failed
+
 step_retried
+
 step_skipped
 ```
 
@@ -898,7 +932,9 @@ v0.86 introduces:
 
 ```text
 ExecutionReliabilityError
+
 ExecutionReliabilityResult
+
 ExecutionReliabilityValidator
 ```
 
@@ -925,6 +961,7 @@ The following execution states are considered recoverable when their required ex
 
 ```text
 RUNNING
+
 PAUSED
 ```
 
@@ -936,8 +973,11 @@ The following states are not considered recoverable by v0.86:
 
 ```text
 PENDING
+
 FAILED
+
 COMPLETED
+
 CANCELLED
 ```
 
@@ -996,25 +1036,316 @@ The reliability layer is therefore a validation boundary, not a recovery engine.
 
 ---
 
-# 🔄 Reliability and Future Recovery
+# ⚠️ Execution Failure
 
-The v0.86 architecture intentionally prepares a boundary for future recovery systems.
+## v0.87 — Failure Handling Foundation
+
+v0.87 introduces the canonical `ExecutionFailure` representation for ULTRON.
+
+The milestone establishes a structured and immutable failure model without duplicating the existing execution controller, orchestrator, lifecycle, event, or result systems.
+
+### Core Components
 
 ```text
-Snapshot
-   ↓
-Reliability Validation
-   ↓
-Recovery Decision
-   ↓
-Execution Controller
-   ↓
-Orchestrator
+ExecutionFailure
+
+FailureScope
+
+FailureCategory
 ```
 
-Automatic recovery is outside the scope of v0.86.
+### Failure Scopes
 
-Future milestones may build recovery behavior on top of the reliability contract without moving recovery responsibilities into the validator itself.
+```text
+STEP
+
+EXECUTION
+```
+
+### Failure Categories
+
+```text
+EXCEPTION
+
+TOOL_FAILURE
+
+STEP_FAILURE
+
+EXECUTION_FAILURE
+
+UNKNOWN
+```
+
+### Failure Model
+
+`ExecutionFailure` represents:
+
+* execution identity
+* failure scope
+* failure category
+* failure message
+* retryability
+* optional step identity
+* optional metadata
+
+The model is immutable and supports defensive serialization.
+
+### Architectural Boundary
+
+The failure model:
+
+* does not execute recovery
+* does not retry steps
+* does not mutate lifecycle state
+* does not emit events
+* does not replace execution results
+* does not replace execution state
+* does not own exception handling
+
+It is a structured failure representation used by downstream recovery architecture.
+
+---
+
+# 🔄 Execution Recovery
+
+## v0.88 — Recovery Architecture
+
+v0.88 introduces the canonical recovery planning layer for ULTRON.
+
+The milestone establishes a deterministic boundary between:
+
+```text
+Execution State
++
+Execution Failure
+```
+
+and:
+
+```text
+Recovery Action
+```
+
+The recovery architecture is intentionally separated from actual recovery execution.
+
+### Recovery Architecture
+
+```text
+ExecutionStateSnapshot
+        +
+ExecutionFailure
+        ↓
+ExecutionReliabilityValidator
+        ↓
+ExecutionRecoveryPlanner
+        ↓
+ExecutionRecovery
+        ↓
+Existing AgentExecutionController
+```
+
+### Core Components
+
+v0.88 introduces:
+
+```text
+ExecutionRecovery
+
+ExecutionRecoveryPlanner
+
+RecoveryAction
+```
+
+### Recovery Actions
+
+The recovery model defines:
+
+```text
+RESUME
+
+RETRY
+
+SKIP
+
+ABORT
+```
+
+`SKIP` is represented as a supported recovery action but is not automatically selected by the v0.88 foundation planner.
+
+Skip policy remains a higher-level execution decision.
+
+### Deterministic Planning Rules
+
+The initial planner rules are:
+
+```text
+PAUSED
++
+Valid / Recoverable
+        ↓
+RESUME
+```
+
+```text
+RUNNING
++
+Retryable Failure
++
+Matching Current Step
+        ↓
+RETRY
+```
+
+```text
+Non-Retryable Failure
+        ↓
+ABORT
+```
+
+```text
+Invalid / Non-Recoverable State
+        ↓
+ABORT
+```
+
+```text
+FAILED Execution
+        ↓
+ABORT
+```
+
+```text
+RUNNING
++
+No Valid Recovery Condition
+        ↓
+ABORT
+```
+
+Execution-scoped failures do not automatically retry because they do not identify a specific current step.
+
+### ExecutionRecovery
+
+`ExecutionRecovery` is an immutable representation of a recovery decision.
+
+Conceptually:
+
+```text
+ExecutionRecovery
+├── execution_id
+├── action
+├── reason
+├── step_id
+└── metadata
+```
+
+The model provides:
+
+* execution identity
+* structured recovery action
+* deterministic reason
+* optional step identity
+* optional metadata
+* validation
+* defensive serialization
+* immutable representation
+
+### ExecutionRecoveryPlanner
+
+`ExecutionRecoveryPlanner` determines the recovery action from:
+
+```text
+ExecutionStateSnapshot
++
+ExecutionFailure
+```
+
+The planner:
+
+* validates the input types
+* verifies execution identity consistency
+* validates execution reliability
+* determines whether recovery is possible
+* selects a deterministic recovery action
+* returns an immutable `ExecutionRecovery`
+
+The planner does **not**:
+
+* execute recovery
+* mutate execution state
+* control lifecycle
+* manipulate the execution controller
+* emit execution events
+* persist execution state
+* execute tools
+* become a retry engine
+* perform failure remediation
+
+### Recovery Ownership
+
+The ownership boundary is:
+
+```text
+ExecutionStateSnapshot
+        ↓
+State Representation
+```
+
+```text
+ExecutionReliabilityValidator
+        ↓
+Validity / Recoverability
+```
+
+```text
+ExecutionFailure
+        ↓
+Failure Representation
+```
+
+```text
+ExecutionRecoveryPlanner
+        ↓
+Recovery Decision
+```
+
+```text
+ExecutionRecovery
+        ↓
+Structured Recovery Action
+```
+
+```text
+AgentExecutionController
+        ↓
+Actual Recovery Execution
+```
+
+This prevents the recovery architecture from becoming a second execution engine.
+
+---
+
+# 🔗 Recovery and Existing Execution Control
+
+ULTRON already contains execution lifecycle and retry capabilities inside `AgentExecutionController`.
+
+v0.88 does not duplicate those capabilities.
+
+The architectural relationship is:
+
+```text
+Recovery Planning
+        ↓
+ExecutionRecovery
+        ↓
+AgentExecutionController
+        ↓
+Actual Execution Control
+```
+
+The recovery planner only determines what action should be requested.
+
+The existing controller remains responsible for actual lifecycle and execution behavior.
 
 ---
 
@@ -1070,20 +1401,58 @@ ExecutionReliabilityValidator
 ExecutionReliabilityResult
 ```
 
+Failure representation remains separate:
+
+```text
+ExecutionFailure
+       ↓
+Failure Representation
+```
+
+Recovery planning remains separate:
+
+```text
+ExecutionStateSnapshot
+       +
+ExecutionFailure
+       ↓
+ExecutionRecoveryPlanner
+       ↓
+ExecutionRecovery
+```
+
 Therefore:
 
 ```text
 ToolResult
+
     ≠
+
 ExecutionResult
+
     ≠
+
 ExecutionEvent
+
     ≠
+
 ExecutionStateSnapshot
+
     ≠
+
 ExecutionFeedback
+
     ≠
+
+ExecutionFailure
+
+    ≠
+
 ExecutionReliabilityResult
+
+    ≠
+
+ExecutionRecovery
 ```
 
 This separation is a core architectural principle of ULTRON.
@@ -1192,6 +1561,8 @@ Current concepts include:
 * progress tracking
 * runtime outcome tracking
 * reliability validation
+* failure representation
+* recovery decisions
 
 Observability is intentionally separated from:
 
@@ -1199,6 +1570,7 @@ Observability is intentionally separated from:
 * execution result
 * consumer feedback
 * reliability decisions
+* recovery execution
 
 ---
 
@@ -1237,114 +1609,99 @@ Every architectural milestone receives focused validation before being considere
 
 ---
 
-# 🧪 v0.86 Testing
+# 🧪 v0.88 Testing
 
-### Reliability Foundation
+### Recovery Architecture
 
-The v0.86 reliability implementation was validated through dedicated tests covering:
+The v0.88 recovery implementation was validated through dedicated tests covering:
 
-* immutable `ExecutionReliabilityResult`
-* validator construction
-* snapshot type validation
-* running-state recoverability
-* paused-state recoverability
-* pending-state handling
-* failed-state handling
-* completed-state handling
-* cancelled-state handling
-* current-step consistency
-* terminal-state consistency
-* deterministic validation
-* snapshot immutability
-* reliability result correctness
-* invalid execution-state combinations
-* recoverability boundaries
+* immutable `ExecutionRecovery`
+* recovery action validation
+* resume recovery
+* retry recovery
+* skip recovery representation
+* abort recovery
+* defensive metadata serialization
+* retry step requirements
+* skip step requirements
+* planner type validation
+* execution identity validation
+* paused execution recovery
+* retryable current-step recovery
+* non-retryable failure handling
+* mismatched failed-step handling
+* running execution without failure
+* failed execution handling
+* execution-scoped failure handling
+* non-recoverable state handling
+* deterministic recovery planning
+* package-level recovery exports
 
 ```text
 Targeted Regression
 ────────────────────────
 
-16 passed
+22 passed
 
 0 failed
 ```
 
-### Recoverability Verification
+### Recovery Boundary Verification
 
-Recoverable states:
-
-```text
-RUNNING
-PAUSED
-```
-
-Non-recoverable states:
+The recovery architecture preserves the existing controller ownership:
 
 ```text
-PENDING
-FAILED
-COMPLETED
-CANCELLED
+ExecutionRecoveryPlanner
+        ↓
+ExecutionRecovery
+        ↓
+AgentExecutionController
 ```
 
-### Read-Only Verification
-
-The validator does not mutate:
-
-```text
-ExecutionStateSnapshot
-```
-
-Validation remains deterministic and side-effect free.
-
-### v0.85 Runtime Event Regression
-
-The existing v0.85 runtime event architecture remains validated.
-
-Successful execution:
-
-```text
-execution_started
-step_started
-step_completed
-execution_completed
-```
-
-Failed execution:
-
-```text
-execution_started
-step_started
-step_failed
-execution_failed
-```
+The planner does not execute recovery or mutate runtime state.
 
 ### Full ULTRON Regression
 
 ```text
-2220 passed
+2251 passed
 0 failed
 ```
 
-The v0.86 reliability foundation was integrated without introducing regressions into the existing execution, event, feedback, or task architecture.
+The v0.88 recovery architecture was integrated without introducing regressions into the existing execution, event, feedback, task, failure, or reliability architecture.
 
 ---
 
-# 🛡️ v0.86 Architectural Boundary
+# 🛡️ v0.88 Architectural Boundary
 
-The v0.86 reliability boundary is:
+The v0.88 recovery boundary is:
 
 ```text
 Execution State
-       ↓
+        ↓
 ExecutionStateSnapshot
-       ↓
+        +
+ExecutionFailure
+        ↓
 ExecutionReliabilityValidator
-       ↓
+        ↓
+ExecutionRecoveryPlanner
+        ↓
+ExecutionRecovery
+        ↓
+AgentExecutionController
+```
+
+The reliability boundary remains:
+
+```text
+ExecutionStateSnapshot
+        ↓
+ExecutionReliabilityValidator
+        ↓
 ExecutionReliabilityResult
 ```
 
-The existing lifecycle boundary remains:
+The lifecycle boundary remains:
 
 ```text
 Execution Lifecycle
@@ -1384,7 +1741,7 @@ ExecutionFeedbackAdapter
 ExecutionFeedback
 ```
 
-Reliability validation does not replace or absorb any of these systems.
+Recovery planning does not replace or absorb any of these systems.
 
 It does not introduce:
 
@@ -1393,8 +1750,10 @@ It does not introduce:
 * another orchestrator
 * another event bus
 * another event store
-* automatic recovery engine
-* parallel execution-state system
+* another execution-state system
+* another retry engine
+* automatic recovery execution
+* parallel recovery system
 
 ---
 
@@ -1420,6 +1779,8 @@ ultron/
 │   │   ├── execution_event_store.py
 │   │   ├── execution_state_snapshot.py
 │   │   ├── execution_reliability.py
+│   │   ├── execution_failure.py
+│   │   ├── execution_recovery.py
 │   │   ├── execution_result.py
 │   │   ├── execution_feedback.py
 │   │   ├── execution_feedback_adapter.py
@@ -1444,6 +1805,8 @@ ultron/
 │   │   └── ...
 │   │
 │   ├── test_execution_reliability.py
+│   ├── test_execution_failure.py
+│   ├── test_execution_recovery.py
 │   │
 │   ├── intelligence/
 │   │   └── ...
@@ -1468,29 +1831,34 @@ Current package-level execution-related exports include:
 
 ```python
 ExecutionResult
-
 ExecutionResultError
 
 ExecutionFeedback
-
 ExecutionFeedbackError
 
 ExecutionFeedbackAdapter
-
 ExecutionFeedbackAdapterError
+
+ExecutionRecovery
+ExecutionRecoveryPlanner
+RecoveryAction
 ```
 
-The v0.86 reliability module currently maintains its own explicit public API:
+The reliability and failure layers maintain their own explicit public APIs:
 
 ```python
 ExecutionReliabilityError
-
 ExecutionReliabilityResult
-
 ExecutionReliabilityValidator
 ```
 
-The reliability API remains intentionally standalone until broader package-level exposure is architecturally required.
+```python
+ExecutionFailure
+FailureScope
+FailureCategory
+```
+
+The recovery API is now exposed at package level because recovery planning has become a defined architectural boundary in v0.88.
 
 ---
 
@@ -1498,38 +1866,24 @@ The reliability API remains intentionally standalone until broader package-level
 
 ```text
 v0.70 → Intelligence Foundation              ✅
-
 v0.71 → Provider Abstraction                 ✅
-
 v0.72 → Claude Provider                      ✅
-
 v0.73 → AI Runtime Integration               ✅
-
 v0.74 → Context Integration                  ✅
-
 v0.75 → Intent Understanding                 ✅
-
 v0.76 → Agent Decision Foundation            ✅
-
 v0.77 → Decision Routing Foundation          ✅
-
 v0.78 → Response / Action Boundary           ✅
-
 v0.79 → Task Abstraction                     ✅
-
 v0.80 → Task Lifecycle Foundation            ✅
-
 v0.81 → Task Context & State                 ✅
-
 v0.82 → Task Input / Output Contracts        ✅
-
 v0.83 → Execution Result Abstraction         ✅
-
 v0.84 → Execution Feedback Interface         ✅
-
 v0.85 → Runtime Event Integration             ✅
-
 v0.86 → Reliability Foundation                ✅
+v0.87 → Failure Handling Foundation          ✅
+v0.88 → Recovery Architecture                ✅
 ```
 
 ---
@@ -1558,15 +1912,15 @@ v0.84 → Execution Feedback Interface
 v0.85 → Runtime Event Integration
 
 v0.86 → Reliability Foundation
+
+v0.87 → Failure Handling Foundation
+
+v0.88 → Recovery Architecture
 ```
 
 ## Upcoming
 
 ```text
-v0.87 → Failure Handling Foundation
-
-v0.88 → Recovery Architecture
-
 v0.89 → Execution Reliability
 
 v0.90 → Reliability Consolidation
@@ -1712,11 +2066,91 @@ v0.84 → Execution Feedback Interface
 v0.85 → Runtime Event Integration
 
 v0.86 → Reliability Foundation
+
+v0.87 → Failure Handling Foundation
+
+v0.88 → Recovery Architecture
 ```
 
 ---
 
 # 📚 Version History
+
+## v0.88 — Recovery Architecture
+
+### Overview
+
+v0.88 introduces the canonical **Execution Recovery** architecture for ULTRON.
+
+The milestone establishes a deterministic recovery planning layer that connects execution state and failure information to structured recovery actions without duplicating the existing execution controller or execution engine.
+
+### Core Components
+
+* `ExecutionRecovery`
+* `ExecutionRecoveryPlanner`
+* `RecoveryAction`
+
+### Recovery Actions
+
+```text
+RESUME
+
+RETRY
+
+SKIP
+
+ABORT
+```
+
+### Recovery Planning Flow
+
+```text
+ExecutionStateSnapshot
+        +
+ExecutionFailure
+        ↓
+ExecutionReliabilityValidator
+        ↓
+ExecutionRecoveryPlanner
+        ↓
+ExecutionRecovery
+        ↓
+AgentExecutionController
+```
+
+### Deterministic Recovery Rules
+
+* Paused and recoverable execution → `RESUME`
+* Running execution with retryable matching current-step failure → `RETRY`
+* Non-retryable failure → `ABORT`
+* Invalid or non-recoverable state → `ABORT`
+* Failed execution → `ABORT`
+* Running execution without a valid recovery condition → `ABORT`
+* Execution-scoped failure does not automatically retry
+
+### Design Principles
+
+* Immutable recovery representation
+* Deterministic recovery planning
+* Explicit recovery actions
+* Execution identity validation
+* Integration with existing reliability validation
+* Existing controller remains responsible for actual execution control
+* No duplicate retry engine
+* No duplicate lifecycle system
+* No execution mutation
+* No event emission
+* No persistence
+* No tool execution
+* No recovery execution
+
+### Regression
+
+* v0.88 targeted regression: **22 passed**
+* Full ULTRON regression: **2251 passed**
+* Regression failures: **0**
+
+---
 
 ## v0.87 — Failure Handling Foundation
 
@@ -1728,43 +2162,44 @@ The milestone establishes a structured and immutable failure model without dupli
 
 ### Core Components
 
-- `ExecutionFailure`
-- `FailureScope`
-- `FailureCategory`
+* `ExecutionFailure`
+* `FailureScope`
+* `FailureCategory`
 
 ### Failure Scopes
 
-- `STEP`
-- `EXECUTION`
+* `STEP`
+* `EXECUTION`
 
 ### Failure Categories
 
-- `EXCEPTION`
-- `TOOL_FAILURE`
-- `STEP_FAILURE`
-- `EXECUTION_FAILURE`
-- `UNKNOWN`
+* `EXCEPTION`
+* `TOOL_FAILURE`
+* `STEP_FAILURE`
+* `EXECUTION_FAILURE`
+* `UNKNOWN`
 
 ### Design Principles
 
-- Immutable failure representation
-- Explicit execution and step scope
-- Explicit retryability
-- Structured metadata
-- Defensive serialization
-- No execution logic
-- No retry engine
-- No recovery engine
-- No lifecycle mutation
-- No event emission
-- No exception handling ownership
+* Immutable failure representation
+* Explicit execution and step scope
+* Explicit retryability
+* Structured metadata
+* Defensive serialization
+* No execution logic
+* No retry engine
+* No recovery engine
+* No lifecycle mutation
+* No event emission
+* No exception handling ownership
 
 ### Regression
 
-- v0.87 targeted regression: **9 passed**
-- Full ULTRON regression: **2229 passed**
+* v0.87 targeted regression: **9 passed**
+* Full ULTRON regression: **2229 passed**
 
 ---
+
 ## v0.86 — Reliability Foundation
 
 ### Added
@@ -1782,6 +2217,7 @@ Recoverable states:
 
 ```text
 RUNNING
+
 PAUSED
 ```
 
@@ -1789,8 +2225,11 @@ Non-recoverable states:
 
 ```text
 PENDING
+
 FAILED
+
 COMPLETED
+
 CANCELLED
 ```
 
@@ -1852,17 +2291,11 @@ Controller-owned:
 
 ```text
 execution_started
-
 execution_paused
-
 execution_resumed
-
 execution_cancelled
-
 step_started
-
 step_retried
-
 step_skipped
 ```
 
@@ -1870,11 +2303,8 @@ Orchestrator-owned:
 
 ```text
 execution_completed
-
 execution_failed
-
 step_completed
-
 step_failed
 ```
 
@@ -2086,51 +2516,71 @@ This workflow is intended to minimize regressions and architectural duplication.
 
 # 📌 Current Scope
 
-## v0.86 — Reliability Foundation
+## v0.88 — Recovery Architecture
 
-Current scope includes the reliability validation boundary:
+Current scope includes the recovery planning boundary:
 
 ```text
 ExecutionStateSnapshot
-       ↓
+        +
+ExecutionFailure
+        ↓
 ExecutionReliabilityValidator
-       ↓
-ExecutionReliabilityResult
+        ↓
+ExecutionRecoveryPlanner
+        ↓
+ExecutionRecovery
+        ↓
+AgentExecutionController
 ```
 
-The milestone validates execution-state consistency and determines whether an execution is currently recoverable.
+The milestone determines structured recovery actions without executing recovery itself.
 
-Recoverable states:
+Supported recovery actions:
 
 ```text
-RUNNING
-PAUSED
+RESUME
+
+RETRY
+
+SKIP
+
+ABORT
 ```
 
-Non-recoverable states:
+Current deterministic planner behavior includes:
 
 ```text
-PENDING
-FAILED
-COMPLETED
-CANCELLED
+PAUSED + RECOVERABLE
+        ↓
+RESUME
 ```
 
-The reliability layer remains read-only and deterministic.
+```text
+RUNNING + RETRYABLE MATCHING FAILURE
+        ↓
+RETRY
+```
 
-It does not yet provide:
+```text
+INVALID / NON-RECOVERABLE / NON-RETRYABLE
+        ↓
+ABORT
+```
 
-* automatic recovery
-* crash recovery execution
+The recovery layer does not yet provide:
+
+* automatic recovery execution
 * persistent recovery sessions
 * distributed recovery
-* recovery orchestration
-* failure remediation
-* retry policy redesign
-* event replay
+* advanced failure remediation
+* dynamic recovery policies
 * checkpoint restoration
-* automatic state restoration
+* event replay
+* autonomous recovery orchestration
 * distributed execution coordination
+* adaptive retry policy
+* autonomous multi-step recovery strategies
 
 These concerns belong to later milestones.
 
@@ -2205,6 +2655,29 @@ It is a read-only reliability validation boundary.
 
 ---
 
+# 🚫 What ExecutionRecoveryPlanner Does Not Do
+
+`ExecutionRecoveryPlanner` does **not**:
+
+* execute recovery
+* execute tools
+* mutate `ExecutionStateSnapshot`
+* mutate controller state
+* manage lifecycle transitions
+* emit execution events
+* persist execution state
+* restart execution
+* retry steps directly
+* skip steps directly
+* perform failure remediation
+* replace `AgentExecutionController`
+* replace `ExecutionReliabilityValidator`
+* replace `ExecutionFailure`
+
+It is a deterministic recovery decision boundary.
+
+---
+
 # 🚧 What ULTRON Does Not Yet Do
 
 ULTRON is still under active foundation development.
@@ -2233,25 +2706,25 @@ These capabilities are planned for later architectural phases.
 
 # 🛣️ Next Milestone
 
-## v0.88 — Recovery Architecture
+## v0.89 — Execution Reliability
 
-The next architectural milestone will begin the recovery architecture phase of ULTRON.
+The next architectural milestone will continue the execution reliability phase of ULTRON.
 
 The reliability roadmap is:
 
 ```text
 v0.86 → Reliability Foundation          ✅
 
-v0.87 → Failure Handling
+v0.87 → Failure Handling Foundation     ✅
 
-v0.88 → Recovery Architecture
+v0.88 → Recovery Architecture           ✅
 
 v0.89 → Execution Reliability
 
 v0.90 → Reliability Consolidation
 ```
 
-The objective is to extend execution reliability while preserving the established boundaries between:
+The objective is to continue strengthening execution reliability while preserving the established boundaries between:
 
 ```text
 Task
@@ -2266,7 +2739,11 @@ Results
 
 Feedback
 
+Failure
+
 Reliability
+
+Recovery
 ```
 
 ---
@@ -2277,53 +2754,31 @@ ULTRON is being developed toward a modular AI operating platform that can eventu
 
 ```text
 AI
-
 +
-
 Agents
-
 +
-
 Tasks
-
 +
-
 Tools
-
 +
-
 Automation
-
 +
-
 Voice
-
 +
-
 Vision
-
 +
-
 Memory
-
 +
-
 Multimodal Interaction
-
 +
-
 Execution
-
 +
-
 Observability
-
 +
-
 Reliability
-
 +
-
+Recovery
++
 APIs
 ```
 
@@ -2337,37 +2792,25 @@ ULTRON is intentionally being built in layers.
 
 ```text
 Understand
-
     ↓
-
 Decide
-
     ↓
-
 Define Task
-
     ↓
-
 Manage Task
-
     ↓
-
 Execute
-
     ↓
-
 Observe
-
     ↓
-
+Represent Failure
+    ↓
 Validate Reliability
-
     ↓
-
+Plan Recovery
+    ↓
 Represent Result
-
     ↓
-
 Provide Feedback
 ```
 
@@ -2379,7 +2822,7 @@ The goal is to avoid turning the entire system into one large AI-driven executio
 
 # 🏆 Current Foundation Position
 
-As of **v0.86**, ULTRON has established a structured foundation covering:
+As of **v0.88**, ULTRON has established a structured foundation covering:
 
 ```text
 AI Runtime
@@ -2421,6 +2864,12 @@ Execution Events
 Execution Event Store
 
 Execution Metrics
+
+Execution Failure
+
+Execution Reliability
+
+Execution Recovery Planning
 ```
 
 Runtime event integration established explicit ownership between:
@@ -2447,7 +2896,7 @@ ExecutionEventEmitter
 ExecutionEventStore
 ```
 
-v0.86 adds a read-only reliability validation boundary:
+v0.86 added a read-only reliability validation boundary:
 
 ```text
 ExecutionStateSnapshot
@@ -2455,6 +2904,30 @@ ExecutionStateSnapshot
 ExecutionReliabilityValidator
       ↓
 ExecutionReliabilityResult
+```
+
+v0.87 added structured failure representation:
+
+```text
+ExecutionFailure
+      ↓
+Failure Representation
+```
+
+v0.88 added deterministic recovery planning:
+
+```text
+ExecutionStateSnapshot
+        +
+ExecutionFailure
+        ↓
+ExecutionReliabilityValidator
+        ↓
+ExecutionRecoveryPlanner
+        ↓
+ExecutionRecovery
+        ↓
+AgentExecutionController
 ```
 
 This creates a clear separation between:
@@ -2474,34 +2947,42 @@ Results
 
 Feedback
 
+Failure
+
 Reliability
+
+Recovery
 ```
 
-The next architectural step is **Recovery Architecture in v0.88**.
+The next architectural step is **Execution Reliability in v0.89**.
 
 ---
 
 # 📊 Current Test Position
 
 ```text
-v0.87 Failure Handling Foundation
+v0.88 Recovery Architecture
 ────────────────────────────────
 
-Targeted Regression          9 passed
+Targeted Regression          22 passed
 
-Failure Model Validation     PASS
+Recovery Model Validation    PASS
 
-Snapshot Preservation        PASS
+Planner Validation           PASS
 
-Deterministic Validation     PASS
+Failure Integration          PASS
+
+Reliability Integration      PASS
 
 Serialization Validation     PASS
+
+Execution Boundary           PASS
 
 ────────────────────────────────
 
 Full ULTRON Regression
 
-2229 passed
+2251 passed
 
 0 failed
 ```
@@ -2518,16 +2999,20 @@ Designed for intelligent execution.
 
 Engineered for long-term extensibility.
 
-Validated for execution reliability.
+Structured for execution reliability.
+
+Designed for deterministic recovery planning.
+
+Validated through continuous regression testing.
 
 ---
 
-**Current Version: v0.87**
+**Current Version: v0.88**
 
-**Current Milestone: Failure Handling Foundation**
+**Current Milestone: Recovery Architecture**
 
-**Tests: 2229 passed**
+**Tests: 2251 passed**
 
-**Targeted Regression: 9 passed**
+**Targeted Regression: 22 passed**
 
-**Next: v0.88 Recovery Architecture**
+**Next: v0.89 Execution Reliability**

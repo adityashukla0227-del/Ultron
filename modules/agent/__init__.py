@@ -12,3 +12,9 @@ from modules.agent.execution_result import (
     ExecutionResult,
     ExecutionResultError,
 )
+
+from modules.agent.execution_recovery import (
+    ExecutionRecovery,
+    ExecutionRecoveryPlanner,
+    RecoveryAction,
+)
