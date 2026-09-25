@@ -1,7 +1,7 @@
 """
 Ultron Execution Reliability
 
-v0.89 — Execution Reliability
+v0.90 — Reliability Consolidation
 
 Provides deterministic validation of execution state snapshots.
 
@@ -178,10 +178,24 @@ class ExecutionReliabilityValidator:
                 ),
             )
 
-        if (
-            snapshot.status == "completed"
-            and snapshot.pending_steps != 0
-        ):
+        if snapshot.status == "completed":
+            return self._validate_completed_consistency(snapshot)
+
+        return ExecutionReliabilityResult(
+            execution_id=snapshot.execution_id,
+            status=snapshot.status,
+            valid=True,
+            recoverable=False,
+            reason="Execution has reached a terminal state.",
+        )
+
+    def _validate_completed_consistency(
+        self,
+        snapshot: ExecutionStateSnapshot,
+    ) -> ExecutionReliabilityResult:
+        """Validate cross-field consistency for completed execution."""
+
+        if snapshot.pending_steps != 0:
             return ExecutionReliabilityResult(
                 execution_id=snapshot.execution_id,
                 status=snapshot.status,
@@ -193,10 +207,7 @@ class ExecutionReliabilityValidator:
                 ),
             )
 
-        if (
-            snapshot.status == "completed"
-            and snapshot.failed_steps != 0
-        ):
+        if snapshot.failed_steps != 0:
             return ExecutionReliabilityResult(
                 execution_id=snapshot.execution_id,
                 status=snapshot.status,
