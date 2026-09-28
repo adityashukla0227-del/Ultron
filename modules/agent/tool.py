@@ -1,6 +1,6 @@
 """
 Ultron Agent Tool
-Version: v0.38
+Version: v0.91
 
 Represents a tool that can be assigned to an Ultron Agent.
 
@@ -10,6 +10,9 @@ Responsibilities:
 - Store tool configuration
 - Track enabled/disabled state
 - Store executable handler
+- Store tool version
+- Store tool capabilities
+- Store extensibility metadata
 - Execute tools safely
 - Merge tool configuration with runtime parameters
 - Return standardized ToolResult objects
@@ -18,7 +21,7 @@ Responsibilities:
 """
 
 from datetime import datetime
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from modules.agent.tool_result import ToolResult
 
@@ -26,6 +29,10 @@ from modules.agent.tool_result import ToolResult
 class AgentTool:
     """
     Represents a tool available to an Ultron Agent.
+
+    v0.91 adds an extensibility metadata layer without
+    changing the existing tool execution and serialization
+    contracts.
     """
 
     def __init__(
@@ -35,6 +42,9 @@ class AgentTool:
         enabled: bool = True,
         config: Optional[Dict[str, Any]] = None,
         handler: Optional[Callable[..., Any]] = None,
+        version: str = "1.0",
+        capabilities: Optional[List[str]] = None,
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> None:
 
         self.name = (
@@ -59,21 +69,29 @@ class AgentTool:
 
         self.handler = handler
 
+        self.version = version
+
+        if capabilities is None:
+            self.capabilities = []
+        elif not isinstance(capabilities, list):
+            raise ValueError(
+                "Tool capabilities must be a list."
+            )
+        else:
+            self.capabilities = list(
+                capabilities
+            )
+
+        self.metadata = dict(
+            metadata or {}
+        )
+
         self.validate()
 
-    # ========================================================
     # Validation
-    # ========================================================
-
     def validate(self) -> bool:
-        """
-        Validate the complete tool configuration.
-        """
 
-        if not isinstance(
-            self.name,
-            str,
-        ):
+        if not isinstance(self.name, str):
             raise ValueError(
                 "Tool name must be a string."
             )
@@ -83,61 +101,66 @@ class AgentTool:
                 "Tool name is required."
             )
 
-        if not isinstance(
-            self.description,
-            str,
-        ):
+        if not isinstance(self.description, str):
             raise ValueError(
                 "Tool description must be a string."
             )
 
-        if not isinstance(
-            self.enabled,
-            bool,
-        ):
+        if not isinstance(self.enabled, bool):
             raise ValueError(
                 "Tool enabled state must be a boolean."
             )
 
-        if not isinstance(
-            self.config,
-            dict,
-        ):
+        if not isinstance(self.config, dict):
             raise ValueError(
                 "Tool config must be a dictionary."
             )
 
-        if (
-            self.handler is not None
-            and not callable(
-                self.handler
-            )
+        if self.handler is not None and not callable(
+            self.handler
         ):
             raise ValueError(
                 "Tool handler must be callable."
             )
 
+        if not isinstance(self.version, str):
+            raise ValueError(
+                "Tool version must be a string."
+            )
+
+        if not self.version.strip():
+            raise ValueError(
+                "Tool version is required."
+            )
+
+        if not isinstance(self.capabilities, list):
+            raise ValueError(
+                "Tool capabilities must be a list."
+            )
+
+        for capability in self.capabilities:
+            if not isinstance(capability, str):
+                raise ValueError(
+                    "Tool capabilities must contain strings."
+                )
+
+        if not isinstance(self.metadata, dict):
+            raise ValueError(
+                "Tool metadata must be a dictionary."
+            )
+
         return True
 
-    # ========================================================
-    # Configuration Management
-    # ========================================================
-
+    # Configuration
     def set_config(
         self,
         config: Optional[Dict[str, Any]],
     ) -> None:
-        """
-        Replace the complete tool configuration.
-        """
 
         if config is None:
             config = {}
 
-        if not isinstance(
-            config,
-            dict,
-        ):
+        if not isinstance(config, dict):
             raise ValueError(
                 "Tool config must be a dictionary."
             )
@@ -150,9 +173,6 @@ class AgentTool:
         self,
         **config,
     ) -> None:
-        """
-        Update selected configuration values.
-        """
 
         self.config.update(
             config
@@ -163,12 +183,6 @@ class AgentTool:
         key: Optional[str] = None,
         default: Any = None,
     ) -> Any:
-        """
-        Get a configuration value.
-
-        If key is None, return the complete
-        configuration dictionary.
-        """
 
         if key is None:
             return dict(
@@ -180,21 +194,153 @@ class AgentTool:
             default,
         )
 
-    # ========================================================
-    # Handler Management
-    # ========================================================
+    # Extensibility Metadata
+    def set_version(
+        self,
+        version: str,
+    ) -> None:
 
+        if not isinstance(version, str):
+            raise ValueError(
+                "Tool version must be a string."
+            )
+
+        version = version.strip()
+
+        if not version:
+            raise ValueError(
+                "Tool version is required."
+            )
+
+        self.version = version
+
+    def get_version(self) -> str:
+
+        return self.version
+
+    def set_capabilities(
+        self,
+        capabilities: Optional[List[str]],
+    ) -> None:
+
+        if capabilities is None:
+            capabilities = []
+
+        if not isinstance(capabilities, list):
+            raise ValueError(
+                "Tool capabilities must be a list."
+            )
+
+        for capability in capabilities:
+            if not isinstance(capability, str):
+                raise ValueError(
+                    "Tool capabilities must contain strings."
+                )
+
+        self.capabilities = list(
+            capabilities
+        )
+
+    def add_capability(
+        self,
+        capability: str,
+    ) -> bool:
+
+        if not isinstance(capability, str):
+            raise ValueError(
+                "Tool capability must be a string."
+            )
+
+        capability = capability.strip()
+
+        if not capability:
+            raise ValueError(
+                "Tool capability is required."
+            )
+
+        if capability in self.capabilities:
+            return False
+
+        self.capabilities.append(
+            capability
+        )
+
+        return True
+
+    def remove_capability(
+        self,
+        capability: str,
+    ) -> bool:
+
+        if not isinstance(capability, str):
+            return False
+
+        capability = capability.strip()
+
+        if capability not in self.capabilities:
+            return False
+
+        self.capabilities.remove(
+            capability
+        )
+
+        return True
+
+    def get_capabilities(self) -> List[str]:
+
+        return list(
+            self.capabilities
+        )
+
+    def set_metadata(
+        self,
+        metadata: Optional[Dict[str, Any]],
+    ) -> None:
+
+        if metadata is None:
+            metadata = {}
+
+        if not isinstance(metadata, dict):
+            raise ValueError(
+                "Tool metadata must be a dictionary."
+            )
+
+        self.metadata = dict(
+            metadata
+        )
+
+    def update_metadata(
+        self,
+        **metadata,
+    ) -> None:
+
+        self.metadata.update(
+            metadata
+        )
+
+    def get_metadata(
+        self,
+        key: Optional[str] = None,
+        default: Any = None,
+    ) -> Any:
+
+        if key is None:
+            return dict(
+                self.metadata
+            )
+
+        return self.metadata.get(
+            key,
+            default,
+        )
+
+    # Handler
     def set_handler(
         self,
         handler: Callable[..., Any],
     ) -> None:
-        """
-        Assign an executable handler to the tool.
-        """
 
-        if not callable(
-            handler
-        ):
+        if not callable(handler):
             raise ValueError(
                 "Tool handler must be callable."
             )
@@ -202,41 +348,16 @@ class AgentTool:
         self.handler = handler
 
     def has_handler(self) -> bool:
-        """
-        Return True when a handler is assigned.
-        """
 
-        return (
-            self.handler is not None
-        )
+        return self.handler is not None
 
-    # ========================================================
     # Execution
-    # ========================================================
-
     def execute(
         self,
         **kwargs,
     ) -> ToolResult:
-        """
-        Execute the tool handler.
-
-        Returns:
-            ToolResult containing success/failure,
-            result, error and execution timing.
-
-        Tool configuration is merged with runtime
-        parameters.
-
-        Runtime parameters take priority over
-        stored configuration.
-        """
 
         started_at = datetime.now()
-
-        # ----------------------------------------------------
-        # Disabled Tool
-        # ----------------------------------------------------
 
         if not self.enabled:
 
@@ -253,10 +374,6 @@ class AgentTool:
                 finished_at=finished_at.isoformat(),
             )
 
-        # ----------------------------------------------------
-        # Missing Handler
-        # ----------------------------------------------------
-
         if self.handler is None:
 
             finished_at = datetime.now()
@@ -272,10 +389,6 @@ class AgentTool:
                 finished_at=finished_at.isoformat(),
             )
 
-        # ----------------------------------------------------
-        # Merge Configuration + Runtime Parameters
-        # ----------------------------------------------------
-
         parameters = dict(
             self.config
         )
@@ -283,10 +396,6 @@ class AgentTool:
         parameters.update(
             kwargs
         )
-
-        # ----------------------------------------------------
-        # Execute Handler
-        # ----------------------------------------------------
 
         try:
 
@@ -318,45 +427,31 @@ class AgentTool:
                 finished_at=finished_at.isoformat(),
             )
 
-    # ========================================================
     # Enable / Disable
-    # ========================================================
-
     def enable(self) -> bool:
-        """
-        Enable the tool.
-        """
 
         self.enabled = True
 
         return True
 
     def disable(self) -> bool:
-        """
-        Disable the tool.
-        """
 
         self.enabled = False
 
         return True
 
     def is_enabled(self) -> bool:
-        """
-        Return whether the tool is enabled.
-        """
 
         return self.enabled
 
-    # ========================================================
     # Serialization
-    # ========================================================
-
     def to_dict(self) -> Dict[str, Any]:
         """
         Convert the tool into a serializable dictionary.
 
-        The executable handler is intentionally not
-        serialized.
+        The executable handler and extensibility metadata are
+        intentionally not serialized in the existing tool
+        serialization contract.
         """
 
         return {
@@ -368,23 +463,14 @@ class AgentTool:
             ),
         }
 
-    # ========================================================
     # Restoration
-    # ========================================================
-
     @classmethod
     def from_dict(
         cls,
         data: Dict[str, Any],
     ) -> "AgentTool":
-        """
-        Restore an AgentTool from a dictionary.
-        """
 
-        if not isinstance(
-            data,
-            dict,
-        ):
+        if not isinstance(data, dict):
             raise ValueError(
                 "Tool data must be a dictionary."
             )
@@ -406,21 +492,28 @@ class AgentTool:
                 "config",
                 {},
             ),
+            version=data.get(
+                "version",
+                "1.0",
+            ),
+            capabilities=data.get(
+                "capabilities",
+                [],
+            ),
+            metadata=data.get(
+                "metadata",
+                {},
+            ),
         )
 
-    # ========================================================
-    # Representation
-    # ========================================================
-
     def __repr__(self) -> str:
-        """
-        Return a developer-friendly representation.
-        """
 
         return (
             f"AgentTool("
             f"name='{self.name}', "
+            f"version='{self.version}', "
             f"enabled={self.enabled}, "
+            f"capabilities={self.capabilities}, "
             f"has_handler={self.has_handler()}"
             f")"
         )

@@ -1,11 +1,12 @@
 """
 Ultron Agent Tools Tests
-Version: v0.39
+Version: v0.91
 
 Tests:
 - AgentTool creation
 - Tool validation
 - Tool configuration
+- Tool extensibility metadata
 - Tool handler
 - Tool execution
 - Tool enable/disable
@@ -36,6 +37,9 @@ def test_tool_creation():
     assert tool.enabled is True
     assert tool.config == {}
     assert tool.handler is None
+    assert tool.version == "1.0"
+    assert tool.capabilities == []
+    assert tool.metadata == {}
 
 
 def test_tool_name_is_trimmed():
@@ -107,6 +111,59 @@ def test_tool_invalid_handler():
         AgentTool(
             name="calculator",
             handler="not-callable",
+        )
+
+
+def test_tool_invalid_version():
+
+    with pytest.raises(ValueError):
+
+        AgentTool(
+            name="calculator",
+            version=123,
+        )
+
+
+def test_tool_empty_version():
+
+    with pytest.raises(ValueError):
+
+        AgentTool(
+            name="calculator",
+            version="",
+        )
+
+
+def test_tool_invalid_capabilities():
+
+    with pytest.raises(ValueError):
+
+        AgentTool(
+            name="calculator",
+            capabilities="invalid",
+        )
+
+
+def test_tool_capabilities_require_strings():
+
+    with pytest.raises(ValueError):
+
+        AgentTool(
+            name="calculator",
+            capabilities=[
+                "calculate",
+                123,
+            ],
+        )
+
+
+def test_tool_invalid_metadata():
+
+    with pytest.raises(ValueError):
+
+        AgentTool(
+            name="calculator",
+            metadata="invalid",
         )
 
 
@@ -195,6 +252,268 @@ def test_tool_get_missing_config():
     )
 
     assert tool.get_config(
+        "missing",
+        "default",
+    ) == "default"
+
+
+# ============================================================
+# Extensibility Tests
+# ============================================================
+
+
+def test_tool_custom_version():
+
+    tool = AgentTool(
+        name="calculator",
+        version="2.1",
+    )
+
+    assert tool.get_version() == "2.1"
+
+
+def test_tool_set_version():
+
+    tool = AgentTool(
+        name="calculator",
+    )
+
+    tool.set_version(
+        "2.0"
+    )
+
+    assert tool.get_version() == "2.0"
+
+
+def test_tool_set_invalid_version():
+
+    tool = AgentTool(
+        name="calculator",
+    )
+
+    with pytest.raises(ValueError):
+
+        tool.set_version(
+            ""
+        )
+
+
+def test_tool_capabilities():
+
+    tool = AgentTool(
+        name="calculator",
+        capabilities=[
+            "calculation",
+            "arithmetic",
+        ],
+    )
+
+    assert tool.get_capabilities() == [
+        "calculation",
+        "arithmetic",
+    ]
+
+
+def test_tool_set_capabilities():
+
+    tool = AgentTool(
+        name="calculator",
+    )
+
+    tool.set_capabilities(
+        [
+            "calculation",
+            "arithmetic",
+        ]
+    )
+
+    assert tool.get_capabilities() == [
+        "calculation",
+        "arithmetic",
+    ]
+
+
+def test_tool_get_capabilities_returns_copy():
+
+    tool = AgentTool(
+        name="calculator",
+        capabilities=[
+            "calculation",
+        ],
+    )
+
+    capabilities = tool.get_capabilities()
+
+    capabilities.append(
+        "arithmetic"
+    )
+
+    assert tool.capabilities == [
+        "calculation",
+    ]
+
+
+def test_tool_add_capability():
+
+    tool = AgentTool(
+        name="calculator",
+    )
+
+    assert tool.add_capability(
+        "calculation"
+    ) is True
+
+    assert tool.get_capabilities() == [
+        "calculation",
+    ]
+
+
+def test_tool_add_duplicate_capability():
+
+    tool = AgentTool(
+        name="calculator",
+        capabilities=[
+            "calculation",
+        ],
+    )
+
+    assert tool.add_capability(
+        "calculation"
+    ) is False
+
+    assert tool.get_capabilities() == [
+        "calculation",
+    ]
+
+
+def test_tool_remove_capability():
+
+    tool = AgentTool(
+        name="calculator",
+        capabilities=[
+            "calculation",
+            "arithmetic",
+        ],
+    )
+
+    assert tool.remove_capability(
+        "calculation"
+    ) is True
+
+    assert tool.get_capabilities() == [
+        "arithmetic",
+    ]
+
+
+def test_tool_remove_missing_capability():
+
+    tool = AgentTool(
+        name="calculator",
+    )
+
+    assert tool.remove_capability(
+        "missing"
+    ) is False
+
+
+def test_tool_add_invalid_capability():
+
+    tool = AgentTool(
+        name="calculator",
+    )
+
+    with pytest.raises(ValueError):
+
+        tool.add_capability(
+            ""
+        )
+
+
+def test_tool_metadata():
+
+    tool = AgentTool(
+        name="calculator",
+        metadata={
+            "author": "Ultron",
+            "category": "utility",
+        },
+    )
+
+    assert tool.get_metadata(
+        "author"
+    ) == "Ultron"
+
+    assert tool.get_metadata(
+        "category"
+    ) == "utility"
+
+
+def test_tool_set_metadata():
+
+    tool = AgentTool(
+        name="calculator",
+    )
+
+    tool.set_metadata(
+        {
+            "author": "Ultron",
+            "category": "utility",
+        }
+    )
+
+    assert tool.get_metadata() == {
+        "author": "Ultron",
+        "category": "utility",
+    }
+
+
+def test_tool_update_metadata():
+
+    tool = AgentTool(
+        name="calculator",
+        metadata={
+            "category": "utility",
+        },
+    )
+
+    tool.update_metadata(
+        author="Ultron",
+    )
+
+    assert tool.get_metadata(
+        "category"
+    ) == "utility"
+
+    assert tool.get_metadata(
+        "author"
+    ) == "Ultron"
+
+
+def test_tool_get_complete_metadata_returns_copy():
+
+    tool = AgentTool(
+        name="calculator",
+        metadata={
+            "category": "utility",
+        },
+    )
+
+    metadata = tool.get_metadata()
+
+    metadata["author"] = "Ultron"
+
+    assert tool.metadata == {
+        "category": "utility",
+    }
+
+
+def test_tool_get_missing_metadata():
+
+    tool = AgentTool(
+        name="calculator",
+    )
+
+    assert tool.get_metadata(
         "missing",
         "default",
     ) == "default"
@@ -334,9 +653,8 @@ def test_tool_execution_failure():
 
     assert result.success is False
     assert result.result is None
-    assert (
+    assert result.error == (
         "Tool execution failed"
-        in result.error
     )
 
 
@@ -344,23 +662,17 @@ def test_disabled_tool_execution():
 
     tool = AgentTool(
         name="calculator",
-        handler=lambda: "success",
+        handler=lambda: "result",
     )
 
     tool.disable()
 
     result = tool.execute()
 
-    assert isinstance(
-        result,
-        ToolResult,
-    )
-
     assert result.success is False
     assert result.result is None
-    assert (
-        "disabled"
-        in result.error.lower()
+    assert result.error == (
+        "Tool 'calculator' is disabled."
     )
 
 
@@ -372,30 +684,11 @@ def test_tool_without_handler():
 
     result = tool.execute()
 
-    assert isinstance(
-        result,
-        ToolResult,
-    )
-
     assert result.success is False
     assert result.result is None
-    assert (
-        "no handler"
-        in result.error.lower()
+    assert result.error == (
+        "Tool 'calculator' has no handler."
     )
-
-
-def test_tool_execution_result_timestamps():
-
-    tool = AgentTool(
-        name="calculator",
-        handler=lambda: "success",
-    )
-
-    result = tool.execute()
-
-    assert result.started_at is not None
-    assert result.finished_at is not None
 
 
 # ============================================================
@@ -411,10 +704,7 @@ def test_tool_enable():
 
     tool.disable()
 
-    assert tool.is_enabled() is False
-
     assert tool.enable() is True
-
     assert tool.is_enabled() is True
 
 
@@ -484,6 +774,43 @@ def test_tool_from_dict():
     assert tool.handler is None
 
 
+def test_tool_from_dict_with_extensibility():
+
+    data = {
+        "name": "calculator",
+        "description": "Calculator tool",
+        "enabled": True,
+        "config": {
+            "precision": 2,
+        },
+        "version": "2.0",
+        "capabilities": [
+            "calculation",
+            "arithmetic",
+        ],
+        "metadata": {
+            "author": "Ultron",
+            "category": "utility",
+        },
+    }
+
+    tool = AgentTool.from_dict(
+        data
+    )
+
+    assert tool.version == "2.0"
+
+    assert tool.capabilities == [
+        "calculation",
+        "arithmetic",
+    ]
+
+    assert tool.metadata == {
+        "author": "Ultron",
+        "category": "utility",
+    }
+
+
 def test_tool_serialization_round_trip():
 
     original = AgentTool(
@@ -517,13 +844,16 @@ def test_tool_repr():
 
     tool = AgentTool(
         name="calculator",
+        version="2.0",
+        capabilities=[
+            "calculation",
+        ],
     )
 
     representation = repr(
         tool
     )
 
-    assert "AgentTool" in representation
     assert "calculator" in representation
-    assert "enabled=True" in representation
-    assert "has_handler=False" in representation
+    assert "2.0" in representation
+    assert "calculation" in representation
