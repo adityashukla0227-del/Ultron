@@ -1,13 +1,13 @@
 """
 Ultron AI Engine.
 
-Version: v0.72
+Version: v0.94
 
 Coordinates AI provider selection and response generation.
 
 Responsibilities:
 - Resolve the configured AI provider
-- Maintain supported provider registry
+- Maintain provider registry
 - Preserve provider abstraction
 - Delegate generation to the selected provider
 - Preserve backward-compatible AI Engine behavior
@@ -27,6 +27,7 @@ import os
 from core.providers.anthropic_provider import AnthropicProvider
 from core.providers.base import AIProvider, AIProviderError
 from core.providers.mock import MockProvider
+from core.providers.registry import AIProviderRegistry
 
 
 SUPPORTED_PROVIDERS: dict[str, type[AIProvider]] = {
@@ -35,13 +36,16 @@ SUPPORTED_PROVIDERS: dict[str, type[AIProvider]] = {
 }
 
 
+PROVIDER_REGISTRY = AIProviderRegistry(
+    SUPPORTED_PROVIDERS
+)
+
+
 def get_ai_provider() -> AIProvider:
     """
     Return the configured AI provider.
 
-    Supported providers:
-    - mock
-    - anthropic
+    Supported providers are registered through PROVIDER_REGISTRY.
 
     Unknown or empty provider modes fall back to MockProvider
     to preserve backward-compatible AI Engine behavior.
@@ -56,14 +60,17 @@ def get_ai_provider() -> AIProvider:
         .lower()
     )
 
-    provider_class = SUPPORTED_PROVIDERS.get(
-        mode,
-        MockProvider,
+    if not mode or not PROVIDER_REGISTRY.has(mode):
+        mode = "mock"
+
+    provider = PROVIDER_REGISTRY.create(
+        mode
     )
 
-    provider = provider_class()
-
-    if not isinstance(provider, AIProvider):
+    if not isinstance(
+        provider,
+        AIProvider,
+    ):
         raise TypeError(
             "Configured AI provider must implement AIProvider."
         )
@@ -86,7 +93,10 @@ def generate_ai_response(
 
     provider = get_ai_provider()
 
-    if not isinstance(provider, AIProvider):
+    if not isinstance(
+        provider,
+        AIProvider,
+    ):
         raise TypeError(
             "Configured AI provider must implement AIProvider."
         )
@@ -104,6 +114,7 @@ def generate_ai_response(
 
 __all__ = [
     "SUPPORTED_PROVIDERS",
+    "PROVIDER_REGISTRY",
     "get_ai_provider",
     "generate_ai_response",
 ]

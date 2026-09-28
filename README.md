@@ -2,24 +2,26 @@
 
 ## Modular Personal AI Assistant, Agent Runtime, Automation & Multimodal Platform
 
-> **ULTRON is being engineered as a modular AI operating platform focused on intelligent interaction, agent execution, automation, multimodal capabilities, observability, execution reliability, recovery architecture, extensibility, plugin architecture, capability registration, and a strong architectural foundation.**
+> **ULTRON is being engineered as a modular AI operating platform focused on intelligent interaction, agent execution, automation, multimodal capabilities, observability, execution reliability, recovery architecture, extensibility, plugin architecture, capability registration, provider extensibility, and a strong architectural foundation.**
 
 ---
 
 # 🚀 Current Status
 
-| Metric                                            | Status                      |
-| ------------------------------------------------- | --------------------------- |
-| **Current Version**                               | **v0.93**                   |
-| **Current Milestone**                             | **Capability Registration** |
-| **v0.93 Capability Regression**                   | **57 passed**               |
-| **Latest Full ULTRON Regression**                 | **2372 passed**             |
-| **v0.92 Full Regression Baseline**                | **2315 passed**             |
-| **Regression Failures in Latest Full Regression** | **0**                       |
-| **Python**                                        | **3.13+**                   |
-| **Architecture Status**                           | **Foundation Development**  |
+| Metric                             | Status                     |
+| ---------------------------------- | -------------------------- |
+| **Current Version**                | **v0.94**                  |
+| **Current Milestone**              | **Provider Extensibility** |
+| **v0.94 Provider Regression**      | **133 passed**             |
+| **Latest Full ULTRON Regression**  | **2399 passed**            |
+| **v0.93 Full Regression Baseline** | **2372 passed**            |
+| **Regression Failures**            | **0**                      |
+| **Python**                         | **3.13+**                  |
+| **Architecture Status**            | **Foundation Development** |
 
-### Current Architecture Pipeline
+---
+
+# 🏗️ Current Architecture Pipeline
 
 ```text
 User Query
@@ -51,7 +53,9 @@ Execution Feedback
 Consumer / UI / Voice / API
 ```
 
-### Execution Architecture
+---
+
+# 🤖 Execution Architecture
 
 ```text
 Agent
@@ -79,7 +83,9 @@ ExecutionFeedback
 Consumer / UI / Voice / API
 ```
 
-### Execution Observability Path
+---
+
+# 🔔 Execution Observability Path
 
 ```text
 AgentOrchestrator
@@ -93,7 +99,9 @@ ExecutionEvent
 Observability / Metrics
 ```
 
-### Execution Reliability Validation Path
+---
+
+# 🛡️ Execution Reliability Path
 
 ```text
 ExecutionStateSnapshot
@@ -105,7 +113,11 @@ ExecutionReliabilityResult
 Validity / Recoverability
 ```
 
-### Execution Recovery Planning Path
+The reliability validator remains read-only and deterministic. It does not execute recovery, control lifecycle, emit events, persist state, or orchestrate execution.
+
+---
+
+# 🔄 Execution Recovery Planning Path
 
 ```text
 ExecutionStateSnapshot
@@ -123,7 +135,11 @@ Existing AgentExecutionController
 
 The recovery layer plans a structured recovery action without executing recovery itself.
 
-### Extensibility Architecture
+---
+
+# 🔌 Extensibility Architecture
+
+ULTRON's extensibility architecture is built around existing canonical contracts.
 
 ```text
 AgentTool
@@ -133,25 +149,35 @@ AgentTool
    └── metadata{}
 ```
 
-### Plugin Architecture Path
+Tools remain the canonical execution abstraction.
+
+---
+
+# 🧩 Plugin Architecture
 
 ```text
 Plugin
- ↓
+  ↓
 Plugin-provided AgentTool
- ↓
+  ↓
 ToolRegistry
- ↓
+  ↓
 Agent
- ↓
+  ↓
 ToolSelector
- ↓
+  ↓
 AgentTool
- ↓
+  ↓
 Tool Execution
+  ↓
+ToolResult
 ```
 
-### Capability Architecture Path
+Plugins provide extensions without replacing the existing tool architecture.
+
+---
+
+# 🧠 Capability Architecture
 
 ```text
 Plugin
@@ -167,7 +193,186 @@ Capability Definitions
 Capability → Tool Mapping
 ```
 
-The capability layer describes what tools can provide. It does not grant authorization and does not execute tools.
+Capabilities describe what tools can provide.
+
+They do **not** grant authorization and do not execute tools.
+
+---
+
+# 🔌 Provider Extensibility
+
+## v0.94 — Provider Extensibility
+
+v0.94 introduces a dedicated provider registry around the existing `AIProvider` abstraction.
+
+The architecture now separates:
+
+```text
+AIProvider
+    ↓
+Provider Contract
+```
+
+from:
+
+```text
+AIProviderRegistry
+    ↓
+Provider Registration
+    ↓
+Provider Lookup
+    ↓
+Provider Creation
+```
+
+---
+
+## Provider Architecture
+
+```text
+                    AI Engine
+                       │
+                       ▼
+                ProviderRegistry
+                 │            │
+          resolve provider    │
+                 │             │
+                 ▼             ▼
+             AIProvider    Provider Metadata
+                 │
+        ┌────────┴────────┐
+        ▼                 ▼
+   MockProvider     AnthropicProvider
+```
+
+The AI Engine delegates provider resolution and creation to the registry while preserving the existing provider contract.
+
+---
+
+## `AIProvider`
+
+`AIProvider` remains the canonical provider contract.
+
+```text
+AIProvider
+├── name
+├── capabilities
+├── configuration
+├── metadata
+├── availability
+├── prompt validation
+└── generate()
+```
+
+The provider abstraction remains responsible for provider-specific generation behavior.
+
+---
+
+## `AIProviderRegistry`
+
+The provider registry is responsible for provider management and creation.
+
+```text
+AIProviderRegistry
+
+├── register()
+├── unregister()
+├── get()
+├── has()
+├── list_providers()
+├── list_provider_names()
+├── create()
+├── clear()
+├── count()
+└── contains
+```
+
+The registry provides:
+
+* provider registration
+* provider validation
+* provider lookup
+* provider existence checks
+* provider listing
+* provider instance creation
+* duplicate registration handling
+* normalized provider names
+
+---
+
+## Provider Registry Boundary
+
+```text
+AIProvider
+    ≠
+AIProviderRegistry
+```
+
+`AIProvider` defines the provider contract.
+
+`AIProviderRegistry` manages provider classes and creates provider instances.
+
+The registry does **not**:
+
+* generate responses
+* execute provider logic
+* manage API credentials
+* determine permissions
+* classify security risk
+* redesign the provider contract
+* control agent execution
+
+---
+
+# 🧠 AI Engine Integration
+
+The AI Engine now uses the provider registry for provider resolution.
+
+```text
+AI_MODE
+   ↓
+AI Engine
+   ↓
+AIProviderRegistry
+   ↓
+Provider Class
+   ↓
+AIProvider Instance
+   ↓
+generate()
+```
+
+Existing provider selection behavior remains backward compatible.
+
+Supported providers currently include:
+
+```text
+mock
+anthropic
+```
+
+Unknown or empty provider modes continue to fall back to `MockProvider`.
+
+The existing public AI Engine behavior is preserved while provider registration becomes extensible.
+
+---
+
+# 🔐 Provider Extensibility Security Boundary
+
+Provider extensibility does not introduce automatic execution or dynamic code loading.
+
+v0.94 does **not** introduce:
+
+* arbitrary dynamic imports
+* filesystem provider scanning
+* package installation
+* automatic provider discovery
+* autonomous provider installation
+* provider permission management
+* provider security policy
+* API credential redesign
+
+Provider registration remains explicit.
 
 ---
 
@@ -177,7 +382,7 @@ ULTRON is a modular personal AI assistant and agent platform designed to evolve 
 
 The project is being developed **foundation-first**.
 
-Instead of building a collection of disconnected AI features, ULTRON focuses on establishing clean architectural boundaries between:
+Instead of building disconnected AI features, ULTRON focuses on establishing clean architectural boundaries between:
 
 * AI interaction
 * Intelligence
@@ -198,6 +403,7 @@ Instead of building a collection of disconnected AI features, ULTRON focuses on 
 * Tool extensibility
 * Capability registration
 * Plugin architecture
+* Provider extensibility
 * Multimodal interaction
 * Automation
 * Observability
@@ -242,9 +448,9 @@ ULTRON is intended to become a **modular AI operating platform**.
 
 ---
 
-# 🏗️ Architecture Philosophy
+# 🏛️ Architecture Philosophy
 
-ULTRON follows several core architectural principles.
+ULTRON follows these principles:
 
 ### 1. Foundation First
 
@@ -260,7 +466,7 @@ Existing systems are extended instead of creating parallel implementations.
 
 ### 4. Explicit Boundaries
 
-Each layer should have a clearly defined responsibility and should not silently take ownership of another layer's responsibilities.
+Each layer has a clearly defined responsibility.
 
 ### 5. Immutable Core Models
 
@@ -272,23 +478,23 @@ Structured models should not expose mutable internal state through serialized re
 
 ### 7. Test-Driven Evolution
 
-Every architectural milestone receives dedicated or focused tests and full regression testing.
+Every architectural milestone receives focused tests and full regression testing.
 
 ### 8. Backward Compatibility
 
-Existing behavior should remain stable unless a milestone explicitly changes the contract.
+Existing behavior remains stable unless a milestone explicitly changes the contract.
 
 ### 9. Observability Without Coupling
 
-Execution events and observability remain separate from execution outcomes and consumer-facing feedback.
+Execution events remain separate from execution outcomes and consumer-facing feedback.
 
 ### 10. Reliability Without Orchestration Coupling
 
-Reliability validation must inspect execution state without taking ownership of execution, lifecycle control, event emission, persistence, or orchestration.
+Reliability validation inspects execution state without taking ownership of execution.
 
 ### 11. Recovery Without Execution Coupling
 
-Recovery planning determines a structured recovery action without executing that action or directly controlling the execution controller.
+Recovery planning determines a structured recovery action without executing it.
 
 ### 12. Foundation Before Intelligence Expansion
 
@@ -296,17 +502,15 @@ ULTRON's architecture is stabilized before large-scale autonomous behavior is in
 
 ### 13. Consolidation Before Expansion
 
-Existing contracts are consolidated before introducing new execution behavior or parallel architectural systems.
+Existing contracts are consolidated before introducing new execution behavior.
 
 ### 14. Extensibility Through Stable Contracts
 
-New tools and capabilities should extend the existing tool architecture without requiring changes to the intelligence, planning, selection, or execution contracts.
+New tools, plugins, capabilities, and providers should extend existing contracts rather than redesigning core systems.
 
 ### 15. Single Source of Truth
 
 Each architectural concern should have one canonical owner.
-
-For tools:
 
 ```text
 AgentTool
@@ -314,15 +518,11 @@ AgentTool
 Canonical Tool Representation
 ```
 
-For plugins:
-
 ```text
 Plugin
     ↓
 Canonical Plugin Representation
 ```
-
-For capabilities:
 
 ```text
 Capability
@@ -330,28 +530,28 @@ Capability
 Canonical Capability Definition
 ```
 
-For capability registration:
-
 ```text
 CapabilityRegistry
     ↓
 Canonical Capability Registry
 ```
 
-For reliability:
+```text
+AIProvider
+    ↓
+Canonical Provider Contract
+```
+
+```text
+AIProviderRegistry
+    ↓
+Canonical Provider Registry
+```
 
 ```text
 ExecutionReliabilityValidator
     ↓
 Canonical Reliability Rules
-```
-
-For recovery:
-
-```text
-ExecutionRecoveryPlanner
-    ↓
-Consumes Reliability Result
 ```
 
 ---
@@ -423,8 +623,6 @@ Consumes Reliability Result
 
 # 🤖 Agent Architecture
 
-ULTRON separates agent reasoning and execution into distinct layers.
-
 ```text
 Agent
  ↓
@@ -441,15 +639,17 @@ AgentEngine
 Tool
  ↓
 ToolResult
+ ↓
+ExecutionResult
+ ↓
+ExecutionFeedback
 ```
 
-The orchestration layer coordinates execution but does not collapse every responsibility into a single object.
+The orchestration layer coordinates execution without collapsing every responsibility into a single object.
 
 ---
 
 # 🧠 AI Intelligence Architecture
-
-Current intelligence flow:
 
 ```text
 User Query
@@ -485,8 +685,6 @@ It does not directly execute tools.
 
 # 🧭 Decision Routing
 
-Decision routing separates intent understanding from downstream action.
-
 ```text
 Structured Intent
        ↓
@@ -517,13 +715,9 @@ Action
 
 This prevents the AI intelligence layer from automatically becoming an execution engine.
 
-The boundary provides a controlled transition from understanding to task creation and execution.
-
 ---
 
 # 📋 Task Architecture
-
-ULTRON introduced a dedicated task abstraction before expanding execution behavior.
 
 ```text
 Task
@@ -540,8 +734,6 @@ Task abstraction provides a stable representation of work that can later be init
 
 # 🔄 Task Lifecycle
 
-Task lifecycle is represented independently from task definition.
-
 ```text
 CREATED
    ↓
@@ -552,7 +744,7 @@ RUNNING
 COMPLETED
 ```
 
-Alternative terminal paths include:
+Alternative terminal paths:
 
 ```text
 RUNNING
@@ -574,103 +766,11 @@ PAUSED
 RUNNING
 ```
 
-Task lifecycle ownership remains separate from execution result, feedback, observability, and reliability validation.
+Task lifecycle ownership remains separate from execution results, feedback, observability, reliability validation, and recovery planning.
 
 ---
 
-# 🧠 Task Context & State
-
-Task context and state provide structured information about the current task environment.
-
-```text
-Task
- ↓
-TaskContext
- ↓
-TaskState
- ↓
-Execution
-```
-
-This allows future task execution systems to maintain structured state without placing runtime state inside consumer-facing result models.
-
----
-
-# 📦 Task Input / Output Contracts
-
-Task contracts define expected task boundaries.
-
-```text
-TaskContract
-├── Expected Input
-└── Expected Output
-```
-
-The contract describes what a task expects and what it should produce.
-
-It does not execute the task.
-
----
-
-# 📊 Execution Architecture
-
-ULTRON separates several concepts that are often incorrectly combined in agent systems.
-
-```text
-ToolResult
-    ↓
-Individual Tool Outcome
-```
-
-```text
-ExecutionResult
-    ↓
-Overall Execution Outcome
-```
-
-```text
-ExecutionEvent
-    ↓
-Observable Runtime Event
-```
-
-```text
-ExecutionStateSnapshot
-    ↓
-Execution State Snapshot
-```
-
-```text
-ExecutionFeedback
-    ↓
-Consumer-Facing Execution Representation
-```
-
-```text
-ExecutionFailure
-    ↓
-Structured Execution Failure Representation
-```
-
-```text
-ExecutionReliabilityResult
-    ↓
-Reliability / Recoverability Representation
-```
-
-```text
-ExecutionRecovery
-    ↓
-Structured Recovery Action
-```
-
-These are intentionally separate architectural concepts.
-
----
-
-# 🏁 Execution Result
-
-## v0.83 — Execution Result Abstraction
+# 📦 Execution Result
 
 `ExecutionResult` represents the canonical overall outcome of an execution.
 
@@ -683,18 +783,7 @@ ExecutionResult
 └── metadata
 ```
 
-It provides:
-
-* execution identity
-* success/failure state
-* result data
-* error information
-* execution metadata
-* validation
-* defensive serialization
-* immutable representation
-
-`ExecutionResult` does **not**:
+It does **not**:
 
 * execute tools
 * manage lifecycle
@@ -708,10 +797,6 @@ It provides:
 
 # 📣 Execution Feedback
 
-## v0.84 — Execution Feedback Interface
-
-`ExecutionFeedback` provides a standardized consumer-facing representation of execution.
-
 ```text
 ExecutionFeedback
 ├── execution_id
@@ -723,31 +808,11 @@ ExecutionFeedback
 └── metadata
 ```
 
-The model is immutable and validates its required fields.
-
----
-
-# 🔌 Execution Feedback Adapter
-
-ULTRON uses a dedicated adapter to convert canonical execution outcomes into consumer-facing feedback.
-
-```text
-ExecutionResult
-       ↓
-ExecutionFeedbackAdapter
-       ↓
-ExecutionFeedback
-```
-
-The adapter does not execute tasks, tools, retries, planning, or lifecycle operations.
+The model provides a standardized consumer-facing execution representation.
 
 ---
 
 # 🔔 Runtime Event Architecture
-
-## v0.85 — Runtime Event Integration
-
-The canonical runtime observability path is:
 
 ```text
 AgentOrchestrator
@@ -763,50 +828,7 @@ The `ExecutionEventStore` remains the canonical source of stored execution event
 
 ---
 
-# 🎯 Runtime Event Ownership
-
-### AgentExecutionController
-
-The controller owns lifecycle-oriented events:
-
-```text
-execution_started
-execution_paused
-execution_resumed
-execution_cancelled
-step_started
-step_retried
-step_skipped
-```
-
-### AgentOrchestrator
-
-The orchestrator owns runtime outcome events:
-
-```text
-execution_completed
-execution_failed
-step_completed
-step_failed
-```
-
-### Event Emitter
-
-`ExecutionEventEmitter` remains responsible for structured event creation and forwarding.
-
-### Event Store
-
-`ExecutionEventStore` remains the canonical storage layer for execution events.
-
-No parallel event bus or duplicate event storage system is introduced.
-
----
-
 # 🛡️ Execution Reliability
-
-## v0.86–v0.90 — Reliability Architecture
-
-ULTRON maintains a dedicated reliability validation boundary around execution state.
 
 ```text
 ExecutionStateSnapshot
@@ -829,45 +851,16 @@ The validator remains:
 * independent from persistence
 * independent from orchestration
 
-### Reliability States
-
-Recoverable:
-
-```text
-RUNNING
-PAUSED
-```
-
-Terminal:
-
-```text
-COMPLETED
-CANCELLED
-```
-
-Non-recoverable:
-
-```text
-PENDING
-FAILED
-```
-
-Completed executions must not retain pending or failed steps.
-
 ---
 
 # ⚠️ Execution Failure
 
-## v0.87 — Failure Handling Foundation
-
-v0.87 introduced the canonical `ExecutionFailure` representation.
-
-Core components:
+The failure architecture provides structured failure representation.
 
 ```text
 ExecutionFailure
-FailureScope
-FailureCategory
+├── FailureScope
+└── FailureCategory
 ```
 
 Failure scopes:
@@ -887,15 +880,11 @@ EXECUTION_FAILURE
 UNKNOWN
 ```
 
-The failure model remains a structured representation rather than an execution controller.
+The failure model remains a representation layer rather than an execution controller.
 
 ---
 
 # 🔄 Execution Recovery
-
-## v0.88 — Recovery Architecture
-
-ULTRON maintains a dedicated recovery planning layer.
 
 ```text
 ExecutionStateSnapshot
@@ -920,332 +909,7 @@ SKIP
 ABORT
 ```
 
-Recovery planning remains separate from actual execution.
-
----
-
-# 🔌 Tool Extensibility
-
-## v0.91 — Extensibility Foundation
-
-v0.91 introduced the first extensibility layer for ULTRON's existing tool architecture.
-
-The canonical tool owner remains:
-
-```text
-modules/agent/tool.py
-```
-
-No parallel `modules/tools` architecture is introduced.
-
-### Tool Extensibility Model
-
-```text
-AgentTool
-├── Tool Identity
-│   ├── name
-│   └── version
-│
-├── Tool Description
-│   └── description
-│
-├── Tool Capabilities
-│   └── capabilities[]
-│
-├── Tool Configuration
-│   └── config{}
-│
-├── Extension Metadata
-│   └── metadata{}
-│
-└── Existing Execution Contract
-    ├── handler
-    ├── execute()
-    └── ToolResult
-```
-
-Tools can expose structured capability identifiers through:
-
-```text
-capabilities[]
-```
-
-Capability identifiers are descriptive declarations of what a tool provides.
-
-They are not authorization grants.
-
----
-
-# 🧩 Plugin Architecture
-
-## v0.92 — Plugin Architecture
-
-v0.92 introduced the first dedicated plugin abstraction for ULTRON.
-
-### Plugin Model
-
-```text
-Plugin
-├── Identity
-│   ├── name
-│   └── version
-│
-├── Description
-│   └── description
-│
-├── Metadata
-│   └── metadata{}
-│
-└── Provided Tools
-    └── tools[]
-```
-
-A plugin represents an extension and the `AgentTool` objects provided by that extension.
-
-### Plugin Responsibilities
-
-`Plugin` is responsible for:
-
-* plugin identity
-* plugin version
-* plugin description
-* plugin metadata
-* provided `AgentTool` objects
-* plugin configuration validation
-* tool management within the plugin
-* defensive metadata access
-* plugin serialization
-
-`Plugin` does **not**:
-
-* execute tools
-* select tools
-* manage agents
-* perform plugin discovery
-* install packages
-* dynamically load arbitrary code
-* manage security permissions
-* execute recovery
-* control the execution controller
-
----
-
-# 🗂️ Plugin Registry
-
-`PluginRegistry` is the canonical registry for plugin definitions.
-
-```text
-PluginRegistry
-├── register()
-├── unregister()
-├── get()
-├── has()
-├── list_plugins()
-├── list_plugin_names()
-└── clear()
-```
-
-Additional utility operations:
-
-```text
-count()
-len()
-contains
-repr()
-```
-
-The registry maintains plugin definitions without owning execution.
-
----
-
-# 🧠 Capability Registration
-
-## v0.93 — Capability Registration
-
-v0.93 introduces the first dedicated capability definition and registry layer.
-
-The milestone establishes:
-
-* `Capability`
-* `CapabilityRegistry`
-* capability identity
-* capability descriptions
-* capability metadata
-* centralized capability registration
-* capability lookup
-* capability existence checks
-* capability listing
-* capability-to-tool mapping
-
-### Capability Model
-
-```text
-Capability
-├── name
-├── description
-└── metadata{}
-```
-
-A `Capability` represents a discrete ability that one or more `AgentTool` objects may provide.
-
-A capability does **not**:
-
-* execute tools
-* select tools
-* grant permissions
-* authorize actions
-* classify security risk
-* request human approval
-* control execution
-
-### Capability Registry
-
-```text
-CapabilityRegistry
-├── register()
-├── unregister()
-├── get()
-├── has()
-├── list_capabilities()
-├── list_capability_names()
-├── get_tools_for_capability()
-└── clear()
-```
-
-Additional utility operations:
-
-```text
-count()
-len()
-contains
-repr()
-```
-
-### Capability Mapping
-
-The registry can resolve tools that declare a specific capability:
-
-```text
-Capability
-    │
-    ▼
-CapabilityRegistry
-    │
-    ▼
-AgentTool.capabilities[]
-    │
-    ▼
-Matching AgentTool[]
-```
-
-For example:
-
-```text
-"calculation"
-      ↓
-calculator
-
-"file_read"
-      ↓
-file_tool
-
-"web_search"
-      ↓
-web_tool
-```
-
-The registry does not own or mutate the tools supplied for mapping.
-
-### Capability Boundary
-
-The architecture explicitly maintains:
-
-```text
-Capability ≠ Permission
-```
-
-and:
-
-```text
-CapabilityRegistry ≠ ToolRegistry
-```
-
-`Capability` describes an ability.
-
-`CapabilityRegistry` manages capability definitions and capability-to-tool lookup.
-
-`ToolRegistry` manages tool registration and execution.
-
-Security authorization remains a separate architectural concern.
-
-### Explicit Registration
-
-v0.93 uses explicit capability registration.
-
-The registry does **not** automatically discover capabilities from plugins or tools.
-
-Automatic discovery remains outside the current milestone.
-
----
-
-# 🔗 Extensibility Architecture
-
-The current extensibility architecture is:
-
-```text
-Plugin
-   ↓
-AgentTool
-   ↓
-capabilities[]
-   ↓
-CapabilityRegistry
-```
-
-While execution continues through:
-
-```text
-AgentTool
-   ↓
-ToolRegistry
-   ↓
-Agent
-   ↓
-ToolSelector
-   ↓
-Tool Execution
-   ↓
-ToolResult
-```
-
-These are intentionally separate paths.
-
-Capability registration does not replace tool registration or tool selection.
-
----
-
-# 🚫 v0.93 Does Not Yet Do
-
-v0.93 does **not** introduce:
-
-* capability-based authorization
-* permission management
-* risk classification
-* human approval
-* security policy
-* automatic capability discovery
-* dynamic plugin loading
-* filesystem plugin scanning
-* package installation
-* arbitrary dynamic code execution
-* capability-driven execution
-* ToolRegistry redesign
-* ToolSelector redesign
-* autonomous tool installation
-* a second tool abstraction
-* a second execution system
-
-These concerns remain future architectural milestones.
+Recovery planning remains separate from recovery execution.
 
 ---
 
@@ -1260,7 +924,7 @@ ToolSelector
 ToolResult
 ```
 
-The extensibility progression is:
+The current extensibility model is:
 
 ```text
 AgentTool
@@ -1270,6 +934,10 @@ Version
 Capabilities
    ↓
 Metadata
+   ↓
+Tool Execution
+   ↓
+ToolResult
 ```
 
 Capabilities describe tool abilities without taking ownership of:
@@ -1282,49 +950,151 @@ Capabilities describe tool abilities without taking ownership of:
 
 ---
 
-# 👁️ Observability
+# 🧩 Plugin Architecture
 
-ULTRON maintains dedicated observability infrastructure.
+The plugin layer provides structured extensions around the existing tool architecture.
 
-Current concepts include:
+```text
+Plugin
+├── name
+├── version
+├── description
+├── metadata{}
+└── tools[]
+```
 
-* execution events
-* event storage
-* execution history
-* execution state
-* execution metrics
-* progress tracking
-* runtime outcome tracking
-* reliability validation
-* failure representation
-* recovery decisions
+`PluginRegistry` is the canonical registry for plugin definitions.
 
-Observability remains separate from:
+```text
+PluginRegistry
+├── register()
+├── unregister()
+├── get()
+├── has()
+├── list_plugins()
+├── list_plugin_names()
+└── clear()
+```
 
-* task definition
-* execution result
-* consumer feedback
-* reliability decisions
-* recovery execution
-* plugin management
-* capability registration
+Plugins do not:
+
+* execute tools
+* select tools
+* manage agents
+* dynamically load arbitrary code
+* install packages
+* manage permissions
+* execute recovery
+* control the execution controller
 
 ---
 
-# 📈 Execution Metrics
+# 🧠 Capability Registration
 
-ULTRON includes execution metrics infrastructure for tracking execution behavior.
+Capabilities represent discrete abilities provided by tools.
 
-Metrics are intended to support:
+```text
+Capability
+├── name
+├── description
+└── metadata{}
+```
 
-* execution duration
-* execution counts
-* failures
-* step performance
-* retries
-* execution analysis
+The capability registry provides:
 
-Metrics are observational and do not own execution itself.
+```text
+CapabilityRegistry
+├── register()
+├── unregister()
+├── get()
+├── has()
+├── list_capabilities()
+├── list_capability_names()
+├── get_tools_for_capability()
+└── clear()
+```
+
+Additional utilities include:
+
+```text
+count()
+len()
+contains
+repr()
+```
+
+Capabilities remain descriptive:
+
+```text
+Capability ≠ Permission
+```
+
+and:
+
+```text
+CapabilityRegistry ≠ ToolRegistry
+```
+
+The capability registry does not execute tools, authorize actions, classify risk, request approval, or control execution.
+
+---
+
+# 🔌 Provider Extensibility
+
+v0.94 adds the provider management layer:
+
+```text
+AIProvider
+      ↓
+AIProviderRegistry
+      ↓
+Registered Provider Classes
+      ↓
+Provider Instances
+```
+
+Current built-in providers:
+
+```text
+MockProvider
+AnthropicProvider
+```
+
+Provider names are normalized and validated by the registry.
+
+Provider instances are created through:
+
+```text
+AIProviderRegistry.create()
+```
+
+The AI Engine remains responsible for coordinating provider selection and generation, while provider-specific behavior remains inside each provider implementation.
+
+---
+
+# 🔐 Security & Configuration
+
+ULTRON follows a security-conscious development model.
+
+Secrets should never be committed to Git.
+
+Environment-based configuration is used for external AI providers and API credentials.
+
+Example:
+
+```text
+.env
+```
+
+should remain excluded from version control.
+
+Mock providers can be used during development so that the architecture can be tested without production API credentials.
+
+Provider registration does not itself grant permissions.
+
+Capability registration does not constitute authorization.
+
+A capability describes what a tool can provide; security policy will determine what the system is actually allowed to perform.
 
 ---
 
@@ -1344,45 +1114,47 @@ Full Regression
 
 Every architectural milestone receives focused validation before being considered complete.
 
-### v0.93 Focused Validation
+---
+
+# 📊 v0.94 Validation
+
+Provider-focused regression:
 
 ```text
-Capability Registration Regression
-
-57 passed
+133 passed
 0 failed
 ```
 
-The focused v0.93 suite covers:
+The provider suite covers:
 
-* capability construction
-* validation
-* metadata
-* serialization
-* restoration
-* capability registration
+* AI Engine provider selection
+* provider fallback behavior
+* provider abstraction
+* Anthropic provider behavior
+* Mock provider behavior
+* provider registry registration
+* provider registry lookup
+* provider registry creation
 * duplicate handling
-* lookup
-* listing
-* capability-to-tool mapping
+* provider validation
+* provider normalization
 * registry management
-* public package exports
+* provider instance independence
 
-### Latest Full Regression
+Full ULTRON regression:
 
 ```text
-2372 passed
+2399 passed
 0 failed
 ```
 
-### v0.92 Full Regression Baseline
+`git diff --check`:
 
 ```text
-2315 passed
-0 failed
+Clean
 ```
 
-The v0.93 implementation was integrated without introducing regressions into the existing architecture.
+No regression was introduced into the existing architecture.
 
 ---
 
@@ -1393,102 +1165,59 @@ ultron/
 
 │
 ├── core/
-│   ├── ...
+│   ├── ai_engine.py
+│   │
+│   └── providers/
+│       ├── base.py
+│       ├── mock.py
+│       ├── anthropic_provider.py
+│       └── registry.py
 │
 ├── modules/
-│   │
-│   ├── agent/
-│   │   ├── agent_engine.py
-│   │   ├── agent_planner.py
-│   │   ├── agent_orchestrator.py
-│   │   ├── agent_execution_controller.py
-│   │   ├── execution_context.py
-│   │   ├── execution_event.py
-│   │   ├── execution_event_emitter.py
-│   │   ├── execution_event_store.py
-│   │   ├── execution_state_snapshot.py
-│   │   ├── execution_reliability.py
-│   │   ├── execution_failure.py
-│   │   ├── execution_recovery.py
-│   │   ├── execution_result.py
-│   │   ├── execution_feedback.py
-│   │   ├── execution_feedback_adapter.py
-│   │   ├── tool.py
-│   │   ├── tool_registry.py
-│   │   ├── tool_selector.py
-│   │   ├── tool_result.py
-│   │   ├── capability.py
-│   │   ├── capability_registry.py
-│   │   ├── plugin.py
-│   │   ├── plugin_registry.py
-│   │   └── ...
-│   │
-│   ├── intelligence/
-│   │   ├── ...
-│   │
-│   ├── multimodal/
-│   │   ├── voice_command_executor.py
-│   │   ├── ...
-│   │
-│   └── ...
+│   └── agent/
+│       ├── agent_engine.py
+│       ├── agent_planner.py
+│       ├── agent_orchestrator.py
+│       ├── agent_execution_controller.py
+│       ├── execution_context.py
+│       ├── execution_event.py
+│       ├── execution_event_emitter.py
+│       ├── execution_event_store.py
+│       ├── execution_state_snapshot.py
+│       ├── execution_reliability.py
+│       ├── execution_failure.py
+│       ├── execution_recovery.py
+│       ├── execution_result.py
+│       ├── execution_feedback.py
+│       ├── execution_feedback_adapter.py
+│       ├── tool.py
+│       ├── tool_registry.py
+│       ├── tool_selector.py
+│       ├── tool_result.py
+│       ├── capability.py
+│       ├── capability_registry.py
+│       ├── plugin.py
+│       ├── plugin_registry.py
+│       └── ...
 │
 ├── tests/
-│   ├── test_agent_tools.py
+│   ├── providers/
+│   │   ├── test_ai_engine.py
+│   │   ├── test_ai_provider.py
+│   │   ├── test_anthropic_provider.py
+│   │   ├── test_mock_provider.py
+│   │   └── test_provider_registry.py
+│   │
 │   ├── test_capabilities.py
 │   ├── test_capability_registry.py
 │   ├── test_capability_exports.py
 │   ├── test_plugins.py
-│   ├── test_execution_reliability.py
-│   ├── test_execution_failure.py
-│   ├── test_execution_recovery.py
-│   ├── intelligence/
-│   │   └── ...
-│   │
-│   ├── multimodal/
-│   │   └── ...
-│   │
 │   └── ...
 │
 ├── README.md
 ├── requirements.txt
 └── ...
 ```
-
----
-
-# 📦 Agent Package Architecture
-
-The agent package exposes the execution and extensibility abstractions required by downstream modules.
-
-Current abstractions include:
-
-```text
-AgentTool
-ToolRegistry
-ToolSelector
-ToolResult
-
-Capability
-CapabilityRegistry
-
-Plugin
-PluginRegistry
-
-ExecutionResult
-ExecutionFeedback
-ExecutionFeedbackAdapter
-
-ExecutionFailure
-
-ExecutionReliabilityResult
-ExecutionReliabilityValidator
-
-ExecutionRecovery
-ExecutionRecoveryPlanner
-RecoveryAction
-```
-
-The reliability, failure, recovery, tool, capability, and plugin layers maintain their own explicit public APIs.
 
 ---
 
@@ -1507,18 +1236,19 @@ v0.78 → Response / Action Boundary            ✅
 v0.79 → Task Abstraction                     ✅
 v0.80 → Task Lifecycle Foundation            ✅
 v0.81 → Task Context & State                 ✅
-v0.82 → Task Input / Output Contracts        ✅
-v0.83 → Execution Result Abstraction         ✅
-v0.84 → Execution Feedback Interface         ✅
-v0.85 → Runtime Event Integration            ✅
-v0.86 → Reliability Foundation               ✅
-v0.87 → Failure Handling Foundation         ✅
-v0.88 → Recovery Architecture                ✅
-v0.89 → Execution Reliability                ✅
-v0.90 → Reliability Consolidation            ✅
-v0.91 → Extensibility Foundation             ✅
-v0.92 → Plugin Architecture                  ✅
-v0.93 → Capability Registration              ✅
+v0.82 → Task Input / Output Contracts         ✅
+v0.83 → Execution Result Abstraction          ✅
+v0.84 → Execution Feedback Interface          ✅
+v0.85 → Runtime Event Integration             ✅
+v0.86 → Reliability Foundation                ✅
+v0.87 → Failure Handling Foundation           ✅
+v0.88 → Recovery Architecture                 ✅
+v0.89 → Execution Reliability                 ✅
+v0.90 → Reliability Consolidation             ✅
+v0.91 → Extensibility Foundation              ✅
+v0.92 → Plugin Architecture                   ✅
+v0.93 → Capability Registration               ✅
+v0.94 → Provider Extensibility                ✅
 ```
 
 ---
@@ -1545,18 +1275,18 @@ v0.90 → Reliability Consolidation
 v0.91 → Extensibility Foundation
 v0.92 → Plugin Architecture
 v0.93 → Capability Registration
+v0.94 → Provider Extensibility
 ```
 
 ## Current
 
 ```text
-v0.93 → Capability Registration
+v0.94 → Provider Extensibility
 ```
 
 ## Upcoming
 
 ```text
-v0.94 → Provider Extensibility
 v0.95 → Extensibility Consolidation
 v0.96 → Core Platform Hardening
 v0.97 → Platform Integration
@@ -1635,19 +1365,91 @@ v0.90 → Reliability Consolidation
 v0.91 → Extensibility Foundation
 v0.92 → Plugin Architecture
 v0.93 → Capability Registration
+v0.94 → Provider Extensibility
 ```
 
 ---
 
 # 📚 Version History
 
-## v0.93 — Capability Registration
+## v0.94 — Provider Extensibility
 
 ### Overview
 
-v0.93 introduces the first dedicated capability definition and registration architecture for ULTRON.
+v0.94 introduces the dedicated AI provider registry architecture around the existing `AIProvider` contract.
 
 The milestone establishes:
+
+* `AIProviderRegistry`
+* `AIProviderRegistryError`
+* explicit provider registration
+* provider lookup
+* provider existence checks
+* provider listing
+* provider creation
+* provider class validation
+* normalized provider names
+* duplicate registration handling
+* AI Engine integration
+
+### Provider Architecture
+
+```text
+AI Engine
+    ↓
+AIProviderRegistry
+    ↓
+Registered Provider
+    ↓
+AIProvider
+```
+
+### Built-in Providers
+
+```text
+mock
+anthropic
+```
+
+### Provider Registry Responsibilities
+
+The registry owns provider management and creation.
+
+It does not own:
+
+* AI generation
+* provider execution logic
+* credentials
+* permissions
+* security policy
+* agent execution
+
+### AI Engine Integration
+
+The AI Engine now resolves providers through `AIProviderRegistry` while preserving existing behavior.
+
+Unknown and empty provider modes continue to fall back to `MockProvider`.
+
+### Testing
+
+```text
+Provider Regression
+133 passed
+0 failed
+```
+
+### Full Regression
+
+```text
+2399 passed
+0 failed
+```
+
+---
+
+## v0.93 — Capability Registration
+
+v0.93 introduced:
 
 * `Capability`
 * `CapabilityValidationError`
@@ -1663,107 +1465,19 @@ The milestone establishes:
 * capability-to-tool mapping
 * public package exports
 
-### Capability Architecture
+Focused regression:
 
 ```text
-AgentTool
-   │
-   └── capabilities[]
-          │
-          ▼
-   CapabilityRegistry
-          │
-          ├── Capability Definitions
-          │
-          └── Tool Mapping
-```
-
-### Capability Definition
-
-```text
-Capability
-├── name
-├── description
-└── metadata{}
-```
-
-Capabilities are descriptive definitions.
-
-They do not execute tools and do not grant permissions.
-
-### Capability Registry
-
-```text
-CapabilityRegistry
-├── register()
-├── unregister()
-├── get()
-├── has()
-├── list_capabilities()
-├── list_capability_names()
-├── get_tools_for_capability()
-└── clear()
-```
-
-### Capability / Tool Mapping
-
-The registry can identify existing `AgentTool` objects that declare a specific capability.
-
-```text
-Capability Name
-      ↓
-CapabilityRegistry
-      ↓
-AgentTool.capabilities[]
-      ↓
-Matching Tools
-```
-
-The registry does not own or mutate those tools.
-
-### Architectural Boundary
-
-v0.93 explicitly preserves:
-
-```text
-Capability ≠ Permission
-```
-
-and:
-
-```text
-CapabilityRegistry ≠ ToolRegistry
-```
-
-Capabilities describe abilities.
-
-Permissions and authorization remain separate security concerns.
-
-Tool execution remains owned by the existing tool architecture.
-
-### Explicit Registration
-
-Capabilities are explicitly registered.
-
-v0.93 does not introduce automatic discovery from tools or plugins.
-
-### Testing
-
-```text
-v0.93 Capability Registration Regression
-
 57 passed
 0 failed
 ```
 
-### Full Regression
+Full regression:
 
 ```text
 2372 passed
 0 failed
 ```
-
-The v0.93 implementation was integrated without introducing regressions into the existing architecture.
 
 ---
 
@@ -1796,21 +1510,17 @@ Full regression:
 0 failed
 ```
 
-The plugin architecture preserved the existing tool execution ownership.
-
 ---
 
 ## v0.91 — Extensibility Foundation
 
-v0.91 introduced the first extensibility layer for the existing `AgentTool` architecture.
-
-The milestone added:
+v0.91 introduced:
 
 * tool version
 * tool capabilities
 * extensibility metadata
-* capability management methods
-* metadata management methods
+* capability management
+* metadata management
 
 Focused regression:
 
@@ -1832,10 +1542,9 @@ Full regression:
 
 v0.90 consolidated the reliability architecture established across v0.86–v0.89.
 
-Core structure:
-
 ```text
 ExecutionReliabilityValidator
+
 ├── validate()
 ├── _validate_recoverable()
 ├── _validate_terminal()
@@ -1853,32 +1562,15 @@ Full regression:
 
 ## v0.89 — Execution Reliability
 
-v0.89 strengthened canonical execution reliability with explicit cross-field consistency checks.
+Strengthened canonical execution reliability with explicit cross-field consistency checks.
 
-Completed executions must not retain:
-
-```text
-pending_steps != 0
-```
-
-or:
-
-```text
-failed_steps != 0
-```
-
-Full regression:
-
-```text
-2253 passed
-0 failed
-```
+Completed executions must not retain pending or failed steps.
 
 ---
 
 ## v0.88 — Recovery Architecture
 
-v0.88 introduced:
+Introduced:
 
 * `ExecutionRecovery`
 * `ExecutionRecoveryPlanner`
@@ -1899,36 +1591,33 @@ Recovery planning remains separate from execution.
 
 ## v0.87 — Failure Handling Foundation
 
-v0.87 introduced:
+Introduced:
 
 * `ExecutionFailure`
 * `FailureScope`
 * `FailureCategory`
 
-The failure architecture established structured failure representation without introducing execution or recovery ownership into the failure model.
+Established structured failure representation without introducing execution ownership into the failure model.
 
 ---
 
 ## v0.86 — Reliability Foundation
 
-v0.86 introduced:
+Introduced:
 
 * `ExecutionReliabilityError`
 * `ExecutionReliabilityResult`
 * `ExecutionReliabilityValidator`
 * dedicated reliability validation tests
-* execution-state reliability boundary
 
 ---
 
 ## v0.85 — Runtime Event Integration
 
-v0.85 integrated runtime execution with the canonical event infrastructure.
-
-The milestone established:
+Established:
 
 * canonical execution event storage
-* canonical execution identity propagation
+* execution identity propagation
 * controller-owned lifecycle events
 * orchestrator-owned outcome events
 * runtime success-path verification
@@ -1945,7 +1634,7 @@ Introduced:
 * `ExecutionFeedbackAdapter`
 * `ExecutionFeedbackAdapterError`
 
-Established:
+Architecture:
 
 ```text
 ExecutionResult
@@ -1959,26 +1648,13 @@ ExecutionFeedback
 
 ## v0.83 — Execution Result Abstraction
 
-Introduced the canonical `ExecutionResult` model.
-
-Key responsibilities:
-
-* execution identity
-* success state
-* result data
-* error information
-* metadata
-* validation
-* defensive serialization
-* immutable execution outcome
+Introduced the canonical `ExecutionResult` model for execution identity, success state, result data, errors, metadata, validation, defensive serialization, and immutable execution outcomes.
 
 ---
 
 ## v0.82 — Task Input / Output Contracts
 
-Introduced task-level input and output contracts.
-
-The milestone established explicit boundaries between task expectations and execution behavior.
+Introduced task-level input and output contracts and established explicit boundaries between task expectations and execution behavior.
 
 ---
 
@@ -2009,32 +1685,6 @@ Separated conversational response behavior from action-oriented execution.
 ## v0.77 — Decision Routing Foundation
 
 Introduced decision routing between structured intent and downstream behavior.
-
----
-
-# 🔐 Security & Configuration
-
-ULTRON follows a security-conscious development model.
-
-Secrets should never be committed to Git.
-
-Environment-based configuration is used for external AI providers and API credentials.
-
-Example:
-
-```text
-.env
-```
-
-should remain excluded from version control.
-
-Mock providers can be used during development so that the architecture can be tested without requiring production API credentials.
-
-The dedicated security architecture is planned for a later milestone.
-
-Capability registration does not constitute authorization.
-
-A capability describes what a tool can provide; security policy will determine what the system is actually allowed to perform.
 
 ---
 
@@ -2074,92 +1724,33 @@ This workflow is intended to minimize regressions and architectural duplication.
 
 ---
 
-# 📌 Current Scope
+# 🚫 What v0.94 Does Not Yet Do
 
-## v0.93 — Capability Registration
+v0.94 does **not** introduce:
 
-The current scope is focused on establishing a dedicated capability definition and registry around the existing tool architecture.
-
-```text
-Capability
-├── Identity
-│   └── name
-│
-├── Description
-│   └── description
-│
-└── Metadata
-    └── metadata{}
-```
-
-Capabilities are registered through:
-
-```text
-Capability
-    ↓
-CapabilityRegistry
-```
-
-Tools declare capabilities through:
-
-```text
-AgentTool
-    ↓
-capabilities[]
-```
-
-The registry can map capability identifiers to existing tools:
-
-```text
-CapabilityRegistry
-    ↓
-Matching AgentTool[]
-```
-
-Execution remains:
-
-```text
-AgentTool
-    ↓
-ToolRegistry
-    ↓
-ToolSelector
-    ↓
-Tool Execution
-    ↓
-ToolResult
-```
-
----
-
-# 🚫 What v0.93 Does Not Yet Do
-
-v0.93 does **not** introduce:
-
-* capability-based authorization
-* security permission management
-* risk classification
-* human approval
-* automatic capability discovery
-* dynamic plugin loading
+* dynamic provider imports
+* filesystem provider scanning
 * package installation
-* arbitrary dynamic execution
-* capability-driven execution
+* automatic provider discovery
+* autonomous provider installation
+* provider execution redesign
+* API credential redesign
+* provider permission management
+* provider security policy
+* capability-based authorization
+* human approval
+* dynamic plugin loading
+* arbitrary dynamic code execution
 * ToolRegistry redesign
 * ToolSelector redesign
-* autonomous tool installation
-* a second tool system
-* a second execution system
 
-These concerns remain future milestones.
+These concerns remain future architectural milestones.
 
 ---
 
 # 🚧 What ULTRON Does Not Yet Do
 
 ULTRON is still under active foundation development.
-
-The current architecture does not yet represent the final product feature set.
 
 Not yet fully implemented:
 
@@ -2184,12 +1775,7 @@ These capabilities are planned for later architectural phases.
 
 # 🛣️ Next Milestones
 
-The current extensibility progression is:
-
 ```text
-v0.93
-Capability Registration
-        ↓
 v0.94
 Provider Extensibility
         ↓
@@ -2212,28 +1798,11 @@ v1.0
 Core Platform Foundation
 ```
 
-The transition remains foundation-first and preserves the established boundaries between:
-
-```text
-Task
-Execution
-State
-Events
-Results
-Feedback
-Failure
-Reliability
-Recovery
-Extensibility
-Capabilities
-Plugins
-```
-
 ---
 
 # 🌐 Long-Term Direction
 
-ULTRON is being developed toward a modular AI operating platform that can eventually combine:
+ULTRON is being developed toward a modular AI operating platform combining:
 
 ```text
 AI
@@ -2247,6 +1816,8 @@ Tools
 Capabilities
 +
 Plugins
++
+AI Providers
 +
 Automation
 +
@@ -2271,13 +1842,13 @@ Extensibility
 APIs
 ```
 
-The architecture is being built so that these capabilities can evolve independently while remaining interoperable.
+The architecture is being built so these capabilities can evolve independently while remaining interoperable.
 
 ---
 
 # 🧱 Foundation Principle
 
-ULTRON is intentionally being built in layers.
+ULTRON is intentionally being built in layers:
 
 ```text
 Understand
@@ -2307,6 +1878,8 @@ Extend Tools
 Register Capabilities
     ↓
 Manage Plugins
+    ↓
+Extend Providers
 ```
 
 Each layer has a defined responsibility.
@@ -2317,7 +1890,7 @@ The goal is to avoid turning the entire system into one large AI-driven executio
 
 # 🏆 Current Foundation Position
 
-As of **v0.93**, ULTRON has established a structured foundation covering:
+As of **v0.94**, ULTRON has established a structured foundation covering:
 
 ```text
 AI Runtime
@@ -2413,7 +1986,39 @@ Plugin Tools
 PluginRegistry
 ```
 
-Plugin-provided tools continue through the canonical tool architecture:
+The provider layer maintains:
+
+```text
+AIProvider
+   ↓
+Provider Contract
+   ↓
+AIProviderRegistry
+   ↓
+Provider Registration
+   ↓
+Provider Lookup
+   ↓
+Provider Creation
+   ↓
+Provider Instance
+```
+
+Provider execution continues through the canonical AI Engine path:
+
+```text
+AI_MODE
+   ↓
+AI Engine
+   ↓
+AIProviderRegistry
+   ↓
+AIProvider
+   ↓
+generate()
+```
+
+Plugin-provided tools continue through:
 
 ```text
 Plugin
@@ -2437,19 +2042,7 @@ capabilities[]
 CapabilityRegistry
 ```
 
-while execution remains separate:
-
-```text
-AgentTool
-   ↓
-ToolRegistry
-   ↓
-ToolSelector
-   ↓
-Tool Execution
-```
-
-The architecture therefore maintains a clear separation between:
+The architecture therefore maintains clear separation between:
 
 ```text
 Decision
@@ -2477,6 +2070,8 @@ Tools
 Capabilities
 
 Plugins
+
+Providers
 ```
 
 ---
@@ -2484,19 +2079,24 @@ Plugins
 # 📊 Current Test Position
 
 ```text
-v0.93 Capability Registration
-
+v0.94 Provider Extensibility
 ────────────────────────────────────
 
-Capability Regression             57 passed
+Provider Regression             133 passed
 
-Capability Export Tests            3 passed
-
-Focused Failures                   0
+Focused Failures                  0
 
 ────────────────────────────────────
 
 Latest Full ULTRON Regression
+
+2399 passed
+
+0 failed
+
+────────────────────────────────────
+
+v0.93 Full Regression Baseline
 
 2372 passed
 
@@ -2504,14 +2104,12 @@ Latest Full ULTRON Regression
 
 ────────────────────────────────────
 
-v0.92 Full Regression Baseline
+git diff --check
 
-2315 passed
-
-0 failed
+Clean
 ```
 
-The v0.93 implementation was integrated without introducing regressions into the existing architecture.
+The v0.94 implementation was integrated without introducing regressions into the existing architecture.
 
 ---
 
@@ -2535,18 +2133,20 @@ Extended through structured plugin architecture.
 
 Extended through centralized capability registration.
 
+Extended through provider registry architecture.
+
 Validated through continuous regression testing.
 
 ---
 
-**Current Version: v0.93**
+**Current Version: v0.94**
 
-**Current Milestone: Capability Registration**
+**Current Milestone: Provider Extensibility**
 
-**Capability Registration Regression: 57 passed**
+**Provider Regression: 133 passed**
 
-**Latest Full Regression: 2372 passed**
+**Latest Full Regression: 2399 passed**
 
-**v0.92 Full Regression Baseline: 2315 passed**
+**v0.93 Full Regression Baseline: 2372 passed**
 
-**Next: v0.94 Provider Extensibility**
+**Next: v0.95 Extensibility Consolidation**
