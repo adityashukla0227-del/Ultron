@@ -18,3 +18,13 @@ from modules.agent.execution_recovery import (
     ExecutionRecoveryPlanner,
     RecoveryAction,
 )
+
+from modules.agent.plugin import (
+    Plugin,
+    PluginValidationError,
+)
+
+from modules.agent.plugin_registry import (
+    PluginRegistry,
+    PluginRegistryError,
+)
