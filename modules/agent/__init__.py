@@ -28,3 +28,13 @@ from modules.agent.plugin_registry import (
     PluginRegistry,
     PluginRegistryError,
 )
+
+from modules.agent.capability import (
+    Capability,
+    CapabilityValidationError,
+)
+
+from modules.agent.capability_registry import (
+    CapabilityRegistry,
+    CapabilityRegistryError,
+)

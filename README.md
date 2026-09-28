@@ -2,22 +2,22 @@
 
 ## Modular Personal AI Assistant, Agent Runtime, Automation & Multimodal Platform
 
-> **ULTRON is being engineered as a modular AI operating platform focused on intelligent interaction, agent execution, automation, multimodal capabilities, observability, execution reliability, recovery architecture, extensibility, plugin architecture, and a strong architectural foundation.**
+> **ULTRON is being engineered as a modular AI operating platform focused on intelligent interaction, agent execution, automation, multimodal capabilities, observability, execution reliability, recovery architecture, extensibility, plugin architecture, capability registration, and a strong architectural foundation.**
 
 ---
 
 # 🚀 Current Status
 
-| Metric                                            | Status                     |
-| ------------------------------------------------- | -------------------------- |
-| **Current Version**                               | **v0.92**                  |
-| **Current Milestone**                             | **Plugin Architecture**    |
-| **v0.92 Plugin Architecture Regression**          | **41 passed**              |
-| **Latest Full ULTRON Regression**                 | **2315 passed**            |
-| **v0.91 Full Regression Baseline**                | **2274 passed**            |
-| **Regression Failures in Latest Full Regression** | **0**                      |
-| **Python**                                        | **3.13+**                  |
-| **Architecture Status**                           | **Foundation Development** |
+| Metric                                            | Status                      |
+| ------------------------------------------------- | --------------------------- |
+| **Current Version**                               | **v0.93**                   |
+| **Current Milestone**                             | **Capability Registration** |
+| **v0.93 Capability Regression**                   | **57 passed**               |
+| **Latest Full ULTRON Regression**                 | **2372 passed**             |
+| **v0.92 Full Regression Baseline**                | **2315 passed**             |
+| **Regression Failures in Latest Full Regression** | **0**                       |
+| **Python**                                        | **3.13+**                   |
+| **Architecture Status**                           | **Foundation Development**  |
 
 ### Current Architecture Pipeline
 
@@ -55,27 +55,27 @@ Consumer / UI / Voice / API
 
 ```text
 Agent
-  ↓
+ ↓
 AgentPlan
-  ↓
+ ↓
 AgentPlanner
-  ↓
+ ↓
 AgentOrchestrator
-  ↓
+ ↓
 AgentExecutionController
-  ↓
+ ↓
 AgentEngine
-  ↓
+ ↓
 Tool
-  ↓
+ ↓
 ToolResult
-  ↓
+ ↓
 ExecutionResult
-  ↓
+ ↓
 ExecutionFeedbackAdapter
-  ↓
+ ↓
 ExecutionFeedback
-  ↓
+ ↓
 Consumer / UI / Voice / API
 ```
 
@@ -123,25 +123,51 @@ Existing AgentExecutionController
 
 The recovery layer plans a structured recovery action without executing recovery itself.
 
+### Extensibility Architecture
+
+```text
+AgentTool
+   │
+   ├── version
+   ├── capabilities[]
+   └── metadata{}
+```
+
 ### Plugin Architecture Path
 
 ```text
 Plugin
-  ↓
+ ↓
 Plugin-provided AgentTool
-  ↓
+ ↓
 ToolRegistry
-  ↓
+ ↓
 Agent
-  ↓
+ ↓
 ToolSelector
-  ↓
+ ↓
 AgentTool
-  ↓
+ ↓
 Tool Execution
 ```
 
-The plugin layer defines and registers extension metadata and provided tools. Plugin management remains separate from tool execution.
+### Capability Architecture Path
+
+```text
+Plugin
+   ↓
+AgentTool
+   ↓
+capabilities[]
+   ↓
+CapabilityRegistry
+   ↓
+Capability Definitions
+   ↓
+Capability → Tool Mapping
+```
+
+The capability layer describes what tools can provide. It does not grant authorization and does not execute tools.
 
 ---
 
@@ -170,6 +196,7 @@ Instead of building a collection of disconnected AI features, ULTRON focuses on 
 * Execution reliability
 * Recovery planning
 * Tool extensibility
+* Capability registration
 * Plugin architecture
 * Multimodal interaction
 * Automation
@@ -204,7 +231,10 @@ ULTRON is being developed toward a long-term AI platform capable of:
 * API-driven AI services
 * Personal AI workflows
 * Developer-facing agent infrastructure
-* Extensible tool, capability, provider, and plugin architecture
+* Extensible tool architecture
+* Capability registration
+* Plugin architecture
+* Provider extensibility
 
 The long-term vision is not simply to build another chatbot.
 
@@ -276,27 +306,11 @@ New tools and capabilities should extend the existing tool architecture without 
 
 Each architectural concern should have one canonical owner.
 
-For reliability:
-
-```text
-ExecutionReliabilityValidator
-        ↓
-Canonical Reliability Rules
-```
-
-For recovery:
-
-```text
-ExecutionRecoveryPlanner
-        ↓
-Consumes Reliability Result
-```
-
 For tools:
 
 ```text
 AgentTool
-        ↓
+    ↓
 Canonical Tool Representation
 ```
 
@@ -304,11 +318,41 @@ For plugins:
 
 ```text
 Plugin
-        ↓
+    ↓
 Canonical Plugin Representation
 ```
 
-The plugin layer extends the existing tool architecture without creating a second tool abstraction.
+For capabilities:
+
+```text
+Capability
+    ↓
+Canonical Capability Definition
+```
+
+For capability registration:
+
+```text
+CapabilityRegistry
+    ↓
+Canonical Capability Registry
+```
+
+For reliability:
+
+```text
+ExecutionReliabilityValidator
+    ↓
+Canonical Reliability Rules
+```
+
+For recovery:
+
+```text
+ExecutionRecoveryPlanner
+    ↓
+Consumes Reliability Result
+```
 
 ---
 
@@ -383,19 +427,19 @@ ULTRON separates agent reasoning and execution into distinct layers.
 
 ```text
 Agent
-  ↓
+ ↓
 AgentPlan
-  ↓
+ ↓
 AgentPlanner
-  ↓
+ ↓
 AgentOrchestrator
-  ↓
+ ↓
 AgentExecutionController
-  ↓
+ ↓
 AgentEngine
-  ↓
+ ↓
 Tool
-  ↓
+ ↓
 ToolResult
 ```
 
@@ -695,17 +739,6 @@ ExecutionFeedbackAdapter
 ExecutionFeedback
 ```
 
-The adapter:
-
-* accepts an `ExecutionResult`
-* maps successful execution to `completed`
-* maps unsuccessful execution to `failed`
-* extracts progress metadata
-* preserves non-progress metadata
-* preserves result data
-* preserves execution errors
-* creates a new `ExecutionFeedback`
-
 The adapter does not execute tasks, tools, retries, planning, or lifecycle operations.
 
 ---
@@ -713,8 +746,6 @@ The adapter does not execute tasks, tools, retries, planning, or lifecycle opera
 # 🔔 Runtime Event Architecture
 
 ## v0.85 — Runtime Event Integration
-
-v0.85 integrates runtime execution behavior with ULTRON's existing execution event architecture.
 
 The canonical runtime observability path is:
 
@@ -800,50 +831,28 @@ The validator remains:
 
 ### Reliability States
 
-Recoverable states:
+Recoverable:
 
 ```text
 RUNNING
 PAUSED
 ```
 
-Terminal states:
+Terminal:
 
 ```text
 COMPLETED
 CANCELLED
 ```
 
-Non-recoverable states:
+Non-recoverable:
 
 ```text
 PENDING
 FAILED
 ```
 
-### Completed-State Consistency
-
-A completed execution must not retain pending steps:
-
-```text
-COMPLETED
-    +
-pending_steps != 0
-    ↓
-INVALID
-```
-
-A completed execution must not retain failed steps:
-
-```text
-COMPLETED
-    +
-failed_steps != 0
-    ↓
-INVALID
-```
-
-v0.90 consolidated these rules behind a dedicated internal validation boundary without changing the public reliability contract.
+Completed executions must not retain pending or failed steps.
 
 ---
 
@@ -878,17 +887,7 @@ EXECUTION_FAILURE
 UNKNOWN
 ```
 
-The failure model represents:
-
-* execution identity
-* failure scope
-* failure category
-* failure message
-* retryability
-* optional step identity
-* optional metadata
-
-The model is immutable and supports defensive serialization.
+The failure model remains a structured representation rather than an execution controller.
 
 ---
 
@@ -921,8 +920,6 @@ SKIP
 ABORT
 ```
 
-`SKIP` is represented as a supported recovery action but is not automatically selected by the foundation planner.
-
 Recovery planning remains separate from actual execution.
 
 ---
@@ -941,13 +938,10 @@ modules/agent/tool.py
 
 No parallel `modules/tools` architecture is introduced.
 
-The extensibility foundation extends the existing `AgentTool` abstraction with structured metadata while preserving the established execution contracts.
-
 ### Tool Extensibility Model
 
 ```text
 AgentTool
-
 ├── Tool Identity
 │   ├── name
 │   └── version
@@ -970,97 +964,15 @@ AgentTool
     └── ToolResult
 ```
 
-### Tool Identity
-
-Every tool has:
-
-```text
-name
-version
-```
-
-The version is validated and must be a non-empty string.
-
-### Tool Capabilities
-
-Tools can expose structured capability identifiers:
+Tools can expose structured capability identifiers through:
 
 ```text
 capabilities[]
 ```
 
-Capabilities are represented as a list of strings.
+Capability identifiers are descriptive declarations of what a tool provides.
 
-The tool provides controlled operations for:
-
-* setting capabilities
-* retrieving capabilities
-* adding capabilities
-* removing capabilities
-
-Capability data is returned defensively so callers do not receive the internal list directly.
-
-### Tool Metadata
-
-Tools can carry extensibility metadata:
-
-```text
-metadata{}
-```
-
-Metadata can be:
-
-* assigned
-* updated
-* queried
-* retrieved defensively
-
-The metadata layer is intentionally generic so future plugin and provider systems can build on the existing tool abstraction.
-
-### Tool Configuration
-
-Existing tool configuration remains:
-
-```text
-config{}
-```
-
-Configuration continues to be merged with runtime parameters during execution.
-
-Runtime parameters override matching configured values.
-
-### Tool Execution Contract
-
-The existing execution contract remains:
-
-```text
-AgentTool
-    ↓
-execute()
-    ↓
-handler
-    ↓
-ToolResult
-```
-
-v0.91 does not introduce permissions, risk classification, approval gates, or security policy into `AgentTool.execute()`.
-
-### Tool Serialization Boundary
-
-The existing serialized tool configuration contract remains stable:
-
-```text
-{
-    "name": ...,
-    "description": ...,
-    "enabled": ...,
-    "config": ...
-}
-```
-
-The executable handler and extensibility metadata are intentionally not included in the existing serialization contract.
-
-`from_dict()` can restore optional extensibility fields when they are explicitly available.
+They are not authorization grants.
 
 ---
 
@@ -1068,17 +980,12 @@ The executable handler and extensibility metadata are intentionally not included
 
 ## v0.92 — Plugin Architecture
 
-v0.92 introduces the first dedicated plugin abstraction for ULTRON.
-
-The plugin architecture provides a structured representation for extensions while continuing to use the existing `AgentTool` abstraction.
-
-The milestone deliberately keeps plugin management separate from tool execution.
+v0.92 introduced the first dedicated plugin abstraction for ULTRON.
 
 ### Plugin Model
 
 ```text
 Plugin
-
 ├── Identity
 │   ├── name
 │   └── version
@@ -1121,78 +1028,14 @@ A plugin represents an extension and the `AgentTool` objects provided by that ex
 * execute recovery
 * control the execution controller
 
-### Plugin Tool Contract
-
-Plugins provide existing `AgentTool` objects:
-
-```text
-Plugin
-   ↓
-AgentTool[]
-```
-
-This preserves the single source of truth for tool representation.
-
-No second plugin-specific tool abstraction is introduced.
-
-### Plugin Tool Management
-
-The plugin supports:
-
-```text
-add_tool()
-remove_tool()
-get_tool()
-get_tools()
-```
-
-Plugin tools must be `AgentTool` instances.
-
-Tool collections are returned defensively.
-
-### Plugin Metadata
-
-Plugins support:
-
-```text
-set_metadata()
-update_metadata()
-get_metadata()
-```
-
-Metadata is stored as a dictionary and returned defensively.
-
-### Plugin Serialization
-
-Plugins support structured serialization:
-
-```text
-Plugin
-    ↓
-to_dict()
-    ↓
-{
-    "name": ...,
-    "version": ...,
-    "description": ...,
-    "tools": [...],
-    "metadata": {...}
-}
-```
-
-Plugins can also be reconstructed through `from_dict()`.
-
-Provided tools are restored through the existing `AgentTool.from_dict()` contract.
-
 ---
 
 # 🗂️ Plugin Registry
 
-v0.92 introduces `PluginRegistry` as the canonical registry for plugin definitions.
+`PluginRegistry` is the canonical registry for plugin definitions.
 
 ```text
 PluginRegistry
-
 ├── register()
 ├── unregister()
 ├── get()
@@ -1202,7 +1045,7 @@ PluginRegistry
 └── clear()
 ```
 
-Additional utility operations include:
+Additional utility operations:
 
 ```text
 count()
@@ -1211,36 +1054,157 @@ contains
 repr()
 ```
 
-### Registry Responsibilities
+The registry maintains plugin definitions without owning execution.
 
-`PluginRegistry` is responsible for:
+---
 
-* registering plugins
-* preventing duplicate plugin registration
-* retrieving plugins
-* checking plugin availability
-* unregistering plugins
-* listing registered plugins
-* listing plugin names
-* clearing registered plugins
+# 🧠 Capability Registration
 
-The registry does not execute plugins or tools.
+## v0.93 — Capability Registration
 
-### Plugin Registry Architecture
+v0.93 introduces the first dedicated capability definition and registry layer.
+
+The milestone establishes:
+
+* `Capability`
+* `CapabilityRegistry`
+* capability identity
+* capability descriptions
+* capability metadata
+* centralized capability registration
+* capability lookup
+* capability existence checks
+* capability listing
+* capability-to-tool mapping
+
+### Capability Model
 
 ```text
-Plugin
-   ↓
-PluginRegistry
-   ↓
-Registered Plugin Definitions
+Capability
+├── name
+├── description
+└── metadata{}
 ```
 
-Plugin-provided tools continue through the established tool architecture:
+A `Capability` represents a discrete ability that one or more `AgentTool` objects may provide.
+
+A capability does **not**:
+
+* execute tools
+* select tools
+* grant permissions
+* authorize actions
+* classify security risk
+* request human approval
+* control execution
+
+### Capability Registry
+
+```text
+CapabilityRegistry
+├── register()
+├── unregister()
+├── get()
+├── has()
+├── list_capabilities()
+├── list_capability_names()
+├── get_tools_for_capability()
+└── clear()
+```
+
+Additional utility operations:
+
+```text
+count()
+len()
+contains
+repr()
+```
+
+### Capability Mapping
+
+The registry can resolve tools that declare a specific capability:
+
+```text
+Capability
+    │
+    ▼
+CapabilityRegistry
+    │
+    ▼
+AgentTool.capabilities[]
+    │
+    ▼
+Matching AgentTool[]
+```
+
+For example:
+
+```text
+"calculation"
+      ↓
+calculator
+
+"file_read"
+      ↓
+file_tool
+
+"web_search"
+      ↓
+web_tool
+```
+
+The registry does not own or mutate the tools supplied for mapping.
+
+### Capability Boundary
+
+The architecture explicitly maintains:
+
+```text
+Capability ≠ Permission
+```
+
+and:
+
+```text
+CapabilityRegistry ≠ ToolRegistry
+```
+
+`Capability` describes an ability.
+
+`CapabilityRegistry` manages capability definitions and capability-to-tool lookup.
+
+`ToolRegistry` manages tool registration and execution.
+
+Security authorization remains a separate architectural concern.
+
+### Explicit Registration
+
+v0.93 uses explicit capability registration.
+
+The registry does **not** automatically discover capabilities from plugins or tools.
+
+Automatic discovery remains outside the current milestone.
+
+---
+
+# 🔗 Extensibility Architecture
+
+The current extensibility architecture is:
 
 ```text
 Plugin
    ↓
+AgentTool
+   ↓
+capabilities[]
+   ↓
+CapabilityRegistry
+```
+
+While execution continues through:
+
+```text
 AgentTool
    ↓
 ToolRegistry
@@ -1250,71 +1214,36 @@ Agent
 ToolSelector
    ↓
 Tool Execution
+   ↓
+ToolResult
 ```
 
-This keeps plugin management and tool execution as separate concerns.
+These are intentionally separate paths.
+
+Capability registration does not replace tool registration or tool selection.
 
 ---
 
-# 🔗 Plugin / Tool Boundary
+# 🚫 v0.93 Does Not Yet Do
 
-The v0.92 architecture establishes the following boundary:
+v0.93 does **not** introduce:
 
-```text
-Plugin
-   │
-   ├── identity
-   ├── metadata
-   └── provided tools
-           │
-           ▼
-      ToolRegistry
-           │
-           ▼
-         Agent
-           │
-           ▼
-      ToolSelector
-           │
-           ▼
-       AgentTool
-           │
-           ▼
-      Tool Execution
-```
-
-The plugin layer does not replace:
-
-* `AgentTool`
-* `ToolRegistry`
-* `ToolSelector`
-* `ToolResult`
-* `Agent`
-
-Instead, it provides an extensibility boundary around the existing architecture.
-
----
-
-# 🚫 v0.92 Plugin Architecture Does Not Yet Do
-
-v0.92 does **not** introduce:
-
-* dynamic module loading
-* filesystem plugin scanning
-* automatic plugin discovery
-* pip/package installation
-* arbitrary dynamic code execution
-* plugin execution ownership
-* automatic capability discovery
-* provider execution
-* security authorization
+* capability-based authorization
 * permission management
 * risk classification
 * human approval
+* security policy
+* automatic capability discovery
+* dynamic plugin loading
+* filesystem plugin scanning
+* package installation
+* arbitrary dynamic code execution
+* capability-driven execution
+* ToolRegistry redesign
+* ToolSelector redesign
 * autonomous tool installation
 * a second tool abstraction
-* a second tool registry
-* a second tool selector
+* a second execution system
 
 These concerns remain future architectural milestones.
 
@@ -1322,21 +1251,7 @@ These concerns remain future architectural milestones.
 
 # 🧰 Tool Architecture
 
-Tools are treated as executable capabilities rather than being embedded directly into intelligence logic.
-
-```text
-Agent
-  ↓
-AgentPlanner
-  ↓
-Tool Selection
-  ↓
-Tool Execution
-  ↓
-ToolResult
-```
-
-The existing tool architecture is centered around:
+Tools remain centered around:
 
 ```text
 AgentTool
@@ -1345,12 +1260,25 @@ ToolSelector
 ToolResult
 ```
 
-The v0.91 extensibility layer and v0.92 plugin architecture extend this existing foundation without changing ownership of:
+The extensibility progression is:
 
-* registration
-* selection
+```text
+AgentTool
+   ↓
+Version
+   ↓
+Capabilities
+   ↓
+Metadata
+```
+
+Capabilities describe tool abilities without taking ownership of:
+
+* permissions
+* authorization
 * execution
-* result representation
+* recovery
+* security policy
 
 ---
 
@@ -1371,7 +1299,7 @@ Current concepts include:
 * failure representation
 * recovery decisions
 
-Observability is intentionally separated from:
+Observability remains separate from:
 
 * task definition
 * execution result
@@ -1379,6 +1307,7 @@ Observability is intentionally separated from:
 * reliability decisions
 * recovery execution
 * plugin management
+* capability registration
 
 ---
 
@@ -1401,7 +1330,7 @@ Metrics are observational and do not own execution itself.
 
 # 🧪 Testing Philosophy
 
-ULTRON follows layered testing.
+ULTRON follows layered testing:
 
 ```text
 Unit Tests
@@ -1415,30 +1344,45 @@ Full Regression
 
 Every architectural milestone receives focused validation before being considered complete.
 
-### v0.92 Focused Validation
+### v0.93 Focused Validation
 
 ```text
-Plugin Architecture Regression
+Capability Registration Regression
 
-41 passed
+57 passed
 0 failed
 ```
 
+The focused v0.93 suite covers:
+
+* capability construction
+* validation
+* metadata
+* serialization
+* restoration
+* capability registration
+* duplicate handling
+* lookup
+* listing
+* capability-to-tool mapping
+* registry management
+* public package exports
+
 ### Latest Full Regression
+
+```text
+2372 passed
+0 failed
+```
+
+### v0.92 Full Regression Baseline
 
 ```text
 2315 passed
 0 failed
 ```
 
-### v0.91 Full Regression Baseline
-
-```text
-2274 passed
-0 failed
-```
-
-The v0.92 implementation was integrated without introducing regressions into the existing architecture.
+The v0.93 implementation was integrated without introducing regressions into the existing architecture.
 
 ---
 
@@ -1473,6 +1417,8 @@ ultron/
 │   │   ├── tool_registry.py
 │   │   ├── tool_selector.py
 │   │   ├── tool_result.py
+│   │   ├── capability.py
+│   │   ├── capability_registry.py
 │   │   ├── plugin.py
 │   │   ├── plugin_registry.py
 │   │   └── ...
@@ -1487,15 +1433,10 @@ ultron/
 │   └── ...
 │
 ├── tests/
-│   │
-│   ├── agent/
-│   │   ├── test_execution_result.py
-│   │   ├── test_execution_feedback.py
-│   │   ├── test_execution_feedback_adapter.py
-│   │   ├── test_execution_feedback_integration.py
-│   │   └── ...
-│   │
 │   ├── test_agent_tools.py
+│   ├── test_capabilities.py
+│   ├── test_capability_registry.py
+│   ├── test_capability_exports.py
 │   ├── test_plugins.py
 │   ├── test_execution_reliability.py
 │   ├── test_execution_failure.py
@@ -1527,6 +1468,9 @@ ToolRegistry
 ToolSelector
 ToolResult
 
+Capability
+CapabilityRegistry
+
 Plugin
 PluginRegistry
 
@@ -1544,7 +1488,7 @@ ExecutionRecoveryPlanner
 RecoveryAction
 ```
 
-The reliability, failure, recovery, tool, and plugin layers maintain their own explicit public APIs.
+The reliability, failure, recovery, tool, capability, and plugin layers maintain their own explicit public APIs.
 
 ---
 
@@ -1568,12 +1512,13 @@ v0.83 → Execution Result Abstraction         ✅
 v0.84 → Execution Feedback Interface         ✅
 v0.85 → Runtime Event Integration            ✅
 v0.86 → Reliability Foundation               ✅
-v0.87 → Failure Handling Foundation          ✅
+v0.87 → Failure Handling Foundation         ✅
 v0.88 → Recovery Architecture                ✅
 v0.89 → Execution Reliability                ✅
 v0.90 → Reliability Consolidation            ✅
 v0.91 → Extensibility Foundation             ✅
-v0.92 → Plugin Architecture                  🔄
+v0.92 → Plugin Architecture                  ✅
+v0.93 → Capability Registration              ✅
 ```
 
 ---
@@ -1598,18 +1543,19 @@ v0.88 → Recovery Architecture
 v0.89 → Execution Reliability
 v0.90 → Reliability Consolidation
 v0.91 → Extensibility Foundation
+v0.92 → Plugin Architecture
+v0.93 → Capability Registration
 ```
 
 ## Current
 
 ```text
-v0.92 → Plugin Architecture
+v0.93 → Capability Registration
 ```
 
 ## Upcoming
 
 ```text
-v0.93 → Capability Registration
 v0.94 → Provider Extensibility
 v0.95 → Extensibility Consolidation
 v0.96 → Core Platform Hardening
@@ -1688,19 +1634,142 @@ v0.89 → Execution Reliability
 v0.90 → Reliability Consolidation
 v0.91 → Extensibility Foundation
 v0.92 → Plugin Architecture
+v0.93 → Capability Registration
 ```
 
 ---
 
 # 📚 Version History
 
-## v0.92 — Plugin Architecture
+## v0.93 — Capability Registration
 
 ### Overview
 
-v0.92 introduces the first dedicated plugin architecture for ULTRON.
+v0.93 introduces the first dedicated capability definition and registration architecture for ULTRON.
 
 The milestone establishes:
+
+* `Capability`
+* `CapabilityValidationError`
+* `CapabilityRegistry`
+* `CapabilityRegistryError`
+* capability identity
+* capability descriptions
+* capability metadata
+* centralized registration
+* capability lookup
+* capability existence checks
+* capability listing
+* capability-to-tool mapping
+* public package exports
+
+### Capability Architecture
+
+```text
+AgentTool
+   │
+   └── capabilities[]
+          │
+          ▼
+   CapabilityRegistry
+          │
+          ├── Capability Definitions
+          │
+          └── Tool Mapping
+```
+
+### Capability Definition
+
+```text
+Capability
+├── name
+├── description
+└── metadata{}
+```
+
+Capabilities are descriptive definitions.
+
+They do not execute tools and do not grant permissions.
+
+### Capability Registry
+
+```text
+CapabilityRegistry
+├── register()
+├── unregister()
+├── get()
+├── has()
+├── list_capabilities()
+├── list_capability_names()
+├── get_tools_for_capability()
+└── clear()
+```
+
+### Capability / Tool Mapping
+
+The registry can identify existing `AgentTool` objects that declare a specific capability.
+
+```text
+Capability Name
+      ↓
+CapabilityRegistry
+      ↓
+AgentTool.capabilities[]
+      ↓
+Matching Tools
+```
+
+The registry does not own or mutate those tools.
+
+### Architectural Boundary
+
+v0.93 explicitly preserves:
+
+```text
+Capability ≠ Permission
+```
+
+and:
+
+```text
+CapabilityRegistry ≠ ToolRegistry
+```
+
+Capabilities describe abilities.
+
+Permissions and authorization remain separate security concerns.
+
+Tool execution remains owned by the existing tool architecture.
+
+### Explicit Registration
+
+Capabilities are explicitly registered.
+
+v0.93 does not introduce automatic discovery from tools or plugins.
+
+### Testing
+
+```text
+v0.93 Capability Registration Regression
+
+57 passed
+0 failed
+```
+
+### Full Regression
+
+```text
+2372 passed
+0 failed
+```
+
+The v0.93 implementation was integrated without introducing regressions into the existing architecture.
+
+---
+
+## v0.92 — Plugin Architecture
+
+v0.92 introduced:
 
 * `Plugin`
 * `PluginRegistry`
@@ -1713,242 +1782,44 @@ The milestone establishes:
 * plugin serialization
 * centralized plugin registration
 
-The existing tool architecture remains the canonical execution architecture.
-
-### Plugin Architecture
+Focused regression:
 
 ```text
-Plugin
-   ↓
-PluginRegistry
-```
-
-A plugin can provide existing `AgentTool` objects:
-
-```text
-Plugin
-   ↓
-AgentTool[]
-```
-
-These tools continue through the existing tool architecture:
-
-```text
-AgentTool
-   ↓
-ToolRegistry
-   ↓
-Agent
-   ↓
-ToolSelector
-   ↓
-Tool Execution
-```
-
-### Plugin Validation
-
-v0.92 validates:
-
-* plugin name
-* plugin version
-* plugin description
-* plugin tools
-* plugin metadata
-* tool types
-* metadata types
-
-Invalid plugin configurations are rejected through `PluginValidationError`.
-
-### Plugin Registry
-
-`PluginRegistry` provides:
-
-* `register()`
-* `unregister()`
-* `get()`
-* `has()`
-* `list_plugins()`
-* `list_plugin_names()`
-* `clear()`
-
-The registry prevents duplicate plugin registration and maintains plugin definitions without owning execution.
-
-### Serialization
-
-Plugins support:
-
-```text
-to_dict()
-from_dict()
-```
-
-Plugin-provided tools are serialized through the existing `AgentTool` serialization contract.
-
-### Architectural Boundary
-
-v0.92 does not introduce:
-
-* dynamic plugin loading
-* filesystem discovery
-* package installation
-* automatic discovery
-* plugin execution
-* security authorization
-* permission management
-* risk classification
-* human approval
-* autonomous capability discovery
-* a second tool abstraction
-* a second tool registry
-* a second tool selector
-
-### Testing
-
-```text
-v0.92 Plugin Architecture Regression
-
 41 passed
 0 failed
 ```
 
-### Full Regression
+Full regression:
 
 ```text
 2315 passed
 0 failed
 ```
 
-The v0.92 implementation was integrated without introducing regressions into the existing architecture.
+The plugin architecture preserved the existing tool execution ownership.
 
 ---
 
 ## v0.91 — Extensibility Foundation
 
-### Overview
+v0.91 introduced the first extensibility layer for the existing `AgentTool` architecture.
 
-v0.91 introduced the first extensibility layer for ULTRON's existing tool architecture.
-
-The milestone extended the canonical `AgentTool` abstraction with:
+The milestone added:
 
 * tool version
 * tool capabilities
 * extensibility metadata
+* capability management methods
+* metadata management methods
 
-The existing tool execution contract remained stable.
-
-### Extensibility Model
-
-```text
-AgentTool
-├── Identity
-│   ├── name
-│   └── version
-│
-├── Description
-│   └── description
-│
-├── Capabilities
-│   └── capabilities[]
-│
-├── Configuration
-│   └── config{}
-│
-├── Extension Metadata
-│   └── metadata{}
-│
-└── Execution
-    ├── handler
-    ├── execute()
-    └── ToolResult
-```
-
-### Tool Version
-
-`AgentTool` supports an explicit version identifier.
-
-The version:
-
-* must be a string
-* must not be empty
-* can be updated through the tool API
-* can be retrieved through the tool API
-
-### Tool Capabilities
-
-Tools can declare capability identifiers through:
+Focused regression:
 
 ```text
-capabilities[]
-```
-
-The capability interface supports:
-
-* set
-* get
-* add
-* remove
-
-Capability collections are defensively copied when exposed.
-
-### Extension Metadata
-
-Tools support generic metadata through:
-
-```text
-metadata{}
-```
-
-The metadata interface supports:
-
-* set
-* get
-* update
-
-Metadata collections are defensively copied when exposed.
-
-### Validation
-
-v0.91 validates:
-
-* version type
-* non-empty version
-* capabilities type
-* capability element types
-* metadata type
-
-Invalid capability containers are rejected rather than implicitly converted.
-
-### Serialization
-
-The existing tool serialization contract remains unchanged.
-
-`to_dict()` continues to serialize:
-
-```text
-name
-description
-enabled
-config
-```
-
-`from_dict()` supports optional restoration of:
-
-```text
-version
-capabilities
-metadata
-```
-
-### Testing
-
-```text
-v0.91 Tool Extensibility Regression
-
 50 passed
 0 failed
 ```
 
-### Full Regression
+Full regression:
 
 ```text
 2274 passed
@@ -1961,8 +1832,6 @@ v0.91 Tool Extensibility Regression
 
 v0.90 consolidated the reliability architecture established across v0.86–v0.89.
 
-The milestone preserved existing reliability contracts while grouping completed-state consistency checks behind a dedicated internal validation boundary.
-
 Core structure:
 
 ```text
@@ -1971,13 +1840,6 @@ ExecutionReliabilityValidator
 ├── _validate_recoverable()
 ├── _validate_terminal()
 └── _validate_completed_consistency()
-```
-
-Focused validation:
-
-```text
-Reliability Tests: 18 passed
-Recovery Tests:    22 passed
 ```
 
 Full regression:
@@ -1991,7 +1853,7 @@ Full regression:
 
 ## v0.89 — Execution Reliability
 
-v0.89 strengthened the canonical execution reliability architecture with explicit cross-field consistency checks.
+v0.89 strengthened canonical execution reliability with explicit cross-field consistency checks.
 
 Completed executions must not retain:
 
@@ -2005,28 +1867,18 @@ or:
 failed_steps != 0
 ```
 
-Both conditions produce:
+Full regression:
 
 ```text
-valid = False
-recoverable = False
-```
-
-Testing:
-
-```text
-Targeted Regression: 18 passed
-Full Regression:     2253 passed
-Failures:            0
+2253 passed
+0 failed
 ```
 
 ---
 
 ## v0.88 — Recovery Architecture
 
-v0.88 introduced the canonical execution recovery architecture.
-
-Core components:
+v0.88 introduced:
 
 * `ExecutionRecovery`
 * `ExecutionRecoveryPlanner`
@@ -2041,13 +1893,7 @@ SKIP
 ABORT
 ```
 
-Testing:
-
-```text
-Targeted Regression: 22 passed
-Full Regression:     2251 passed
-Failures:            0
-```
+Recovery planning remains separate from execution.
 
 ---
 
@@ -2073,14 +1919,6 @@ v0.86 introduced:
 * dedicated reliability validation tests
 * execution-state reliability boundary
 
-Testing:
-
-```text
-Targeted Regression: 16 passed
-Full Regression:     2220 passed
-Failures:            0
-```
-
 ---
 
 ## v0.85 — Runtime Event Integration
@@ -2095,14 +1933,6 @@ The milestone established:
 * orchestrator-owned outcome events
 * runtime success-path verification
 * runtime failure-path verification
-
-Testing:
-
-```text
-Targeted Regression: 148 passed
-Full Regression:     2204 passed
-Failures:            0
-```
 
 ---
 
@@ -2119,9 +1949,9 @@ Established:
 
 ```text
 ExecutionResult
-       ↓
+      ↓
 ExecutionFeedbackAdapter
-       ↓
+      ↓
 ExecutionFeedback
 ```
 
@@ -2202,6 +2032,10 @@ Mock providers can be used during development so that the architecture can be te
 
 The dedicated security architecture is planned for a later milestone.
 
+Capability registration does not constitute authorization.
+
+A capability describes what a tool can provide; security policy will determine what the system is actually allowed to perform.
+
 ---
 
 # 🧪 Development Workflow
@@ -2242,72 +2076,82 @@ This workflow is intended to minimize regressions and architectural duplication.
 
 # 📌 Current Scope
 
-## v0.92 — Plugin Architecture
+## v0.93 — Capability Registration
 
-Current scope is focused on establishing a dedicated plugin representation and registry around the existing tool architecture.
+The current scope is focused on establishing a dedicated capability definition and registry around the existing tool architecture.
 
 ```text
-Plugin
-
+Capability
 ├── Identity
-│   ├── name
-│   └── version
+│   └── name
 │
 ├── Description
 │   └── description
 │
-├── Metadata
-│   └── metadata{}
-│
-└── Provided Tools
-    └── tools[]
+└── Metadata
+    └── metadata{}
 ```
 
-The plugin architecture remains separate from execution:
+Capabilities are registered through:
 
 ```text
-Plugin
-   ↓
-PluginRegistry
+Capability
+    ↓
+CapabilityRegistry
 ```
 
-Provided tools continue through:
+Tools declare capabilities through:
 
 ```text
 AgentTool
-   ↓
+    ↓
+capabilities[]
+```
+
+The registry can map capability identifiers to existing tools:
+
+```text
+CapabilityRegistry
+    ↓
+Matching AgentTool[]
+```
+
+Execution remains:
+
+```text
+AgentTool
+    ↓
 ToolRegistry
-   ↓
+    ↓
 ToolSelector
-   ↓
+    ↓
 Tool Execution
-   ↓
+    ↓
 ToolResult
 ```
 
 ---
 
-# 🚫 What v0.92 Does Not Yet Do
+# 🚫 What v0.93 Does Not Yet Do
 
-v0.92 does **not** introduce:
+v0.93 does **not** introduce:
 
-* dynamic plugin loading
-* plugin discovery
-* automatic filesystem scanning
-* package installation
-* arbitrary dynamic execution
-* automatic capability discovery
-* provider execution
-* security authorization
-* permission management
+* capability-based authorization
+* security permission management
 * risk classification
 * human approval
+* automatic capability discovery
+* dynamic plugin loading
+* package installation
+* arbitrary dynamic execution
+* capability-driven execution
+* ToolRegistry redesign
+* ToolSelector redesign
 * autonomous tool installation
 * a second tool system
-* a second registry
-* a second selector
+* a second execution system
 
-These concerns remain future architectural milestones.
+These concerns remain future milestones.
 
 ---
 
@@ -2332,6 +2176,7 @@ Not yet fully implemented:
 * full SaaS infrastructure
 * complete public API platform
 * advanced autonomous recovery
+* production-grade security authorization and approval architecture
 
 These capabilities are planned for later architectural phases.
 
@@ -2342,9 +2187,6 @@ These capabilities are planned for later architectural phases.
 The current extensibility progression is:
 
 ```text
-v0.92
-Plugin Architecture
-        ↓
 v0.93
 Capability Registration
         ↓
@@ -2374,25 +2216,16 @@ The transition remains foundation-first and preserves the established boundaries
 
 ```text
 Task
-
 Execution
-
 State
-
 Events
-
 Results
-
 Feedback
-
 Failure
-
 Reliability
-
 Recovery
-
 Extensibility
-
+Capabilities
 Plugins
 ```
 
@@ -2410,6 +2243,8 @@ Agents
 Tasks
 +
 Tools
++
+Capabilities
 +
 Plugins
 +
@@ -2467,7 +2302,9 @@ Represent Result
     ↓
 Provide Feedback
     ↓
-Extend Capabilities
+Extend Tools
+    ↓
+Register Capabilities
     ↓
 Manage Plugins
 ```
@@ -2480,7 +2317,7 @@ The goal is to avoid turning the entire system into one large AI-driven executio
 
 # 🏆 Current Foundation Position
 
-As of **v0.92**, ULTRON has established a structured foundation covering:
+As of **v0.93**, ULTRON has established a structured foundation covering:
 
 ```text
 AI Runtime
@@ -2512,21 +2349,13 @@ The execution layer separately maintains:
 
 ```text
 Execution Controller
-
 Execution Context
-
 Execution State Snapshot
-
 Execution Events
-
 Execution Event Store
-
 Execution Metrics
-
 Execution Failure
-
 Execution Reliability
-
 Execution Recovery Planning
 ```
 
@@ -2550,7 +2379,23 @@ Tool Execution
 ToolResult
 ```
 
-The plugin layer now maintains:
+The capability layer maintains:
+
+```text
+Capability
+   ↓
+Capability Identity
+   ↓
+Capability Description
+   ↓
+Capability Metadata
+   ↓
+CapabilityRegistry
+   ↓
+Capability → Tool Mapping
+```
+
+The plugin layer maintains:
 
 ```text
 Plugin
@@ -2582,75 +2427,29 @@ ToolSelector
 Tool Execution
 ```
 
-Runtime event integration established explicit ownership between:
+Capabilities remain descriptive:
 
 ```text
-Lifecycle Control
-      ↓
-AgentExecutionController
+AgentTool
+   ↓
+capabilities[]
+   ↓
+CapabilityRegistry
 ```
 
-and:
+while execution remains separate:
 
 ```text
-Runtime Outcomes
-      ↓
-AgentOrchestrator
+AgentTool
+   ↓
+ToolRegistry
+   ↓
+ToolSelector
+   ↓
+Tool Execution
 ```
 
-Both converge into the canonical event infrastructure:
-
-```text
-ExecutionEventEmitter
-      ↓
-ExecutionEventStore
-```
-
-v0.86 added the read-only reliability validation boundary:
-
-```text
-ExecutionStateSnapshot
-      ↓
-ExecutionReliabilityValidator
-      ↓
-ExecutionReliabilityResult
-```
-
-v0.87 added structured failure representation:
-
-```text
-ExecutionFailure
-      ↓
-Failure Representation
-```
-
-v0.88 added deterministic recovery planning:
-
-```text
-ExecutionStateSnapshot
-        +
-
-ExecutionFailure
-        ↓
-
-ExecutionReliabilityValidator
-        ↓
-ExecutionRecoveryPlanner
-        ↓
-ExecutionRecovery
-        ↓
-AgentExecutionController
-```
-
-v0.89 strengthened reliability validation with cross-field consistency.
-
-v0.90 consolidated these reliability contracts while preserving established behavior and boundaries.
-
-v0.91 extended the existing tool abstraction with version, capabilities, and extensibility metadata while preserving the existing tool registry, selector, execution, and result contracts.
-
-v0.92 introduced the plugin architecture while preserving the existing tool abstraction and execution ownership.
-
-This creates a clear separation between:
+The architecture therefore maintains a clear separation between:
 
 ```text
 Decision
@@ -2673,7 +2472,9 @@ Reliability
 
 Recovery
 
-Extensibility
+Tools
+
+Capabilities
 
 Plugins
 ```
@@ -2683,39 +2484,34 @@ Plugins
 # 📊 Current Test Position
 
 ```text
-v0.92 Plugin Architecture
+v0.93 Capability Registration
 
 ────────────────────────────────────
 
-Plugin Architecture Regression   41 passed
+Capability Regression             57 passed
 
-Focused Failures                  0
+Capability Export Tests            3 passed
+
+Focused Failures                   0
 
 ────────────────────────────────────
 
 Latest Full ULTRON Regression
 
-2315 passed
+2372 passed
 
 0 failed
 
 ────────────────────────────────────
 
-v0.91 Full Regression Baseline
+v0.92 Full Regression Baseline
 
-2274 passed
-
-0 failed
-```
-
-The v0.92 focused plugin-architecture suite passes without failures.
-
-The full ULTRON regression currently passes with:
-
-```text
 2315 passed
+
 0 failed
 ```
+
+The v0.93 implementation was integrated without introducing regressions into the existing architecture.
 
 ---
 
@@ -2737,18 +2533,20 @@ Extended through stable tool contracts.
 
 Extended through structured plugin architecture.
 
+Extended through centralized capability registration.
+
 Validated through continuous regression testing.
 
 ---
 
-**Current Version: v0.92**
+**Current Version: v0.93**
 
-**Current Milestone: Plugin Architecture**
+**Current Milestone: Capability Registration**
 
-**Plugin Architecture Regression: 41 passed**
+**Capability Registration Regression: 57 passed**
 
-**Latest Full Regression: 2315 passed**
+**Latest Full Regression: 2372 passed**
 
-**v0.91 Full Regression Baseline: 2274 passed**
+**v0.92 Full Regression Baseline: 2315 passed**
 
-**Next: v0.93 Capability Registration**
+**Next: v0.94 Provider Extensibility**
