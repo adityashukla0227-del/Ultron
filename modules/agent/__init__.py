@@ -38,3 +38,16 @@ from modules.agent.capability_registry import (
     CapabilityRegistry,
     CapabilityRegistryError,
 )
+
+from modules.agent.tool import (
+    AgentTool,
+)
+
+from modules.agent.tool_registry import (
+    ToolRegistry,
+    ToolRegistryError,
+)
+
+from modules.agent.tool_result import (
+    ToolResult,
+)
