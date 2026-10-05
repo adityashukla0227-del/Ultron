@@ -1,4 +1,4 @@
 APP_NAME = "Ultron"
-VERSION = "v0.95"
+VERSION = "v0.96"
 DEVELOPER = "Aditya"
 STATUS = "Under Development"

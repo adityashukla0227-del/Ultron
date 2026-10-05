@@ -1,3 +1,10 @@
+"""
+Ultron Voice Command Executor Tests.
+
+Tests voice-command execution through the agent runtime,
+planner, orchestrator, and authorization boundary.
+"""
+
 import pytest
 
 from modules.agent.agent import Agent
@@ -8,7 +15,11 @@ from modules.agent.agent_runtime_context import (
     AgentRuntimeContext,
     AgentRuntimeContextError,
 )
+from modules.agent.authorization import AuthorizationService
+from modules.agent.permission import Permission
+from modules.agent.permission_registry import PermissionRegistry
 from modules.agent.tool import AgentTool
+from modules.agent.tool_permission_mapping import ToolPermissionMapping
 from modules.multimodal.voice_command_executor import VoiceCommandExecutor
 
 
@@ -30,7 +41,30 @@ def create_agent():
 
     agent.assign_tool(tool)
 
-    engine = AgentEngine()
+    permission_registry = PermissionRegistry(
+        [
+            Permission(
+                name="test_tool_execute",
+                description="Execute the voice command test tool.",
+            )
+        ]
+    )
+
+    tool_permission_mapping = ToolPermissionMapping(
+        {
+            "test_tool": [
+                "test_tool_execute",
+            ],
+        }
+    )
+
+    engine = AgentEngine(
+        authorization_service=AuthorizationService(
+            permission_registry
+        ),
+        tool_permission_mapping=tool_permission_mapping,
+    )
+
     engine.register_tool(tool)
 
     return agent, engine

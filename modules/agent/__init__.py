@@ -39,6 +39,16 @@ from modules.agent.capability_registry import (
     CapabilityRegistryError,
 )
 
+from modules.agent.permission import (
+    Permission,
+    PermissionValidationError,
+)
+
+from modules.agent.permission_registry import (
+    PermissionRegistry,
+    PermissionRegistryError,
+)
+
 from modules.agent.tool import (
     AgentTool,
 )
@@ -50,4 +60,16 @@ from modules.agent.tool_registry import (
 
 from modules.agent.tool_result import (
     ToolResult,
+)
+
+from modules.agent.authorization import (
+    AuthorizationRequest,
+    AuthorizationDecision,
+    AuthorizationService,
+    AuthorizationError,
+)
+
+from modules.agent.tool_permission_mapping import (
+    ToolPermissionMapping,
+    ToolPermissionMappingError,
 )

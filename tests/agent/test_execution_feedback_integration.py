@@ -17,11 +17,15 @@ from modules.agent.agent import Agent
 from modules.agent.agent_engine import AgentEngine
 from modules.agent.agent_orchestrator import AgentOrchestrator
 from modules.agent.agent_planner import AgentPlanner
+from modules.agent.authorization import AuthorizationService
 from modules.agent.execution_feedback import ExecutionFeedback
 from modules.agent.execution_feedback_adapter import (
     ExecutionFeedbackAdapter,
 )
 from modules.agent.execution_result import ExecutionResult
+from modules.agent.permission import Permission
+from modules.agent.permission_registry import PermissionRegistry
+from modules.agent.tool_permission_mapping import ToolPermissionMapping
 
 
 def create_agent(
@@ -39,7 +43,29 @@ def create_agent(
 def create_engine() -> AgentEngine:
     """Create an engine with a simple runtime action."""
 
-    engine = AgentEngine()
+    permission_registry = PermissionRegistry(
+        [
+            Permission(
+                name="test_tool_execute",
+                description="Execute integration test tools.",
+            )
+        ]
+    )
+
+    tool_permission_mapping = ToolPermissionMapping(
+        {
+            "test_tool": [
+                "test_tool_execute",
+            ],
+        }
+    )
+
+    engine = AgentEngine(
+        authorization_service=AuthorizationService(
+            permission_registry
+        ),
+        tool_permission_mapping=tool_permission_mapping,
+    )
 
     engine.register_action(
         "test_action",
@@ -154,7 +180,29 @@ def test_failed_execution_result_converts_to_failed_feedback():
 
     agent = create_agent()
 
-    engine = AgentEngine()
+    permission_registry = PermissionRegistry(
+        [
+            Permission(
+                name="failing_tool_execute",
+                description="Execute the failing integration test tool.",
+            )
+        ]
+    )
+
+    tool_permission_mapping = ToolPermissionMapping(
+        {
+            "failing_tool": [
+                "failing_tool_execute",
+            ],
+        }
+    )
+
+    engine = AgentEngine(
+        authorization_service=AuthorizationService(
+            permission_registry
+        ),
+        tool_permission_mapping=tool_permission_mapping,
+    )
 
     def failing_tool(**parameters):
         raise RuntimeError(

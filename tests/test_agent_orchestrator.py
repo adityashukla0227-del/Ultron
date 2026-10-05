@@ -1,6 +1,6 @@
 """
 Ultron Agent Orchestrator Tests
-Version: v0.41
+Version: v0.96
 
 Tests for:
 - AgentOrchestrator initialization
@@ -29,7 +29,11 @@ from modules.agent.agent_planner import (
     AgentPlanError,
     AgentPlanner,
 )
+from modules.agent.authorization import AuthorizationService
+from modules.agent.permission import Permission
+from modules.agent.permission_registry import PermissionRegistry
 from modules.agent.tool import AgentTool
+from modules.agent.tool_permission_mapping import ToolPermissionMapping
 from modules.agent.tool_result import ToolResult
 
 
@@ -54,10 +58,33 @@ def create_agent(
 
 def create_engine() -> AgentEngine:
     """
-    Create an engine with a simple runtime action.
+    Create an engine with a simple runtime action
+    and explicit authorization configuration for test tools.
     """
 
-    engine = AgentEngine()
+    permission_registry = PermissionRegistry(
+        [
+            Permission(
+                name="test_tool_execute",
+                description="Execute test tools.",
+            )
+        ]
+    )
+
+    tool_permission_mapping = ToolPermissionMapping(
+        {
+            "test_tool": [
+                "test_tool_execute",
+            ],
+        }
+    )
+
+    engine = AgentEngine(
+        authorization_service=AuthorizationService(
+            permission_registry
+        ),
+        tool_permission_mapping=tool_permission_mapping,
+    )
 
     engine.register_action(
         "test_action",

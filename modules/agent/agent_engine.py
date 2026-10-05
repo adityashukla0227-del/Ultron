@@ -1,6 +1,6 @@
 """
 Ultron Agent Engine
-Version: v0.38
+Version: v0.96
 
 Execution engine for Ultron AI Agents.
 
@@ -8,7 +8,8 @@ Responsibilities:
 - Validate agents before execution
 - Execute registered agent actions
 - Resolve and execute agent tools
-- Enforce agent tool permissions
+- Validate agent tool access
+- Authorize tool execution
 - Select tools for agents
 - Manage execution context
 - Track execution results
@@ -18,12 +19,18 @@ Responsibilities:
 
 The engine does NOT decide how an agent is persisted.
 Persistence belongs to the registry/storage layers.
+
+v0.96 Security Boundary:
+Agent tool execution passes through authorization before
+reaching ToolRegistry and AgentTool execution.
 """
 
 from datetime import datetime
 from typing import Any, Callable, Dict, Optional
 
 from modules.agent.agent import Agent
+from modules.agent.authorization import AuthorizationService
+from modules.agent.tool_permission_mapping import ToolPermissionMapping
 from modules.agent.tool_registry import ToolRegistry
 from modules.agent.tool_result import ToolResult
 from modules.agent.tool_selector import ToolSelector
@@ -45,6 +52,8 @@ class AgentEngine:
     - Runtime action registry
     - ToolRegistry
     - ToolSelector
+    - AuthorizationService
+    - ToolPermissionMapping
 
     An agent specifies an action name.
     The engine resolves that action to a Python callable.
@@ -52,11 +61,15 @@ class AgentEngine:
     Agent tools are resolved through ToolRegistry.
 
     Tool selection is delegated to ToolSelector.
+
+    Tool authorization is delegated to AuthorizationService.
     """
 
     def __init__(
         self,
         tool_registry: Optional[ToolRegistry] = None,
+        authorization_service: Optional[AuthorizationService] = None,
+        tool_permission_mapping: Optional[ToolPermissionMapping] = None,
     ) -> None:
 
         self._actions: Dict[
@@ -71,6 +84,18 @@ class AgentEngine:
         )
 
         self.tool_selector = ToolSelector()
+
+        self.authorization_service = (
+            authorization_service
+            if authorization_service is not None
+            else AuthorizationService()
+        )
+
+        self.tool_permission_mapping = (
+            tool_permission_mapping
+            if tool_permission_mapping is not None
+            else ToolPermissionMapping()
+        )
 
     # ========================================================
     # Action Registration
@@ -367,15 +392,20 @@ class AgentEngine:
         tool_name: str,
     ):
         """
-        Validate that an agent is allowed to execute
-        a specific tool.
+        Validate that an agent can access a specific tool.
+
+        This validates tool assignment, registration,
+        and enabled state.
+
+        Authorization is handled separately by
+        AuthorizationService.
 
         Returns:
             Registered AgentTool.
 
         Raises:
             AgentExecutionError:
-                When permission or registration fails.
+                When tool access or registration fails.
         """
 
         if not isinstance(
@@ -435,6 +465,59 @@ class AgentEngine:
         return registered_tool
 
     # ========================================================
+    # Tool Authorization
+    # ========================================================
+
+    def _authorize_tool(
+        self,
+        agent: Agent,
+        tool_name: str,
+    ) -> None:
+        """
+        Authorize an agent before tool execution.
+
+        Authorization is a separate security boundary
+        from tool access validation.
+
+        The authorization decision is made by
+        AuthorizationService using the configured
+        ToolPermissionMapping and PermissionRegistry.
+
+        Raises:
+            AgentExecutionError:
+                When authorization is denied.
+        """
+
+        if not isinstance(
+            agent,
+            Agent,
+        ):
+            raise AgentExecutionError(
+                "Only Agent instances can authorize tools."
+            )
+
+        if not isinstance(
+            tool_name,
+            str,
+        ) or not tool_name.strip():
+
+            raise AgentExecutionError(
+                "Tool name must be a non-empty string."
+            )
+
+        decision = self.authorization_service.authorize_tool(
+            agent_id=agent.id,
+            tool_name=tool_name,
+            tool_permission_mapping=self.tool_permission_mapping,
+        )
+
+        if not decision.allowed:
+            raise AgentExecutionError(
+                f"Tool authorization denied: "
+                f"{decision.reason}"
+            )
+
+    # ========================================================
     # Tool Execution
     # ========================================================
 
@@ -452,16 +535,23 @@ class AgentEngine:
         2. Exist in the ToolRegistry
         3. Be enabled on the Agent
         4. Be enabled in the Registry
+        5. Have an authorized permission mapping
 
         Returns:
             ToolResult from the executed tool.
 
         Raises:
             AgentExecutionError:
-                If the tool cannot be accessed or executed.
+                If the tool cannot be accessed,
+                authorized, or executed.
         """
 
         self._validate_tool_access(
+            agent,
+            tool_name,
+        )
+
+        self._authorize_tool(
             agent,
             tool_name,
         )
@@ -533,6 +623,22 @@ class AgentEngine:
         try:
 
             self._validate_tool_access(
+                agent,
+                normalized_name,
+            )
+
+        except Exception as exc:
+
+            return ToolResult(
+                tool_name=normalized_name,
+                success=False,
+                result=None,
+                error=str(exc),
+            )
+
+        try:
+
+            self._authorize_tool(
                 agent,
                 normalized_name,
             )

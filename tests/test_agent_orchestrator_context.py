@@ -40,11 +40,15 @@ from modules.agent.agent_planner import AgentPlanner
 from modules.agent.agent_execution_controller import (
     AgentExecutionController,
 )
+from modules.agent.authorization import AuthorizationService
 from modules.agent.execution_context import ExecutionContext
 from modules.agent.execution_event_emitter import (
     ExecutionEventEmitter,
 )
+from modules.agent.permission import Permission
+from modules.agent.permission_registry import PermissionRegistry
 from modules.agent.tool import AgentTool
+from modules.agent.tool_permission_mapping import ToolPermissionMapping
 
 
 # ============================================================
@@ -67,7 +71,29 @@ def create_agent(
 def create_engine() -> AgentEngine:
     """Create an engine with a simple runtime action."""
 
-    engine = AgentEngine()
+    permission_registry = PermissionRegistry(
+        [
+            Permission(
+                name="context_tool_execute",
+                description="Execute context integration test tools.",
+            )
+        ]
+    )
+
+    tool_permission_mapping = ToolPermissionMapping(
+        {
+            "context_tool": [
+                "context_tool_execute",
+            ],
+        }
+    )
+
+    engine = AgentEngine(
+        authorization_service=AuthorizationService(
+            permission_registry
+        ),
+        tool_permission_mapping=tool_permission_mapping,
+    )
 
     engine.register_action(
         "test_action",
@@ -1089,7 +1115,7 @@ def test_successful_context_processed_steps_match_results():
     orchestrator, planner = create_orchestrator(
         agent,
         tool,
-        )
+    )
 
     plan = create_plan(
         planner,

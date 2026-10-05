@@ -27,6 +27,7 @@ from modules.agent.agent_engine import (
     AgentEngine,
     AgentExecutionError,
 )
+from modules.agent.permission import Permission
 from modules.agent.tool import AgentTool
 from modules.agent.tool_result import ToolResult
 
@@ -41,6 +42,31 @@ def create_echo_tool():
         name="echo",
         description="Echo text",
         handler=lambda message: message,
+    )
+
+
+def authorize_tool(
+    engine: AgentEngine,
+    tool_name: str,
+    permission_name: str | None = None,
+):
+    permission_name = (
+        permission_name
+        or f"tool.{tool_name}.execute"
+    )
+
+    permission = Permission(
+        name=permission_name,
+        description=f"Permission to execute {tool_name}",
+    )
+
+    engine.authorization_service.permission_registry.register(
+        permission
+    )
+
+    engine.tool_permission_mapping.register(
+        tool_name,
+        [permission_name],
     )
 
 
@@ -174,6 +200,11 @@ def test_engine_execute_agent_tool():
 
     engine.register_tool(tool)
 
+    authorize_tool(
+        engine,
+        "echo",
+    )
+
     agent = Agent(
         name="Echo Agent",
         action="run",
@@ -209,6 +240,11 @@ def test_engine_execute_tool_with_parameters():
 
     engine.register_tool(tool)
 
+    authorize_tool(
+        engine,
+        "calculator",
+    )
+
     agent = Agent(
         name="Calculator Agent",
         action="run",
@@ -241,6 +277,11 @@ def test_engine_tool_runtime_parameters():
     )
 
     engine.register_tool(tool)
+
+    authorize_tool(
+        engine,
+        "echo",
+    )
 
     agent = Agent(
         name="Override Agent",
@@ -456,6 +497,11 @@ def test_engine_execute_tool_safe_success():
 
     engine.register_tool(tool)
 
+    authorize_tool(
+        engine,
+        "echo",
+    )
+
     agent = Agent(
         name="Safe Tool Agent",
         action="run",
@@ -594,6 +640,11 @@ def test_engine_tool_execution_failure():
 
     engine.register_tool(tool)
 
+    authorize_tool(
+        engine,
+        "failing",
+    )
+
     agent = Agent(
         name="Failing Tool Agent",
         action="run",
@@ -633,6 +684,11 @@ def test_engine_tool_safe_execution_failure():
     )
 
     engine.register_tool(tool)
+
+    authorize_tool(
+        engine,
+        "failing",
+    )
 
     agent = Agent(
         name="Safe Failing Agent",
@@ -678,6 +734,16 @@ def test_agent_can_use_multiple_tools():
 
     engine.register_tool(echo)
     engine.register_tool(calculator)
+
+    authorize_tool(
+        engine,
+        "echo",
+    )
+
+    authorize_tool(
+        engine,
+        "calculator",
+    )
 
     agent = Agent(
         name="Multi Tool Agent",
