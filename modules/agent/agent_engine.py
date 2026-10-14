@@ -1,6 +1,6 @@
 """
 Ultron Agent Engine
-Version: v0.96
+Version: v0.97
 
 Execution engine for Ultron AI Agents.
 
@@ -11,6 +11,8 @@ Responsibilities:
 - Validate agent tool access
 - Authorize tool execution
 - Select tools for agents
+- Resolve capability-based tools
+- Execute capability-based tools
 - Manage execution context
 - Track execution results
 - Handle execution errors safely
@@ -23,6 +25,16 @@ Persistence belongs to the registry/storage layers.
 v0.96 Security Boundary:
 Agent tool execution passes through authorization before
 reaching ToolRegistry and AgentTool execution.
+
+v0.97 Platform Integration:
+CapabilityRegistry is integrated as a capability discovery
+dependency for capability-based tool resolution and execution.
+
+Capability resolution and execution do NOT bypass:
+- Agent tool access validation
+- ToolPermissionMapping
+- AuthorizationService
+- ToolRegistry
 """
 
 from datetime import datetime
@@ -30,6 +42,8 @@ from typing import Any, Callable, Dict, Optional
 
 from modules.agent.agent import Agent
 from modules.agent.authorization import AuthorizationService
+from modules.agent.capability_registry import CapabilityRegistry
+from modules.agent.tool import AgentTool
 from modules.agent.tool_permission_mapping import ToolPermissionMapping
 from modules.agent.tool_registry import ToolRegistry
 from modules.agent.tool_result import ToolResult
@@ -52,6 +66,7 @@ class AgentEngine:
     - Runtime action registry
     - ToolRegistry
     - ToolSelector
+    - CapabilityRegistry
     - AuthorizationService
     - ToolPermissionMapping
 
@@ -62,6 +77,14 @@ class AgentEngine:
 
     Tool selection is delegated to ToolSelector.
 
+    Capability discovery is delegated to CapabilityRegistry.
+
+    Capability resolution returns a tool only when exactly
+    one assigned tool provides the requested capability.
+
+    Capability execution delegates to the standard
+    execute_tool() path.
+
     Tool authorization is delegated to AuthorizationService.
     """
 
@@ -70,6 +93,7 @@ class AgentEngine:
         tool_registry: Optional[ToolRegistry] = None,
         authorization_service: Optional[AuthorizationService] = None,
         tool_permission_mapping: Optional[ToolPermissionMapping] = None,
+        capability_registry: Optional[CapabilityRegistry] = None,
     ) -> None:
 
         self._actions: Dict[
@@ -95,6 +119,12 @@ class AgentEngine:
             tool_permission_mapping
             if tool_permission_mapping is not None
             else ToolPermissionMapping()
+        )
+
+        self.capability_registry = (
+            capability_registry
+            if capability_registry is not None
+            else CapabilityRegistry()
         )
 
     # ========================================================
@@ -348,6 +378,174 @@ class AgentEngine:
             agent
         )
 
+    # ========================================================
+    # Capability Resolution
+    # ========================================================
+
+    def resolve_capability(
+        self,
+        agent: Agent,
+        capability_name: str,
+    ) -> Optional[AgentTool]:
+        """
+        Resolve a capability to exactly one assigned tool.
+
+        Resolution rules:
+        - No matching tools -> None
+        - Exactly one matching tool -> return that tool
+        - Multiple matching tools -> None
+
+        Capability resolution is discovery only.
+
+        It does not:
+        - execute tools
+        - authorize tools
+        - validate registry execution access
+        - mutate agent state
+        - arbitrarily select among multiple tools
+
+        Actual tool execution must continue through
+        execute_tool() or execute_tool_safe().
+        """
+
+        if not isinstance(
+            agent,
+            Agent,
+        ):
+            raise AgentExecutionError(
+                "Agent must be an Agent object."
+            )
+
+        if not isinstance(
+            capability_name,
+            str,
+        ):
+            raise AgentExecutionError(
+                "Capability name must be a string."
+            )
+
+        capability_name = capability_name.strip()
+
+        if not capability_name:
+            raise AgentExecutionError(
+                "Capability name is required."
+            )
+
+        tools = (
+            self.capability_registry.get_tools_for_capability(
+                capability_name,
+                agent.get_tools(),
+            )
+        )
+
+        if len(tools) != 1:
+            return None
+
+        return tools[0]
+
+    # ========================================================
+    # Capability Execution
+    # ========================================================
+
+    def execute_capability(
+        self,
+        agent: Agent,
+        capability_name: str,
+        **parameters: Any,
+    ) -> ToolResult:
+        """
+        Resolve and execute a capability through the
+        standard AgentEngine tool execution boundary.
+
+        Capability execution does not bypass:
+        - tool access validation
+        - tool assignment checks
+        - tool enabled checks
+        - tool registry validation
+        - permission mapping
+        - authorization
+        - standardized ToolResult handling
+
+        Resolution rules:
+        - No matching tool -> execution failure
+        - Multiple matching tools -> execution failure
+        - Exactly one matching tool -> execute that tool
+
+        Actual tool execution is delegated to execute_tool()
+        so the existing authorization boundary remains intact.
+        """
+
+        tool = self.resolve_capability(
+            agent,
+            capability_name,
+        )
+
+        if tool is None:
+            raise AgentExecutionError(
+                f"Capability '{capability_name}' "
+                "could not be resolved to exactly one tool."
+            )
+
+        return self.execute_tool(
+            agent,
+            tool.name,
+            **parameters,
+        )
+
+    # ========================================================
+    # Safe Capability Execution
+    # ========================================================
+
+    def execute_capability_safe(
+        self,
+        agent: Agent,
+        capability_name: str,
+        **parameters: Any,
+    ) -> ToolResult:
+        """
+        Safely resolve and execute a capability.
+
+        Returns a failed ToolResult for resolution errors.
+        Actual execution delegates to execute_tool_safe(),
+        preserving the existing access and authorization checks.
+        """
+
+        tool_name = (
+            capability_name.strip()
+            if isinstance(capability_name, str)
+            else str(capability_name)
+        )
+
+        try:
+            tool = self.resolve_capability(
+                agent,
+                capability_name,
+            )
+
+            if tool is None:
+                return ToolResult(
+                    tool_name=tool_name,
+                    success=False,
+                    result=None,
+                    error=(
+                        f"Capability '{capability_name}' "
+                        "could not be resolved to exactly one tool."
+                    ),
+                )
+
+            return self.execute_tool_safe(
+                agent,
+                tool.name,
+                **parameters,
+            )
+
+        except Exception as exc:
+            return ToolResult(
+                tool_name=tool_name,
+                success=False,
+                result=None,
+                error=str(exc),
+            )
     # ========================================================
     # Agent Tool Validation
     # ========================================================

@@ -6,24 +6,24 @@ ULTRON is a modular, architecture-first AI assistant platform designed to evolve
 
 The project is being built foundation-first, with strong emphasis on:
 
-* Clean architecture
-* Explicit responsibility boundaries
-* Deterministic execution
-* Agent runtime infrastructure
-* Tool orchestration
-* AI provider abstraction
-* Intent understanding
-* Task lifecycle management
-* Execution observability
-* Execution feedback
-* Extensibility
-* Capability management
-* Plugin architecture
-* Permission architecture
-* Authorization boundaries
-* Test-driven evolution
-* Backward compatibility
-* Zero-regression development
+- Clean architecture
+- Explicit responsibility boundaries
+- Deterministic execution
+- Agent runtime infrastructure
+- Tool orchestration
+- AI provider abstraction
+- Intent understanding
+- Task lifecycle management
+- Execution observability
+- Execution feedback
+- Extensibility
+- Capability management
+- Plugin architecture
+- Permission architecture
+- Authorization boundaries
+- Test-driven evolution
+- Backward compatibility
+- Zero-regression development
 
 ULTRON is intentionally being developed as a **long-term platform**, not as a collection of disconnected features.
 
@@ -31,24 +31,59 @@ ULTRON is intentionally being developed as a **long-term platform**, not as a co
 
 # Current Status
 
-| Property                           | Status                                      |
-| ---------------------------------- | ------------------------------------------- |
-| **Current Version**                | **v0.96**                                   |
-| **Current Milestone**              | **Core Platform Hardening**                 |
-| **v0.96 Focus**                    | **Authorization & Permission Architecture** |
-| **Latest Full Regression**         | **2500 passed / 0 failed**                  |
-| **v0.95 Full Regression Baseline** | **2404 passed / 0 failed**                  |
-| **Regression Failures**            | **0**                                       |
-| **Python**                         | **3.13+**                                   |
-| **Architecture Status**            | **Foundation Development**                  |
+| Property | Status |
+|---|---|
+| **Current Version** | **v0.97** |
+| **Current Milestone** | **Platform Integration** |
+| **v0.97 Focus** | **Capability Integration & Runtime Boundaries** |
+| **Latest Reported Full Regression** | **2517 passed / 0 failed** |
+| **v0.96 Full Regression Baseline** | **2500 passed / 0 failed** |
+| **v0.95 Full Regression Baseline** | **2404 passed / 0 failed** |
+| **Regression Failures** | **0 in the latest reported run** |
+| **Python** | **3.13+** |
+| **Architecture Status** | **Foundation Development** |
 
-### v0.96 Achievement
+### v0.97 Achievement — Capability Integration
 
-ULTRON now has an explicit **authorization boundary for agent tool execution**.
+ULTRON's AgentEngine now has a capability integration boundary for resolving and executing registered capabilities.
 
-Agent tool execution no longer flows directly from the execution engine into the tool registry.
+The capability integration API includes:
 
-The hardened execution path is now:
+- `resolve_capability()`
+- `execute_capability()`
+- `execute_capability_safe()`
+
+The integration reuses the existing tool execution pipeline rather than introducing an independent execution path. This is important because the established execution boundary remains responsible for tool access validation and authorization.
+
+Conceptual flow:
+
+```text
+Agent / Runtime Request
+        ↓
+AgentEngine
+        ↓
+Capability Resolution
+        ↓
+Capability Execution Boundary
+        ↓
+Existing Tool Execution Pipeline
+        ↓
+Tool Access Validation
+        ↓
+Authorization
+        ↓
+ToolRegistry
+        ↓
+Tool / ToolResult
+```
+
+**Capability discovery or resolution does not automatically grant execution permission.** Capability integration must preserve the authorization rules established in v0.96.
+
+### v0.96 Achievement — Authorization & Permission Architecture
+
+ULTRON established an explicit authorization boundary for agent tool execution.
+
+The hardened execution path is:
 
 ```text
 Agent
@@ -78,30 +113,30 @@ This establishes a security-oriented foundation without mixing authorization res
 
 ULTRON is being developed toward a modular AI platform capable of:
 
-* Natural language interaction
-* Hindi / English / Hinglish interaction
-* Voice interaction
-* Speech-to-text
-* Text-to-speech
-* Multimodal understanding
-* AI-powered reasoning
-* Agent planning
-* Tool selection
-* Tool execution
-* Task management
-* Smart memory
-* Context management
-* Automation
-* Smart-home integration
-* Desktop interaction
-* Mobile interaction
-* Website and application creation
-* Social media automation
-* Developer workflows
-* AI-powered SaaS capabilities
-* Plugin ecosystems
-* Capability-based systems
-* Future API infrastructure
+- Natural language interaction
+- Hindi / English / Hinglish interaction
+- Voice interaction
+- Speech-to-text
+- Text-to-speech
+- Multimodal understanding
+- AI-powered reasoning
+- Agent planning
+- Tool selection
+- Tool execution
+- Task management
+- Smart memory
+- Context management
+- Automation
+- Smart-home integration
+- Desktop interaction
+- Mobile interaction
+- Website and application creation
+- Social media automation
+- Developer workflows
+- AI-powered SaaS capabilities
+- Plugin ecosystems
+- Capability-based systems
+- Future API infrastructure
 
 The long-term objective is to evolve ULTRON into an **AI operating system and agent platform**, while keeping the underlying architecture modular and maintainable.
 
@@ -217,14 +252,14 @@ Consumer / UI / Voice / API
 
 This separates:
 
-* Understanding
-* Decision making
-* Task abstraction
-* Task lifecycle
-* Execution
-* Result representation
-* Feedback
-* Consumption
+- Understanding
+- Decision making
+- Task abstraction
+- Task lifecycle
+- Execution
+- Result representation
+- Feedback
+- Consumption
 
 ---
 
@@ -308,6 +343,8 @@ modules/agent/
 └── tool_selector.py
 ```
 
+This is a representative architecture overview, not an exhaustive file inventory. Additional modules may be added as the platform evolves.
+
 ---
 
 # AgentEngine
@@ -316,26 +353,97 @@ modules/agent/
 
 Its responsibilities include:
 
-* Agent validation
-* Action execution
-* Tool resolution
-* Tool access validation
-* Authorization enforcement
-* Permission-aware tool execution
-* Execution context handling
-* Tool result validation
-* Safe execution
-* Execution error handling
+- Agent validation
+- Action execution
+- Tool resolution
+- Tool access validation
+- Authorization enforcement
+- Permission-aware tool execution
+- Execution context handling
+- Tool result validation
+- Safe execution
+- Execution error handling
+- Capability resolution and capability execution integration
 
 The engine does **not** own:
 
-* Agent persistence
-* Long-term memory
-* AI provider implementation
-* Planning strategy
-* Tool permission configuration
-* Permission policy ownership
-* UI rendering
+- Agent persistence
+- Long-term memory
+- AI provider implementation
+- Planning strategy
+- Tool permission configuration
+- Permission policy ownership
+- UI rendering
+
+The capability integration methods provide an engine-level boundary for resolving and executing capabilities. They should delegate through established execution infrastructure where required, rather than bypassing the security boundary or duplicating the tool execution pipeline.
+
+---
+
+# v0.97 Capability Integration
+
+v0.97 integrates capability handling with the existing AgentEngine architecture.
+
+### Capability Resolution
+
+`resolve_capability()` is the entry point for resolving a capability through the capability infrastructure.
+
+Resolution and execution are distinct operations. A successful resolution indicates that the capability can be identified through the relevant subsystem; it must not be interpreted as authorization to perform a protected operation.
+
+### Capability Execution
+
+`execute_capability()` provides the normal capability execution entry point.
+
+The integration is designed to reuse the existing execution path. It must not introduce a parallel path that bypasses established access validation, authorization, tool execution, or result handling.
+
+### Safe Capability Execution
+
+`execute_capability_safe()` provides a safe execution entry point for capability-related failures. Its contract should remain consistent with the project's existing safe-execution conventions and should return the appropriate standardized failure representation rather than silently treating a failed operation as successful.
+
+### Capability and Authorization Boundary
+
+The distinction is:
+
+```text
+Capability Discovery / Resolution
+              ≠
+Capability Execution Request
+              ≠
+Tool Access Validation
+              ≠
+Authorization
+              ≠
+Actual Tool Execution
+```
+
+A capability is a representation of something the platform may be able to do. Authorization is a separate decision about whether a specific operation is permitted. Merely registering, discovering, resolving, or selecting a capability must not grant permission.
+
+### v0.97 Integration Principles
+
+- Reuse the established execution pipeline.
+- Keep capability resolution separate from authorization.
+- Do not treat capability availability as permission.
+- Preserve the v0.96 authorization boundary.
+- Avoid duplicate execution systems.
+- Preserve existing behavior outside the scope of the integration.
+- Cover capability success, failure, missing-capability, and safe-execution behavior with tests.
+- Run the full regression suite before considering the milestone stable.
+
+### v0.97 Validation Position
+
+The latest reported full regression result after the capability integration work is:
+
+```text
+2517 passed
+0 failed
+```
+
+Capability-specific validation was reported as:
+
+```text
+17 passed
+```
+
+These are the latest reported results, not a claim that tests have been rerun while preparing this documentation.
 
 ---
 
@@ -378,23 +486,13 @@ The validation layer checks:
 
 Only after these checks succeed does authorization begin.
 
-This keeps:
-
-```text
-Access Validation
-```
-
-separate from:
-
-```text
-Authorization
-```
+This keeps access validation separate from authorization.
 
 ---
 
 # Authorization Architecture
 
-ULTRON v0.96 introduces four explicit authorization components:
+ULTRON v0.96 introduced four explicit authorization components:
 
 ```text
 Permission
@@ -416,21 +514,21 @@ These components have intentionally separated responsibilities.
 
 A permission contains:
 
-* Permission name
-* Description
-* Enabled / disabled state
-* Metadata
+- Permission name
+- Description
+- Enabled / disabled state
+- Metadata
 
 Permission names are normalized.
 
 A permission does not:
 
-* Execute tools
-* Authorize agents
-* Select tools
-* Classify risk
-* Request approval
-* Handle authentication
+- Execute tools
+- Authorize agents
+- Select tools
+- Classify risk
+- Request approval
+- Handle authentication
 
 It is a domain model representing permission state.
 
@@ -442,18 +540,16 @@ It is a domain model representing permission state.
 
 Responsibilities:
 
-* Register permissions
-* Retrieve permissions
-* Check permission existence
-* List permissions
-* Clear permissions
-* Count permissions
+- Register permissions
+- Retrieve permissions
+- Check permission existence
+- List permissions
+- Clear permissions
+- Count permissions
 
 The registry does not make authorization decisions.
 
-A fresh registry starts without implicit permissions.
-
-This is intentional.
+A fresh registry starts without implicit permissions. This is intentional.
 
 ---
 
@@ -481,13 +577,13 @@ Tool → Required Permissions
 
 It does not:
 
-* Authorize requests
-* Execute tools
-* Select tools
-* Classify risk
-* Request approvals
-* Handle authentication
-* Manage permission state
+- Authorize requests
+- Execute tools
+- Select tools
+- Classify risk
+- Request approvals
+- Handle authentication
+- Manage permission state
 
 ---
 
@@ -641,11 +737,11 @@ Tools are registered through `ToolRegistry`.
 
 The tool system is responsible for:
 
-* Tool registration
-* Tool lookup
-* Tool execution
-* Tool enable / disable state
-* Tool result handling
+- Tool registration
+- Tool lookup
+- Tool execution
+- Tool enable / disable state
+- Tool result handling
 
 Tool execution must pass through the AgentEngine authorization boundary when invoked through agent execution.
 
@@ -657,7 +753,7 @@ Tool execution must pass through the AgentEngine authorization boundary when inv
 
 It does not perform authorization.
 
-This distinction is intentional:
+The distinction is intentional:
 
 ```text
 ToolSelector
@@ -683,10 +779,10 @@ Selection and authorization remain separate architectural concerns.
 
 It does not:
 
-* Execute tools
-* Own permissions
-* Perform authorization
-* Persist tool state
+- Execute tools
+- Own permissions
+- Perform authorization
+- Persist tool state
 
 Planning remains separate from execution.
 
@@ -698,11 +794,11 @@ Planning remains separate from execution.
 
 Its role includes:
 
-* Plan validation
-* Step resolution
-* Execution sequencing
-* Delegating execution
-* Handling execution flow
+- Plan validation
+- Step resolution
+- Execution sequencing
+- Delegating execution
+- Handling execution flow
 
 Authorization remains owned by the execution boundary rather than being duplicated inside the orchestrator.
 
@@ -714,12 +810,12 @@ Authorization remains owned by the execution boundary rather than being duplicat
 
 It provides lifecycle operations such as:
 
-* Start
-* Pause
-* Resume
-* Cancel
-* Complete
-* Fail
+- Start
+- Pause
+- Resume
+- Cancel
+- Complete
+- Fail
 
 Execution lifecycle and authorization remain separate concerns.
 
@@ -770,7 +866,6 @@ execution_failed
 execution_paused
 execution_resumed
 execution_cancelled
-
 step_started
 step_completed
 step_failed
@@ -822,11 +917,11 @@ Execution Metrics
 
 This foundation is intended to support future:
 
-* Performance analysis
-* Agent debugging
-* Execution tracing
-* Reliability monitoring
-* Runtime analytics
+- Performance analysis
+- Agent debugging
+- Execution tracing
+- Reliability monitoring
+- Runtime analytics
 
 ---
 
@@ -894,18 +989,18 @@ ULTRON uses a provider abstraction so that AI providers can be changed without r
 
 The architecture supports a provider layer capable of integrating models such as:
 
-* Anthropic
-* Future providers
-* Local models
-* Other compatible AI backends
+- Anthropic
+- Future providers
+- Local models
+- Other compatible AI backends
 
 Provider implementation remains separate from:
 
-* Agent execution
-* Tool execution
-* Authorization
-* Task lifecycle
-* UI
+- Agent execution
+- Tool execution
+- Authorization
+- Task lifecycle
+- UI
 
 ---
 
@@ -961,17 +1056,7 @@ The response/action boundary prevents conversational responses from being treate
 
 # Response / Action Boundary
 
-ULTRON explicitly separates:
-
-```text
-Response
-```
-
-from:
-
-```text
-Action
-```
+ULTRON explicitly separates response from action.
 
 A response can remain conversational.
 
@@ -987,11 +1072,11 @@ ULTRON includes a foundation for smart memory and contextual intelligence.
 
 Memory is treated as a separate concern from:
 
-* Tool execution
-* Authorization
-* Planning
-* UI
-* Provider implementation
+- Tool execution
+- Authorization
+- Planning
+- UI
+- Provider implementation
 
 Future memory improvements can therefore evolve independently.
 
@@ -1024,14 +1109,14 @@ ULTRON is designed for modular extensibility.
 
 The platform includes architectural foundations for:
 
-* Tools
-* Agents
-* Providers
-* Plugins
-* Capabilities
-* Permissions
-* Authorization
-* Execution systems
+- Tools
+- Agents
+- Providers
+- Plugins
+- Capabilities
+- Permissions
+- Authorization
+- Execution systems
 
 The goal is to allow new functionality without breaking the core runtime.
 
@@ -1043,13 +1128,13 @@ Plugins are intended to provide external capabilities while remaining isolated f
 
 Future plugin functionality may include:
 
-* External services
-* APIs
-* Automation systems
-* Productivity systems
-* Smart-home systems
-* Communication services
-* Developer tools
+- External services
+- APIs
+- Automation systems
+- Productivity systems
+- Smart-home systems
+- Communication services
+- Developer tools
 
 Plugins should integrate through explicit capability and execution boundaries.
 
@@ -1069,7 +1154,11 @@ Tool / Provider / Plugin
 Execution
 ```
 
-Authorization provides a separate security boundary determining whether a particular operation is permitted.
+Capability integration is now connected to the AgentEngine through the v0.97 integration boundary.
+
+Capability resolution and execution must remain distinct from authorization. A registered or resolved capability is not automatically permitted to perform every operation associated with it.
+
+The established authorization architecture remains the security boundary for protected tool execution.
 
 ---
 
@@ -1091,17 +1180,17 @@ Tool Execution
 
 Future security layers can build on this foundation, including:
 
-* Authentication
-* User identity
-* Agent identity
-* Capability policies
-* Risk classification
-* Approval workflows
-* Consent management
-* Security policies
-* Audit controls
-* Sandboxing
-* Resource restrictions
+- Authentication
+- User identity
+- Agent identity
+- Capability policies
+- Risk classification
+- Approval workflows
+- Consent management
+- Security policies
+- Audit controls
+- Sandboxing
+- Resource restrictions
 
 These should be added as separate architectural layers rather than being mixed into `Permission`, `AuthorizationService`, or `ToolRegistry`.
 
@@ -1113,11 +1202,11 @@ ULTRON follows explicit configuration principles.
 
 Important configuration should be:
 
-* Discoverable
-* Testable
-* Explicit
-* Environment-aware
-* Safe by default
+- Discoverable
+- Testable
+- Explicit
+- Environment-aware
+- Safe by default
 
 Secrets such as API keys should never be committed to Git.
 
@@ -1131,17 +1220,18 @@ Testing is a first-class architectural requirement.
 
 ULTRON uses:
 
-* Unit tests
-* Integration tests
-* Regression tests
-* Architecture-boundary tests
-* Execution tests
-* Provider tests
-* Tool tests
-* Authorization tests
-* Permission tests
-* Lifecycle tests
-* Multimodal tests
+- Unit tests
+- Integration tests
+- Regression tests
+- Architecture-boundary tests
+- Execution tests
+- Provider tests
+- Tool tests
+- Authorization tests
+- Permission tests
+- Lifecycle tests
+- Multimodal tests
+- Capability integration tests
 
 The objective is not simply high test count.
 
@@ -1151,7 +1241,20 @@ The objective is **behavioral confidence and architectural stability**.
 
 # Current Test Position
 
-### v0.96
+### v0.97 — Latest Reported Full Regression
+
+```text
+2517 passed
+0 failed
+```
+
+Capability-specific validation was reported as:
+
+```text
+17 passed
+```
+
+### v0.96 Baseline
 
 ```text
 2500 passed
@@ -1165,25 +1268,26 @@ The objective is **behavioral confidence and architectural stability**.
 0 failed
 ```
 
-The v0.96 changes were integrated while preserving the full existing regression suite.
+The reported v0.97 result indicates that the capability integration was added while preserving the existing regression suite at the time of that run.
 
 Authorization-specific and integration test coverage verifies:
 
-* Permission registration
-* Permission lookup
-* Enabled permissions
-* Disabled permissions
-* Missing permissions
-* Tool permission mappings
-* Empty mappings
-* Multiple required permissions
-* Authorization decisions
-* AgentEngine authorization enforcement
-* Safe tool execution
-* Orchestrator integration
-* Context integration
-* Execution feedback integration
-* Voice command integration
+- Permission registration
+- Permission lookup
+- Enabled permissions
+- Disabled permissions
+- Missing permissions
+- Tool permission mappings
+- Empty mappings
+- Multiple required permissions
+- Authorization decisions
+- AgentEngine authorization enforcement
+- Safe tool execution
+- Orchestrator integration
+- Context integration
+- Execution feedback integration
+- Voice command integration
+- Capability resolution and execution integration
 
 ---
 
@@ -1219,22 +1323,22 @@ Every significant change follows:
 
 Inspect:
 
-* Existing modules
-* Existing interfaces
-* Existing tests
-* Existing architecture
-* Existing responsibilities
+- Existing modules
+- Existing interfaces
+- Existing tests
+- Existing architecture
+- Existing responsibilities
 
 ### Step 2 — Design
 
 Define:
 
-* Responsibility
-* Inputs
-* Outputs
-* Dependencies
-* Boundaries
-* Failure behavior
+- Responsibility
+- Inputs
+- Outputs
+- Dependencies
+- Boundaries
+- Failure behavior
 
 ### Step 3 — Lock
 
@@ -1268,10 +1372,10 @@ git diff
 
 Update:
 
-* README
-* Changelog
-* Version information
-* Architecture documentation
+- README
+- Changelog
+- Version information
+- Architecture documentation
 
 ### Step 9 — Commit
 
@@ -1287,18 +1391,18 @@ Push only after the working tree and regression state are verified.
 
 ## v0.96 — Core Platform Hardening
 
-**Current milestone**
+**Completed milestone**
 
 Focus:
 
-* Authorization architecture
-* Permission model
-* Permission registry
-* Tool permission mapping
-* Authorization service
-* AgentEngine authorization boundary
-* Regression stabilization
-* Security foundation
+- Authorization architecture
+- Permission model
+- Permission registry
+- Tool permission mapping
+- Authorization service
+- AgentEngine authorization boundary
+- Regression stabilization
+- Security foundation
 
 Status:
 
@@ -1310,13 +1414,20 @@ COMPLETED
 
 ## v0.97 — Platform Integration
 
-Planned focus:
+**Current documented milestone**
 
-* Integrate authorization with broader runtime flows
-* Strengthen capability boundaries
-* Improve runtime integration
-* Expand provider/runtime interoperability
-* Improve cross-subsystem contracts
+Focus:
+
+- Integrate authorization with broader runtime flows
+- Strengthen capability boundaries
+- Integrate capability resolution and execution with AgentEngine
+- Preserve authorization while reusing existing execution infrastructure
+- Improve runtime integration
+- Expand provider/runtime interoperability
+- Improve cross-subsystem contracts
+- Maintain regression stability
+
+Capability integration is documented as implemented. Other roadmap items remain future work unless separately verified.
 
 ---
 
@@ -1324,11 +1435,11 @@ Planned focus:
 
 Planned focus:
 
-* Consolidate runtime boundaries
-* Reduce architectural duplication
-* Strengthen contracts
-* Improve internal APIs
-* Stabilize subsystem interactions
+- Consolidate runtime boundaries
+- Reduce architectural duplication
+- Strengthen contracts
+- Improve internal APIs
+- Stabilize subsystem interactions
 
 ---
 
@@ -1336,13 +1447,13 @@ Planned focus:
 
 Planned focus:
 
-* Regression hardening
-* API stabilization
-* Documentation completion
-* Performance review
-* Security review
-* Reliability review
-* Architecture audit
+- Regression hardening
+- API stabilization
+- Documentation completion
+- Performance review
+- Security review
+- Reliability review
+- Architecture audit
 
 ---
 
@@ -1419,29 +1530,75 @@ v0.84  Execution Feedback
 v0.85  Runtime Event Integration
 v0.95  Extensibility Consolidation
 v0.96  Core Platform Hardening
+v0.97  Capability Integration / Platform Integration
 ```
 
 ---
 
 # Version History
 
+## v0.97 — Platform Integration
+
+### Added
+
+- AgentEngine capability resolution integration
+- AgentEngine capability execution integration
+- Safe capability execution entry point
+- Capability integration tests
+
+### Architecture
+
+Capability handling is integrated with the existing AgentEngine execution boundary instead of creating a parallel tool execution path.
+
+```text
+AgentEngine
+    ↓
+Capability Resolution
+    ↓
+Capability Execution
+    ↓
+Existing Tool Execution Pipeline
+    ↓
+Access Validation
+    ↓
+Authorization
+    ↓
+Tool Execution
+```
+
+Capability resolution does not itself authorize execution. Existing authorization requirements remain in force.
+
+### Validation
+
+Latest reported results:
+
+```text
+Capability-specific tests: 17 passed
+Full regression:           2517 passed
+Failures:                  0
+```
+
+These results reflect the latest reported run and have not been rerun as part of writing this README.
+
+---
+
 ## v0.96 — Core Platform Hardening
 
 ### Added
 
-* Permission domain model
-* Permission registry
-* Tool-to-permission mapping
-* Authorization request model
-* Authorization decision model
-* Authorization service
-* AgentEngine authorization enforcement
-* Permission-aware tool execution
-* Safe authorization failure handling
-* Authorization-focused test coverage
-* Permission registry tests
-* Tool permission mapping tests
-* Permission export tests
+- Permission domain model
+- Permission registry
+- Tool-to-permission mapping
+- Authorization request model
+- Authorization decision model
+- Authorization service
+- AgentEngine authorization enforcement
+- Permission-aware tool execution
+- Safe authorization failure handling
+- Authorization-focused test coverage
+- Permission registry tests
+- Tool permission mapping tests
+- Permission export tests
 
 ### Architecture
 
@@ -1474,13 +1631,13 @@ ToolRegistry
 
 Focused on consolidating:
 
-* Tool extensibility
-* Plugin architecture
-* Capability architecture
-* Provider extensibility
-* Runtime extension boundaries
+- Tool extensibility
+- Plugin architecture
+- Capability architecture
+- Provider extensibility
+- Runtime extension boundaries
 
-v0.95 established the extensibility foundation used by v0.96.
+v0.95 established the extensibility foundation used by v0.96 and the capability integration work documented in v0.97.
 
 ---
 
@@ -1494,31 +1651,33 @@ Focused on preserving the architecture while extending the runtime foundation.
 
 The current foundation supports:
 
-* Modular AI runtime architecture
-* Agent models
-* Agent planning
-* Agent orchestration
-* Tool registration
-* Tool selection
-* Controlled tool execution
-* Task abstraction
-* Task lifecycle
-* Execution results
-* Execution feedback
-* Execution events
-* Execution persistence
-* Execution observability
-* Execution metrics
-* AI provider abstraction
-* Voice architecture
-* Intent understanding
-* Decision routing
-* Extensibility architecture
-* Capability architecture
-* Permission modeling
-* Tool permission mapping
-* Authorization enforcement
-* Large-scale regression testing
+- Modular AI runtime architecture
+- Agent models
+- Agent planning
+- Agent orchestration
+- Tool registration
+- Tool selection
+- Controlled tool execution
+- Task abstraction
+- Task lifecycle
+- Execution results
+- Execution feedback
+- Execution events
+- Execution persistence
+- Execution observability
+- Execution metrics
+- AI provider abstraction
+- Voice architecture
+- Intent understanding
+- Decision routing
+- Extensibility architecture
+- Capability architecture and AgentEngine integration
+- Permission modeling
+- Tool permission mapping
+- Authorization enforcement
+- Large-scale regression testing
+
+These are architectural foundations and integration points; they should not be interpreted as proof that every future end-user feature is production-ready.
 
 ---
 
@@ -1528,21 +1687,21 @@ ULTRON is still under active foundation development.
 
 The following areas remain future work or incomplete:
 
-* Full autonomous general-purpose operation
-* Production-grade authentication
-* Advanced policy engine
-* Human approval workflows
-* Consent management
-* Full capability policy enforcement
-* Advanced risk classification
-* Complete sandboxing
-* Production smart-home ecosystem
-* Full mobile platform
-* Full desktop automation platform
-* Complete SaaS infrastructure
-* Production public API
-* Large-scale distributed execution
-* Production multi-user infrastructure
+- Full autonomous general-purpose operation
+- Production-grade authentication
+- Advanced policy engine
+- Human approval workflows
+- Consent management
+- Full capability policy enforcement
+- Advanced risk classification
+- Complete sandboxing
+- Production smart-home ecosystem
+- Full mobile platform
+- Full desktop automation platform
+- Complete SaaS infrastructure
+- Production public API
+- Large-scale distributed execution
+- Production multi-user infrastructure
 
 The architecture is being built before these higher-level features.
 
@@ -1570,6 +1729,8 @@ Planning
 Orchestration
       ↓
 Execution
+      ↓
+Capability Integration
       ↓
 Authorization
       ↓
@@ -1602,23 +1763,23 @@ This creates the foundation for future autonomous and multimodal behavior.
 
 ULTRON follows a strict principle:
 
-> **Being able to identify or select a tool does not automatically mean the tool is authorized to execute.**
+> **Being able to identify or select a tool or capability does not automatically mean the operation is authorized to execute.**
 
 The separation is:
 
 ```text
-Tool Discovery
-      ≠
-Tool Selection
-      ≠
+Tool / Capability Discovery
+          ≠
+Tool / Capability Selection
+          ≠
 Tool Access Validation
-      ≠
+          ≠
 Authorization
-      ≠
+          ≠
 Tool Execution
 ```
 
-This distinction is one of the core architectural improvements introduced in v0.96.
+The explicit authorization boundary was introduced in v0.96 and must remain intact as capability integration expands in v0.97.
 
 ---
 
@@ -1657,8 +1818,8 @@ The goal is to create a **modular AI operating platform whose capabilities can g
 # Next Milestones
 
 ```text
-v0.96  Core Platform Hardening          [CURRENT / COMPLETED]
-v0.97  Platform Integration
+v0.96  Core Platform Hardening             [COMPLETED]
+v0.97  Platform Integration                [CURRENT DOCUMENTED MILESTONE]
 v0.98  Architecture Consolidation
 v0.99  Pre-v1.0 Stabilization
 v1.0   Core Platform Foundation
@@ -1714,7 +1875,7 @@ Run the complete test suite:
 pytest -q
 ```
 
-Run architecture-specific tests:
+Run architecture-specific tests (adjust test paths to match the files present in the checked-out repository):
 
 ```powershell
 pytest tests\test_authorization.py -q
@@ -1722,6 +1883,7 @@ pytest tests\test_permissions.py -q
 pytest tests\test_tool_permission_mapping.py -q
 pytest tests\test_permission_exports.py -q
 pytest tests\test_agent_engine_tools.py -q
+pytest tests\test_agent_engine_capability.py -q
 ```
 
 ---
@@ -1738,12 +1900,12 @@ git diff
 
 Verify:
 
-* No accidental files
-* No secrets
-* No unrelated modifications
-* No broken tests
-* No formatting errors
-* No architecture violations
+- No accidental files
+- No secrets
+- No unrelated modifications
+- No broken tests
+- No formatting errors
+- No architecture violations
 
 ---
 
@@ -1782,23 +1944,23 @@ The long-term ULTRON architecture is envisioned as:
                                │
         ┌──────────────────────┼──────────────────────┐
         │                      │                      │
-   Intelligence            Agent Runtime         Multimodal
+   Intelligence           Agent Runtime          Multimodal
         │                      │                      │
-   Intent / Decision       Planning / Tasks       Voice / Vision
+   Intent / Decision      Planning / Tasks        Voice / Vision
         │                      │                      │
         └──────────────────────┼──────────────────────┘
                                │
-                         Execution Runtime
+                        Execution Runtime
                                │
                   ┌────────────┼────────────┐
                   │            │            │
-                Tools       Plugins     Providers
+                Tools       Plugins      Providers
                   │            │            │
                   └────────────┼────────────┘
                                │
-                         Security Layer
+                        Security Layer
                                │
-                   Permission / Authorization
+                  Permission / Authorization
                                │
                          Observability
                                │
@@ -1813,13 +1975,15 @@ The architecture is designed so that future systems can be added without rewriti
 
 # Final Foundation Statement
 
-ULTRON v0.96 represents an important architectural step:
+ULTRON v0.97 represents the next step after the v0.96 authorization foundation:
 
 ```text
 From:
+
 Agent → Tool Execution
 
-To:
+Through v0.96:
+
 Agent
   ↓
 Validated Tool Access
@@ -1835,21 +1999,39 @@ Structured Result
 Feedback
   ↓
 Observability
+
+With v0.97 capability integration:
+
+AgentEngine
+  ↓
+Capability Resolution
+  ↓
+Capability Execution Boundary
+  ↓
+Existing Execution Pipeline
+  ↓
+Access Validation
+  ↓
+Authorization
+  ↓
+Tool Execution
+  ↓
+Structured Result / Feedback
 ```
 
 This creates a stronger foundation for future:
 
-* Autonomous agents
-* AI automation
-* Voice-controlled execution
-* Multimodal interaction
-* Smart-home control
-* Developer agents
-* SaaS automation
-* Plugin ecosystems
-* Capability systems
-* Public APIs
-* Multi-user platforms
+- Autonomous agents
+- AI automation
+- Voice-controlled execution
+- Multimodal interaction
+- Smart-home control
+- Developer agents
+- SaaS automation
+- Plugin ecosystems
+- Capability systems
+- Public APIs
+- Multi-user platforms
 
 The objective remains the same:
 
@@ -1860,22 +2042,17 @@ The objective remains the same:
 ## Current Status Summary
 
 ```text
-Version:          v0.96
-Milestone:        Core Platform Hardening
-Focus:            Authorization & Permission Architecture
-
-Full Regression:
-2500 passed
-0 failed
-
-Python:
-3.13+
-
-Architecture:
-Foundation Development
-
-Next:
-v0.97 Platform Integration
+Version:                 v0.97
+Milestone:               Platform Integration
+Focus:                   Capability Integration & Runtime Boundaries
+Latest reported regression:
+                         2517 passed
+                         0 failed
+Capability-specific tests:
+                         17 passed
+Python:                  3.13+
+Architecture:            Foundation Development
+Next:                    v0.98 Architecture Consolidation
 ```
 
 ---
