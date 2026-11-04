@@ -34,8 +34,9 @@ ULTRON is intentionally being developed as a **long-term platform**, not as a co
 | Property | Status |
 |---|---|
 | **Current Version** | **v0.97** |
-| **Current Milestone** | **Platform Integration** |
-| **v0.97 Focus** | **Capability Integration & Runtime Boundaries** |
+| **Current Milestone** | **v0.98 — Architecture Consolidation (In Progress)** |
+| **Current Repository Version** | **v0.97** |
+| **Latest Completed Version Focus** | **Capability Integration & Platform Integration** |
 | **Latest Reported Full Regression** | **2517 passed / 0 failed** |
 | **v0.96 Full Regression Baseline** | **2500 passed / 0 failed** |
 | **v0.95 Full Regression Baseline** | **2404 passed / 0 failed** |
@@ -444,6 +445,89 @@ Capability-specific validation was reported as:
 ```
 
 These are the latest reported results, not a claim that tests have been rerun while preparing this documentation.
+
+---
+
+# v0.98 Architecture Consolidation
+
+v0.98 focuses on strengthening existing subsystem boundaries and reducing unnecessary internal coupling without introducing parallel execution systems or broad architectural restructuring.
+
+The current consolidation work covers:
+
+### Agent–Multimodal Boundary
+
+`AgentOrchestrator` exposes a public tool-selection method:
+
+```python
+AgentOrchestrator.select_tool(agent, query)
+```
+
+The method delegates tool selection to the existing `AgentEngine` implementation. External modules can use the orchestrator's public API instead of reaching through the orchestrator to access its internal engine.
+
+`VoiceCommandExecutor` now requests tool selection through:
+
+```python
+tool = self._orchestrator.select_tool(
+    agent,
+    query,
+)
+```
+
+This removes its direct dependency on:
+
+```python
+self._orchestrator.engine.select_tool(...)
+```
+
+The change improves the module boundary while preserving the existing tool-selection implementation.
+
+### ExecutionResult Construction Consolidation
+
+`AgentOrchestrator._terminal_result()` now supports an optional result payload. Both successful and unsuccessful terminal orchestration outcomes can use the same result-construction path.
+
+Successful plan execution supplies the completed step results through the helper:
+
+```python
+return self._terminal_result(
+    plan,
+    agent,
+    success=True,
+    error=None,
+    result=[
+        step.result
+        for step in plan.completed_steps()
+    ],
+)
+```
+
+This reduces duplicated `ExecutionResult` construction while retaining the existing result model and metadata structure.
+
+The defensive behavior of `execute_plan_safe()` remains unchanged.
+
+### v0.98 Design Constraints
+
+- Preserve the existing `AgentEngine` execution pipeline.
+- Preserve access validation and authorization boundaries.
+- Prefer public subsystem APIs over access to another module's internal implementation.
+- Consolidate duplicated construction only where behavior remains equivalent.
+- Avoid unnecessary adapters, protocols, duplicate execution engines, and duplicate result models.
+- Preserve backward compatibility.
+- Keep changes focused and covered by targeted tests and full regression.
+
+### v0.98 Validation
+
+The current architecture-consolidation changes were validated with:
+
+```text
+Agent orchestrator tests:       17 passed
+Voice integration tests:        52 passed
+Full regression:              2517 passed
+Failures:                         0
+```
+
+The voice integration validation covered the voice command executor, voice runtime integration, and voice conversation loop test modules.
+
+These results reflect the reported test run for the current changes.
 
 ---
 
@@ -1433,7 +1517,9 @@ Capability integration is documented as implemented. Other roadmap items remain 
 
 ## v0.98 — Architecture Consolidation
 
-Planned focus:
+**Current development milestone — IN PROGRESS**
+
+Current focus:
 
 - Consolidate runtime boundaries
 - Reduce architectural duplication
@@ -1531,11 +1617,54 @@ v0.85  Runtime Event Integration
 v0.95  Extensibility Consolidation
 v0.96  Core Platform Hardening
 v0.97  Capability Integration / Platform Integration
+v0.98  Architecture Consolidation [IN PROGRESS]
 ```
 
 ---
 
 # Version History
+
+## v0.98 — Architecture Consolidation
+
+### Changed
+
+- Added `AgentOrchestrator.select_tool()` as a public tool-selection API.
+- Updated `VoiceCommandExecutor` to use the orchestrator's public API instead of accessing `orchestrator.engine` directly.
+- Consolidated successful and unsuccessful terminal `ExecutionResult` construction through `AgentOrchestrator._terminal_result()`.
+- Preserved the existing safe execution fallback behavior.
+
+### Architecture
+
+```text
+VoiceCommandExecutor
+        ↓
+AgentOrchestrator.select_tool()
+        ↓
+AgentEngine.select_tool()
+```
+
+Terminal orchestration outcomes now share one result-construction helper:
+
+```text
+execute_plan()
+     ↓
+_terminal_result(...)
+     ↓
+ExecutionResult
+```
+
+### Validation
+
+```text
+Agent orchestrator tests:  17 passed
+Voice integration tests:   52 passed
+Full regression:          2517 passed
+Failures:                    0
+```
+
+The v0.98 work remains in progress. The repository version remains v0.97 until the version configuration and release process are deliberately updated.
+
+---
 
 ## v0.97 — Platform Integration
 
@@ -1779,7 +1908,7 @@ Authorization
 Tool Execution
 ```
 
-The explicit authorization boundary was introduced in v0.96 and must remain intact as capability integration expands in v0.97.
+The explicit authorization boundary was introduced in v0.96 and must remain intact as capability integration and later architecture consolidation work evolve.
 
 ---
 
@@ -1819,8 +1948,8 @@ The goal is to create a **modular AI operating platform whose capabilities can g
 
 ```text
 v0.96  Core Platform Hardening             [COMPLETED]
-v0.97  Platform Integration                [CURRENT DOCUMENTED MILESTONE]
-v0.98  Architecture Consolidation
+v0.97  Platform Integration                [REPOSITORY VERSION]
+v0.98  Architecture Consolidation            [CURRENT DEVELOPMENT MILESTONE]
 v0.99  Pre-v1.0 Stabilization
 v1.0   Core Platform Foundation
 ```
@@ -1975,7 +2104,7 @@ The architecture is designed so that future systems can be added without rewriti
 
 # Final Foundation Statement
 
-ULTRON v0.97 represents the next step after the v0.96 authorization foundation:
+ULTRON v0.97 represents the capability-integration step after the v0.96 authorization foundation. The active v0.98 milestone focuses on consolidating the architecture without changing the repository version prematurely:
 
 ```text
 From:
@@ -2017,6 +2146,20 @@ Authorization
 Tool Execution
   ↓
 Structured Result / Feedback
+
+With the current v0.98 consolidation work:
+
+VoiceCommandExecutor
+  ↓
+AgentOrchestrator public API
+  ↓
+AgentEngine tool selection
+
+AgentOrchestrator
+  ↓
+Shared terminal result construction
+  ↓
+ExecutionResult
 ```
 
 This creates a stronger foundation for future:
@@ -2042,17 +2185,18 @@ The objective remains the same:
 ## Current Status Summary
 
 ```text
-Version:                 v0.97
-Milestone:               Platform Integration
-Focus:                   Capability Integration & Runtime Boundaries
-Latest reported regression:
-                         2517 passed
-                         0 failed
-Capability-specific tests:
-                         17 passed
-Python:                  3.13+
-Architecture:            Foundation Development
-Next:                    v0.98 Architecture Consolidation
+Repository version:      v0.97
+Current milestone:        v0.98 Architecture Consolidation
+Milestone status:         IN PROGRESS
+Current focus:            Agent–Multimodal boundary consolidation
+                          ExecutionResult construction consolidation
+Agent orchestrator tests: 17 passed
+Voice integration tests:  52 passed
+Full regression:          2517 passed
+Failures:                  0
+Python:                   3.13+
+Architecture:             Foundation Development
+Next milestone:           Continue v0.98 architecture audit and validation
 ```
 
 ---

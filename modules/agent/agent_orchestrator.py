@@ -1,3 +1,4 @@
+﻿
 """
 Ultron Agent Orchestrator
 Version: v0.50
@@ -31,6 +32,13 @@ v0.85 integration:
 - Controller-owned lifecycle events
 - Orchestrator-owned execution outcome events
 - Removed duplicate semantic event emission
+
+v0.98 integration:
+- Public tool-selection API for external modules
+- Reduced direct access to AgentEngine internals
+- Centralized successful and terminal ExecutionResult construction
+- Strengthened Agent–Multimodal runtime boundary
+- Preserved existing execution contracts and fallback behavior
 
 Responsibilities:
 - Validate execution plans
@@ -206,6 +214,34 @@ class AgentOrchestrator:
         self.context = context
 
     # ========================================================
+    # Public Tool Selection API
+    # ========================================================
+
+    def select_tool(
+        self,
+        agent: Agent,
+        query: str,
+    ):
+        """
+        Select an available tool through AgentEngine.
+
+        Provides a stable public API for external modules
+        without requiring direct access to the internal engine.
+
+        Args:
+            agent: Agent requesting tool selection.
+            query: User command or task description.
+
+        Returns:
+            Selected AgentTool or None.
+        """
+
+        return self.engine.select_tool(
+            agent,
+            query,
+        )
+
+    # ========================================================
     # Internal Defensive Helpers
     # ========================================================
 
@@ -366,21 +402,26 @@ class AgentOrchestrator:
         *,
         success: bool,
         error: str | None,
+        result: Any = None,
     ) -> ExecutionResult:
         """
-        Build a consistent terminal execution result.
+        Build a standardized terminal execution result.
 
-        ExecutionResult represents the complete outcome of the
-        orchestration layer.
+        ExecutionResult represents the complete outcome of
+        orchestration.
 
-        Plan identity, agent identity, and progress remain metadata
-        so the result model stays generic and execution-focused.
+        Plan identity, agent identity, and progress remain
+        metadata so the result model stays generic.
+
+        The optional result parameter allows successful and
+        unsuccessful terminal outcomes to use the same
+        construction path.
         """
 
         return ExecutionResult(
             execution_id=self._execution_id(plan),
             success=bool(success),
-            result=None,
+            result=result,
             error=error,
             metadata={
                 "plan_id": getattr(
@@ -1587,19 +1628,23 @@ class AgentOrchestrator:
             agent,
         )
 
-        return ExecutionResult(
-            execution_id=self._execution_id(plan),
+        # ----------------------------------------------------
+        # Standardized Successful Execution Result
+        # ----------------------------------------------------
+        #
+        # Use the same terminal-result factory as other
+        # orchestration outcomes.
+        #
+
+        return self._terminal_result(
+            plan,
+            agent,
             success=True,
+            error=None,
             result=[
                 step.result
                 for step in plan.completed_steps()
             ],
-            error=None,
-            metadata={
-                "plan_id": plan.id,
-                "agent_id": agent.id,
-                "progress": self.planner.get_progress(plan),
-            },
         )
 
     # ========================================================

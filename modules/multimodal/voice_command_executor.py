@@ -190,7 +190,7 @@ class VoiceCommandExecutor:
             # Resolve Tool
             # ------------------------------------------------
 
-            tool = self._orchestrator.engine.select_tool(
+            tool = self._orchestrator.select_tool(
                 agent,
                 query,
             )
