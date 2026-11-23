@@ -179,17 +179,32 @@ class AgentOrchestrator:
             else AgentPlanner()
         )
 
+
         # ----------------------------------------------------
         # Shared Execution Event Store
         # ----------------------------------------------------
-        #
-        # The controller and emitter must observe one canonical
-        # event stream for the orchestrator.
-        #
-        # Explicitly injected dependencies are preserved.
-        # Missing dependencies are constructed here.
-        #
-        event_store = ExecutionEventStore()
+
+        # Resolve one canonical event store.
+
+        if controller is not None and emitter is not None:
+            if controller.event_store is not emitter.store:
+                raise AgentOrchestratorError(
+                    "Controller and emitter must use the same "
+                    "ExecutionEventStore."
+                )
+
+            event_store = controller.event_store
+
+        elif controller is not None:
+            event_store = controller.event_store
+
+        elif emitter is not None:
+            event_store = emitter.store
+
+        else:
+            event_store = ExecutionEventStore()
+
+        # Preserve injected dependencies.
 
         self.controller = (
             controller
@@ -203,15 +218,12 @@ class AgentOrchestrator:
             emitter
             if emitter is not None
             else ExecutionEventEmitter(
-                store=(
-                    self.controller.event_store
-                    if controller is not None
-                    else event_store
-                ),
+                store=event_store,
             )
         )
 
         self.context = context
+
 
     # ========================================================
     # Public Tool Selection API

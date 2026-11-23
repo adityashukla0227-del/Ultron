@@ -45,6 +45,9 @@ from modules.agent.execution_context import ExecutionContext
 from modules.agent.execution_event_emitter import (
     ExecutionEventEmitter,
 )
+from modules.agent.execution_event_store import (
+    ExecutionEventStore,
+)
 from modules.agent.permission import Permission
 from modules.agent.permission_registry import PermissionRegistry
 from modules.agent.tool import AgentTool
@@ -133,21 +136,28 @@ def create_orchestrator(
 
     engine = create_engine()
 
-    engine.register_tool(
-        tool
-    )
+    engine.register_tool(tool)
 
-    agent.assign_tool(
-        tool
-    )
+    agent.assign_tool(tool)
 
     planner = AgentPlanner()
+
+    # The controller and emitter must share one canonical event store.
+    event_store = ExecutionEventStore()
+
+    controller = AgentExecutionController(
+        event_store=event_store,
+    )
+
+    emitter = ExecutionEventEmitter(
+        store=event_store,
+    )
 
     orchestrator = AgentOrchestrator(
         engine=engine,
         planner=planner,
-        controller=AgentExecutionController(),
-        emitter=ExecutionEventEmitter(),
+        controller=controller,
+        emitter=emitter,
     )
 
     return orchestrator, planner
@@ -1411,3 +1421,88 @@ def test_context_query_methods_are_safe_before_execution():
     assert orchestrator.get_execution_context() is None
 
     assert orchestrator.get_context_snapshot() is None
+
+
+# ============================================================
+# Shared Execution Event Store — Dependency Injection Tests
+# ============================================================
+
+
+def test_orchestrator_creates_shared_store_when_dependencies_missing():
+    orchestrator = AgentOrchestrator()
+
+    assert (
+        orchestrator.controller.event_store
+        is orchestrator.emitter.store
+    )
+
+
+def test_orchestrator_reuses_controller_store_when_emitter_missing():
+    event_store = ExecutionEventStore()
+
+    controller = AgentExecutionController(
+        event_store=event_store,
+    )
+
+    orchestrator = AgentOrchestrator(
+        controller=controller,
+    )
+
+    assert orchestrator.controller is controller
+    assert orchestrator.emitter.store is event_store
+
+
+def test_orchestrator_reuses_emitter_store_when_controller_missing():
+    event_store = ExecutionEventStore()
+
+    emitter = ExecutionEventEmitter(
+        store=event_store,
+    )
+
+    orchestrator = AgentOrchestrator(
+        emitter=emitter,
+    )
+
+    assert orchestrator.emitter is emitter
+    assert orchestrator.controller.event_store is event_store
+
+
+def test_orchestrator_accepts_controller_and_emitter_with_same_store():
+    event_store = ExecutionEventStore()
+
+    controller = AgentExecutionController(
+        event_store=event_store,
+    )
+
+    emitter = ExecutionEventEmitter(
+        store=event_store,
+    )
+
+    orchestrator = AgentOrchestrator(
+        controller=controller,
+        emitter=emitter,
+    )
+
+    assert orchestrator.controller is controller
+    assert orchestrator.emitter is emitter
+    assert orchestrator.controller.event_store is event_store
+    assert orchestrator.emitter.store is event_store
+
+
+def test_orchestrator_rejects_controller_and_emitter_with_different_stores():
+    controller = AgentExecutionController(
+        event_store=ExecutionEventStore(),
+    )
+
+    emitter = ExecutionEventEmitter(
+        store=ExecutionEventStore(),
+    )
+
+    with pytest.raises(
+        AgentOrchestratorError,
+        match="same ExecutionEventStore",
+    ):
+        AgentOrchestrator(
+            controller=controller,
+            emitter=emitter,
+        )
