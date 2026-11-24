@@ -1,0 +1,20 @@
+# Normalize text files to LF in the repository
+* text=auto eol=lf
+
+# Python source and tests
+*.py text eol=lf
+
+# Project configuration and documentation
+*.md text eol=lf
+*.toml text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.ini text eol=lf
+*.cfg text eol=lf
+*.txt text eol=lf
+
+# Windows scripts
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf

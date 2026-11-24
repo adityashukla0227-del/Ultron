@@ -12,6 +12,7 @@ contract without coupling persistence to execution control.
 
 from __future__ import annotations
 
+import json
 import sqlite3
 from pathlib import Path
 from threading import RLock
@@ -189,34 +190,39 @@ class SQLiteExecutionEventPersistence(ExecutionEventPersistence):
 
         try:
             with self._lock:
-                self._connection.executemany(
-                    """
-                    INSERT INTO execution_events (
-                        event_type,
-                        execution_id,
-                        timestamp,
-                        step_id,
-                        step_index,
-                        message,
-                        metadata
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                    """,
-                    [
-                        (
-                            event.event_type.value,
-                            event.execution_id,
-                            event.timestamp.isoformat(),
-                            event.step_id,
-                            event.step_index,
-                            event.message,
-                            self._serialize_metadata(event),
+                try:
+                    self._connection.executemany(
+                        """
+                        INSERT INTO execution_events (
+                            event_type,
+                            execution_id,
+                            timestamp,
+                            step_id,
+                            step_index,
+                            message,
+                            metadata
                         )
-                        for event in events
-                    ],
-                )
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        """,
+                        [
+                            (
+                                event.event_type.value,
+                                event.execution_id,
+                                event.timestamp.isoformat(),
+                                event.step_id,
+                                event.step_index,
+                                event.message,
+                                self._serialize_metadata(event),
+                            )
+                            for event in events
+                        ],
+                    )
 
-                self._connection.commit()
+                    self._connection.commit()
+
+                except Exception:
+                    self._connection.rollback()
+                    raise
 
         except sqlite3.Error as exc:
             raise ExecutionEventPersistenceError(
@@ -390,8 +396,6 @@ class SQLiteExecutionEventPersistence(ExecutionEventPersistence):
     ) -> str:
         """Serialize event metadata into JSON."""
 
-        import json
-
         try:
             return json.dumps(
                 event.metadata,
@@ -407,8 +411,6 @@ class SQLiteExecutionEventPersistence(ExecutionEventPersistence):
         row: tuple,
     ) -> ExecutionEvent:
         """Convert a SQLite row into an ExecutionEvent."""
-
-        import json
 
         (
             event_type,

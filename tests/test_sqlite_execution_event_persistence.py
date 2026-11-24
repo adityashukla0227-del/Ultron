@@ -202,6 +202,39 @@ def test_save_many_is_atomic(persistence):
     assert persistence.count("exec-1") == 0
 
 
+def test_save_many_rolls_back_on_database_failure(persistence):
+    """A database failure during batch insertion must roll back all events."""
+
+    events = [
+        make_event(
+            event_type=ExecutionEventType.STEP_STARTED,
+            step_id="step-1",
+        ),
+        make_event(
+            event_type=ExecutionEventType.STEP_COMPLETED,
+            step_id="step-1",
+        ),
+    ]
+
+    with persistence._lock:
+        persistence._connection.execute(
+            """
+            CREATE TRIGGER fail_second_event
+            BEFORE INSERT ON execution_events
+            WHEN NEW.event_type = 'step_completed'
+            BEGIN
+                SELECT RAISE(ABORT, 'simulated database failure');
+            END;
+            """
+        )
+        persistence._connection.commit()
+
+    with pytest.raises(ExecutionEventPersistenceError):
+        persistence.save_many(events)
+
+    assert persistence.count("exec-1") == 0
+
+
 # ============================================================
 # Retrieval
 # ============================================================
